@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="data:,">
+<title>WORLD SIGNAL — 23 Nov 2026</title>
+<style>
+:root{--bg:#0a0a0a;--panel:#111111;--panel2:#161616;--line:#262626;--line2:#333;--text:#f5f5f0;--muted:#a3a3a3;--dim:#737373;--red:#ff3b30;--amber:#ffb020;--green:#00c853;--cyan:#00d4ff;--mono:ui-monospace,SFMono-Regular,Menlo,monospace;--sans:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.5}
+a{color:inherit}button{min-height:40px}
+.wrap{max-width:1320px;margin:0 auto;padding:0 20px 40px}
+.topbar{border-bottom:1px solid var(--line);background:#0a0a0a;position:sticky;top:0;z-index:20}
+.topinner{max-width:1320px;margin:0 auto;padding:14px 20px;display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:14px}.mark{width:38px;height:38px;background:var(--red);display:grid;place-items:center;font-weight:900;letter-spacing:-.05em;font-size:18px}
+.brand h1{margin:0;font-size:22px;letter-spacing:.12em;line-height:1}.brand p{margin:3px 0 0;font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--muted)}
+.live{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;border:1px solid var(--line);padding:8px 10px;background:var(--panel)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 6px rgba(0,200,83,.12);animation:pulse 1.6s infinite}@keyframes pulse{50%{opacity:.5}}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin:18px 0}
+.metric{background:var(--panel);padding:16px}.metric b{display:block;font-size:28px;line-height:1}.metric span{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.exec{border:1px solid #3a2a12;background:linear-gradient(90deg,#1a1408,#111);padding:20px;display:grid;grid-template-columns:180px 1fr;gap:20px}
+.exec h2{margin:0;font-size:13px;letter-spacing:.16em;color:var(--amber)}.exec p{margin:0;font-size:16px;color:#e7e5e4}.exec strong{color:#fff}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 14px}.tab{border:1px solid var(--line2);background:var(--panel);color:var(--muted);padding:10px 16px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;cursor:pointer;min-height:44px}.tab[aria-selected="true"]{background:#fff;color:#000;border-color:#fff;font-weight:700}
+.countline{font-family:var(--mono);font-size:12px;color:var(--dim);margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);padding:18px;display:flex;flex-direction:column;gap:12px}
+.card:hover{border-color:#404040}
+.cardtop{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.domain{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--cyan)}
+.date{font-family:var(--mono);font-size:11px;color:var(--dim);white-space:nowrap}
+.card h3{margin:0;font-size:20px;line-height:1.25;letter-spacing:-.02em}
+.badges{display:flex;gap:6px;flex-wrap:wrap}
+.badge{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.06em;padding:5px 7px;border:1px solid}
+.b-high{color:#4ade80;border-color:#14532d;background:#052e16}.b-med{color:#facc15;border-color:#713f12;background:#422006}.b-low{color:#fca5a5;border-color:#7f1d1d;background:#450a0a}.b-imp{color:#fff;border-color:#404040;background:#262626}
+.flag{border:1px solid #7f1d1d;background:#1c0a0a;color:#fca5a5;padding:8px 10px;font-size:13px}
+.label{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--dim);text-transform:uppercase;margin-bottom:4px}
+.card p{margin:0;color:#d4d4d4;font-size:14.5px}
+.sources{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:6px}
+.src{border:1px solid var(--line2);background:#1c1c1c;padding:9px 11px;text-decoration:none;font-size:13px;font-weight:600;min-height:40px;display:inline-flex;align-items:center}.src:hover{background:#fff;color:#000}
+.section{margin-top:28px}.section h2{font-size:18px;letter-spacing:.08em;margin:0 0 6px}.section>p{color:var(--muted);margin:0 0 14px;font-size:14px}
+.scenarios{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.scen{background:var(--panel);border:1px solid var(--line);padding:16px}.scen h3{margin:0 0 8px;font-size:15px}.scen p,.scen li{color:#d4d4d4;font-size:14px}.scen ul{margin:8px 0 0;padding-left:18px}
+.personal{margin-top:12px;border:1px solid #7c2d12;background:#1c1008;padding:18px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.personal h3{margin:0 0 6px;font-size:14px;color:#fdba74}.personal p{margin:0;color:#e7e5e4;font-size:14px}
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:10px;align-items:stretch}
+.flowcard{background:var(--panel2);border:1px solid var(--line);padding:16px}.flowcard b{display:block;margin-bottom:6px}.flowcard p{margin:0;color:var(--muted);font-size:14px}.arrow{display:grid;place-items:center;color:var(--red);font-size:22px}
+.watch{border:1px solid var(--line);background:var(--panel)}
+.watchrow{display:grid;grid-template-columns:130px 1fr auto;gap:14px;padding:14px 16px;border-bottom:1px solid var(--line);align-items:center}.watchrow:last-child{border-bottom:0}
+.watchrow time{font-family:var(--mono);font-size:12px;color:var(--amber)}.watchrow p{margin:0;color:#d4d4d4;font-size:14px}.check{width:22px;height:22px;border:1px solid var(--line2);display:grid;place-items:center;color:var(--green)}
+.deploy{margin-top:22px;border:1px dashed #404040;padding:16px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center;background:#0f0f0f}.deploy p{margin:4px 0 0;color:var(--muted);font-size:13px;max-width:760px}
+.btn{background:#fff;color:#000;border:0;padding:11px 14px;font-weight:800;cursor:pointer;min-height:44px}
+footer{margin-top:28px;border-top:1px solid var(--line);padding-top:16px;color:var(--dim);font-size:12.5px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.hidden{display:none!important}
+@media(max-width:860px){.metrics{grid-template-columns:repeat(2,1fr)}.grid,.scenarios,.personal{grid-template-columns:1fr}.exec{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.arrow{transform:rotate(90deg);padding:2px}.watchrow{grid-template-columns:1fr}.topinner{padding:12px 16px}.wrap{padding:0 14px 32px}footer{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.dot{animation:none}}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topinner">
+<div class="brand"><div class="mark">◉</div><div><h1>WORLD SIGNAL</h1><p>RESEARCH TERMINAL • SINGLE-FILE EDITION</p></div></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span class="live"><span class="dot"></span> LIVE • 23 NOV 2026</span><span class="live">DAILY EDITION</span></div>
+</div></header>
+
+<main class="wrap">
+<section class="metrics" aria-label="Summary metrics">
+<div class="metric"><b>7</b><span>Total developments</span></div>
+<div class="metric"><b>2</b><span>High confidence</span></div>
+<div class="metric"><b>3</b><span>Domains covered</span></div>
+<div class="metric"><b>2</b><span>Unverified / disputed</span></div>
+</section>
+
+<section class="exec"><h2>EXECUTIVE<br>SUMMARY</h2><p><strong>The day in one line:</strong> Geopolitics widened on two fronts — Gulf escalation around Bahrain and Ukraine's war seeping across Europe — while climate diplomacy broke down at COP31. In AI, an unverified Riemann claim and a major IPO path sit alongside a concrete product shift: agents getting wallets. For markets, everything now hinges on <strong>PCE and GDP on 25 Nov</strong>, then the Fed on 8–9 Dec.</p></section>
+
+<nav class="tabs" aria-label="Domain filters">
+<button class="tab" data-filter="all" aria-selected="true">ALL</button>
+<button class="tab" data-filter="world" aria-selected="false">WORLD</button>
+<button class="tab" data-filter="ai" aria-selected="false">AI FRONTIER</button>
+<button class="tab" data-filter="economy" aria-selected="false">ECONOMY</button>
+</nav>
+<p class="countline" id="countLine">SHOWING 7 / 7 DEVELOPMENTS • CLICK A SOURCE TO OPEN THE ORIGINAL</p>
+
+<section class="grid" id="cards">
+<!-- WORLD -->
+<article class="card" data-domain="world"><div class="cardtop"><span class="domain">WORLD • GULF</span><span class="date">23 NOV 2026</span></div><h3>Iran / Bahrain escalation widens the Gulf front</h3><div class="badges"><span class="badge b-imp">IMPORTANCE 5 / 5</span><span class="badge b-med">CONFIDENCE: MEDIUM</span></div><div class="flag">⚠ UNCERTAIN / DISPUTED — Damage claims are disputed: IRGC claims were denied by CENTCOM. Treat extent-of-damage reporting as contested.</div><div><div class="label">What happened</div><p>Just Security's Early Edition for 23 Nov rounds up the Bahrain attack and the wider Feb–Nov escalation timeline, with Hormuz shipping risk back in focus.</p></div><div><div class="label">Why it matters</div><p>Any sustained Gulf disruption hits energy, shipping insurance and inflation expectations — the fastest channel from geopolitics into household costs.</p></div><div class="sources"><a class="src" href="https://www.justsecurity.org/165610/early-edition-november-23-2026/" target="_blank" rel="noopener">↗ Just Security — Early Edition</a></div></article>
+
+<article class="card" data-domain="world"><div class="cardtop"><span class="domain">WORLD • CLIMATE</span><span class="date">22 NOV 2026</span></div><h3>COP31 collapses with no fossil-fuel deal</h3><div class="badges"><span class="badge b-imp">IMPORTANCE 5 / 5</span><span class="badge b-high">CONFIDENCE: HIGH</span></div><div><div class="label">What happened</div><p>The longest COP on record ended without agreement — the first breakdown since 2009 — after talks failed to land a fossil-fuel phase-out text.</p></div><div><div class="label">Why it matters</div><p>Without a deal, national pledges carry the weight alone. Energy transition timelines, carbon pricing and adaptation finance all get harder to price.</p></div><div class="sources"><a class="src" href="https://www.cnn.com/2026/11/22/climate/cop31-summit-collapses-in-fossil-fuel-failure?cid=external-feeds_iluminar_meta" target="_blank" rel="noopener">↗ CNN — COP31 collapse</a><a class="src" href="https://www.reuters.com/sustainability/cop/can-climate-diplomacy-build-collapse-cop31-2026-11-22/" target="_blank" rel="noopener">↗ Reuters — Can diplomacy rebuild?</a></div></article>
+
+<article class="card" data-domain="world"><div class="cardtop"><span class="domain">WORLD • EUROPE</span><span class="date">23 NOV 2026</span></div><h3>Ukraine war seeps across Europe — Kryvyi Rih toll rises to 11</h3><div class="badges"><span class="badge b-imp">IMPORTANCE 5 / 5</span><span class="badge b-med">CONFIDENCE: MEDIUM-HIGH</span></div><div><div class="label">What happened</div><p>Strikes and airspace incidents are increasingly felt beyond Ukraine, including Poland. The Kryvyi Rih death toll was corrected upward to 11 in the revision log.</p></div><div><div class="label">Why it matters</div><p>Spillover raises NATO deterrence and air-defence costs, and keeps European energy and defence budgets under pressure.</p></div><div class="sources"><a class="src" href="https://www.cnn.com/2026/11/23/europe/ukraine-russia-war-seeping-across-europe-intl?cid=external-feeds_iluminar_meta" target="_blank" rel="noopener">↗ CNN — War seeping across Europe</a><a class="src" href="https://www.justsecurity.org/165610/early-edition-november-23-2026/" target="_blank" rel="noopener">↗ Just Security</a></div></article>
+
+<!-- AI -->
+<article class="card" data-domain="ai"><div class="cardtop"><span class="domain">AI FRONTIER • MATH</span><span class="date">21 NOV 2026</span></div><h3>Anthropic Riemann claim — treat as unverified</h3><div class="badges"><span class="badge b-imp">IMPORTANCE 4 / 5</span><span class="badge b-low">CONFIDENCE: LOW / UNVERIFIED</span></div><div class="flag">⚠ UNCERTAIN / DISPUTED — A claimed breakthrough is not a proven breakthrough. No independent peer verification was established at publication. Do not cite as fact.</div><div><div class="label">What happened</div><p>CNN reported Anthropic-linked claims around a major maths problem, with published code/checks cited by supporters and a same-day rival claim noted in the expanded audit.</p></div><div><div class="label">Why it matters</div><p>If verified, it would be historic. Until then, the lesson is verification discipline: code being published is not proof.</p></div><div class="sources"><a class="src" href="https://www.cnn.com/2026/11/21/tech/anthropic-math-problem-ai?cid=external-feeds_iluminar_meta" target="_blank" rel="noopener">↗ CNN — Anthropic math claim</a></div></article>
+
+<article class="card" data-domain="ai"><div class="cardtop"><span class="domain">AI FRONTIER • MARKETS</span><span class="date">19 NOV 2026</span></div><h3>Anthropic IPO path — figures downgraded to Medium</h3><div class="badges"><span class="badge b-imp">IMPORTANCE 5 / 5</span><span class="badge b-med">CONFIDENCE: MEDIUM</span></div><div><div class="label">What happened</div><p>IPO and revenue/commitment figures circulated widely, but the $1.5tn vs $1.8tn bases were conflated in early coverage. Confidence was downgraded pending a direct SEC filing / primary check.</p></div><div><div class="label">Why it matters</div><p>An Anthropic listing would reprice the whole AI sector — but only filing-grade numbers should drive decisions.</p></div><div class="sources"><a class="src" href="https://www.cnn.com/2026/11/21/tech/anthropic-math-problem-ai?cid=external-feeds_iluminar_meta" target="_blank" rel="noopener">↗ CNN — Anthropic coverage (citing Reuters)</a></div></article>
+
+<article class="card" data-domain="ai"><div class="cardtop"><span class="domain">AI FRONTIER • AGENTS</span><span class="date">13 NOV 2026</span></div><h3>OpenAI gives AI agents a wallet — without showing the card</h3><div class="badges"><span class="badge b-imp">IMPORTANCE 4 / 5</span><span class="badge b-high">CONFIDENCE: HIGH</span></div><div><div class="label">What happened</div><p>OpenAI's ChatGPT Wallet lets agents transact while the underlying card details stay hidden from the agent — a payments + identity design choice.</p></div><div><div class="label">Why it matters</div><p>Agentic commerce needs spending controls, audit trails and fraud rules. Who holds the wallet will shape who holds the customer.</p></div><div class="sources"><a class="src" href="https://www.pymnts.com/news/artificial-intelligence/2026/openai-gives-ai-agents-a-wallet-while-blocking-them-from-seeing-the-card/" target="_blank" rel="noopener">↗ PYMNTS — ChatGPT Wallet</a></div></article>
+
+<!-- ECONOMY -->
+<article class="card" data-domain="economy"><div class="cardtop"><span class="domain">ECONOMY • MARKETS</span><span class="date">22–23 NOV 2026</span></div><h3>AI-stock rout meets PCE week — rates decision looms</h3><div class="badges"><span class="badge b-imp">IMPORTANCE 5 / 5</span><span class="badge b-med">CONFIDENCE: MEDIUM</span></div><div><div class="label">What happened</div><p>After a sharp AI-led sell-off, markets face flash PMIs, PCE and GDP. Note on data: BLS published no 12-month Oct CPI rate because Oct 2025 collection was missing — do not quote one as a BLS figure.</p></div><div><div class="label">Why it matters</div><p>PCE is the Fed's preferred gauge. A hot print keeps borrowing costs higher for longer; a soft print reopens cut hopes.</p></div><div class="sources"><a class="src" href="https://www.morningstar.com/news/dow-jones/202611221792/week-ahead-for-fx-bonds-flash-pmi-data-to-provide-gauge-on-economic-growth" target="_blank" rel="noopener">↗ Morningstar / Dow Jones — Week Ahead</a></div></article>
+</section>
+
+<section class="section" id="economyView">
+<h2>ECONOMY — SCENARIOS TO 9 DEC</h2><p>Three ways the next two weeks resolve. Probabilities are judgement, not forecasts.</p>
+<div class="scenarios">
+<div class="scen"><h3>🟡 BASE CASE — Sticky, not spiralling</h3><p>PCE near expectations, PMIs mixed. Fed holds in December, language stays cautious.</p><ul><li>Rates stay high, cuts pushed out</li><li>Equities choppy, quality outperforms</li><li>Dollar firm, oil sensitive to Gulf news</li></ul></div>
+<div class="scen"><h3>🟢 UPSIDE CASE — Soft landing reasserts</h3><p>PCE cools, PMIs stabilise, AI sell-off finds buyers on earnings — not hype.</p><ul><li>Cut expectations return for early 2027</li><li>Borrowing costs ease at the margin</li><li>Risk assets recover part of the rout</li></ul></div>
+<div class="scen"><h3>🔴 DOWNSIDE CASE — Hot PCE + Gulf shock</h3><p>Hot PCE plus an energy spike forces a hawkish Fed and a second leg down in AI names.</p><ul><li>Higher-for-longer becomes higher-again talk</li><li>Credit tightens, volatility stays elevated</li><li>Cash buffer matters more than timing</li></ul></div>
+</div>
+<div class="personal"><div><h3>CAREER / SKILLS</h3><p>Agentic-coding, verification, cyber-defence and data-centre / grid skills matter more as cost-per-task falls. Being able to check AI output is the premium skill.</p></div><div><h3>CASH FLOW / RISK</h3><p>Rates likely stay higher into December, borrowing stays expensive, equities are volatile after a sharp week. Keep a buffer, avoid concentrating in one AI name. Educational only — not investment advice.</p></div><div><h3>WHAT TO WATCH</h3><p>PCE / GDP on 25 Nov, flash PMIs, Gulf shipping headlines, then the Fed on 8–9 Dec. One hot print changes the whole path.</p></div></div>
+</section>
+
+<section class="section"><h2>CROSS-DOMAIN CONNECTIONS</h2><p>How today's stories feed each other — Established links vs. working hypotheses are labelled.</p>
+<div class="flow">
+<div class="flowcard"><b>🌍 GEOPOLITICS → ENERGY</b><p><strong>Established:</strong> Bahrain / Hormuz risk and Ukraine spillover lift energy and defence pricing directly.</p></div><div class="arrow">→</div>
+<div class="flowcard"><b>📈 ENERGY → INFLATION → FED</b><p><strong>Established:</strong> Energy feeds PCE. PCE feeds the Fed. That chain decides borrowing costs on 8–9 Dec.</p></div><div class="arrow">→</div>
+<div class="flowcard"><b>🤖 FED + AI → MARKETS</b><p><strong>Hypothesis:</strong> If rates stay high while AI valuations reset, only AI firms with real cash flow — IPO-grade or not — keep premium multiples. Agent wallets add a new revenue layer if controls hold.</p></div>
+</div></section>
+
+<section class="section"><h2>WHAT TO WATCH NEXT</h2><p>A dated checklist of upcoming events and releases.</p>
+<div class="watch">
+<div class="watchrow"><time>25 NOV 2026</time><p><strong>PCE + GDP release</strong> — the single most market-moving print before the Fed. Compare core PCE month-on-month, not just headlines.</p><span class="check">○</span></div>
+<div class="watchrow"><time>THIS WEEK</time><p><strong>Flash PMIs + Gulf / Hormuz headlines</strong> — growth pulse plus energy-risk pulse, together.</p><span class="check">○</span></div>
+<div class="watchrow"><time>THIS WEEK</time><p><strong>Riemann verification</strong> — any independent mathematical review? No review, no upgrade from Unverified.</p><span class="check">○</span></div>
+<div class="watchrow"><time>8–9 DEC 2026</time><p><strong>Federal Reserve meeting</strong> — decision + language. Watch the dot path and any mention of energy-driven inflation.</p><span class="check">○</span></div>
+<div class="watchrow"><time>ONGOING</time><p><strong>COP31 follow-through</strong> — do major emitters publish replacement pledges after the collapse?</p><span class="check">○</span></div>
+</div></section>
+
+<div class="deploy"><div><strong>GitHub + Vercel — single-file deploy</strong><p>This page is 100% self-contained: one <code>index.html</code>, no build step, no external local files. Drop it into a GitHub repo and point Vercel at it. <br>GitHub push: no direct GitHub connector is available in this workspace, so the downloadable file each morning is the handoff. Updated daily — research (past 24h) → verify + direct URLs → updated <code>index.html</code>.</p></div><button class="btn" id="dlBtn">⬇ Download index.html</button></div>
+
+<footer><div><strong>Sources &amp; limitations:</strong> Some originals sit behind paywalls (FT, Bloomberg, WSJ and others). WORLD SIGNAL never speculates from headlines alone — it uses primary evidence and Reuters / AP / AFP cross-checks, discloses inaccessible originals, and marks items Unverified where verification fails. Syndicated copies count as one source. TraderFactor and Daily Market Report are not approved sources and are excluded as original sources.</div><div><strong>Disclaimer:</strong> WORLD SIGNAL is informational and educational only. It is not investment, legal or professional advice. Confidence reflects evidence quality, not certainty. Publication date, event date and underlying data date may differ — see each card. Corrected 23 Nov 2026 edition.</div></footer>
+</main>
+<script>
+var tabs=document.querySelectorAll('.tab'),cards=document.querySelectorAll('.card'),count=document.getElementById('countLine'),econ=document.getElementById('economyView');
+function apply(f){tabs.forEach(function(t){t.setAttribute('aria-selected',t.dataset.filter===f?'true':'false')});var n=0;cards.forEach(function(c){var show=f==='all'||c.dataset.domain===f;c.classList.toggle('hidden',!show);if(show)n++});count.textContent='SHOWING '+n+' / '+cards.length+' DEVELOPMENTS • '+(f==='all'?'ALL DOMAINS':f.toUpperCase())+' • CLICK A SOURCE TO OPEN THE ORIGINAL';econ.style.opacity=(f==='world'||f==='ai')?'.45':'1';}
+tabs.forEach(function(t){t.addEventListener('click',function(){apply(t.dataset.filter)})});
+document.getElementById('dlBtn').addEventListener('click',function(){var blob=new Blob(['<!doctype html>\n'+document.documentElement.outerHTML],{type:'text/html'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='index.html';a.click();setTimeout(function(){URL.revokeObjectURL(a.href)},2000);});
+</script>
+</body>
+</html>
