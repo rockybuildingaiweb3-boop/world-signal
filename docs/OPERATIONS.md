@@ -35,4 +35,4 @@ Do not hand-edit generated public files. If publishing fails, fix the cause and 
 
 ## Deployment note
 
-This architecture branch removes the old renderer from the application root and archives it under legacy/. The new frontend is not scaffolded yet. Do not merge this branch into the live deployment until the owner is ready for the frontend cutover, or accepts a temporary no-UI state.
+The old renderer has been removed from the application root and archived under legacy/. The new frontend is not scaffolded yet. The repository is therefore in an architecture-only state until the frontend rebuild is implemented. Deploying this state to a public website may result in a missing homepage; coordinate the frontend cutover before treating the site as production-ready.
