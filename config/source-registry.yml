@@ -1,0 +1,229 @@
+schema_version: 1
+registry_name: "WORLD SIGNAL Approved Source Registry"
+registry_review_cycle_days: 180
+registry_owner_approval_required: true
+
+editorial_definition:
+  tier_1: "An internally approved established newsroom eligible for core reporting. This is an editorial eligibility class, not a guarantee of accuracy or neutrality."
+  specialist_tier_1: "An approved specialist publication eligible within defined subject areas."
+  primary_source: "An original document, dataset, statement, filing, paper, code repository, or research artifact. It is not an independent newsroom."
+  independent_count_rule: "Count unique original reporting origins only. Syndicated copies share the originating newsroom's independence_group."
+
+newsrooms:
+  - id: reuters
+    name: "Reuters"
+    domains: ["reuters.com"]
+    tier: "tier_1"
+    source_type: "international_wire_service"
+    beats: ["world", "economy", "ai-business"]
+    independence_group: "reuters"
+    notes: "Treat a Reuters dispatch and syndicated mirrors as one reporting origin."
+  - id: ap
+    name: "Associated Press"
+    domains: ["apnews.com"]
+    tier: "tier_1"
+    source_type: "international_wire_service"
+    beats: ["world", "economy", "ai-business"]
+    independence_group: "ap"
+    notes: "Treat AP originals and syndicated mirrors as one reporting origin."
+  - id: afp
+    name: "Agence France-Presse"
+    domains: ["afp.com"]
+    tier: "tier_1"
+    source_type: "international_wire_service"
+    beats: ["world", "economy", "ai-business"]
+    independence_group: "afp"
+  - id: bbc
+    name: "BBC News"
+    domains: ["bbc.com", "bbc.co.uk"]
+    tier: "tier_1"
+    source_type: "international_newsroom"
+    beats: ["world", "technology", "economy"]
+    independence_group: "bbc"
+  - id: financial_times
+    name: "Financial Times"
+    domains: ["ft.com"]
+    tier: "tier_1"
+    source_type: "international_newsroom"
+    beats: ["economy", "business", "technology", "geopolitics"]
+    independence_group: "financial_times"
+  - id: bloomberg
+    name: "Bloomberg"
+    domains: ["bloomberg.com"]
+    tier: "tier_1"
+    source_type: "international_newsroom"
+    beats: ["economy", "markets", "business", "technology"]
+    independence_group: "bloomberg"
+  - id: wsj
+    name: "The Wall Street Journal"
+    domains: ["wsj.com"]
+    tier: "tier_1"
+    source_type: "international_newsroom"
+    beats: ["economy", "markets", "business", "technology", "world"]
+    independence_group: "wsj"
+  - id: nytimes
+    name: "The New York Times"
+    domains: ["nytimes.com"]
+    tier: "tier_1"
+    source_type: "international_newsroom"
+    beats: ["world", "politics", "economy", "science", "technology"]
+    independence_group: "nytimes"
+  - id: economist
+    name: "The Economist"
+    domains: ["economist.com"]
+    tier: "tier_1"
+    source_type: "international_newsroom"
+    beats: ["world", "geopolitics", "economy", "technology"]
+    independence_group: "economist"
+    notes: "Label analysis and opinion as such."
+  - id: nikkei_asia
+    name: "Nikkei Asia"
+    domains: ["asia.nikkei.com", "nikkei.com"]
+    tier: "tier_1"
+    source_type: "regional_international_newsroom"
+    beats: ["asia", "economy", "technology", "trade", "supply-chains"]
+    independence_group: "nikkei"
+  - id: lemonde
+    name: "Le Monde"
+    domains: ["lemonde.fr"]
+    tier: "tier_1"
+    source_type: "international_newsroom"
+    beats: ["world", "europe", "politics", "economy"]
+    independence_group: "lemonde"
+  - id: dw
+    name: "Deutsche Welle"
+    domains: ["dw.com"]
+    tier: "tier_1"
+    source_type: "international_newsroom"
+    beats: ["world", "europe", "politics", "technology"]
+    independence_group: "dw"
+  - id: guardian
+    name: "The Guardian"
+    domains: ["theguardian.com"]
+    tier: "tier_1"
+    source_type: "international_newsroom"
+    beats: ["world", "politics", "climate", "technology", "economy"]
+    independence_group: "guardian"
+    notes: "Label analysis and opinion as such; assess claims against other evidence."
+
+specialist_publications:
+  - id: nature
+    name: "Nature"
+    domains: ["nature.com"]
+    tier: "specialist_tier_1"
+    beats: ["ai-research", "science", "technology"]
+    independence_group: "nature"
+    notes: "Distinguish Nature news reporting from peer-reviewed research articles."
+  - id: science
+    name: "Science"
+    domains: ["science.org"]
+    tier: "specialist_tier_1"
+    beats: ["ai-research", "science", "technology"]
+    independence_group: "science"
+    notes: "Distinguish editorial reporting from research papers."
+  - id: mit_technology_review
+    name: "MIT Technology Review"
+    domains: ["technologyreview.com"]
+    tier: "specialist_tier_1"
+    beats: ["ai", "technology", "science", "industry"]
+    independence_group: "mit_technology_review"
+  - id: ieee_spectrum
+    name: "IEEE Spectrum"
+    domains: ["spectrum.ieee.org"]
+    tier: "specialist_tier_1"
+    beats: ["ai", "engineering", "robotics", "semiconductors", "technology"]
+    independence_group: "ieee_spectrum"
+
+primary_sources:
+  ai:
+    - id: arxiv
+      name: "arXiv"
+      domains: ["arxiv.org"]
+      type: "research_preprints"
+    - id: openreview
+      name: "OpenReview"
+      domains: ["openreview.net"]
+      type: "research_submissions_and_reviews"
+    - id: openai
+      name: "OpenAI"
+      domains: ["openai.com"]
+      type: "company_announcements_and_technical_reports"
+    - id: anthropic
+      name: "Anthropic"
+      domains: ["anthropic.com"]
+      type: "company_announcements_and_technical_reports"
+    - id: google_deepmind
+      name: "Google DeepMind"
+      domains: ["deepmind.google"]
+      type: "company_research_and_announcements"
+    - id: huggingface
+      name: "Hugging Face"
+      domains: ["huggingface.co"]
+      type: "model_cards_and_repositories"
+  economy:
+    - id: bls
+      name: "U.S. Bureau of Labor Statistics"
+      domains: ["bls.gov"]
+      type: "official_statistics"
+    - id: bea
+      name: "U.S. Bureau of Economic Analysis"
+      domains: ["bea.gov"]
+      type: "official_statistics"
+    - id: federal_reserve
+      name: "Federal Reserve"
+      domains: ["federalreserve.gov"]
+      type: "central_bank_data_and_policy"
+    - id: fred
+      name: "Federal Reserve Economic Data"
+      domains: ["fred.stlouisfed.org"]
+      type: "economic_data"
+    - id: sec
+      name: "U.S. Securities and Exchange Commission"
+      domains: ["sec.gov"]
+      type: "regulatory_filings"
+    - id: imf
+      name: "International Monetary Fund"
+      domains: ["imf.org"]
+      type: "international_economic_data_and_reports"
+    - id: world_bank
+      name: "World Bank"
+      domains: ["worldbank.org"]
+      type: "international_development_data"
+    - id: oecd
+      name: "OECD"
+      domains: ["oecd.org"]
+      type: "international_economic_data_and_reports"
+    - id: ecb
+      name: "European Central Bank"
+      domains: ["ecb.europa.eu"]
+      type: "central_bank_data_and_policy"
+    - id: bis
+      name: "Bank for International Settlements"
+      domains: ["bis.org"]
+      type: "international_financial_data_and_research"
+  world:
+    - id: united_nations
+      name: "United Nations"
+      domains: ["un.org"]
+      type: "official_documents_and_statements"
+    - id: nato
+      name: "NATO"
+      domains: ["nato.int"]
+      type: "official_statements_and_documents"
+    - id: icj
+      name: "International Court of Justice"
+      domains: ["icj-cij.org"]
+      type: "court_documents_and_rulings"
+
+excluded_source_types:
+  - "anonymous_aggregator"
+  - "scraped_republication"
+  - "unattributed_social_post"
+  - "content_farm"
+  - "unverified_blog"
+  - "press_release_mirror"
+
+notes:
+  - "This is a curated starting allowlist, not an exhaustive ranking of credible journalism worldwide."
+  - "The owner must approve registry changes."
+  - "A listed source is not automatically reliable for every beat; assess article type, evidence, access, and conflicts."

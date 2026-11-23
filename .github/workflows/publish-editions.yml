@@ -1,0 +1,48 @@
+name: Publish Markdown Editions
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "content/editions/**/*.md"
+      - "scripts/build-public-content.mjs"
+      - ".github/workflows/publish-editions.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: world-signal-publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build public Markdown and edition index
+        run: node scripts/build-public-content.mjs
+
+      - name: Commit generated public assets
+        run: |
+          if git diff --quiet -- public/; then
+            echo "Public assets are already up to date."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/editions public/data/editions-index.json
+          git commit -m "chore: publish Markdown editions [skip ci]"
+          git push
