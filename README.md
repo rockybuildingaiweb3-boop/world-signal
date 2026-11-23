@@ -2,49 +2,67 @@
 
 **A daily global intelligence briefing built around evidence, context, and traceable sources.**
 
-Three editorial domains:
+WORLD SIGNAL tracks three domains:
+
 1. **World Events** — consequential geopolitical, political, scientific, humanitarian, and societal developments.
-2. **AI Frontier** — verified advances in AI research, models, infrastructure, capabilities, and deployment.
+2. **AI Frontier** — meaningful advances in AI research, models, infrastructure, capabilities, and deployment.
 3. **Economic Outlook** — macroeconomic conditions, policy, markets, structural trends, and practical implications for individuals.
 
-## Responsibility boundaries
+## Project principles
 
-- **Muse** researches, verifies, analyses, and writes one structured Markdown edition per calendar day.
-- **GitHub** stores the canonical Markdown archive and its version history.
-- **GitHub Actions** publishes Markdown files as static assets and builds a small edition index.
-- **AI Studio** builds the entirely new frontend. The frontend owns visual design, navigation, filtering, timelines, and interactions.
+- Evidence before speed; accuracy before volume.
+- Separate facts, claims, analysis, uncertainty, and forecasts.
+- Prefer original reporting from an approved group of top-tier newsrooms.
+- Distinguish primary documents from independent journalism.
+- Count reporting origins, not syndicated copies.
+- Keep one cumulative Markdown edition per calendar day.
+- Keep editorial content completely separate from frontend code.
+- Make the archive reproducible, auditable, and framework-independent.
 
-The old HTML/JSON renderer is preserved under `legacy/v3-json-renderer/` for reference only. It is not the new design system or content contract.
-
-## Content pipeline
+## Architecture
 
 ~~~mermaid
 flowchart TD
-  A[Muse research and verification] --> B[One daily Markdown edition]
-  B --> C[content/editions/YYYY/MM/YYYY-MM-DD.md]
+  A[Muse: research and verification] --> B[Canonical daily Markdown]
+  B --> C[GitHub main: versioned archive]
   C --> D[GitHub Actions]
-  D --> E[Publish Markdown to public/editions]
-  D --> F[Generate public/data/editions-index.json]
-  E --> G[New frontend built with AI Studio]
+  D --> E[Public Markdown editions]
+  D --> F[Generated edition index]
+  E --> G[New frontend]
   F --> G
-  G --> H[Briefing · Expanded & Timelines]
-  G --> I[Synthesis & Personal]
-  G --> J[Audit & Methodology]
+  G --> H[Briefing]
+  G --> I[Expanded & Timelines]
+  G --> J[Synthesis & Personal]
+  G --> K[Audit & Methodology]
 ~~~
+
+### Responsibility boundaries
+
+| Component | Responsibility |
+|---|---|
+| Muse | Research, verify, analyse, and write Markdown only |
+| GitHub | Canonical content, review, and historical revisions |
+| GitHub Actions | Publish Markdown and generate the archive index |
+| AI Studio | Build the completely new frontend |
+| Frontend | Parse and display the content; never author or alter editorial facts |
 
 ## Repository structure
 
 ~~~text
 world-signal/
 ├── README.md
+├── agent.md
 ├── AGENTS.md
 ├── MUSE.md
 ├── AI_STUDIO_BRIEF.md
-├── config/source-registry.yml
+├── config/
+│   └── source-registry.yml
 ├── content/
 │   ├── README.md
-│   ├── editions/YYYY/MM/YYYY-MM-DD.md
-│   └── templates/daily-edition.template.md
+│   ├── editions/
+│   │   └── YYYY/MM/YYYY-MM-DD.md
+│   └── templates/
+│       └── daily-edition.template.md
 ├── docs/
 │   ├── ARCHITECTURE.md
 │   ├── EDITORIAL_STANDARDS.md
@@ -53,34 +71,57 @@ world-signal/
 │   ├── FRONTEND_CONTRACT.md
 │   └── OPERATIONS.md
 ├── public/
-│   ├── editions/                 # generated static Markdown copies
-│   └── data/editions-index.json  # generated archive index
-├── scripts/build-public-content.mjs
-├── .github/workflows/publish-editions.yml
-├── src/README.md                 # frontend implementation deferred
-└── legacy/v3-json-renderer/      # frozen previous implementation
+│   ├── editions/                 # generated Markdown copies
+│   └── data/
+│       └── editions-index.json   # generated archive index
+├── scripts/
+│   └── build-public-content.mjs
+├── .github/
+│   └── workflows/
+│       └── publish-editions.yml
+├── src/
+│   └── README.md                # frontend implementation deferred
+└── legacy/
+    └── v3-json-renderer/        # frozen previous implementation
 ~~~
 
-## Daily edition rule
+## Daily archive rules
 
-There is one canonical file per date, not separate morning, noon, and evening files.
+Canonical location:
 
-- Morning, midday, and evening runs update the same day's complete edition.
-- Muse replaces the full file with the latest cumulative version; it does not append duplicate fragments.
-- Git history preserves each update.
-- A new local calendar day creates a new file.
-- The canonical timezone is **America/Los_Angeles**. Every timestamp must include an explicit UTC offset or use UTC.
+`content/editions/YYYY/MM/YYYY-MM-DD.md`
 
-Canonical path: `content/editions/YYYY/MM/YYYY-MM-DD.md`
+- Exactly one canonical edition per project-local date.
+- Project timezone: **America/Los_Angeles**.
+- Morning, midday, and evening runs update the same complete file.
+- Muse replaces the current day's full cumulative edition; it does not append duplicates.
+- Git history preserves each intraday revision.
+- New dates create new files; historical editions are retained.
+- Stable signal IDs connect ongoing developments across dates.
 
-## Evidence and source quality
+## Trusted-source policy
 
-The core newsroom whitelist is maintained in `config/source-registry.yml`. Tier 1 is an internal editorial eligibility rule, not a claim that an outlet is infallible or free from bias.
+The initial approved newsroom registry is in `config/source-registry.yml`. It distinguishes global wire services, international newsrooms, specialist publications, and primary-source institutions.
 
-Primary documents, research papers, company announcements, and official datasets are useful evidence, but are classified separately from independent newsrooms. Syndicated copies of the same wire report count as one reporting origin.
+A Tier 1 label is an internal eligibility classification, not a guarantee of accuracy or neutrality. Important claims should be corroborated by genuinely independent reporting origins. A syndicated copy does not count as a second source.
 
-Read `MUSE.md` before producing an edition. Read `docs/CONTENT_SCHEMA.md` before changing the Markdown template. Read `AI_STUDIO_BRIEF.md` and `docs/FRONTEND_CONTRACT.md` before implementing the frontend.
+## Documents
 
-## Current status
+| File | Purpose |
+|---|---|
+| [agent.md](agent.md) | Primary operating manual for all AI agents |
+| [AGENTS.md](AGENTS.md) | Compatibility entry point |
+| [MUSE.md](MUSE.md) | Strict daily research and Markdown-production instructions |
+| [AI_STUDIO_BRIEF.md](AI_STUDIO_BRIEF.md) | Frontend rebuild brief for AI Studio |
+| [Architecture](docs/ARCHITECTURE.md) | System layers and data flow |
+| [Content Schema](docs/CONTENT_SCHEMA.md) | Markdown/YAML data contract |
+| [Editorial Standards](docs/EDITORIAL_STANDARDS.md) | Story selection and analysis rules |
+| [Source Policy](docs/SOURCE_POLICY.md) | Source quality and independence |
+| [Frontend Contract](docs/FRONTEND_CONTRACT.md) | Static data interface for the future UI |
+| [Operations](docs/OPERATIONS.md) | Daily updates and publishing process |
 
-This branch establishes the Markdown-first architecture and publishing contract. It intentionally does **not** implement the new frontend. The next frontend implementation must be a complete visual and code rebuild.
+## Current phase
+
+**Architecture and content protocol first. Frontend implementation later.**
+
+The active frontend has deliberately been removed from the repository root and preserved under `legacy/v3-json-renderer/`. The new frontend will be designed and implemented from scratch in a separate phase. No sample or fabricated news edition is included.
