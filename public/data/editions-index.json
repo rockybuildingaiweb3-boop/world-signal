@@ -1,6 +1,16 @@
 {
   "schema_version": 1,
-  "latest_edition": null,
-  "generated_at": "2026-11-23T15:27:01.468Z",
-  "editions": []
+  "latest_edition": "2026-11-23",
+  "generated_at": "2026-11-23T15:48:51.937Z",
+  "editions": [
+    {
+      "date": "2026-11-23",
+      "title": "WORLD SIGNAL — Daily Intelligence Briefing",
+      "path": "/editions/2026/11/2026-11-23.md",
+      "updated_at": "2026-11-23T07:41:00-08:00",
+      "status": "draft",
+      "language": "zh-CN",
+      "summary": "COP31 在安塔利亚无果而终，为 2009 年以来首次；美国—伊朗—海湾战争持续升级并冲击霍尔木兹海峡油运；美国中期选举后民主党众议院席位达 258 席；Anthropic 以 813 亿美元创纪录 IPO 上市；美股遭遇 2025 年 4 月以来最差一周，标普 500 进入技术性回调；美国 10 月 CPI 环比上涨 0.4%，美联储纪要显示 12 月几乎确定加息。"
+    }
+  ]
 }
