@@ -1,8 +1,17 @@
 {
   "schema_version": 1,
-  "latest_edition": "2026-11-23",
-  "generated_at": "2026-11-24T04:46:35.437Z",
+  "latest_edition": "2026-11-24",
+  "generated_at": "2026-11-24T14:57:14.346Z",
   "editions": [
+    {
+      "date": "2026-11-24",
+      "title": "WORLD SIGNAL — Daily Intelligence Briefing",
+      "path": "/editions/2026/11/2026-11-24.md",
+      "updated_at": "2026-11-24T06:56:39-08:00",
+      "status": "draft",
+      "language": "zh-CN",
+      "summary": "2026 年 11 月 24 日晨间版：黎曼猜想证明声称遭 Nielsen 论文质疑，状态调整为存在争议；美国商务部将 Megaspeed 列入实体清单，黄仁勋定于 12 月初在国会作证；亚太股市周二收盘大涨但美国股指期货回落，Anthropic 跌破发行价；美联储 12 月加息定价为确定；新增也门、尼日利亚与 GLM-5.4 三个信号。"
+    },
     {
       "date": "2026-11-23",
       "title": "WORLD SIGNAL — Daily Intelligence Briefing",
