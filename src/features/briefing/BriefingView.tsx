@@ -1,314 +1,563 @@
 import React from 'react';
-import { ArrowRight } from 'lucide-react';
-import type { ParsedEdition, ParsedSignal, SignalDomain } from '../../types/edition';
-import { SafeMarkdown } from '../../components/SafeMarkdown';
-import { SignalMetaLine } from '../../components/SignalMetaLine';
-import { formatDomainLabel, getConfidenceTextClass } from '../../lib/filtering/filterSignals';
+import {
+  ArrowRight,
+  AlertCircle,
+  BookOpen,
+  Compass,
+  RefreshCw,
+  ShieldCheck,
+} from 'lucide-react';
+import type {
+  ParsedEdition,
+  ParsedSignal,
+  SignalDomain,
+  UiLanguage,
+  ViewId,
+} from '../../types/edition';
+import { getUiStrings } from '../../lib/i18n/uiStrings';
+import {
+  formatCoverageWindow,
+  formatEditionDate,
+  formatPublicationTimestamp,
+} from '../../lib/dates/formatDates';
+import { domainAccentTextClass } from '../../lib/filtering/filterSignals';
+import { SignalMetaLine } from '../../components/editorial/SignalMetaLine';
+import { SafeMarkdown } from '../../components/editorial/SafeMarkdown';
 
 interface BriefingViewProps {
   edition: ParsedEdition;
-  filteredSignals: ParsedSignal[];
-  onInspectSignal: (signalId: string) => void;
+  lang: UiLanguage;
+  onOpenSignal: (signalId: string) => void;
+  onExploreDomain: (domain: SignalDomain) => void;
+  onSwitchView: (view: ViewId) => void;
+  onRefresh: () => void;
+  isRefreshing: boolean;
 }
+
+const DOMAINS: readonly SignalDomain[] = ['world', 'ai', 'economy'];
 
 export const BriefingView: React.FC<BriefingViewProps> = ({
   edition,
-  filteredSignals,
-  onInspectSignal,
+  lang,
+  onOpenSignal,
+  onExploreDomain,
+  onSwitchView,
+  onRefresh,
+  isRefreshing,
 }) => {
-  const { frontmatter, executiveBriefing, domainIntros, signals } = edition;
+  const t = getUiStrings(lang);
+  const [summaryExpanded, setSummaryExpanded] = React.useState(false);
 
-  const domainCounts: Record<SignalDomain, number> = {
-    world: signals.filter((s) => s.domain === 'world').length,
-    ai: signals.filter((s) => s.domain === 'ai').length,
-    economy: signals.filter((s) => s.domain === 'economy').length,
-  };
+  const summarySource =
+    edition.executiveBriefing.summaryText || edition.frontmatter.summary;
+  const isLongSummary = summarySource.length > 320;
 
-  const prioritizedSignals = [...filteredSignals].sort((a, b) => {
-    if (b.importance !== a.importance) return b.importance - a.importance;
-    return a.signal_id.localeCompare(b.signal_id);
-  });
+  const signalById = React.useMemo(() => {
+    const map = new Map<string, ParsedSignal>();
+    for (const sig of edition.signals) {
+      map.set(sig.signal_id, sig);
+    }
+    return map;
+  }, [edition.signals]);
+
+  // Preserve exact editorial selection order from Executive Briefing -> Top Signals.
+  // Never invent a custom re-ranking algorithm.
+  const orderedTopEntries = React.useMemo(() => {
+    const entries: Array<{ signal: ParsedSignal; editorialSummary: string }> = [];
+    const seen = new Set<string>();
+    for (const ref of edition.executiveBriefing.topSignalRefs) {
+      const sig = signalById.get(ref.signal_id);
+      if (sig && !seen.has(sig.signal_id)) {
+        seen.add(sig.signal_id);
+        entries.push({ signal: sig, editorialSummary: ref.summary });
+      }
+    }
+    if (entries.length === 0 && edition.signals.length > 0) {
+      // Fallback strictly to document order if Top Signals section is absent
+      for (const sig of edition.signals.slice(0, 4)) {
+        entries.push({ signal: sig, editorialSummary: sig.sections.whatHappened });
+      }
+    }
+    return entries;
+  }, [edition.executiveBriefing.topSignalRefs, edition.signals, signalById]);
+
+  const leadEntry = orderedTopEntries[0] ?? null;
+  const secondaryTopEntries = orderedTopEntries.slice(1);
+  const topIdSet = React.useMemo(
+    () => new Set(orderedTopEntries.map((e) => e.signal.signal_id)),
+    [orderedTopEntries]
+  );
+
+  const totalClaims = React.useMemo(
+    () => edition.signals.reduce((acc, s) => acc + s.claims.length, 0),
+    [edition.signals]
+  );
+
+  const domainSummaries = React.useMemo(() => {
+    return DOMAINS.map((domain) => {
+      const list = edition.signals.filter((s) => s.domain === domain);
+      const uniqueGroups = new Set<string>();
+      for (const s of list) {
+        for (const g of s.independentGroups) {
+          uniqueGroups.add(g.toLowerCase());
+        }
+      }
+      const remaining = list.filter((s) => !topIdSet.has(s.signal_id));
+      return {
+        domain,
+        total: list.length,
+        independentOrigins: uniqueGroups.size,
+        intro: edition.domainIntros[domain],
+        additionalSignals: remaining,
+      };
+    });
+  }, [edition.domainIntros, edition.signals, topIdSet]);
+
+  const syncLabel =
+    t.syncRun[edition.frontmatter.sync_run] ?? edition.frontmatter.sync_run;
+  const statusLabel =
+    t.editionStatus[edition.frontmatter.edition_status] ??
+    edition.frontmatter.edition_status;
+
+  const diagnosticCount =
+    edition.validation.errors.length + edition.validation.warnings.length;
 
   return (
-    <div className="space-y-10">
-      {/* Edition Dossier Masthead */}
-      <header className="pb-8 border-b border-stone-200 dark:border-stone-800 space-y-4">
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs uppercase tracking-widest text-[#57534E] dark:text-[#A8A29E] tabular-nums">
-          <span>Edition {frontmatter.edition_date}</span>
-          <span aria-hidden="true">·</span>
-          <span className="capitalize">Status: {frontmatter.edition_status}</span>
-          <span aria-hidden="true">·</span>
-          <span className="capitalize">Cycle: {frontmatter.sync_run}</span>
-          <span aria-hidden="true">·</span>
-          <span>Timezone: {frontmatter.edition_timezone}</span>
-          <span aria-hidden="true">·</span>
-          <span>Language: {frontmatter.content_language}</span>
-        </div>
-
-        <h1 className="font-display text-3xl sm:text-4xl lg:text-[42px] font-semibold tracking-tight text-[#1C1917] dark:text-[#EFECE6] leading-[1.14] headline-balance max-w-4xl">
-          {frontmatter.edition_title}
-        </h1>
-
-        {(frontmatter.summary || executiveBriefing.summaryText) && (
-          <p className="text-base sm:text-lg text-[#44403C] dark:text-[#D6D3D1] leading-relaxed max-w-3xl">
-            {executiveBriefing.summaryText || frontmatter.summary}
-          </p>
-        )}
-
-        <dl className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-3 text-xs text-[#57534E] dark:text-[#A8A29E] tabular-nums">
-          <div>
-            <dt className="uppercase tracking-wider font-medium">Updated Timestamp</dt>
-            <dd className="mt-0.5 font-mono-tabular text-[#1C1917] dark:text-[#EFECE6]">
-              {frontmatter.updated_at || 'Not specified'}
-            </dd>
-          </div>
-          <div>
-            <dt className="uppercase tracking-wider font-medium">Coverage Window</dt>
-            <dd className="mt-0.5 font-mono-tabular text-[#1C1917] dark:text-[#EFECE6]">
-              {frontmatter.coverage_window_start && frontmatter.coverage_window_end
-                ? `${frontmatter.coverage_window_start} → ${frontmatter.coverage_window_end}`
-                : 'Not specified'}
-            </dd>
-          </div>
-          <div>
-            <dt className="uppercase tracking-wider font-medium">Edition Source</dt>
-            <dd className="mt-0.5 font-mono-tabular text-[#1C1917] dark:text-[#EFECE6] truncate">
-              {edition.sourceLabel}
-            </dd>
-          </div>
-        </dl>
-      </header>
-
-      {/* Executive Briefing Top Signals */}
-      <section aria-labelledby="exec-briefing-heading" className="space-y-4">
-        <div className="flex items-baseline justify-between gap-4 border-b border-stone-200 dark:border-stone-800 pb-2">
-          <h2
-            id="exec-briefing-heading"
-            className="font-display text-2xl font-semibold text-[#1C1917] dark:text-[#EFECE6]"
-          >
-            Executive Briefing
-          </h2>
-          <span className="text-xs uppercase tracking-wider text-[#57534E] dark:text-[#A8A29E] tabular-nums">
-            {executiveBriefing.topSignalRefs.length} highlighted{' '}
-            {executiveBriefing.topSignalRefs.length === 1 ? 'signal' : 'signals'}
-          </span>
-        </div>
-
-        {executiveBriefing.topSignalRefs.length > 0 ? (
-          <ol className="divide-y divide-stone-200 dark:divide-stone-800 border border-stone-200 dark:border-stone-800 rounded-lg bg-[#F3EFE6]/50 dark:bg-[#191815]">
-            {executiveBriefing.topSignalRefs.map((ref, idx) => {
-              const matched = signals.find((s) => s.signal_id === ref.signal_id);
-              return (
-                <li
-                  key={ref.signal_id}
-                  className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-start justify-between gap-4"
-                >
-                  <div className="space-y-1.5 max-w-3xl">
-                    <div className="flex flex-wrap items-center gap-2 text-xs text-[#57534E] dark:text-[#A8A29E] tabular-nums">
-                      <span className="font-mono-tabular font-semibold text-[#9A3412] dark:text-[#FDBA74]">
-                        {String(idx + 1).padStart(2, '0')}.
-                      </span>
-                      <span className="font-mono-tabular text-[#1C1917] dark:text-[#EFECE6]">
-                        {ref.signal_id}
-                      </span>
-                      {matched && (
-                        <>
-                          <span aria-hidden="true">·</span>
-                          <span>{formatDomainLabel(matched.domain)}</span>
-                          <span aria-hidden="true">·</span>
-                          <span>Importance {matched.importance}/5</span>
-                          <span aria-hidden="true">·</span>
-                          <span className={`capitalize font-medium ${getConfidenceTextClass(matched.confidence.overall)}`}>
-                            {matched.confidence.overall} confidence
-                          </span>
-                        </>
-                      )}
-                    </div>
-                    {matched && (
-                      <h3 className="font-display text-lg font-medium text-[#1C1917] dark:text-[#EFECE6]">
-                        {matched.headline}
-                      </h3>
-                    )}
-                    <p className="text-sm text-[#44403C] dark:text-[#D6D3D1] leading-relaxed">
-                      {ref.summary}
-                    </p>
-                  </div>
-                  {matched && (
-                    <button
-                      type="button"
-                      onClick={() => onInspectSignal(ref.signal_id)}
-                      className="inline-flex items-center gap-1.5 min-h-[40px] px-3.5 py-2 text-xs font-medium text-[#1C1917] dark:text-[#EFECE6] border border-stone-300 dark:border-stone-700 rounded-md hover:bg-[#FBF9F5] dark:hover:bg-[#24221E] transition-colors whitespace-nowrap shrink-0 cursor-pointer"
-                    >
-                      Inspect signal
-                      <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
-                    </button>
-                  )}
-                </li>
-              );
-            })}
-          </ol>
-        ) : (
-          <SafeMarkdown
-            content={executiveBriefing.rawMarkdown}
-            onSelectSignal={onInspectSignal}
-          />
-        )}
-      </section>
-
-      {/* Three Domain Coverage Summary */}
-      <section aria-labelledby="domain-overview-heading" className="space-y-4">
-        <h2
-          id="domain-overview-heading"
-          className="font-display text-2xl font-semibold text-[#1C1917] dark:text-[#EFECE6] border-b border-stone-200 dark:border-stone-800 pb-2"
-        >
-          Domain Coverage
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {(['world', 'ai', 'economy'] as SignalDomain[]).map((domain) => (
-            <div
-              key={domain}
-              className="p-5 bg-[#F3EFE6]/50 dark:bg-[#191815] border border-stone-200 dark:border-stone-800 rounded-lg space-y-2"
-            >
-              <div className="flex items-baseline justify-between gap-2">
-                <h3 className="font-display text-lg font-semibold text-[#1C1917] dark:text-[#EFECE6]">
-                  {formatDomainLabel(domain)}
-                </h3>
-                <span className="font-mono-tabular text-xs text-[#57534E] dark:text-[#A8A29E]">
-                  {domainCounts[domain]} {domainCounts[domain] === 1 ? 'signal' : 'signals'}
-                </span>
-              </div>
-              {domainIntros[domain] ? (
-                <SafeMarkdown
-                  content={domainIntros[domain]}
-                  className="text-sm"
-                  onSelectSignal={onInspectSignal}
-                />
-              ) : (
-                <p className="text-sm text-[#57534E] dark:text-[#A8A29E]">
-                  {domainCounts[domain] === 0
-                    ? 'No qualifying developments recorded in this domain for this edition.'
-                    : 'Signals prioritized by editorial consequence and verified evidence.'}
-                </p>
+    <div className="space-y-12 pb-16">
+      {/* 1. Editorial Masthead Strip */}
+      <section className="border-b border-[var(--ws-border)] pb-6 pt-2">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div className="space-y-2">
+            <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono-tabular text-[12px] text-[var(--ws-ink-muted)]">
+              <span className="font-semibold text-[var(--ws-ink)]">
+                {formatEditionDate(edition.frontmatter.edition_date, lang)}
+              </span>
+              <span aria-hidden="true" className="opacity-45">
+                ·
+              </span>
+              <span>{syncLabel}</span>
+              <span aria-hidden="true" className="opacity-45">
+                ·
+              </span>
+              <span>{statusLabel}</span>
+              {edition.isLocalPreview && (
+                <>
+                  <span aria-hidden="true" className="opacity-45">
+                    ·
+                  </span>
+                  <span className="font-semibold text-[var(--ws-warn)]">
+                    {t.archive.localPreviewActive}
+                  </span>
+                </>
               )}
             </div>
-          ))}
+            <h1 className="font-display text-2xl sm:text-3xl font-semibold tracking-[-0.02em] text-[var(--ws-ink)] headline-balance">
+              {edition.frontmatter.edition_title}
+            </h1>
+            <p className="text-xs font-mono-tabular text-[var(--ws-ink-muted)]">
+              {t.masthead.updatedLabel}:{' '}
+              <span className="text-[var(--ws-ink-secondary)]">
+                {formatPublicationTimestamp(edition.frontmatter.updated_at, lang)}
+              </span>
+              {edition.frontmatter.coverage_window_start && (
+                <>
+                  {' '}
+                  <span aria-hidden="true" className="mx-1.5 opacity-45">
+                    |
+                  </span>{' '}
+                  {t.masthead.coverageWindowLabel}:{' '}
+                  <span className="text-[var(--ws-ink-secondary)]">
+                    {formatCoverageWindow(
+                      edition.frontmatter.coverage_window_start,
+                      edition.frontmatter.coverage_window_end,
+                      lang
+                    )}
+                  </span>
+                </>
+              )}
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-mono-tabular text-[var(--ws-ink-muted)]">
+            <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+              <span className="font-semibold text-[var(--ws-ink)]">
+                {t.masthead.signalsCount(edition.signals.length)}
+              </span>
+              <span aria-hidden="true" className="opacity-40">
+                ·
+              </span>
+              <span>
+                {t.masthead.independentOriginsCount(
+                  edition.independenceSummary.independentOriginCount
+                )}
+              </span>
+              <span aria-hidden="true" className="opacity-40">
+                ·
+              </span>
+              <span>{t.masthead.claimsCount(totalClaims)}</span>
+              <span aria-hidden="true" className="opacity-40">
+                ·
+              </span>
+              <span>
+                {t.masthead.recordsCount(edition.independenceSummary.totalRecords)}
+              </span>
+            </div>
+
+            {!edition.isLocalPreview && (
+              <button
+                type="button"
+                onClick={onRefresh}
+                disabled={isRefreshing}
+                className="inline-flex items-center gap-1.5 rounded border border-[var(--ws-border)] bg-[var(--ws-surface)] px-2.5 py-1 text-[11.5px] font-medium text-[var(--ws-ink)] hover:border-[var(--ws-border-strong)] disabled:opacity-50 cursor-pointer"
+              >
+                <RefreshCw className={`h-3 w-3 ${isRefreshing ? 'animate-spin' : ''}`} />
+                {isRefreshing ? t.archive.refreshing : t.archive.refreshEdition}
+              </button>
+            )}
+
+            {diagnosticCount > 0 && (
+              <button
+                type="button"
+                onClick={() => onSwitchView('audit')}
+                className="inline-flex items-center gap-1 text-[11.5px] text-[var(--ws-warn)] underline decoration-dotted underline-offset-2 hover:opacity-80 cursor-pointer"
+              >
+                <AlertCircle className="h-3 w-3" />
+                {t.masthead.diagnosticsLink(
+                  edition.validation.errors.length,
+                  edition.validation.warnings.length
+                )}
+              </button>
+            )}
+          </div>
         </div>
       </section>
 
-      {/* Prioritized Signals List */}
-      <section aria-labelledby="signals-briefing-heading" className="space-y-4">
-        <div className="flex items-baseline justify-between gap-4 border-b border-stone-200 dark:border-stone-800 pb-2">
-          <h2
-            id="signals-briefing-heading"
-            className="font-display text-2xl font-semibold text-[#1C1917] dark:text-[#EFECE6]"
-          >
-            Signals Overview
-          </h2>
-          <span className="text-xs text-[#57534E] dark:text-[#A8A29E] tabular-nums">
-            Ordered by importance (1–5) · Confidence assessed separately
-          </span>
-        </div>
+      {/* 2. Lead Development + Executive Summary & Limitations */}
+      <section className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-start">
+        {/* Primary Column: Lead Development */}
+        {leadEntry && (
+          <article className="lg:col-span-7 ws-card p-6 sm:p-8 space-y-5">
+            <div className="flex items-center justify-between gap-3">
+              <span className="font-mono-tabular text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--ws-ink-muted)]">
+                {t.briefing.leadKicker}
+              </span>
+              <span className="font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                {leadEntry.signal.signal_id}
+              </span>
+            </div>
 
-        {prioritizedSignals.length === 0 ? (
-          <div className="p-8 text-center border border-stone-200 dark:border-stone-800 rounded-lg bg-[#F3EFE6]/30 dark:bg-[#191815]">
-            <p className="text-sm text-[#57534E] dark:text-[#A8A29E]">
-              No signals match the active filter criteria.
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-5">
-            {prioritizedSignals.map((sig) => (
-              <article
-                key={sig.signal_id}
-                className="p-6 bg-[#FBF9F5] dark:bg-[#191815] border border-stone-200 dark:border-stone-800 rounded-lg space-y-4"
+            <div className="space-y-3">
+              <SignalMetaLine signal={leadEntry.signal} lang={lang} showClaims />
+              <h2 className="font-display text-2xl sm:text-[2rem] font-semibold leading-[1.2] tracking-[-0.02em] text-[var(--ws-ink)] headline-balance">
+                <button
+                  type="button"
+                  onClick={() => onOpenSignal(leadEntry.signal.signal_id)}
+                  className="text-left hover:underline decoration-[var(--ws-border-strong)] underline-offset-4 cursor-pointer"
+                >
+                  {leadEntry.signal.headline}
+                </button>
+              </h2>
+            </div>
+
+            <div className="border-t border-[var(--ws-border)] pt-4">
+              <SafeMarkdown
+                content={leadEntry.editorialSummary}
+                onSelectSignal={onOpenSignal}
+              />
+            </div>
+
+            {leadEntry.signal.confidence.rationale && (
+              <p className="text-xs leading-relaxed text-[var(--ws-ink-muted)]">
+                <span className="font-semibold text-[var(--ws-ink-secondary)]">
+                  {t.expanded.confidenceRationaleTitle}:{' '}
+                </span>
+                {leadEntry.signal.confidence.rationale}
+              </p>
+            )}
+
+            <div className="pt-1">
+              <button
+                type="button"
+                onClick={() => onOpenSignal(leadEntry.signal.signal_id)}
+                className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--ws-ink)] hover:text-[var(--ws-world)] transition-colors cursor-pointer"
               >
-                <div className="space-y-2">
-                  <SignalMetaLine signal={sig} />
-                  <h3 className="font-display text-xl sm:text-2xl font-semibold text-[#1C1917] dark:text-[#EFECE6] headline-balance">
-                    {sig.headline}
+                <span>{t.briefing.readDossier}</span>
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
+          </article>
+        )}
+
+        {/* Secondary Column: Executive Summary & Editorial Limitations */}
+        <aside className={`${leadEntry ? 'lg:col-span-5' : 'lg:col-span-12'} space-y-5`}>
+          <div className="ws-card-subtle p-6 space-y-3">
+            <h2 className="font-mono-tabular text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--ws-ink-muted)]">
+              {t.briefing.executiveSummaryTitle}
+            </h2>
+            <div className={!summaryExpanded && isLongSummary ? 'line-clamp-6' : ''}>
+              <SafeMarkdown
+                content={summarySource}
+                compact
+                onSelectSignal={onOpenSignal}
+              />
+            </div>
+            {isLongSummary && (
+              <button
+                type="button"
+                onClick={() => setSummaryExpanded((prev) => !prev)}
+                className="font-mono-tabular text-xs font-medium text-[var(--ws-world)] hover:underline underline-offset-2 cursor-pointer"
+              >
+                {summaryExpanded
+                  ? lang === 'zh-CN'
+                    ? '收起完整提要'
+                    : 'Show less'
+                  : lang === 'zh-CN'
+                    ? '展开完整提要'
+                    : 'Read full summary'}
+              </button>
+            )}
+          </div>
+
+          {edition.executiveBriefing.caveats.length > 0 && (
+            <div className="rounded-md border border-[var(--ws-warn-border)] bg-[var(--ws-warn-soft)] p-5 space-y-2.5">
+              <h3 className="font-mono-tabular text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--ws-warn)]">
+                {t.briefing.editorialLimitationsTitle}
+              </h3>
+              <div className="space-y-2">
+                {edition.executiveBriefing.caveats.map((caveat, idx) => (
+                  <SafeMarkdown
+                    key={idx}
+                    content={caveat}
+                    compact
+                    onSelectSignal={onOpenSignal}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </aside>
+      </section>
+
+      {/* 3. Editorially Selected Top Signals (Remaining items in exact edition order) */}
+      {secondaryTopEntries.length > 0 && (
+        <section className="space-y-5">
+          <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[var(--ws-border)] pb-3">
+            <h2 className="font-display text-xl font-semibold text-[var(--ws-ink)]">
+              {t.briefing.topSignalsTitle}
+            </h2>
+            <span className="font-mono-tabular text-xs text-[var(--ws-ink-muted)]">
+              {t.briefing.topSignalsNote}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {secondaryTopEntries.map(({ signal, editorialSummary }, idx) => (
+              <article
+                key={signal.signal_id}
+                className="ws-card p-5 sm:p-6 flex flex-col justify-between gap-4 hover:border-[var(--ws-border-strong)] transition-colors"
+              >
+                <div className="space-y-2.5">
+                  <div className="flex items-center justify-between gap-2 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                    <span>0{idx + 2}</span>
+                    <span>{signal.signal_id}</span>
+                  </div>
+                  <SignalMetaLine signal={signal} lang={lang} compact />
+                  <h3 className="font-display text-lg font-semibold leading-snug text-[var(--ws-ink)]">
+                    <button
+                      type="button"
+                      onClick={() => onOpenSignal(signal.signal_id)}
+                      className="text-left hover:underline decoration-[var(--ws-border-strong)] underline-offset-4 cursor-pointer"
+                    >
+                      {signal.headline}
+                    </button>
                   </h3>
+                  <SafeMarkdown
+                    content={editorialSummary}
+                    compact
+                    onSelectSignal={onOpenSignal}
+                  />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-3 border-y border-stone-200 dark:border-stone-800 text-sm">
-                  <div>
-                    <span className="block text-xs uppercase tracking-wider text-[#57534E] dark:text-[#A8A29E] font-medium">
-                      Importance Assessment
-                    </span>
-                    <p className="mt-1 font-medium text-[#1C1917] dark:text-[#EFECE6] tabular-nums">
-                      {sig.importance} / 5
-                      {sig.event.geography.length > 0 && (
-                        <span className="font-normal text-[#57534E] dark:text-[#A8A29E]">
-                          {' '}
-                          · Geography: {sig.event.geography.join(', ')}
-                        </span>
-                      )}
-                    </p>
-                  </div>
-                  <div>
-                    <span className="block text-xs uppercase tracking-wider text-[#57534E] dark:text-[#A8A29E] font-medium">
-                      Confidence Rationale
-                    </span>
-                    <p className="mt-1 text-[#44403C] dark:text-[#D6D3D1]">
-                      <span className={`font-semibold capitalize ${getConfidenceTextClass(sig.confidence.overall)}`}>
-                        {sig.confidence.overall}:
-                      </span>{' '}
-                      {sig.confidence.rationale || 'No rationale recorded.'}
-                    </p>
-                  </div>
-                </div>
-
-                {sig.sections.whatHappened && (
-                  <div className="space-y-1">
-                    <h4 className="text-xs uppercase tracking-wider font-semibold text-[#57534E] dark:text-[#A8A29E]">
-                      What Happened
-                    </h4>
-                    <SafeMarkdown
-                      content={sig.sections.whatHappened}
-                      onSelectSignal={onInspectSignal}
-                    />
-                  </div>
-                )}
-
-                {sig.sections.whyItMatters && (
-                  <div className="space-y-1">
-                    <h4 className="text-xs uppercase tracking-wider font-semibold text-[#57534E] dark:text-[#A8A29E]">
-                      Why It Matters
-                    </h4>
-                    <SafeMarkdown
-                      content={sig.sections.whyItMatters}
-                      onSelectSignal={onInspectSignal}
-                    />
-                  </div>
-                )}
-
-                <div className="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-stone-200/70 dark:border-stone-800/70 text-xs text-[#57534E] dark:text-[#A8A29E] tabular-nums">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span>{sig.claims.length} tracked {sig.claims.length === 1 ? 'claim' : 'claims'}</span>
-                    <span aria-hidden="true">·</span>
-                    <span>
-                      {sig.sources.length} source {sig.sources.length === 1 ? 'record' : 'records'} ({sig.independentOriginCount} independent)
-                    </span>
-                    {sig.tags.length > 0 && (
-                      <>
-                        <span aria-hidden="true">·</span>
-                        <span>Tags: {sig.tags.join(', ')}</span>
-                      </>
-                    )}
-                  </div>
+                <div className="pt-1 border-t border-[var(--ws-border)] flex items-center justify-between text-xs">
+                  <span className="font-mono-tabular text-[var(--ws-ink-muted)]">
+                    {t.metaLine.claims(signal.claims.length)}
+                  </span>
                   <button
                     type="button"
-                    onClick={() => onInspectSignal(sig.signal_id)}
-                    className="inline-flex items-center gap-1.5 min-h-[40px] px-4 py-2 text-xs font-medium bg-[#1C1917] dark:bg-[#EFECE6] text-[#FBF9F5] dark:text-[#121110] rounded-md hover:opacity-90 transition-opacity whitespace-nowrap shrink-0 cursor-pointer"
+                    onClick={() => onOpenSignal(signal.signal_id)}
+                    className="inline-flex items-center gap-1.5 font-semibold text-[var(--ws-ink)] hover:text-[var(--ws-world)] cursor-pointer"
                   >
-                    Open full dossier & timeline
-                    <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
+                    {t.briefing.readDossier}
+                    <ArrowRight className="h-3.5 w-3.5" />
                   </button>
                 </div>
               </article>
             ))}
           </div>
-        )}
+        </section>
+      )}
+
+      {/* 4. Three-Domain Overview */}
+      <section className="space-y-5">
+        <div className="border-b border-[var(--ws-border)] pb-3">
+          <h2 className="font-display text-xl font-semibold text-[var(--ws-ink)]">
+            {t.briefing.domainsOverviewTitle}
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          {domainSummaries.map((item) => (
+            <div
+              key={item.domain}
+              className="ws-card p-5 flex flex-col justify-between gap-4"
+            >
+              <div className="space-y-2.5">
+                <div className="flex items-baseline justify-between gap-2">
+                  <h3
+                    className={`font-display text-lg font-semibold ${domainAccentTextClass(
+                      item.domain
+                    )}`}
+                  >
+                    {t.domains[item.domain]}
+                  </h3>
+                  <span className="font-mono-tabular text-xs font-semibold text-[var(--ws-ink)]">
+                    {t.masthead.signalsCount(item.total)}
+                  </span>
+                </div>
+                <div className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
+                  {t.masthead.independentOriginsCount(item.independentOrigins)}
+                </div>
+                {item.intro && (
+                  <p className="text-xs leading-relaxed text-[var(--ws-ink-secondary)]">
+                    {item.intro}
+                  </p>
+                )}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => onExploreDomain(item.domain)}
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--ws-ink)] hover:text-[var(--ws-world)] pt-2 border-t border-[var(--ws-border)] cursor-pointer"
+              >
+                <span>{t.briefing.exploreDomain}</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 5. Compact Secondary Index of Additional Signals (No Full Dossier Repetition) */}
+      <section className="space-y-5">
+        <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[var(--ws-border)] pb-3">
+          <h2 className="font-display text-xl font-semibold text-[var(--ws-ink)]">
+            {t.briefing.additionalSignalsTitle}
+          </h2>
+          <span className="text-xs text-[var(--ws-ink-muted)]">
+            {t.briefing.additionalSignalsSubtitle}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          {domainSummaries.map((group) => (
+            <div key={group.domain} className="space-y-3">
+              <div className="flex items-center justify-between border-b border-[var(--ws-border)] pb-2">
+                <h3
+                  className={`font-mono-tabular text-xs font-semibold uppercase tracking-wider ${domainAccentTextClass(
+                    group.domain
+                  )}`}
+                >
+                  {t.domains[group.domain]}
+                </h3>
+                <span className="font-mono-tabular text-xs text-[var(--ws-ink-muted)]">
+                  {group.additionalSignals.length}
+                </span>
+              </div>
+
+              <ul className="divide-y divide-[var(--ws-border)]">
+                {group.additionalSignals.map((sig) => (
+                  <li key={sig.signal_id} className="py-3 first:pt-1">
+                    <button
+                      type="button"
+                      onClick={() => onOpenSignal(sig.signal_id)}
+                      className="group w-full text-left space-y-1.5 cursor-pointer"
+                    >
+                      <div className="text-sm font-medium leading-snug text-[var(--ws-ink)] group-hover:text-[var(--ws-world)] transition-colors">
+                        {sig.headline}
+                      </div>
+                      <SignalMetaLine signal={sig} lang={lang} compact />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 6. Editorial Reading Path */}
+      <section className="space-y-4 border-t border-[var(--ws-border)] pt-8">
+        <div>
+          <h2 className="font-display text-lg font-semibold text-[var(--ws-ink)]">
+            {t.briefing.readingPathTitle}
+          </h2>
+          <p className="mt-1 text-xs text-[var(--ws-ink-muted)]">
+            {t.briefing.readingPathSubtitle}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <button
+            type="button"
+            onClick={() => onSwitchView('expanded')}
+            className="ws-card p-5 text-left space-y-2 hover:border-[var(--ws-border-strong)] transition-colors cursor-pointer group"
+          >
+            <div className="flex items-center justify-between">
+              <BookOpen className="h-4 w-4 text-[var(--ws-ink-muted)]" />
+              <ArrowRight className="h-4 w-4 text-[var(--ws-ink-muted)] group-hover:text-[var(--ws-ink)] transition-colors" />
+            </div>
+            <div className="font-display text-base font-semibold text-[var(--ws-ink)]">
+              {t.nav.expanded}
+            </div>
+            <p className="text-xs leading-relaxed text-[var(--ws-ink-muted)]">
+              {t.briefing.openExpandedDesc}
+            </p>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onSwitchView('synthesis')}
+            className="ws-card p-5 text-left space-y-2 hover:border-[var(--ws-border-strong)] transition-colors cursor-pointer group"
+          >
+            <div className="flex items-center justify-between">
+              <Compass className="h-4 w-4 text-[var(--ws-ink-muted)]" />
+              <ArrowRight className="h-4 w-4 text-[var(--ws-ink-muted)] group-hover:text-[var(--ws-ink)] transition-colors" />
+            </div>
+            <div className="font-display text-base font-semibold text-[var(--ws-ink)]">
+              {t.nav.synthesis}
+            </div>
+            <p className="text-xs leading-relaxed text-[var(--ws-ink-muted)]">
+              {t.briefing.openSynthesisDesc}
+            </p>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onSwitchView('audit')}
+            className="ws-card p-5 text-left space-y-2 hover:border-[var(--ws-border-strong)] transition-colors cursor-pointer group"
+          >
+            <div className="flex items-center justify-between">
+              <ShieldCheck className="h-4 w-4 text-[var(--ws-ink-muted)]" />
+              <ArrowRight className="h-4 w-4 text-[var(--ws-ink-muted)] group-hover:text-[var(--ws-ink)] transition-colors" />
+            </div>
+            <div className="font-display text-base font-semibold text-[var(--ws-ink)]">
+              {t.nav.audit}
+            </div>
+            <p className="text-xs leading-relaxed text-[var(--ws-ink-muted)]">
+              {t.briefing.openAuditDesc}
+            </p>
+          </button>
+        </div>
       </section>
     </div>
   );

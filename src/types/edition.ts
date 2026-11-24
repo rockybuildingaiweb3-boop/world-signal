@@ -1,4 +1,5 @@
 export type ViewId = 'briefing' | 'expanded' | 'synthesis' | 'audit';
+export type UiLanguage = 'zh-CN' | 'en';
 
 export type EditionStatus = 'draft' | 'reviewed' | 'published';
 export type SyncRun = 'morning' | 'midday' | 'evening' | 'manual';
@@ -27,7 +28,8 @@ export type SourceClass =
   | 'tier_1_newsroom'
   | 'specialist_publication'
   | 'primary_source'
-  | 'research_paper';
+  | 'research_paper'
+  | 'unknown';
 
 export type SourceRelationship =
   | 'original_reporting'
@@ -35,7 +37,21 @@ export type SourceRelationship =
   | 'official_statement'
   | 'company_announcement'
   | 'research_artifact'
-  | 'secondary_analysis';
+  | 'secondary_analysis'
+  | 'unknown';
+
+export type IndependenceExclusionReason =
+  | 'flagged_non_independent'
+  | 'missing_independence_group'
+  | 'primary_source'
+  | 'research_paper'
+  | 'unknown_source_class'
+  | 'syndicated'
+  | 'official_statement'
+  | 'company_announcement'
+  | 'research_artifact'
+  | 'secondary_analysis'
+  | 'unknown_relationship';
 
 export interface EditionIndexEntry {
   date: string;
@@ -86,10 +102,14 @@ export interface SignalSource {
   published_at: string;
   accessed_at: string;
   source_class: SourceClass;
+  rawSourceClass?: string;
   registry_id: string;
   independence_group: string;
   relationship: SourceRelationship;
+  rawRelationship?: string;
   count_as_independent: boolean;
+  qualifiesAsIndependent: boolean;
+  exclusionReason?: IndependenceExclusionReason;
   supports_claim_ids: string[];
 }
 
@@ -105,6 +125,12 @@ export interface ScenarioItem {
   body: string;
 }
 
+export interface HorizonImpact {
+  horizon: 'immediate' | 'near_term' | 'medium_term' | 'structural';
+  label: string;
+  text: string;
+}
+
 export interface SignalNarrativeSections {
   whatHappened: string;
   verifiedFacts: string;
@@ -113,6 +139,7 @@ export interface SignalNarrativeSections {
   whyItMatters: string;
   sourcePerspectives: string;
   analysis: string;
+  horizonImpacts: HorizonImpact[];
   uncertainties: string;
   scenarios: string;
   scenarioItems: ScenarioItem[];
@@ -127,16 +154,35 @@ export interface IndependentOriginGroup {
   recordCount: number;
   signalIds: string[];
   sourceClasses: SourceClass[];
+  relationships: SourceRelationship[];
+}
+
+export interface OriginGroupAuditRecord {
+  group: string;
+  isUnassignedGroup: boolean;
+  qualifiesAny: boolean;
+  qualifyingRecordCount: number;
+  excludedRecordCount: number;
+  totalRecordCount: number;
+  outlets: string[];
+  signalIds: string[];
+  sourceClasses: SourceClass[];
+  relationships: SourceRelationship[];
+  exclusionReasons: IndependenceExclusionReason[];
 }
 
 export interface SourceIndependenceMetrics {
   totalRecords: number;
   independentOriginCount: number;
   independentGroups: IndependentOriginGroup[];
+  allOriginGroups: OriginGroupAuditRecord[];
+  qualifyingRecords: number;
+  excludedRecords: number;
   tier1Records: number;
   specialistRecords: number;
   primarySourceRecords: number;
   researchPaperRecords: number;
+  unknownClassRecords: number;
   syndicatedRecords: number;
   unregisteredRecords: number;
 }

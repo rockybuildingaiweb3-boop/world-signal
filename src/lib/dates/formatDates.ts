@@ -1,4 +1,10 @@
+import type { UiLanguage } from '../../types/edition';
+
 const PROJECT_TIMEZONE = 'America/Los_Angeles';
+
+function toIntlLocale(lang: UiLanguage): string {
+  return lang === 'zh-CN' ? 'zh-CN' : 'en-US';
+}
 
 /**
  * Formats an ISO 8601 timestamp into the canonical America/Los_Angeles publication timezone.
@@ -6,14 +12,15 @@ const PROJECT_TIMEZONE = 'America/Los_Angeles';
  */
 export function formatPublicationTimestamp(
   isoString: string | undefined | null,
+  lang: UiLanguage = 'en',
   timeZone: string = PROJECT_TIMEZONE
 ): string {
-  if (!isoString || !isoString.trim()) return 'Not specified';
+  if (!isoString || !isoString.trim()) return lang === 'zh-CN' ? '未注明' : 'Not specified';
   const date = new Date(isoString);
   if (Number.isNaN(date.getTime())) return isoString;
 
   try {
-    const formatter = new Intl.DateTimeFormat('en-US', {
+    const formatter = new Intl.DateTimeFormat(toIntlLocale(lang), {
       timeZone,
       year: 'numeric',
       month: 'short',
@@ -30,10 +37,11 @@ export function formatPublicationTimestamp(
 }
 
 /**
- * Formats a compact time-only or date+time string for dense tables and archive rows.
+ * Formats a compact date+time string for dense tables, dossiers, and archive rows.
  */
 export function formatCompactTimestamp(
   isoString: string | undefined | null,
+  lang: UiLanguage = 'en',
   timeZone: string = PROJECT_TIMEZONE
 ): string {
   if (!isoString || !isoString.trim()) return '—';
@@ -41,7 +49,7 @@ export function formatCompactTimestamp(
   if (Number.isNaN(date.getTime())) return isoString;
 
   try {
-    const formatter = new Intl.DateTimeFormat('en-US', {
+    const formatter = new Intl.DateTimeFormat(toIntlLocale(lang), {
       timeZone,
       month: 'short',
       day: '2-digit',
@@ -59,14 +67,17 @@ export function formatCompactTimestamp(
 /**
  * Formats an editorial calendar date (YYYY-MM-DD) without timezone shifting.
  */
-export function formatEditionDate(dateStr: string | undefined | null): string {
+export function formatEditionDate(
+  dateStr: string | undefined | null,
+  lang: UiLanguage = 'en'
+): string {
   if (!dateStr || !/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
-    return dateStr || 'Unknown Date';
+    return dateStr || (lang === 'zh-CN' ? '未知日期' : 'Unknown Date');
   }
   const [year, month, day] = dateStr.split('-').map(Number);
   const utcDate = new Date(Date.UTC(year, month - 1, day));
   try {
-    return new Intl.DateTimeFormat('en-US', {
+    return new Intl.DateTimeFormat(toIntlLocale(lang), {
       timeZone: 'UTC',
       weekday: 'long',
       year: 'numeric',
@@ -81,14 +92,18 @@ export function formatEditionDate(dateStr: string | undefined | null): string {
 /**
  * Formats an event date range cleanly, keeping event occurrence strictly separate from publication timestamps.
  */
-export function formatEventDateRange(startDate?: string, endDate?: string): string {
+export function formatEventDateRange(
+  startDate?: string,
+  endDate?: string,
+  lang: UiLanguage = 'en'
+): string {
   const start = startDate?.trim();
   const end = endDate?.trim();
-  if (!start && !end) return 'Not specified';
+  if (!start && !end) return lang === 'zh-CN' ? '未注明' : 'Not specified';
   if (start && end && end !== start) {
-    return `${start} to ${end}`;
+    return `${start} – ${end}`;
   }
-  return start || end || 'Not specified';
+  return start || end || (lang === 'zh-CN' ? '未注明' : 'Not specified');
 }
 
 /**
@@ -97,11 +112,12 @@ export function formatEventDateRange(startDate?: string, endDate?: string): stri
 export function formatCoverageWindow(
   startIso?: string,
   endIso?: string,
+  lang: UiLanguage = 'en',
   timeZone: string = PROJECT_TIMEZONE
 ): string {
-  if (!startIso && !endIso) return 'Not specified';
+  if (!startIso && !endIso) return lang === 'zh-CN' ? '未注明' : 'Not specified';
   if (startIso && endIso) {
-    return `${formatCompactTimestamp(startIso, timeZone)} → ${formatCompactTimestamp(endIso, timeZone)}`;
+    return `${formatCompactTimestamp(startIso, lang, timeZone)} → ${formatCompactTimestamp(endIso, lang, timeZone)}`;
   }
-  return formatCompactTimestamp(startIso || endIso, timeZone);
+  return formatCompactTimestamp(startIso || endIso, lang, timeZone);
 }
