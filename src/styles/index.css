@@ -3,19 +3,64 @@
 
 @layer base {
   :root {
-    --font-display: "Fraunces", Georgia, serif;
-    --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
-    --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+    /* Typography — Latin + CJK Editorial Pairing */
+    --font-display: "Fraunces", "Noto Serif SC", "Songti SC", Georgia, serif;
+    --font-sans: "Plus Jakarta Sans", "Noto Sans SC", "PingFang SC", system-ui, -apple-system, sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    /* Canvas & Surface Tokens (Light-First Archival Paper) */
+    --ws-canvas: #f8f7f4;
+    --ws-surface: #ffffff;
+    --ws-surface-subtle: #f1efe9;
+    --ws-border: #e5e2da;
+    --ws-border-strong: #cfc9bd;
+
+    /* Ink Tokens */
+    --ws-ink: #141413;
+    --ws-ink-secondary: #3f3d39;
+    --ws-ink-muted: #68655e;
+
+    /* Restrained Domain Accents */
+    --ws-world: #1d4ed8;
+    --ws-ai: #5b21b6;
+    --ws-economy: #15803d;
+  }
+
+  .dark {
+    --ws-canvas: #111110;
+    --ws-surface: #181816;
+    --ws-surface-subtle: #201f1d;
+    --ws-border: #2a2926;
+    --ws-border-strong: #3d3b37;
+
+    --ws-ink: #ededea;
+    --ws-ink-secondary: #c9c7c0;
+    --ws-ink-muted: #918e86;
+
+    --ws-world: #93c5fd;
+    --ws-ai: #c4b5fd;
+    --ws-economy: #86efac;
   }
 
   html {
     font-family: var(--font-sans);
+    background-color: var(--ws-canvas);
+    color: var(--ws-ink);
     scroll-behavior: smooth;
+    text-rendering: optimizeLegibility;
   }
 
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
     }
   }
 }
@@ -35,4 +80,23 @@
 
 .headline-balance {
   text-wrap: balance;
+}
+
+/* Custom subtle scrollbars for split-pane signal explorer */
+.ws-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.ws-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.ws-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(104, 101, 94, 0.25);
+  border-radius: 3px;
+}
+
+.dark .ws-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(145, 142, 134, 0.28);
 }

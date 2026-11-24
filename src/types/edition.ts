@@ -93,18 +93,52 @@ export interface SignalSource {
   supports_claim_ids: string[];
 }
 
+export interface TimelineEntry {
+  dateLabel: string | null;
+  text: string;
+}
+
+export interface ScenarioItem {
+  kind: 'base' | 'downside' | 'upside' | 'other';
+  label: string;
+  condition?: string;
+  body: string;
+}
+
 export interface SignalNarrativeSections {
   whatHappened: string;
   verifiedFacts: string;
   timeline: string;
+  timelineEntries: TimelineEntry[];
   whyItMatters: string;
   sourcePerspectives: string;
   analysis: string;
   uncertainties: string;
   scenarios: string;
+  scenarioItems: ScenarioItem[];
   personalRelevance?: string;
   whatToWatch: string;
   extraSections: Array<{ heading: string; content: string }>;
+}
+
+export interface IndependentOriginGroup {
+  group: string;
+  outlets: string[];
+  recordCount: number;
+  signalIds: string[];
+  sourceClasses: SourceClass[];
+}
+
+export interface SourceIndependenceMetrics {
+  totalRecords: number;
+  independentOriginCount: number;
+  independentGroups: IndependentOriginGroup[];
+  tier1Records: number;
+  specialistRecords: number;
+  primarySourceRecords: number;
+  researchPaperRecords: number;
+  syndicatedRecords: number;
+  unregisteredRecords: number;
 }
 
 export interface ParsedSignal {
@@ -130,15 +164,29 @@ export interface ParsedSignal {
   related_signal_ids: string[];
   claims: SignalClaim[];
   sources: SignalSource[];
+  independence: SourceIndependenceMetrics;
   independentOriginCount: number;
   independentGroups: string[];
   sections: SignalNarrativeSections;
   rawNarrative: string;
+  orderIndex: number;
 }
 
 export interface TopSignalRef {
   signal_id: string;
   summary: string;
+}
+
+export interface SynthesisThread {
+  title: string;
+  linkedSignalIds: string[];
+  content: string;
+  isUnestablished: boolean;
+}
+
+export interface PersonalSection {
+  title: string;
+  content: string;
 }
 
 export interface WatchlistRow {
@@ -167,13 +215,23 @@ export interface ParsedEdition {
   frontmatter: EditionFrontmatter;
   executiveBriefing: {
     summaryText: string;
+    caveats: string[];
     topSignalRefs: TopSignalRef[];
     rawMarkdown: string;
   };
   domainIntros: Record<SignalDomain, string>;
   signals: ParsedSignal[];
-  crossDomainSynthesis: string;
-  personalImplications: string;
+  independenceSummary: SourceIndependenceMetrics;
+  crossDomainSynthesis: {
+    intro: string;
+    threads: SynthesisThread[];
+    rawMarkdown: string;
+  };
+  personalImplications: {
+    disclaimer: string;
+    sections: PersonalSection[];
+    rawMarkdown: string;
+  };
   watchlist: {
     rows: WatchlistRow[];
     rawMarkdown: string;
@@ -194,6 +252,7 @@ export interface SignalFilters {
   minImportance: number;
   confidence: ConfidenceLevel | 'all';
   status: SignalStatus | 'all';
+  topic: string;
   tag: string;
   sourceClass: SourceClass | 'all';
 }

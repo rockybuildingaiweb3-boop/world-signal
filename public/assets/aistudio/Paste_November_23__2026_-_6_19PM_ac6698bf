@@ -1,0 +1,1195 @@
+# WORLD SIGNAL — Complete Frontend Rebuild
+## Master Product Design & Engineering Brief
+
+You are acting as a Principal Product Designer, Staff Frontend Architect, and Senior Frontend Engineer.
+
+Your mission is to design and build an entirely new, production-quality frontend for **WORLD SIGNAL**.
+
+This is a complete product rebuild, not a visual refresh.
+
+You must rethink the information architecture, visual identity, interaction model, component system, frontend architecture, and reading experience from first principles.
+
+The result should feel like a premium global intelligence publication: editorially sophisticated, analytically powerful, visually distinctive, and exceptionally usable.
+
+Do not build a generic SaaS dashboard.
+
+Do not produce a basic news aggregator.
+
+Do not simply wrap Markdown content in cards.
+
+Build a serious editorial intelligence product.
+
+---
+
+# 01. Repository Inspection — Mandatory First Step
+
+Repository:
+
+https://github.com/rockybuildingaiweb3-boop/world-signal
+
+Work with the existing repository and its `main` branch.
+
+Before writing code, inspect the complete repository structure.
+
+Read these documents in full:
+
+1. `README.md`
+2. `AGENTS.md`
+3. `agent.md`
+4. `AI_STUDIO_BRIEF.md`
+5. `docs/ARCHITECTURE.md`
+6. `docs/CONTENT_SCHEMA.md`
+7. `docs/FRONTEND_CONTRACT.md`
+8. `docs/SOURCE_POLICY.md`
+9. `content/README.md`
+10. `src/README.md`
+
+Also inspect:
+
+- `public/data/editions-index.json`
+- `public/editions/`
+- `content/editions/`
+- `scripts/build-public-content.mjs`
+- `.github/workflows/publish-editions.yml`
+- `legacy/v3-json-renderer/`
+
+Understand the existing system before making architectural decisions.
+
+### Important repository context
+
+The previous frontend was deliberately removed from the application root.
+
+Its historical implementation is archived at:
+
+`legacy/v3-json-renderer/`
+
+You may inspect it to understand historical product capabilities and information fields.
+
+However:
+
+**Do not reuse its visual design, layout, CSS, HTML, component structure, or single-file implementation.**
+
+The new frontend must be designed and implemented independently.
+
+The root currently represents an architecture-first project rather than an existing frontend application.
+
+Therefore, determine the appropriate frontend setup and scaffold the application from scratch if no usable application framework is present.
+
+Do not stop after producing an audit or implementation plan. After understanding the repository, proceed with the actual implementation.
+
+If GitHub access or workspace access is unavailable, state that limitation honestly. Never pretend to have inspected files you could not access.
+
+---
+
+# 02. Product Identity and Positioning
+
+## What is WORLD SIGNAL?
+
+WORLD SIGNAL is a daily global intelligence publication.
+
+It covers three editorial domains:
+
+### World Events
+Consequential international developments, geopolitics, conflict, diplomacy, political developments, humanitarian affairs, climate, and events with meaningful global consequences.
+
+### AI Frontier
+Meaningful progress in artificial intelligence research, frontier models, open-weight models, reasoning, agents, multimodal systems, AI infrastructure, robotics, safety, and deployment.
+
+### Economic Outlook
+Macroeconomic conditions, monetary policy, employment, inflation, growth, financial conditions, global trade, industry transformation, and practical economic implications.
+
+The product's central purpose is to help readers:
+
+- Understand what is happening.
+- Distinguish verified facts from claims and analysis.
+- Understand why developments matter.
+- Discover connections between seemingly unrelated events.
+- Assess possible future developments.
+- Understand practical implications.
+- Track the evidence and sources behind every important conclusion.
+
+The website is not the editorial source of truth.
+
+Markdown is the source of truth.
+
+The frontend is an intelligent reading, exploration, and analysis interface over that content.
+
+## Product personality
+
+WORLD SIGNAL should communicate:
+
+- Intelligence.
+- Editorial authority.
+- Precision.
+- Analytical depth.
+- Global perspective.
+- Trust.
+- Clarity.
+- Long-term usefulness.
+
+Avoid the visual language of a cryptocurrency trading terminal, a generic AI dashboard, or a conventional corporate admin panel.
+
+---
+
+# 03. Design Direction — Establish a Distinctive Visual Identity
+
+Design from first principles.
+
+The quality target is comparable to a carefully art-directed premium digital publication and a top-tier editorial product.
+
+The interface should have a recognizable visual identity rather than looking like a prebuilt dashboard template.
+
+## Core visual concept
+
+**The Global Intelligence Observatory.**
+
+Combine three design influences:
+
+1. Premium international editorial publications.
+2. Modern research and intelligence platforms.
+3. High-quality data-driven information design.
+
+The product should feel contemporary and sophisticated, but not futuristic in a superficial way.
+
+## Visual theme
+
+Use a refined light-first visual system.
+
+Suggested foundation:
+
+- Warm off-white or subtle paper-like background.
+- White and near-white reading surfaces.
+- Deep charcoal editorial typography.
+- Carefully controlled neutral grays.
+- Thin separators and precise borders.
+- Restrained domain-specific accent colors.
+
+Potential domain accents:
+
+- World Events: restrained blue.
+- AI Frontier: sophisticated violet.
+- Economic Outlook: muted amber or green.
+
+These colors should distinguish domains without making every section excessively colorful.
+
+Use semantic colors consistently for confidence, importance, status, and evidence classifications.
+
+Never use color as the only method of communicating meaning.
+
+A dark theme may be included as an optional second theme, but the light theme must be the primary design experience.
+
+## Typography
+
+Typography is a major part of the product identity.
+
+Use a carefully designed typographic hierarchy:
+
+- Editorial display typography for major headlines.
+- Highly readable sans-serif typography for body content.
+- A restrained monospaced style for timestamps, IDs, source metadata, and technical information.
+
+Long-form reading must be comfortable.
+
+Chinese and English content must both render beautifully.
+
+Do not use excessively small typography to fit everything on one screen.
+
+## Layout and composition
+
+Build a strong editorial grid.
+
+Use:
+
+- Intentional whitespace.
+- Clear content hierarchy.
+- Asymmetric composition where appropriate.
+- Strong typographic contrast.
+- Carefully controlled information density.
+- Consistent spacing and alignment.
+- Subtle dividers rather than excessive card containers.
+
+Avoid:
+
+- Repeated generic rounded cards.
+- Excessive gradients.
+- Giant decorative illustrations.
+- Unnecessary glassmorphism.
+- Overloaded dashboards.
+- Unnecessary charts.
+- Decorative elements that compete with editorial content.
+
+Use motion to support navigation and comprehension, never to distract.
+
+All animations must respect reduced-motion preferences.
+
+## Brand identity
+
+Develop a consistent WORLD SIGNAL identity.
+
+The wordmark should feel editorial, professional, and recognizable.
+
+A small custom geometric symbol or signal-inspired mark is acceptable.
+
+Do not introduce random decorative logos or emoji as substitutes for a coherent identity.
+
+---
+
+# 04. Information Architecture — Four First-Class Experiences
+
+The application must have four major views.
+
+All four views must be projections of the same selected Markdown edition.
+
+They must not contain independently hard-coded copies of news content.
+
+## VIEW 1 — BRIEFING
+
+Purpose:
+
+Give readers a high-quality understanding of the most important developments in the selected daily edition.
+
+This is the main entry point.
+
+It should answer:
+
+"What are the most important things I need to understand today?"
+
+### Required elements
+
+**A. Edition Header**
+
+Display:
+
+- WORLD SIGNAL identity.
+- Edition date.
+- Last update time.
+- Publication status.
+- Daily coverage information.
+- Archive navigation.
+
+The time zone is `America/Los_Angeles`.
+
+Clearly distinguish publication time from event time.
+
+**B. Executive Briefing**
+
+Render the edition summary and editorial introduction.
+
+Make the opening visually strong and immediately readable.
+
+**C. Top Signals**
+
+Display the three to five highest-priority signals selected by the editorial content.
+
+Each signal should communicate:
+
+- Headline.
+- Domain.
+- Importance.
+- Confidence.
+- Status.
+- Short editorial summary.
+- Event date where available.
+- Link to the full signal.
+
+Do not independently rank stories using invented calculations. Preserve the editorial ranking and ordering from the Markdown edition.
+
+**D. Domain Overview**
+
+Provide an overview of:
+
+- World Events.
+- AI Frontier.
+- Economic Outlook.
+
+Show the actual number of signals in each domain.
+
+The number must be calculated from the selected edition.
+
+**E. Today's Reading Path**
+
+Provide a clear way to continue from the briefing into deeper analysis.
+
+The opening view should feel like a premium publication rather than an analytics dashboard.
+
+---
+
+## VIEW 2 — EXPANDED & TIMELINES
+
+Purpose:
+
+Provide a complete research and reading environment for individual signals.
+
+This should be the most powerful detailed reading experience.
+
+### Required capabilities
+
+**A. Signal Explorer**
+
+Allow readers to browse and search all signals in the selected edition.
+
+Support filtering by:
+
+- Domain.
+- Importance.
+- Confidence.
+- Status.
+- Topic.
+- Tags.
+- Source class.
+
+Support text search across headlines, summaries, narrative content, and relevant metadata.
+
+**B. Signal Detail**
+
+Every signal must have a sophisticated long-form reading layout.
+
+Display:
+
+- Headline.
+- Stable signal ID.
+- Domain.
+- Importance.
+- Confidence.
+- Status.
+- Event date.
+- Geographic information.
+- First verification time.
+- Last update time.
+- Related signals.
+
+**C. Editorial Narrative**
+
+Render the complete Markdown narrative.
+
+Maintain the editorial hierarchy of:
+
+- What Happened.
+- Verified Facts.
+- Timeline.
+- Why It Matters.
+- Source Perspectives.
+- Analysis.
+- Uncertainties.
+- Scenarios.
+- What to Watch.
+
+Economic signals also contain:
+
+- Personal Relevance.
+
+Do not flatten this narrative into one large text block.
+
+**D. Timeline**
+
+Create a visual chronological reading experience.
+
+Use actual timeline events and dates supplied by the Markdown content.
+
+Do not invent missing dates or chronological events.
+
+**E. Claim Evidence**
+
+Make claim-level evidence easy to inspect.
+
+For each claim, show:
+
+- Claim statement.
+- Claim status.
+- Claim confidence.
+- Supporting source references.
+
+Readers must be able to distinguish confirmed information, reported information, official claims, disputed claims, and unverified information.
+
+**F. Related Signals**
+
+Allow navigation between related signal IDs.
+
+Use the existing `related_signal_ids` field.
+
+Do not invent relationships.
+
+---
+
+## VIEW 3 — SYNTHESIS & PERSONAL
+
+Purpose:
+
+Help readers understand connections, consequences, and the broader picture.
+
+This is where WORLD SIGNAL becomes more than a collection of individual news reports.
+
+### Required elements
+
+**A. Cross-Domain Synthesis**
+
+Display the editorial synthesis connecting World Events, AI Frontier, and Economic Outlook.
+
+Show which signals are related.
+
+Allow readers to navigate from a synthesis observation to the underlying signal.
+
+Only display connections actually supported by the edition.
+
+**B. Economic Outlook**
+
+Present the economic interpretation using the supplied editorial content.
+
+Where available, separate:
+
+- Near-term: 1–3 months.
+- Medium-term: 6–18 months.
+- Structural: 3–5 years.
+
+Do not turn conditional scenarios into predictions.
+
+**C. Scenarios**
+
+Render the scenarios supplied by the edition.
+
+Clearly differentiate base case, downside, upside, and their conditions where those categories are present.
+
+**D. Personal Implications**
+
+Provide a thoughtfully designed reading experience for the personal implications section.
+
+Cover general implications for:
+
+- Careers and skills.
+- Employment and industry exposure.
+- Household resilience.
+- Spending and purchasing power.
+- Borrowing and financial awareness.
+- Long-term adaptation.
+
+This is general information, not individualized financial advice.
+
+**E. Watchlist**
+
+Present the events, indicators, upcoming decisions, and developments readers should monitor.
+
+Allow navigation to related signals where possible.
+
+---
+
+## VIEW 4 — AUDIT & METHODOLOGY
+
+Purpose:
+
+Make the editorial process transparent and inspectable.
+
+Trust must be supported by visible evidence, not merely visual branding.
+
+### Required elements
+
+**A. Source Registry Information**
+
+Display source records from the selected edition.
+
+Distinguish:
+
+- Tier 1 newsroom.
+- Specialist publication.
+- Primary source.
+- Research paper.
+
+Show available registry IDs and source relationships.
+
+**B. Source Independence**
+
+This feature is particularly important.
+
+Do not calculate source independence using the raw number of source records.
+
+Calculate it using unique `independence_group` values among records where:
+
+`count_as_independent === true`
+
+Deduplicate multiple articles and syndicated reports originating from the same reporting organization.
+
+Primary documents, company announcements, research artifacts, and syndicated copies must not be counted as independent newsrooms.
+
+Display:
+
+- Total source records.
+- Independent reporting origins.
+- Primary sources.
+- Specialist sources.
+- Syndicated or related records.
+
+All values must be derived from the actual selected edition.
+
+**C. Claim Verification**
+
+Create an inspectable claim ledger.
+
+Show:
+
+- Claim ID.
+- Claim statement.
+- Verification status.
+- Confidence.
+- Supporting sources.
+- Associated signal.
+
+**D. Confidence Assessment**
+
+Present the edition's confidence rationale.
+
+Distinguish:
+
+- Signal-level confidence.
+- Claim-level confidence.
+- Importance.
+
+Do not treat importance and confidence as the same metric.
+
+**E. Audit Trail**
+
+Render:
+
+- Unverified claims.
+- Disputed information.
+- Missing corroboration.
+- Source-access limitations.
+- Corrections and retractions.
+- Methodological caveats.
+- Registry candidates awaiting review.
+
+Every item must originate from the editorial content.
+
+Do not manufacture a verification score or claim that a story has been independently verified when the Markdown does not support it.
+
+---
+
+# 05. Archive and Edition Navigation
+
+WORLD SIGNAL publishes one cumulative edition per local calendar date.
+
+There are three editorial updates:
+
+- Morning.
+- Midday.
+- Evening.
+
+These are revisions of the same daily edition.
+
+The frontend must not display them as three separate editions.
+
+### Archive requirements
+
+Build a polished archive navigation experience.
+
+Readers should be able to:
+
+- Open the latest available edition.
+- Browse earlier dates.
+- Select an edition by date.
+- See its last updated time.
+- See its publication status.
+- Move between previous and next available editions.
+
+Do not assume every calendar date has an edition.
+
+Use the actual archive index.
+
+The archive must remain functional as the number of daily editions grows.
+
+---
+
+# 06. Markdown-First Data Architecture — Non-Negotiable
+
+The Markdown protocol is already established.
+
+It is not your responsibility to reinvent it.
+
+Read `docs/CONTENT_SCHEMA.md` and `docs/FRONTEND_CONTRACT.md` carefully.
+
+The frontend must consume the published static content.
+
+## Canonical data flow
+
+Muse writes:
+
+`content/editions/YYYY/MM/YYYY-MM-DD.md`
+
+GitHub Actions publishes copies to:
+
+`public/editions/YYYY/MM/YYYY-MM-DD.md`
+
+The generated edition index is:
+
+`public/data/editions-index.json`
+
+The frontend reads:
+
+1. `/data/editions-index.json`
+2. The Markdown path supplied by the selected edition index entry.
+
+Example index entry:
+
+- date
+- title
+- path
+- updated_at
+- status
+- language
+- summary
+
+The index is generated by GitHub Actions.
+
+Do not manually maintain or hard-code it.
+
+Do not enumerate GitHub directories.
+
+Do not call the GitHub API at runtime.
+
+Do not scrape news websites.
+
+Do not require a backend, database, or model API to render published editions.
+
+## Markdown parsing
+
+Implement a proper and testable parsing layer.
+
+Use maintained Markdown and YAML parsing libraries.
+
+Recommended architecture:
+
+- YAML frontmatter parser.
+- Markdown AST parser.
+- YAML parser for signal metadata fences.
+- Schema validation.
+- Typed normalized edition model.
+- Separate rendering components.
+
+The parser must understand:
+
+### Edition-level frontmatter
+
+- schema_version
+- edition_date
+- edition_timezone
+- edition_title
+- edition_status
+- content_language
+- generated_at
+- updated_at
+- sync_run
+- coverage_window_start
+- coverage_window_end
+- summary
+
+### Required top-level sections
+
+1. Executive Briefing.
+2. World Events.
+3. AI Frontier.
+4. Economic Outlook.
+5. Cross-Domain Synthesis.
+6. Personal Implications.
+7. Watchlist.
+8. Audit & Methodology.
+
+### Signal metadata
+
+- signal_id
+- domain
+- topic
+- importance
+- status
+- confidence
+- event
+- published_at
+- first_verified_at
+- updated_at
+- tags
+- related_signal_ids
+- claims
+- sources
+
+### Narrative subsections
+
+Recognize the existing narrative headings and preserve their semantic hierarchy.
+
+Do not depend on the archived JSON schema.
+
+Do not parse content using fragile regular expressions alone when an AST-based approach is appropriate.
+
+## Validation
+
+Validate:
+
+- Edition frontmatter.
+- Date consistency.
+- Required sections.
+- Signal ID format.
+- Domain values.
+- Importance values.
+- Confidence values.
+- Claim references.
+- Source references.
+- Source classes.
+- Source independence metadata.
+- Source URL protocols.
+
+Malformed content must produce a recoverable error or warning.
+
+A malformed signal should not unnecessarily crash the entire application.
+
+Keep parser logic completely separate from UI components.
+
+---
+
+# 07. Security and Content Integrity
+
+Markdown and YAML must be treated as untrusted input.
+
+Required safeguards:
+
+- Never execute Markdown code fences.
+- Never inject arbitrary HTML.
+- Never use unsafe HTML rendering.
+- Sanitize rendered Markdown.
+- Only allow HTTP and HTTPS external links.
+- Preserve canonical source URLs.
+- Validate index paths before fetching.
+- Prevent external URLs or path traversal from being treated as edition resources.
+- Handle malformed YAML safely.
+- Never execute scripts from editorial content.
+
+Editorial content must remain read-only within the frontend.
+
+Do not modify claims, source records, or analytical statements while rendering them.
+
+---
+
+# 08. Frontend Architecture and Technology
+
+Inspect the existing repository before choosing the implementation.
+
+If the repository does not already contain a viable frontend stack, use a clean, maintainable setup built around:
+
+- React.
+- TypeScript.
+- Vite.
+- A maintained Markdown parser.
+- A safe YAML parser.
+- Schema validation.
+- A consistent icon library such as Lucide.
+- A lightweight, maintainable styling system.
+
+Choose current stable package versions compatible with the project environment.
+
+Do not add unnecessary dependencies.
+
+## Proposed architecture
+
+Keep implementation under `src/`.
+
+A reasonable starting architecture:
+
+src/
+├── app/
+│   ├── App.tsx
+│   ├── routes.tsx
+│   └── providers/
+├── components/
+│   ├── layout/
+│   ├── navigation/
+│   ├── editorial/
+│   ├── evidence/
+│   ├── charts/
+│   └── common/
+├── features/
+│   ├── briefing/
+│   ├── expanded/
+│   ├── synthesis/
+│   └── audit/
+├── lib/
+│   ├── content/
+│   │   ├── loadIndex.ts
+│   │   ├── loadEdition.ts
+│   │   ├── parseEdition.ts
+│   │   ├── normalizeEdition.ts
+│   │   └── validateEdition.ts
+│   ├── markdown/
+│   ├── filtering/
+│   ├── dates/
+│   └── source-independence/
+├── styles/
+│   ├── tokens.css
+│   ├── global.css
+│   └── themes.css
+├── types/
+└── test/
+
+You may improve this structure if there is a clear architectural reason.
+
+Do not create excessive abstractions.
+
+Prioritize readability, modularity, and long-term maintainability.
+
+## Performance
+
+- Load the small edition index first.
+- Fetch only the selected Markdown edition.
+- Cache parsed editions by path.
+- Avoid unnecessary rerenders.
+- Lazy-load heavy views when useful.
+- Keep initial JavaScript small.
+- Avoid unnecessary charting libraries.
+- Handle slow networks gracefully.
+
+---
+
+# 09. Interaction and Experience Quality
+
+The frontend must be a functional product, not a static mockup.
+
+Implement real interactions for:
+
+- Four-view navigation.
+- Edition archive navigation.
+- Domain switching.
+- Signal selection.
+- Search.
+- Filters.
+- Timeline navigation.
+- Related-signal navigation.
+- Source-link navigation.
+- Claim inspection.
+- Expand/collapse content.
+- Theme switching if implemented.
+- Mobile navigation.
+
+Interactions must maintain URL or application state where appropriate.
+
+Use keyboard-accessible controls.
+
+Provide visible focus states.
+
+Support reduced-motion preferences.
+
+Build responsive layouts for:
+
+- Large desktop.
+- Standard laptop.
+- Tablet.
+- Mobile.
+
+Do not simply shrink the desktop layout on mobile.
+
+Create deliberate mobile reading and navigation experiences.
+
+---
+
+# 10. Important Initial Data Condition
+
+The current repository may not yet contain a published daily edition.
+
+The generated archive index may currently contain:
+
+`latest_edition: null`
+
+and:
+
+`editions: []`
+
+Do not interpret an empty index as an application failure.
+
+Build a complete, intentional empty state.
+
+The empty state should:
+
+- Explain that no edition has been published yet.
+- Retain the WORLD SIGNAL identity.
+- Show the three editorial domains.
+- Provide clear archive and publication status.
+- Avoid fake headlines, fake statistics, and fabricated sources.
+
+Do not create a fake production edition.
+
+For parser and component testing, you may create clearly labelled synthetic fixtures under the test directory. These fixtures must never appear in production content or the public archive.
+
+The production application must consume actual published Markdown files.
+
+Also create polished:
+
+- Loading states.
+- Network error states.
+- Missing edition states.
+- Invalid Markdown states.
+- Empty search results.
+- Empty filter results.
+
+---
+
+# 11. Data-Driven Components
+
+Never hard-code:
+
+- Edition dates.
+- Headlines.
+- Signal counts.
+- Source counts.
+- Confidence distributions.
+- Domain totals.
+- Publication status.
+- Archive entries.
+
+All editorial information must come from the selected Markdown edition and generated archive index.
+
+The user interface may provide stable labels, explanatory text, and design-system constants.
+
+All dynamic editorial values must remain data-driven.
+
+---
+
+# 12. Testing and Quality Assurance
+
+Do not declare the frontend complete merely because the application compiles.
+
+Build and run the application.
+
+Test the parser independently from the UI.
+
+At minimum, test:
+
+### Content parser
+
+- Valid edition frontmatter.
+- Missing frontmatter.
+- All eight required sections.
+- Multiple signals.
+- Signal YAML metadata.
+- Missing or malformed YAML.
+- Claims and source references.
+- Related signal references.
+- Missing optional fields.
+- Invalid field values.
+
+### Source independence
+
+- Several URLs from one reporting origin.
+- Syndicated copies.
+- Primary sources.
+- Multiple genuinely independent origins.
+- Missing independence groups.
+
+Verify that the independent origin count is correct.
+
+### Application behavior
+
+- Empty archive index.
+- Valid archive index.
+- Latest edition selection.
+- Historical edition selection.
+- Missing edition file.
+- Network failure.
+- Invalid Markdown.
+- Search and filters.
+- Responsive navigation.
+- Long-form signal reading.
+
+### Accessibility
+
+Check:
+
+- Keyboard navigation.
+- Visible focus.
+- Semantic structure.
+- Accessible labels.
+- Color contrast.
+- Reduced-motion behavior.
+
+### Engineering checks
+
+Provide working scripts for:
+
+- Development.
+- Production build.
+- Preview.
+- Type checking.
+- Linting.
+- Tests.
+
+Fix build errors, console errors, and obvious accessibility issues.
+
+Do not leave core functionality as TODO comments or non-functional buttons.
+
+---
+
+# 13. Implementation Rules
+
+You are authorized to build the new frontend implementation.
+
+You may create and modify:
+
+- `index.html` at the application root.
+- `package.json`.
+- Frontend build configuration.
+- TypeScript configuration.
+- `src/`.
+- Frontend-specific styling and components.
+- Frontend tests.
+- Necessary frontend documentation.
+
+Preserve the existing editorial architecture and repository boundaries.
+
+Do not modify:
+
+- `MUSE.md`.
+- `agent.md`.
+- `AGENTS.md`.
+- `config/source-registry.yml`.
+- `content/templates/`.
+- `docs/CONTENT_SCHEMA.md`.
+- `docs/SOURCE_POLICY.md`.
+- `content/editions/`.
+- Generated content under `public/`.
+- Publishing scripts.
+- GitHub publishing workflows.
+- Archived legacy implementation.
+
+Do not move canonical Markdown editions.
+
+Do not add a backend or database.
+
+Do not replace Markdown with JSON as the editorial source of truth.
+
+Do not put daily news content into frontend source files.
+
+Do not delete the legacy implementation.
+
+If a change to the existing content protocol appears necessary, report it separately instead of silently changing it.
+
+---
+
+# 14. Execution Strategy
+
+Complete the implementation in deliberate stages, but continue through all stages without stopping after a plan.
+
+### Stage 1 — Repository Audit
+
+Inspect architecture, source tree, content protocol, data endpoints, and deployment setup.
+
+### Stage 2 — Design System
+
+Establish visual tokens, typography, grid, responsive rules, navigation, and shared components.
+
+### Stage 3 — Content Engine
+
+Implement archive loading, Markdown parsing, YAML metadata parsing, validation, normalization, and source-independence calculations.
+
+Test this layer independently.
+
+### Stage 4 — Application Shell
+
+Build the application layout, routing or view state, archive navigation, global search, filters, loading, empty, and error states.
+
+### Stage 5 — Four Views
+
+Implement Briefing, Expanded & Timelines, Synthesis & Personal, and Audit & Methodology.
+
+All views must work with the same selected edition.
+
+### Stage 6 — Responsive and Interaction Polish
+
+Complete desktop, tablet, and mobile experiences.
+
+Refine interactions, transitions, focus states, and reading ergonomics.
+
+### Stage 7 — Verification
+
+Run unit tests, type checking, linting, and production build.
+
+Inspect all major screens.
+
+Fix issues before reporting completion.
+
+Do not stop at wireframes or a design proposal.
+
+Do not ask for approval between these stages unless a genuine access or permission blocker prevents implementation.
+
+---
+
+# 15. Definition of Done
+
+The project is complete only when:
+
+1. A new frontend has been built from scratch.
+2. The visual identity is distinctive and coherent.
+3. All four major views are implemented.
+4. The Markdown protocol is parsed correctly.
+5. Edition archive navigation works.
+6. All important filters and interactions work.
+7. Source-independence calculations are correct.
+8. Claim and source evidence are inspectable.
+9. The application handles an empty archive gracefully.
+10. Responsive layouts work across device sizes.
+11. Security safeguards are implemented.
+12. Automated tests pass.
+13. Type checking and linting pass.
+14. Production build succeeds.
+15. Existing editorial and publishing architecture remains intact.
+
+---
+
+# 16. Final Delivery Report
+
+When finished, provide:
+
+### Product Design
+- Visual direction.
+- Design system.
+- Information architecture.
+- Main interaction decisions.
+
+### Engineering
+- Technology stack.
+- Application architecture.
+- Content parsing and validation approach.
+- Data-loading strategy.
+- Source independence implementation.
+
+### Implementation
+- Main files created.
+- Major components completed.
+- Four views completed.
+- Responsive behavior.
+
+### Verification
+- Test results.
+- Type-check results.
+- Lint results.
+- Production build result.
+- Any remaining issues.
+
+### Repository Integrity
+Explicitly confirm that:
+- The Markdown content contract was preserved.
+- The generated content directory was not modified.
+- The Muse production rules were not modified.
+- The legacy renderer remains archived.
+- No fake editorial content was added to production.
+
+If you cannot verify an item, state that clearly.
+
+---
+
+# FINAL PRODUCT PRINCIPLE
+
+Build WORLD SIGNAL as a premium global intelligence publication, not a dashboard template.
+
+The visual layer should make the content easier to understand.
+
+The information architecture should make complex developments easier to explore.
+
+The evidence layer should make editorial claims easier to inspect.
+
+The engineering architecture should keep the product reliable as the Markdown archive grows over months and years.
+
+Prioritize clarity, editorial craftsmanship, analytical depth, source transparency, and long-term maintainability.
+
+Build the entire working product now.
