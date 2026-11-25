@@ -249,7 +249,7 @@ export const DailyDeltaSection: React.FC<DailyDeltaSectionProps> = ({
 
       {/* Explicit Archive Gap or Schema Version Context Notes (never hidden) */}
       {(state.hasDateGap || hasSchemaTransition) && (
-        <div className="space-y-1.5 text-[12px] leading-relaxed text-[var(--ws-ink-muted)] border-l-2 border-[var(--ws-border-strong)] pl-3.5">
+        <div className="ws-folio-note px-4 py-2.5 space-y-1 text-[12px] leading-relaxed text-[var(--ws-ink-muted)]">
           {state.hasDateGap && (
             <p>{t.dailyDelta.dateGapNote(state.dayGapCount, state.previousDate)}</p>
           )}
@@ -266,6 +266,38 @@ export const DailyDeltaSection: React.FC<DailyDeltaSectionProps> = ({
 
       {/* Editorial Intelligence Sheet Container */}
       <div className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] overflow-hidden shadow-[var(--ws-shadow-sm)]">
+        {/* Real Proportional Turnover Bar across New / Updated / Unchanged / Omitted */}
+        {(() => {
+          const totalDelta =
+            state.diff.summary.newSignals +
+            state.diff.summary.materiallyUpdatedSignals +
+            state.diff.summary.unchangedSignals +
+            state.diff.summary.omittedSignals;
+          if (totalDelta <= 0) return null;
+          const barParts: Array<{ key: EditionChangeKind; count: number; bg: string }> = [
+            { key: 'new', count: state.diff.summary.newSignals, bg: 'bg-[var(--ws-economy)]' },
+            { key: 'updated', count: state.diff.summary.materiallyUpdatedSignals, bg: 'bg-[var(--ws-world)]' },
+            { key: 'unchanged', count: state.diff.summary.unchangedSignals, bg: 'bg-[var(--ws-border-strong)]' },
+            { key: 'omitted', count: state.diff.summary.omittedSignals, bg: 'bg-[var(--ws-warn)]' },
+          ];
+          return (
+            <div
+              aria-hidden="true"
+              className="flex h-[3px] w-full bg-[var(--ws-surface-subtle)] gap-[1px]"
+            >
+              {barParts.map((part) =>
+                part.count > 0 ? (
+                  <div
+                    key={part.key}
+                    className={`h-full ${part.bg}`}
+                    style={{ width: `${(part.count / totalDelta) * 100}%` }}
+                  />
+                ) : null
+              )}
+            </div>
+          );
+        })()}
+
         {/* 4-Category Editorial Ledger Navigation (2x2 mobile, 4-col desktop) */}
         <div
           role="tablist"
@@ -768,13 +800,13 @@ const EvidenceClaimGroup: React.FC<EvidenceClaimGroupProps> = ({
       >
         {label} ({claimIds.length})
       </div>
-      <ul className="space-y-1.5">
+      <ul className="divide-y divide-[var(--ws-border-subtle)] border-t border-[var(--ws-border-subtle)]">
         {claimIds.map((claimId) => {
           const claim = resolveClaimForDelta(change, claimId, preferPrevious);
           return (
             <li
               key={claimId}
-              className="border-l border-[var(--ws-border-strong)] pl-2.5 space-y-0.5"
+              className="py-1.5 space-y-0.5"
             >
               <div className="font-mono-tabular text-[11px] font-semibold text-[var(--ws-ink)] break-all">
                 {claimId}
@@ -816,13 +848,13 @@ const EvidenceSourceGroup: React.FC<EvidenceSourceGroupProps> = ({
       >
         {label} ({sourceKeys.length})
       </div>
-      <ul className="space-y-1.5">
+      <ul className="divide-y divide-[var(--ws-border-subtle)] border-t border-[var(--ws-border-subtle)]">
         {sourceKeys.map((sourceKey) => {
           const source = resolveSourceForDelta(change, sourceKey, preferPrevious);
           return (
             <li
               key={sourceKey}
-              className="border-l border-[var(--ws-border-strong)] pl-2.5 space-y-0.5"
+              className="py-1.5 space-y-0.5"
             >
               {source ? (
                 <>

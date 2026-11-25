@@ -91,7 +91,7 @@ export const SignalDossierHeader: React.FC<SignalDossierHeaderProps> = ({
         <SignalMetaLine signal={signal} lang={lang} showClaims />
       </div>
 
-      {/* Clean Hairline-Divided Provenance Strip (No Heavy Box Clutter) */}
+      {/* Clean Hairline-Divided Provenance Strip */}
       <dl className="grid grid-cols-2 gap-x-6 gap-y-3.5 border-y border-[var(--ws-border)] py-3.5 sm:grid-cols-4 text-xs">
         <div className="min-w-0">
           <dt className="font-mono-tabular text-[10.5px] uppercase tracking-[0.1em] text-[var(--ws-ink-muted)]">
@@ -136,9 +136,69 @@ export const SignalDossierHeader: React.FC<SignalDossierHeaderProps> = ({
         </div>
       </dl>
 
-      {/* Quiet Editorial Left-Ruled Confidence Rationale */}
+      {/* Calibrated Importance & Schema-v2 Storyline Continuity Strip */}
+      <div className="flex flex-wrap items-center justify-between gap-x-5 gap-y-2 text-[11.5px] font-mono-tabular text-[var(--ws-ink-muted)]">
+        <div className="inline-flex items-center gap-2.5">
+          <span className="uppercase tracking-[0.1em] text-[10.5px] text-[var(--ws-ink-faint)]">
+            {t.expanded.importanceLabel}
+          </span>
+          <span
+            aria-label={t.metaLine.importance(signal.importance)}
+            className="inline-flex items-center gap-1"
+          >
+            {[1, 2, 3, 4, 5].map((step) => (
+              <span
+                key={step}
+                aria-hidden="true"
+                className={`h-2.5 w-1.5 rounded-[1px] ${
+                  step <= signal.importance
+                    ? domainTopBarClass(signal.domain)
+                    : 'bg-[var(--ws-border)]'
+                }`}
+              />
+            ))}
+          </span>
+          <span className="font-semibold text-[var(--ws-ink)]">
+            {signal.importance}/5
+          </span>
+        </div>
+
+        {signal.continuity && (
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <span className="uppercase tracking-[0.1em] text-[10.5px] text-[var(--ws-ink-faint)]">
+              {t.expanded.continuityLabel}
+            </span>
+            <span className="font-semibold text-[var(--ws-ink)]">
+              {t.signalLifecycle[signal.continuity.lifecycle]}
+            </span>
+            {signal.continuity.first_seen_edition && (
+              <span>
+                {t.expanded.firstSeenLabel}:{' '}
+                <span className="text-[var(--ws-ink)]">
+                  {signal.continuity.first_seen_edition}
+                </span>
+              </span>
+            )}
+            {signal.continuity.last_material_update && (
+              <span>
+                {t.expanded.lastUpdateLabel}:{' '}
+                <span className="text-[var(--ws-ink)]">
+                  {signal.continuity.last_material_update}
+                </span>
+              </span>
+            )}
+            {!signal.continuity.history_complete && (
+              <span className="text-[var(--ws-warn)]">
+                · {t.expanded.historyIncompleteNote}
+              </span>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Hairline-Framed Confidence Rationale */}
       {signal.confidence.rationale && (
-        <div className="border-l-2 border-[var(--ws-border-strong)] pl-4 py-0.5 text-[13px] leading-[1.65] text-[var(--ws-ink-secondary)]">
+        <div className="ws-folio-note px-4 py-3 text-[13px] leading-[1.65] text-[var(--ws-ink-secondary)]">
           <span
             className={`font-semibold ${confidenceColorClass(
               signal.confidence.overall

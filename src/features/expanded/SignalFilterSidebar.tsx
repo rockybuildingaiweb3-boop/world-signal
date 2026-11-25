@@ -55,17 +55,6 @@ const SOURCE_CLASSES: readonly SourceClass[] = [
   'unknown',
 ];
 
-function domainBorderAccent(domain: SignalDomain): string {
-  switch (domain) {
-    case 'world':
-      return 'border-l-[var(--ws-world)]';
-    case 'ai':
-      return 'border-l-[var(--ws-ai)]';
-    case 'economy':
-      return 'border-l-[var(--ws-economy)]';
-  }
-}
-
 function domainBarBg(domain: SignalDomain): string {
   switch (domain) {
     case 'world':
@@ -332,14 +321,20 @@ export const SignalFilterSidebar: React.FC<SignalFilterSidebarProps> = ({
                 type="button"
                 onClick={() => onSelectSignal(sig.signal_id)}
                 aria-current={isActive ? 'true' : undefined}
-                className={`relative w-full px-4 py-3.5 text-left transition-colors cursor-pointer border-l-[3px] ${
+                className={`relative w-full px-4 py-3.5 text-left transition-colors cursor-pointer ${
                   isActive
-                    ? `bg-[var(--ws-surface-subtle)] ${domainBorderAccent(sig.domain)}`
-                    : 'bg-[var(--ws-surface)] hover:bg-[var(--ws-surface-hover)]/70 border-l-transparent'
+                    ? 'bg-[var(--ws-surface-subtle)]'
+                    : 'bg-[var(--ws-surface)] hover:bg-[var(--ws-surface-hover)]/70'
                 }`}
               >
                 <div className="flex items-center justify-between gap-2 font-mono-tabular text-[11px] mb-1">
                   <div className="flex items-center gap-1.5 min-w-0">
+                    <span
+                      aria-hidden="true"
+                      className={`inline-block h-2.5 w-[2.5px] rounded-[1px] shrink-0 ${
+                        isActive ? domainBarBg(sig.domain) : 'bg-[var(--ws-border)]'
+                      }`}
+                    />
                     <span className="text-[var(--ws-ink-faint)]">
                       {String(idx + 1).padStart(2, '0')}
                     </span>

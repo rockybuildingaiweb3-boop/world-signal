@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import type {
   ParsedSignal,
   UiLanguage,
   WatchlistRow,
 } from '../../types/edition';
 import { getUiStrings } from '../../lib/i18n/uiStrings';
+import { domainAccentTextClass } from '../../lib/filtering/filterSignals';
 import { SafeMarkdown } from '../../components/editorial/SafeMarkdown';
 
 interface WatchlistSectionProps {
@@ -23,16 +24,60 @@ export const WatchlistSection: React.FC<WatchlistSectionProps> = ({
   onOpenSignal,
 }) => {
   const t = getUiStrings(lang);
+  const [filterMode, setFilterMode] = useState<'all' | 'linked'>('all');
+
+  const linkedRowCount = useMemo(
+    () => rows.filter((r) => r.signalsLinked.length > 0).length,
+    [rows]
+  );
+
+  const visibleRows = useMemo(() => {
+    if (filterMode === 'linked') {
+      return rows.filter((r) => r.signalsLinked.length > 0);
+    }
+    return rows;
+  }, [filterMode, rows]);
+
+  const showFilterToggle = rows.length > 0 && linkedRowCount < rows.length;
 
   return (
     <section className="space-y-5 ws-section-rule pt-8">
-      <div className="space-y-1">
-        <h2 className="font-display text-[1.4rem] sm:text-[1.65rem] font-semibold tracking-[-0.018em] text-[var(--ws-ink)]">
-          {t.synthesis.watchlistTitle}
-        </h2>
-        <p className="text-[12.5px] text-[var(--ws-ink-muted)]">
-          {t.synthesis.watchlistSubtitle}
-        </p>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div className="space-y-1">
+          <h2 className="font-display text-[1.4rem] sm:text-[1.65rem] font-semibold tracking-[-0.018em] text-[var(--ws-ink)]">
+            {t.synthesis.watchlistTitle}
+          </h2>
+          <p className="text-[12.5px] text-[var(--ws-ink-muted)]">
+            {t.synthesis.watchlistSubtitle}
+          </p>
+        </div>
+
+        {showFilterToggle && (
+          <div className="inline-flex rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface-subtle)] p-0.5 text-xs shrink-0 self-start">
+            <button
+              type="button"
+              onClick={() => setFilterMode('all')}
+              className={`rounded-[3px] px-3 py-1.5 font-medium transition-colors cursor-pointer ${
+                filterMode === 'all'
+                  ? 'bg-[var(--ws-surface)] text-[var(--ws-ink)] shadow-xs font-semibold'
+                  : 'text-[var(--ws-ink-muted)] hover:text-[var(--ws-ink)]'
+              }`}
+            >
+              {t.synthesis.watchlistFilterAll} ({rows.length})
+            </button>
+            <button
+              type="button"
+              onClick={() => setFilterMode('linked')}
+              className={`rounded-[3px] px-3 py-1.5 font-medium transition-colors cursor-pointer ${
+                filterMode === 'linked'
+                  ? 'bg-[var(--ws-surface)] text-[var(--ws-ink)] shadow-xs font-semibold'
+                  : 'text-[var(--ws-ink-muted)] hover:text-[var(--ws-ink)]'
+              }`}
+            >
+              {t.synthesis.watchlistFilterLinked} ({linkedRowCount})
+            </button>
+          </div>
+        )}
       </div>
 
       {rows.length > 0 ? (
@@ -58,7 +103,7 @@ export const WatchlistSection: React.FC<WatchlistSectionProps> = ({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[var(--ws-border-subtle)] text-[13.5px]">
-                  {rows.map((row, idx) => (
+                  {visibleRows.map((row, idx) => (
                     <tr
                       key={`${row.indicator}-${idx}`}
                       className="hover:bg-[var(--ws-surface-hover)]/55 transition-colors"
@@ -79,13 +124,16 @@ export const WatchlistSection: React.FC<WatchlistSectionProps> = ({
                           </span>
                         ) : (
                           <div className="flex flex-col gap-1">
-                            {row.signalsLinked.map((sid) =>
-                              signalById.has(sid) ? (
+                            {row.signalsLinked.map((sid) => {
+                              const target = signalById.get(sid);
+                              return target ? (
                                 <button
                                   key={sid}
                                   type="button"
                                   onClick={() => onOpenSignal(sid)}
-                                  className="text-left text-[var(--ws-world)] underline decoration-[var(--ws-border-strong)] underline-offset-4 hover:decoration-current cursor-pointer break-all"
+                                  className={`text-left font-medium underline decoration-[var(--ws-border-strong)] underline-offset-4 hover:decoration-current cursor-pointer break-all ${domainAccentTextClass(
+                                    target.domain
+                                  )}`}
                                 >
                                   {sid}
                                 </button>
@@ -96,8 +144,8 @@ export const WatchlistSection: React.FC<WatchlistSectionProps> = ({
                                 >
                                   {sid}
                                 </span>
-                              )
-                            )}
+                              );
+                            })}
                           </div>
                         )}
                       </td>
@@ -110,7 +158,7 @@ export const WatchlistSection: React.FC<WatchlistSectionProps> = ({
 
           {/* Mobile Stacked Editorial Ledger Rows */}
           <div className="divide-y divide-[var(--ws-border)] border-y border-[var(--ws-border-strong)] bg-[var(--ws-surface)] md:hidden">
-            {rows.map((row, idx) => (
+            {visibleRows.map((row, idx) => (
               <article
                 key={`mobile-${row.indicator}-${idx}`}
                 className="p-4 space-y-2.5"
@@ -133,13 +181,16 @@ export const WatchlistSection: React.FC<WatchlistSectionProps> = ({
                     </span>
                   ) : (
                     <div className="flex flex-wrap gap-x-3 gap-y-1">
-                      {row.signalsLinked.map((sid) =>
-                        signalById.has(sid) ? (
+                      {row.signalsLinked.map((sid) => {
+                        const target = signalById.get(sid);
+                        return target ? (
                           <button
                             key={sid}
                             type="button"
                             onClick={() => onOpenSignal(sid)}
-                            className="text-[var(--ws-world)] underline underline-offset-4 cursor-pointer break-all"
+                            className={`font-medium underline underline-offset-4 cursor-pointer break-all ${domainAccentTextClass(
+                              target.domain
+                            )}`}
                           >
                             {sid}
                           </button>
@@ -150,8 +201,8 @@ export const WatchlistSection: React.FC<WatchlistSectionProps> = ({
                           >
                             {sid}
                           </span>
-                        )
-                      )}
+                        );
+                      })}
                     </div>
                   )}
                 </div>

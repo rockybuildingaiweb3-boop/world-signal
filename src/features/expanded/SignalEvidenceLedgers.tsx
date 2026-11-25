@@ -204,12 +204,8 @@ export const SignalEvidenceLedgers: React.FC<SignalEvidenceLedgersProps> = ({
                   <li
                     key={src.source_id}
                     id={`dossier-source-${src.source_id}`}
-                    className={`scroll-mt-24 py-4 px-3 -mx-3 space-y-2 transition-colors rounded-[var(--ws-radius-sm)] border-l-2 ${
-                      isHighlighted
-                        ? 'border-l-[var(--ws-world)] bg-[var(--ws-world-soft)]'
-                        : src.qualifiesAsIndependent
-                        ? 'border-l-[var(--ws-conf-high)]'
-                        : 'border-l-transparent'
+                    className={`scroll-mt-24 py-4 px-3 -mx-3 space-y-2 transition-colors rounded-[var(--ws-radius-sm)] ${
+                      isHighlighted ? 'bg-[var(--ws-world-soft)]' : ''
                     }`}
                   >
                     <div className="flex flex-wrap items-start justify-between gap-2">
@@ -255,7 +251,15 @@ export const SignalEvidenceLedgers: React.FC<SignalEvidenceLedgersProps> = ({
                         </div>
                       </div>
 
-                      <div className="font-mono-tabular text-[11px] shrink-0">
+                      <div className="inline-flex items-center gap-1.5 font-mono-tabular text-[11px] shrink-0">
+                        <span
+                          aria-hidden="true"
+                          className={`h-1.5 w-1.5 rounded-full shrink-0 ${
+                            src.qualifiesAsIndependent
+                              ? 'bg-[var(--ws-conf-high)]'
+                              : 'bg-[var(--ws-border-strong)]'
+                          }`}
+                        />
                         {src.qualifiesAsIndependent ? (
                           <span className="font-semibold text-[var(--ws-conf-high)]">
                             {t.expanded.qualifiesIndependent}
@@ -345,48 +349,180 @@ export const SignalEvidenceLedgers: React.FC<SignalEvidenceLedgersProps> = ({
         )}
       </section>
 
-      {/* Related Signals Navigation */}
-      {signal.related_signal_ids.length > 0 && (
-        <section className="space-y-3 border-t border-[var(--ws-border)] pt-7">
-          <h3 className="font-display text-base font-semibold text-[var(--ws-ink)]">
-            {t.expanded.relatedSignalsTitle}
-          </h3>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {signal.related_signal_ids.map((relId) => {
-              const target = signalById.get(relId);
-              if (!target) {
-                return (
-                  <div
-                    key={relId}
-                    className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface-subtle)] p-3.5 text-xs text-[var(--ws-ink-muted)]"
-                  >
-                    <div className="font-mono-tabular break-all">{relId}</div>
-                    <div className="mt-0.5 text-[11px]">
-                      {t.expanded.relatedNotInEdition}
-                    </div>
-                  </div>
-                );
-              }
-              return (
-                <button
-                  key={relId}
-                  type="button"
-                  onClick={() => onJumpToSignal(target.signal_id)}
-                  className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-canvas)]/55 p-3.5 text-left hover:border-[var(--ws-border-strong)] hover:bg-[var(--ws-surface-hover)]/60 transition-colors cursor-pointer space-y-1"
-                >
-                  <div className="font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
-                    <span className={`font-semibold ${domainAccentTextClass(target.domain)}`}>
-                      {t.domains[target.domain]}
-                    </span>{' '}
-                    · {target.signal_id}
-                  </div>
-                  <div className="text-[13px] font-semibold text-[var(--ws-ink)] leading-snug break-words">
-                    {target.headline}
-                  </div>
-                </button>
-              );
-            })}
-          </div>
+      {/* Declared Signal Relationships & Legacy Contextual References */}
+      {(signal.relationships.length > 0 ||
+        signal.related_signal_ids.length > 0) && (
+        <section
+          id="sec-relationships"
+          className="scroll-mt-24 space-y-6 border-t border-[var(--ws-border)] pt-7"
+        >
+          {/* Schema-v2 Explicitly Typed Relationships */}
+          {signal.relationships.length > 0 && (
+            <div className="space-y-3.5">
+              <div className="space-y-1">
+                <div className="flex flex-wrap items-baseline justify-between gap-2">
+                  <h3 className="font-display text-[1.15rem] font-semibold text-[var(--ws-ink)]">
+                    {t.expanded.typedRelationshipsTitle}
+                  </h3>
+                  <span className="font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                    {signal.relationships.length}
+                  </span>
+                </div>
+                <p className="text-xs text-[var(--ws-ink-muted)]">
+                  {t.expanded.typedRelationshipsSubtitle}
+                </p>
+              </div>
+
+              <ul className="divide-y divide-[var(--ws-border-subtle)] border-y border-[var(--ws-border)]">
+                {signal.relationships.map((rel, idx) => {
+                  const target = signalById.get(rel.target_signal_id);
+                  return (
+                    <li
+                      key={`${rel.target_signal_id}-${rel.relationship_type}-${idx}`}
+                      className="py-4 space-y-2"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2 font-mono-tabular text-[11.5px]">
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                          <span className="font-semibold uppercase tracking-[0.08em] text-[var(--ws-world)]">
+                            {t.signalRelationshipType[rel.relationship_type]}
+                          </span>
+                          <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
+                            ·
+                          </span>
+                          <span
+                            className={`font-medium ${confidenceColorClass(
+                              rel.confidence
+                            )}`}
+                          >
+                            {t.confidence[rel.confidence]}
+                          </span>
+                        </div>
+                        {target ? (
+                          <span
+                            className={`text-[11px] font-semibold ${domainAccentTextClass(
+                              target.domain
+                            )}`}
+                          >
+                            {t.domains[target.domain]}
+                          </span>
+                        ) : (
+                          <span className="text-[11px] text-[var(--ws-ink-muted)]">
+                            {t.expanded.relatedNotInEdition}
+                          </span>
+                        )}
+                      </div>
+
+                      {target ? (
+                        <button
+                          type="button"
+                          onClick={() => onJumpToSignal(target.signal_id)}
+                          className="block text-left group cursor-pointer space-y-0.5"
+                        >
+                          <div className="font-display text-[1rem] font-semibold text-[var(--ws-ink)] group-hover:text-[var(--ws-world)] transition-colors break-words">
+                            {target.headline}
+                          </div>
+                          <div className="font-mono-tabular text-[11px] text-[var(--ws-ink-muted)] break-all">
+                            {target.signal_id}
+                          </div>
+                        </button>
+                      ) : (
+                        <div className="font-mono-tabular text-xs font-medium text-[var(--ws-ink-secondary)] break-all">
+                          {rel.target_signal_id}
+                        </div>
+                      )}
+
+                      {rel.rationale && (
+                        <p className="text-[13.5px] leading-[1.6] text-[var(--ws-ink-secondary)] break-words">
+                          {rel.rationale}
+                        </p>
+                      )}
+
+                      {rel.supporting_claim_ids.length > 0 && (
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                          <span>{t.expanded.supportingClaimsLabel}:</span>
+                          {rel.supporting_claim_ids.map((cid) => (
+                            <button
+                              key={cid}
+                              type="button"
+                              onClick={() => onInspectClaim(cid)}
+                              className="text-[var(--ws-world)] underline decoration-dotted underline-offset-2 hover:decoration-solid cursor-pointer"
+                            >
+                              {cid}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
+
+          {/* Coarse Legacy Contextual References (Explicitly Non-Causal) */}
+          {(() => {
+            const explicitTargetSet = new Set(
+              signal.relationships.map((r) => r.target_signal_id)
+            );
+            const coarseOnlyIds = signal.related_signal_ids.filter(
+              (id) => !explicitTargetSet.has(id)
+            );
+            if (coarseOnlyIds.length === 0) return null;
+            return (
+              <div className="space-y-3">
+                <div className="space-y-0.5">
+                  <h3 className="font-display text-base font-semibold text-[var(--ws-ink)]">
+                    {signal.relationships.length > 0
+                      ? t.expanded.legacyRelatedTitle
+                      : t.expanded.relatedSignalsTitle}
+                  </h3>
+                  <p className="text-xs text-[var(--ws-ink-muted)]">
+                    {t.expanded.legacyRelatedNote}
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {coarseOnlyIds.map((relId) => {
+                    const target = signalById.get(relId);
+                    if (!target) {
+                      return (
+                        <div
+                          key={relId}
+                          className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface-subtle)] p-3.5 text-xs text-[var(--ws-ink-muted)]"
+                        >
+                          <div className="font-mono-tabular break-all">{relId}</div>
+                          <div className="mt-0.5 text-[11px]">
+                            {t.expanded.relatedNotInEdition}
+                          </div>
+                        </div>
+                      );
+                    }
+                    return (
+                      <button
+                        key={relId}
+                        type="button"
+                        onClick={() => onJumpToSignal(target.signal_id)}
+                        className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-canvas)]/55 p-3.5 text-left hover:border-[var(--ws-border-strong)] hover:bg-[var(--ws-surface-hover)]/60 transition-colors cursor-pointer space-y-1"
+                      >
+                        <div className="font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                          <span
+                            className={`font-semibold ${domainAccentTextClass(
+                              target.domain
+                            )}`}
+                          >
+                            {t.domains[target.domain]}
+                          </span>{' '}
+                          · {target.signal_id}
+                        </div>
+                        <div className="text-[13px] font-semibold text-[var(--ws-ink)] leading-snug break-words">
+                          {target.headline}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })()}
         </section>
       )}
 

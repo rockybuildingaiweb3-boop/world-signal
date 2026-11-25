@@ -5,6 +5,7 @@ import { getUiStrings } from '../../lib/i18n/uiStrings';
 import { domainAccentTextClass } from '../../lib/filtering/filterSignals';
 import { SafeMarkdown } from '../../components/editorial/SafeMarkdown';
 import { ScenariosGrid } from '../../components/editorial/ScenariosGrid';
+import { RelationshipExplorerMatrix } from './RelationshipExplorerMatrix';
 import { WatchlistSection } from './WatchlistSection';
 
 interface SynthesisViewProps {
@@ -84,8 +85,16 @@ export const SynthesisView: React.FC<SynthesisViewProps> = ({
         </p>
       </header>
 
-      {/* 1. Cross-Domain Synthesis — Magazine Monograph Layout */}
-      <section className="space-y-7">
+      {/* 1. Explicit Relationship Map & Matrix (Schema-v2 & Legacy Contextual) */}
+      <RelationshipExplorerMatrix
+        edition={edition}
+        signalById={signalById}
+        lang={lang}
+        onOpenSignal={onOpenSignal}
+      />
+
+      {/* 2. Cross-Domain Synthesis — Magazine Monograph Layout */}
+      <section className="space-y-7 ws-section-rule pt-8">
         <div className="flex flex-col gap-1.5 sm:flex-row sm:items-end sm:justify-between">
           <div className="space-y-1">
             <h2 className="font-display text-[1.4rem] sm:text-[1.65rem] font-semibold tracking-[-0.018em] text-[var(--ws-ink)]">
@@ -239,15 +248,33 @@ export const SynthesisView: React.FC<SynthesisViewProps> = ({
                   {sig.sections.horizonImpacts.map((hi, hIdx) => (
                     <div
                       key={hi.horizon}
-                      className="p-4 sm:p-5 space-y-2 relative"
+                      className="p-4 sm:p-5 space-y-2.5 relative"
                     >
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="font-mono-tabular text-[11px] font-semibold uppercase tracking-[0.11em] text-[var(--ws-economy)]">
-                          {hi.label}
-                        </span>
-                        <span className="font-mono-tabular text-[10.5px] text-[var(--ws-ink-faint)]">
-                          0{hIdx + 1}
-                        </span>
+                      <div className="space-y-1.5">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="font-mono-tabular text-[11px] font-semibold uppercase tracking-[0.11em] text-[var(--ws-economy)]">
+                            {hi.label}
+                          </span>
+                          <span className="font-mono-tabular text-[10.5px] text-[var(--ws-ink-faint)]">
+                            0{hIdx + 1}
+                          </span>
+                        </div>
+                        {/* Connected step-progression hairline */}
+                        <div
+                          aria-hidden="true"
+                          className="flex items-center gap-1"
+                        >
+                          {sig.sections.horizonImpacts.map((_, stepIdx) => (
+                            <span
+                              key={stepIdx}
+                              className={`h-[2px] flex-1 ${
+                                stepIdx <= hIdx
+                                  ? 'bg-[var(--ws-economy)]'
+                                  : 'bg-[var(--ws-border-subtle)]'
+                              }`}
+                            />
+                          ))}
+                        </div>
                       </div>
                       <p className="text-[13px] leading-[1.62] text-[var(--ws-ink-secondary)]">
                         {hi.text}
@@ -307,7 +334,7 @@ export const SynthesisView: React.FC<SynthesisViewProps> = ({
         </section>
       )}
 
-      {/* 4. Personal Implications — Editorial Advisory Monograph */}
+      {/* 4. Personal Implications — Broadsheet Editorial Advisory */}
       {(edition.personalImplications.sections.length > 0 ||
         edition.personalImplications.rawMarkdown) && (
         <section className="space-y-6 ws-section-rule pt-8">
@@ -315,7 +342,7 @@ export const SynthesisView: React.FC<SynthesisViewProps> = ({
             <h2 className="font-display text-[1.4rem] sm:text-[1.65rem] font-semibold tracking-[-0.018em] text-[var(--ws-ink)]">
               {t.synthesis.personalImplicationsTitle}
             </h2>
-            <div className="flex items-start gap-2.5 border-l-2 border-[var(--ws-border-strong)] bg-[var(--ws-surface-subtle)]/70 px-4 py-3 text-[12.5px] leading-relaxed text-[var(--ws-ink-muted)]">
+            <div className="ws-folio-note flex items-start gap-2.5 px-4 py-3 text-[12.5px] leading-relaxed text-[var(--ws-ink-muted)]">
               <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
               <span>
                 {edition.personalImplications.disclaimer ||
@@ -325,17 +352,21 @@ export const SynthesisView: React.FC<SynthesisViewProps> = ({
           </div>
 
           {edition.personalImplications.sections.length > 0 ? (
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 border-y border-[var(--ws-border-strong)] bg-[var(--ws-surface)]">
               {edition.personalImplications.sections.map((sec, idx) => (
                 <article
                   key={`${sec.title}-${idx}`}
-                  className="border-t-2 border-[var(--ws-rule-editorial)] bg-[var(--ws-surface)] border-x border-b border-x-[var(--ws-border)] border-b-[var(--ws-border)] rounded-b-[var(--ws-radius-sm)] p-5 sm:p-6 space-y-3"
+                  className={`p-5 sm:p-6 space-y-3 ${
+                    idx % 2 === 1 ? 'md:border-l md:border-[var(--ws-border)]' : ''
+                  } ${
+                    idx > 0 ? 'border-t border-[var(--ws-border)]' : ''
+                  } ${idx < 2 ? 'md:border-t-0' : ''}`}
                 >
-                  <div className="flex items-baseline justify-between gap-2">
-                    <h3 className="font-display text-[1.1rem] font-semibold text-[var(--ws-ink)]">
+                  <div className="flex items-baseline justify-between gap-2 border-b border-[var(--ws-border-subtle)] pb-2.5">
+                    <h3 className="font-display text-[1.12rem] font-semibold text-[var(--ws-ink)]">
                       {sec.title}
                     </h3>
-                    <span className="font-mono-tabular text-[11px] text-[var(--ws-ink-faint)] shrink-0">
+                    <span className="font-display text-[1.05rem] font-semibold text-[var(--ws-ink-faint)] tabular-nums shrink-0">
                       {String(idx + 1).padStart(2, '0')}
                     </span>
                   </div>

@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { ExternalLink, ShieldCheck } from 'lucide-react';
+import { ExternalLink, Search, ShieldCheck } from 'lucide-react';
 import type {
   ClaimStatus,
   ConfidenceLevel,
@@ -47,6 +47,7 @@ export const AuditClaimLedger: React.FC<AuditClaimLedgerProps> = ({
 }) => {
   const t = getUiStrings(lang);
 
+  const [claimQuery, setClaimQuery] = useState('');
   const [claimStatusFilter, setClaimStatusFilter] = useState<
     ClaimStatus | 'all'
   >('all');
@@ -59,6 +60,7 @@ export const AuditClaimLedger: React.FC<AuditClaimLedgerProps> = ({
   >('all');
 
   const filteredClaims = useMemo(() => {
+    const q = claimQuery.trim().toLowerCase();
     return allClaims.filter((row) => {
       if (claimStatusFilter !== 'all' && row.claim.status !== claimStatusFilter) {
         return false;
@@ -84,11 +86,30 @@ export const AuditClaimLedger: React.FC<AuditClaimLedgerProps> = ({
       ) {
         return false;
       }
+      if (q) {
+        const matchesStatement = row.claim.statement.toLowerCase().includes(q);
+        const matchesClaimId = row.claim.claim_id.toLowerCase().includes(q);
+        const matchesSignalId = row.signal.signal_id.toLowerCase().includes(q);
+        const matchesOutlet = row.linkedSources.some(
+          (src) =>
+            src.outlet.toLowerCase().includes(q) ||
+            src.independence_group.toLowerCase().includes(q)
+        );
+        if (
+          !matchesStatement &&
+          !matchesClaimId &&
+          !matchesSignalId &&
+          !matchesOutlet
+        ) {
+          return false;
+        }
+      }
       return true;
     });
   }, [
     allClaims,
     claimConfFilter,
+    claimQuery,
     claimSignalFilter,
     claimSourceCoverage,
     claimStatusFilter,
@@ -116,8 +137,20 @@ export const AuditClaimLedger: React.FC<AuditClaimLedgerProps> = ({
         </p>
       </div>
 
-      {/* Filter Controls */}
-      <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
+      {/* Search & Filter Controls */}
+      <div className="space-y-2.5">
+        <div className="relative">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--ws-ink-muted)]" />
+          <input
+            type="search"
+            value={claimQuery}
+            onChange={(e) => setClaimQuery(e.target.value)}
+            placeholder={t.audit.claimSearchPlaceholder}
+            aria-label={t.audit.claimSearchPlaceholder}
+            className="w-full rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] py-2 pl-9 pr-3 text-xs text-[var(--ws-ink)] placeholder:text-[var(--ws-ink-muted)] focus:border-[var(--ws-border-strong)] transition-colors"
+          />
+        </div>
+        <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
         <select
           aria-label={t.audit.claimFilterStatus}
           value={claimStatusFilter}
@@ -182,6 +215,7 @@ export const AuditClaimLedger: React.FC<AuditClaimLedgerProps> = ({
             {t.audit.claimSourcesNoIndependent}
           </option>
         </select>
+        </div>
       </div>
 
       {/* Stacked Responsive Claim Evidence Trace Ledger */}
@@ -194,13 +228,17 @@ export const AuditClaimLedger: React.FC<AuditClaimLedgerProps> = ({
           filteredClaims.map(({ signal, claim, linkedSources, hasIndependentOrigin }) => (
             <div
               key={claim.claim_id}
-              className={`p-4 sm:px-5 space-y-2 border-l-[3px] ${
-                hasIndependentOrigin
-                  ? 'border-l-[var(--ws-conf-high)]'
-                  : 'border-l-[var(--ws-border-strong)]'
-              }`}
+              className="p-4 sm:px-5 space-y-2"
             >
               <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono-tabular text-[11.5px]">
+                <span
+                  aria-hidden="true"
+                  className={`h-1.5 w-1.5 rounded-full shrink-0 ${
+                    hasIndependentOrigin
+                      ? 'bg-[var(--ws-conf-high)]'
+                      : 'bg-[var(--ws-border-strong)]'
+                  }`}
+                />
                 <button
                   type="button"
                   onClick={() => onOpenSignal(signal.signal_id)}

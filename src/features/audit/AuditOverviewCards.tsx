@@ -172,46 +172,97 @@ export const AuditOverviewCards: React.FC<AuditOverviewCardsProps> = ({
             ))}
           </div>
 
-          {/* Exact Source Class Breakdown Footnote */}
-          <div className="border-t border-[var(--ws-border-subtle)] pt-3 flex flex-wrap items-center gap-x-3.5 gap-y-1 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
-            <span className="font-semibold text-[var(--ws-ink-secondary)]">
-              {t.audit.sourceBreakdownTitle}:
-            </span>
-            <span>
-              {t.sourceClass.tier_1_newsroom}: {summary.tier1Records}
-            </span>
-            <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">·</span>
-            <span>
-              {t.sourceClass.specialist_publication}: {summary.specialistRecords}
-            </span>
-            <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">·</span>
-            <span>
-              {t.sourceClass.primary_source}: {summary.primarySourceRecords}
-            </span>
-            <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">·</span>
-            <span>
-              {t.sourceClass.research_paper}: {summary.researchPaperRecords}
-            </span>
-            {summary.unknownClassRecords > 0 && (
-              <>
-                <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">·</span>
-                <span className="text-[var(--ws-warn)]">
-                  {t.sourceClass.unknown}: {summary.unknownClassRecords}
-                </span>
-              </>
-            )}
-            <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">·</span>
-            <span>
-              {t.expanded.unregisteredCandidate}: {summary.unregisteredRecords}
-            </span>
-            {summary.unassignedRecords.length > 0 && (
-              <>
-                <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">·</span>
-                <span className="text-[var(--ws-warn)]">
-                  {t.audit.unassignedBadge}: {summary.unassignedRecords.length}
-                </span>
-              </>
-            )}
+          {/* Derived Proportional Source Class Breakdown */}
+          <div className="border-t border-[var(--ws-border-subtle)] pt-3.5 space-y-2.5">
+            <div className="flex flex-wrap items-baseline justify-between gap-2 font-mono-tabular text-[11px]">
+              <span className="font-semibold uppercase tracking-[0.1em] text-[var(--ws-ink-muted)]">
+                {t.audit.sourceBreakdownTitle}
+              </span>
+              <span className="text-[var(--ws-ink-muted)]">
+                {t.expanded.unregisteredCandidate}: {summary.unregisteredRecords}
+                {summary.unassignedRecords.length > 0 && (
+                  <>
+                    {' · '}
+                    <span className="text-[var(--ws-warn)]">
+                      {t.audit.unassignedBadge}: {summary.unassignedRecords.length}
+                    </span>
+                  </>
+                )}
+              </span>
+            </div>
+
+            {(() => {
+              const classBars = [
+                {
+                  key: 'tier1',
+                  label: t.sourceClass.tier_1_newsroom,
+                  count: summary.tier1Records,
+                  barClass: 'bg-[var(--ws-world)]',
+                },
+                {
+                  key: 'specialist',
+                  label: t.sourceClass.specialist_publication,
+                  count: summary.specialistRecords,
+                  barClass: 'bg-[var(--ws-economy)]',
+                },
+                {
+                  key: 'primary',
+                  label: t.sourceClass.primary_source,
+                  count: summary.primarySourceRecords,
+                  barClass: 'bg-[var(--ws-ai)]',
+                },
+                {
+                  key: 'research',
+                  label: t.sourceClass.research_paper,
+                  count: summary.researchPaperRecords,
+                  barClass: 'bg-[var(--ws-ink-secondary)]',
+                },
+                {
+                  key: 'unknown',
+                  label: t.sourceClass.unknown,
+                  count: summary.unknownClassRecords,
+                  barClass: 'bg-[var(--ws-warn)]',
+                },
+              ].filter((c) => c.count > 0);
+
+              return (
+                <div className="space-y-2">
+                  <div
+                    role="img"
+                    aria-label={classBars
+                      .map((c) => `${c.label}: ${c.count}`)
+                      .join(', ')}
+                    className="flex h-2 w-full overflow-hidden rounded-[2px] bg-[var(--ws-surface-subtle)] gap-[2px]"
+                  >
+                    {classBars.map((c) => (
+                      <div
+                        key={c.key}
+                        className={`h-full ${c.barClass}`}
+                        style={{ width: `${(c.count / total) * 100}%` }}
+                        title={`${c.label}: ${c.count}`}
+                      />
+                    ))}
+                  </div>
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                    {classBars.map((c) => (
+                      <span
+                        key={c.key}
+                        className="inline-flex items-center gap-1.5"
+                      >
+                        <span
+                          aria-hidden="true"
+                          className={`h-2 w-2 rounded-[1px] ${c.barClass} shrink-0`}
+                        />
+                        <span>{c.label}:</span>
+                        <span className="font-semibold text-[var(--ws-ink)]">
+                          {c.count}
+                        </span>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         </div>
       )}

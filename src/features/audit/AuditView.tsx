@@ -9,6 +9,7 @@ import type {
 import { getUiStrings } from '../../lib/i18n/uiStrings';
 import { confidenceColorClass } from '../../lib/filtering/filterSignals';
 import { SafeMarkdown } from '../../components/editorial/SafeMarkdown';
+import { buildConfidenceImportanceMatrix } from '../../lib/intelligence/visual-metrics/editorialVisualHelpers';
 import { AuditOverviewCards } from './AuditOverviewCards';
 import { OriginGroupExplorer } from './OriginGroupExplorer';
 import { AuditClaimLedger, type FlatClaimRow } from './AuditClaimLedger';
@@ -94,6 +95,11 @@ export const AuditView: React.FC<AuditViewProps> = ({
     }
     return counts;
   }, [edition.signals]);
+
+  const matrix = useMemo(
+    () => buildConfidenceImportanceMatrix(edition.signals),
+    [edition.signals]
+  );
 
   const totalSignals = Math.max(1, edition.signals.length);
 
@@ -208,6 +214,116 @@ export const AuditView: React.FC<AuditViewProps> = ({
                 );
               })}
             </div>
+          </div>
+        </div>
+
+        {/* Derived Importance × Confidence 5×4 Cross-Matrix */}
+        <div className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] p-5 sm:p-6 space-y-4">
+          <div className="space-y-1">
+            <h3 className="font-mono-tabular text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--ws-ink-muted)]">
+              {t.audit.matrixTitle}
+            </h3>
+            <p className="text-xs text-[var(--ws-ink-muted)]">
+              {t.audit.matrixSubtitle}
+            </p>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[440px] border-collapse font-mono-tabular text-xs">
+              <thead>
+                <tr className="border-b border-[var(--ws-border-strong)] text-[10.5px] uppercase tracking-[0.1em] text-[var(--ws-ink-muted)]">
+                  <th className="py-2.5 pr-3 text-left font-semibold">
+                    {t.audit.matrixImportanceAxis}
+                  </th>
+                  {CONFIDENCE_LEVELS.map((level) => (
+                    <th
+                      key={level}
+                      className={`px-3 py-2.5 text-center font-semibold ${confidenceColorClass(
+                        level
+                      )}`}
+                    >
+                      {t.confidence[level]}
+                    </th>
+                  ))}
+                  <th className="py-2.5 pl-3 text-right font-semibold text-[var(--ws-ink)]">
+                    {t.audit.matrixTotalCol}
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[var(--ws-border-subtle)]">
+                {matrix.rows.map((row) => (
+                  <tr key={row.importance}>
+                    <td className="py-2.5 pr-3 font-semibold text-[var(--ws-ink)] whitespace-nowrap">
+                      {row.importance}/5
+                    </td>
+                    {CONFIDENCE_LEVELS.map((level) => {
+                      const val = row.counts[level];
+                      const ratio =
+                        matrix.maxCellCount > 0
+                          ? val / matrix.maxCellCount
+                          : 0;
+                      const cellBg =
+                        val === 0
+                          ? 'transparent'
+                          : level === 'high'
+                          ? `color-mix(in srgb, var(--ws-conf-high) ${Math.round(
+                              10 + ratio * 22
+                            )}%, transparent)`
+                          : level === 'medium'
+                          ? `color-mix(in srgb, var(--ws-conf-medium) ${Math.round(
+                              10 + ratio * 22
+                            )}%, transparent)`
+                          : level === 'low'
+                          ? `color-mix(in srgb, var(--ws-conf-low) ${Math.round(
+                              10 + ratio * 22
+                            )}%, transparent)`
+                          : `color-mix(in srgb, var(--ws-conf-unverified) ${Math.round(
+                              10 + ratio * 22
+                            )}%, transparent)`;
+
+                      return (
+                        <td
+                          key={level}
+                          className="px-3 py-2.5 text-center border-x border-[var(--ws-border-subtle)]"
+                          style={{ backgroundColor: cellBg }}
+                        >
+                          <span
+                            className={
+                              val > 0
+                                ? 'font-semibold text-[var(--ws-ink)]'
+                                : 'text-[var(--ws-ink-faint)]'
+                            }
+                          >
+                            {val > 0 ? val : '—'}
+                          </span>
+                        </td>
+                      );
+                    })}
+                    <td className="py-2.5 pl-3 text-right font-semibold text-[var(--ws-ink)]">
+                      {row.rowTotal}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot>
+                <tr className="border-t border-[var(--ws-border-strong)] bg-[var(--ws-surface-subtle)]/60 font-semibold text-[var(--ws-ink)]">
+                  <td className="py-2.5 pr-3 text-[11px] uppercase tracking-[0.08em] text-[var(--ws-ink-muted)]">
+                    {t.audit.matrixTotalRow}
+                  </td>
+                  {CONFIDENCE_LEVELS.map((level) => (
+                    <td
+                      key={level}
+                      className="px-3 py-2.5 text-center border-x border-[var(--ws-border-subtle)]"
+                    >
+                      {matrix.columnTotals[level]}
+                    </td>
+                  ))}
+                  <td className="py-2.5 pl-3 text-right">
+                    {matrix.totalSignals}
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
           </div>
         </div>
       </section>

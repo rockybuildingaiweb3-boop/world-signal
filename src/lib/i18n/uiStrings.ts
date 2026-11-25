@@ -4,6 +4,8 @@ import type {
   EditionStatus,
   IndependenceExclusionReason,
   SignalDomain,
+  SignalLifecycle,
+  SignalRelationshipType,
   SignalStatus,
   SourceClass,
   SourceRelationship,
@@ -75,10 +77,19 @@ export interface UiDictionary {
     limitationsExpand: (count: number) => string;
     limitationsCollapse: string;
     artworkCaption: string;
+    artworkIllustrativeNote: string;
     artworkOriginsLabel: string;
     artworkClaimsLabel: string;
     artworkSourcesLabel: string;
+    artworkTimelineMilestones: (count: number) => string;
+    artworkDeclaredLinks: (count: number) => string;
+    artworkOverflowNote: (displayed: number, total: number) => string;
     domainShareLabel: (pct: number) => string;
+    domainBalanceTitle: string;
+    domainHighPriorityCount: (count: number) => string;
+    domainImp5Label: string;
+    domainImp4Label: string;
+    domainImpOtherLabel: string;
   };
   dailyDelta: {
     eyebrow: string;
@@ -199,6 +210,19 @@ export interface UiDictionary {
     showAllSources: (total: number) => string;
     showFewerItems: string;
     activeFiltersLabel: (count: number) => string;
+    continuityLabel: string;
+    firstSeenLabel: string;
+    lastUpdateLabel: string;
+    historyIncompleteNote: string;
+    layerFactual: string;
+    layerInterpretive: string;
+    layerForwardLooking: string;
+    typedRelationshipsTitle: string;
+    typedRelationshipsSubtitle: string;
+    supportingClaimsLabel: string;
+    legacyRelatedTitle: string;
+    legacyRelatedNote: string;
+    structuredTimelineBadge: string;
   };
   synthesis: {
     title: string;
@@ -224,6 +248,21 @@ export interface UiDictionary {
     };
     watchlistUnlinked: string;
     noThreadsFallback: string;
+    relationshipMapTitle: string;
+    relationshipMapSubtitle: string;
+    relationshipFilterAllExplicit: string;
+    relationshipToggleLegacy: (count: number) => string;
+    relationshipInspectPrompt: string;
+    relationshipNoExplicit: string;
+    relationshipExplicitBadge: string;
+    relationshipLegacyBadge: string;
+    relationshipUnresolvedNote: (count: number) => string;
+    relationshipSourceNode: string;
+    relationshipTargetNode: string;
+    relationshipEvidenceClaims: string;
+    relationshipEdgeCount: (shown: number, total: number) => string;
+    watchlistFilterAll: string;
+    watchlistFilterLinked: string;
   };
   audit: {
     title: string;
@@ -287,6 +326,12 @@ export interface UiDictionary {
     showMoreSignals: (count: number) => string;
     showFewerList: string;
     traceFlowLabel: string;
+    claimSearchPlaceholder: string;
+    matrixTitle: string;
+    matrixSubtitle: string;
+    matrixImportanceAxis: string;
+    matrixTotalCol: string;
+    matrixTotalRow: string;
   };
   emptyState: {
     eyebrow: string;
@@ -320,6 +365,8 @@ export interface UiDictionary {
   syncRun: Record<string, string>;
   sourceClass: Record<SourceClass, string>;
   relationship: Record<SourceRelationship, string>;
+  signalRelationshipType: Record<SignalRelationshipType, string>;
+  signalLifecycle: Record<SignalLifecycle, string>;
   exclusionReason: Record<IndependenceExclusionReason, string>;
   metaLine: {
     importance: (n: number) => string;
@@ -402,11 +449,20 @@ const EN_DICT: UiDictionary = {
     limitationsExpand: (count) =>
       count > 1 ? `Read all ${count} editorial notes` : 'Read full editorial note',
     limitationsCollapse: 'Collapse editorial notes',
-    artworkCaption: 'Signal Telemetry Dossier',
+    artworkCaption: 'Structured Signal Diagram',
+    artworkIllustrativeNote: 'Illustrative diagram derived strictly from structured metadata — not documentary imagery.',
     artworkOriginsLabel: 'Origins',
     artworkClaimsLabel: 'Claims',
     artworkSourcesLabel: 'Records',
+    artworkTimelineMilestones: (count) => `${count} dated ${count === 1 ? 'milestone' : 'milestones'}`,
+    artworkDeclaredLinks: (count) => `${count} declared ${count === 1 ? 'link' : 'links'}`,
+    artworkOverflowNote: (displayed, total) => `${displayed} orbital nodes shown of ${total} exact origins`,
     domainShareLabel: (pct) => `${pct}% of edition`,
+    domainBalanceTitle: 'Edition Coverage Balance Across Domains',
+    domainHighPriorityCount: (count) => `${count} high-priority (4–5/5)`,
+    domainImp5Label: 'Imp 5',
+    domainImp4Label: 'Imp 4',
+    domainImpOtherLabel: 'Imp 1–3',
   },
   dailyDelta: {
     eyebrow: 'Daily Delta',
@@ -580,6 +636,19 @@ const EN_DICT: UiDictionary = {
     showAllSources: (total) => `Show all ${total} sources`,
     showFewerItems: 'Show fewer',
     activeFiltersLabel: (count) => `${count} active ${count === 1 ? 'filter' : 'filters'}`,
+    continuityLabel: 'Storyline Continuity',
+    firstSeenLabel: 'First seen',
+    lastUpdateLabel: 'Last material update',
+    historyIncompleteNote: 'Archive lookback incomplete',
+    layerFactual: 'Part I · Verified Record & Chronology',
+    layerInterpretive: 'Part II · Significance & Analysis',
+    layerForwardLooking: 'Part III · Uncertainties & Forward Scenarios',
+    typedRelationshipsTitle: 'Declared Signal Relationships',
+    typedRelationshipsSubtitle: 'Explicitly typed, evidence-linked connections declared in edition metadata.',
+    supportingClaimsLabel: 'Supporting claims',
+    legacyRelatedTitle: 'Coarse Contextual References',
+    legacyRelatedNote: 'Declared in related_signal_ids only; contextual association without causal assertion.',
+    structuredTimelineBadge: 'Evidence-linked chronology',
   },
   synthesis: {
     title: 'Cross-Domain Synthesis & Implications',
@@ -606,6 +675,21 @@ const EN_DICT: UiDictionary = {
     },
     watchlistUnlinked: 'No linked signal',
     noThreadsFallback: 'No structured cross-domain threads recorded in this edition.',
+    relationshipMapTitle: 'Explicit Relationship Map & Matrix',
+    relationshipMapSubtitle: 'Spatial projection of relationships explicitly declared in this edition. No links are inferred from timing or similarity.',
+    relationshipFilterAllExplicit: 'All typed links',
+    relationshipToggleLegacy: (count) => `Include coarse contextual links (${count})`,
+    relationshipInspectPrompt: 'Select any link on the map or ledger below to inspect its rationale and supporting claims.',
+    relationshipNoExplicit: 'No explicitly typed schema-v2 relationships are declared in this edition.',
+    relationshipExplicitBadge: 'Explicit typed link',
+    relationshipLegacyBadge: 'Coarse contextual (non-causal)',
+    relationshipUnresolvedNote: (count) => `${count} declared ${count === 1 ? 'reference points' : 'references point'} to signals outside this edition.`,
+    relationshipSourceNode: 'From',
+    relationshipTargetNode: 'To',
+    relationshipEvidenceClaims: 'Supporting claims',
+    relationshipEdgeCount: (shown, total) => `${shown} of ${total} links`,
+    watchlistFilterAll: 'All checkpoints',
+    watchlistFilterLinked: 'Linked to signals',
   },
   audit: {
     title: 'Audit, Provenance & Methodology',
@@ -671,6 +755,12 @@ const EN_DICT: UiDictionary = {
     showMoreSignals: (count) => `+${count} more signals`,
     showFewerList: 'Collapse',
     traceFlowLabel: 'Signal → Claim → Source → Origin',
+    claimSearchPlaceholder: 'Search claim text, claim ID, or signal ID…',
+    matrixTitle: 'Importance × Confidence Cross-Matrix',
+    matrixSubtitle: 'Exact signal counts showing how editorial importance is assessed independently from verification confidence.',
+    matrixImportanceAxis: 'Importance',
+    matrixTotalCol: 'Total',
+    matrixTotalRow: 'Column Total',
   },
   emptyState: {
     eyebrow: 'Archive Status',
@@ -750,6 +840,23 @@ const EN_DICT: UiDictionary = {
     research_artifact: 'Research Artifact',
     secondary_analysis: 'Secondary Analysis',
     unknown: 'Unknown Relationship',
+  },
+  signalRelationshipType: {
+    same_event: 'Same Event',
+    contextual: 'Contextual',
+    policy_response: 'Policy Response',
+    market_transmission: 'Market Transmission',
+    technological_dependency: 'Tech Dependency',
+    causal_link: 'Causal Link',
+    potential_link: 'Potential Link',
+  },
+  signalLifecycle: {
+    new: 'New',
+    developing: 'Developing',
+    ongoing: 'Ongoing',
+    monitoring: 'Monitoring',
+    resolved: 'Resolved',
+    archived: 'Archived',
   },
   exclusionReason: {
     flagged_non_independent: 'Marked non-independent in edition metadata',
@@ -842,11 +949,20 @@ const ZH_DICT: UiDictionary = {
     limitationsExpand: (count) =>
       count > 1 ? `展开全部 ${count} 条局限与更新说明` : '展开完整说明',
     limitationsCollapse: '收起说明',
-    artworkCaption: '焦点信号证据概览',
+    artworkCaption: '焦点信号结构图解',
+    artworkIllustrativeNote: '基于结构化元数据生成的示意图解，非纪实摄影或现场证据。',
     artworkOriginsLabel: '独立源',
     artworkClaimsLabel: '声明',
     artworkSourcesLabel: '来源记录',
+    artworkTimelineMilestones: (count) => `${count} 个纪实节点`,
+    artworkDeclaredLinks: (count) => `${count} 条显式关联`,
+    artworkOverflowNote: (displayed, total) => `图面示意 ${displayed} 节点（实际共 ${total} 个独立源）`,
     domainShareLabel: (pct) => `占本期 ${pct}%`,
+    domainBalanceTitle: '本期三大领域覆盖结构',
+    domainHighPriorityCount: (count) => `${count} 项高优先级（4–5/5）`,
+    domainImp5Label: '5/5 极高',
+    domainImp4Label: '4/5 高',
+    domainImpOtherLabel: '1–3/5 常规',
   },
   dailyDelta: {
     eyebrow: '每日变动监测',
@@ -1019,6 +1135,19 @@ const ZH_DICT: UiDictionary = {
     showAllSources: (total) => `展开全部 ${total} 条来源`,
     showFewerItems: '收起',
     activeFiltersLabel: (count) => `已启用 ${count} 项筛选`,
+    continuityLabel: '故事线延续性',
+    firstSeenLabel: '首次见于',
+    lastUpdateLabel: '最近实质更新',
+    historyIncompleteNote: '档案回溯不完整',
+    layerFactual: '第一部分 · 核实记录与时间线',
+    layerInterpretive: '第二部分 · 重要意义与深度分析',
+    layerForwardLooking: '第三部分 · 不确定性与前瞻情景',
+    typedRelationshipsTitle: '显式声明的信号关联',
+    typedRelationshipsSubtitle: '期刊元数据中显式标注类型、依据与支撑声明的跨信号关联。',
+    supportingClaimsLabel: '支撑声明',
+    legacyRelatedTitle: '背景关联信号',
+    legacyRelatedNote: '仅来自 related_signal_ids 的粗粒度背景关联，不代表因果关系。',
+    structuredTimelineBadge: '绑定证据链的纪实节点',
   },
   synthesis: {
     title: '跨领域综合、影响与观察清单',
@@ -1045,6 +1174,21 @@ const ZH_DICT: UiDictionary = {
     },
     watchlistUnlinked: '暂无关联信号',
     noThreadsFallback: '本期暂无结构化跨领域联系记录。',
+    relationshipMapTitle: '显式信号关联图谱与矩阵',
+    relationshipMapSubtitle: '仅投影本期元数据中显式声明的信号关联，不根据时间先后或内容相似自动推断因果。',
+    relationshipFilterAllExplicit: '全部显式关联',
+    relationshipToggleLegacy: (count) => `显示粗粒度背景关联（${count}）`,
+    relationshipInspectPrompt: '点击图谱连线或下方账本条目，可查看该关联的完整理由、置信度与支撑声明。',
+    relationshipNoExplicit: '本期未声明带类型的 Schema v2 信号关联。',
+    relationshipExplicitBadge: '显式类型关联',
+    relationshipLegacyBadge: '背景关联（非因果）',
+    relationshipUnresolvedNote: (count) => `另有 ${count} 条显式关联指向非本期收录的跨期信号。`,
+    relationshipSourceNode: '起点信号',
+    relationshipTargetNode: '目标信号',
+    relationshipEvidenceClaims: '支撑声明',
+    relationshipEdgeCount: (shown, total) => `显示 ${shown} / ${total} 条关联`,
+    watchlistFilterAll: '全部观察项',
+    watchlistFilterLinked: '仅看关联信号项',
   },
   audit: {
     title: '来源审计、证据链与方法论',
@@ -1110,6 +1254,12 @@ const ZH_DICT: UiDictionary = {
     showMoreSignals: (count) => `展开其余 ${count} 个信号`,
     showFewerList: '收起',
     traceFlowLabel: '信号 → 声明 → 来源记录 → 独立报道源',
+    claimSearchPlaceholder: '搜索声明内容、声明编号或信号编号…',
+    matrixTitle: '重要性 × 置信度交叉矩阵',
+    matrixSubtitle: '基于本期真实信号计数的二维分布，直观检验“高重要性”与“高置信度”的独立评估原则。',
+    matrixImportanceAxis: '重要性',
+    matrixTotalCol: '合计',
+    matrixTotalRow: '各列合计',
   },
   emptyState: {
     eyebrow: '档案状态',
@@ -1189,6 +1339,23 @@ const ZH_DICT: UiDictionary = {
     research_artifact: '研究报告/产物',
     secondary_analysis: '二次分析',
     unknown: '未知来源关系',
+  },
+  signalRelationshipType: {
+    same_event: '同一事件',
+    contextual: '背景关联',
+    policy_response: '政策回应',
+    market_transmission: '市场传导',
+    technological_dependency: '技术依赖',
+    causal_link: '因果链条',
+    potential_link: '潜在关联',
+  },
+  signalLifecycle: {
+    new: '新增',
+    developing: '演变中',
+    ongoing: '持续追踪',
+    monitoring: '持续监测',
+    resolved: '已解决',
+    archived: '已归档',
   },
   exclusionReason: {
     flagged_non_independent: '元数据标注为非独立来源',

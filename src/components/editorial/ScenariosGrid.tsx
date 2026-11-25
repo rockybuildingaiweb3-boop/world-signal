@@ -15,27 +15,32 @@ interface ScenariosGridProps {
 function scenarioTone(kind: ScenarioItem['kind']): {
   accent: string;
   bar: string;
+  symbol: string;
 } {
   switch (kind) {
     case 'base':
       return {
         accent: 'text-[var(--ws-world)]',
         bar: 'bg-[var(--ws-world)]',
+        symbol: '→',
       };
     case 'downside':
       return {
         accent: 'text-[var(--ws-conf-low)]',
         bar: 'bg-[var(--ws-conf-low)]',
+        symbol: '↘',
       };
     case 'upside':
       return {
         accent: 'text-[var(--ws-economy)]',
         bar: 'bg-[var(--ws-economy)]',
+        symbol: '↗',
       };
     default:
       return {
         accent: 'text-[var(--ws-ink-muted)]',
         bar: 'bg-[var(--ws-border-strong)]',
+        symbol: '◇',
       };
   }
 }
@@ -75,9 +80,10 @@ export const ScenariosGrid: React.FC<ScenariosGridProps> = ({
             <div className="p-4 flex-1 flex flex-col gap-2.5">
               <div className="flex items-center justify-between gap-2">
                 <div
-                  className={`font-mono-tabular text-[11px] font-semibold uppercase tracking-[0.12em] ${tone.accent}`}
+                  className={`inline-flex items-center gap-1.5 font-mono-tabular text-[11px] font-semibold uppercase tracking-[0.12em] ${tone.accent}`}
                 >
-                  {title}
+                  <span aria-hidden="true">{tone.symbol}</span>
+                  <span>{title}</span>
                 </div>
                 <span className="font-mono-tabular text-[10.5px] text-[var(--ws-ink-faint)]">
                   {String(idx + 1).padStart(2, '0')}

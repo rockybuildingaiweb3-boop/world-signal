@@ -107,3 +107,15 @@ Advance WORLD SIGNAL from a daily briefing reader into a longitudinal global int
 ## Delivery requirements
 
 Before implementation, report the existing files to reuse and exact files to change. Implement one coherent step at a time. After each step, report changed files, test results, unresolved limitations, and commit SHA. Never claim a check passed unless it ran.
+
+## Current Implementation Status (Snapshot)
+
+- **Implemented**:
+  - **Daily Delta (`DailyDeltaSection.tsx` + `compareEditions.ts`)**: Deterministic cross-edition comparison in Briefing showing real New, Updated, Unchanged, and Omitted counts, proportional turnover bar, evidence diffs, omission-is-not-resolution safeguards, and explicit unavailable states.
+  - **Evidence Panel & Audit (`AuditView.tsx`, `AuditOverviewCards.tsx`, `OriginGroupExplorer.tsx`, `AuditClaimLedger.tsx`)**: Single source-independence engine (`calculateIndependence.ts`), derived source record & source class proportional charts, filterable origin groups, searchable claim-to-source ledger, Importance × Confidence 5×4 cross-matrix, and editorial audit trail tabs.
+  - **Relationship Explorer (`RelationshipExplorerMatrix.tsx` + `SignalEvidenceLedgers.tsx` + `buildRelationshipGraph.ts`)**: Interactive 3-column cross-domain SVG relationship map and filterable edge ledger in Synthesis plus dossier-level declared relationships in Expanded, strictly separating explicitly typed schema-v2 links from coarse legacy `related_signal_ids`.
+  - **Structured Signal Chronology (`TimelineTrack.tsx`)**: Renders schema-v2 `timelineEvents` with interactive claim/source links and cleanly falls back to schema-v1 Markdown timelines.
+- **Partially Implemented**:
+  - **Storyline Tracker**: Per-signal schema-v2 `continuity` metadata (lifecycle, `first_seen_edition`, `last_material_update`, and `history_complete` warning) is surfaced in `SignalDossierHeader.tsx`, and the pure multi-edition `buildStorylineIndex()` engine exists with tests; a dedicated multi-edition longitudinal storyline drawer/timeline loader across arbitrary historical editions remains to be wired into the UI.
+- **Pending**:
+  - **Cross-Edition Search**: Full archive-wide search across historical editions (filtering by text, `signal_id`, domain, topic, status, and date range with incremental loading and explicit partial-result states) has not yet been implemented in the UI.

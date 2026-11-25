@@ -220,7 +220,7 @@ export const OriginGroupExplorer: React.FC<OriginGroupExplorerProps> = ({
                     </div>
 
                     {group.exclusionReasons.length > 0 && (
-                      <div className="border-l-2 border-[var(--ws-border-strong)] bg-[var(--ws-surface-subtle)]/65 px-3 py-1.5 text-[11.5px] text-[var(--ws-ink-muted)]">
+                      <div className="ws-folio-note px-3 py-1.5 text-[11.5px] text-[var(--ws-ink-muted)]">
                         <span className="font-medium text-[var(--ws-ink-secondary)]">
                           {t.audit.originExclusionReasonLabel}:{' '}
                         </span>

@@ -3,10 +3,10 @@
 
 @layer base {
   :root {
-    /* Typography — Editorial Latin + CJK Pairing */
+    /* Typography — Editorial Latin + CJK Pairing (CJK fallback included in mono to prevent missing glyphs) */
     --font-display: "Fraunces", "Noto Serif SC", "Songti SC", "STSong", Georgia, serif;
-    --font-sans: "Plus Jakarta Sans", "Noto Sans SC", "PingFang SC", system-ui, -apple-system, sans-serif;
-    --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --font-sans: "Plus Jakarta Sans", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", system-ui, -apple-system, sans-serif;
+    --font-mono: "IBM Plex Mono", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", ui-monospace, SFMono-Regular, Menlo, monospace;
 
     /* Layout, Rhythm & Typographic Measure Tokens */
     --ws-container-max: 1320px;
@@ -91,8 +91,8 @@
     /* Optical-Compensated Warm Off-White Ink */
     --ws-ink: #f0ede7;
     --ws-ink-secondary: #cdc8be;
-    --ws-ink-muted: #9a9489;
-    --ws-ink-faint: #746f65;
+    --ws-ink-muted: #9f998e;
+    --ws-ink-faint: #787369;
 
     --ws-world: #93c5fd;
     --ws-world-soft: #17255466;
@@ -143,6 +143,10 @@
     font-feature-settings: "kern" 1, "liga" 1;
   }
 
+  .dark body {
+    letter-spacing: 0.006em;
+  }
+
   :where(button, a, select, input, textarea, [tabindex]):focus-visible {
     outline: 2px solid var(--ws-focus);
     outline-offset: 2px;
@@ -180,7 +184,7 @@
 }
 
 .headline-balance {
-  text-wrap: pretty;
+  text-wrap: balance;
   overflow-wrap: break-word;
 }
 
@@ -224,6 +228,13 @@
   border-bottom: 1px solid var(--ws-border);
 }
 
+/* Restrained Editorial Note Framing (replaces heavy left-border callout clichés) */
+.ws-folio-note {
+  border-top: 1px solid var(--ws-border);
+  border-bottom: 1px solid var(--ws-border);
+  background-color: var(--ws-surface-elevated);
+}
+
 .ws-caution-panel {
   background-color: var(--ws-warn-soft);
   border: 1px solid var(--ws-warn-border);
@@ -249,8 +260,8 @@
 /* Subtle Architectural Grid Pattern for Editorial Art Frames */
 .ws-grid-paper {
   background-image:
-    linear-gradient(to right, color-mix(in srgb, var(--ws-border) 55%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in srgb, var(--ws-border) 55%, transparent) 1px, transparent 1px);
+    linear-gradient(to right, color-mix(in srgb, var(--ws-border) 48%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--ws-border) 48%, transparent) 1px, transparent 1px);
   background-size: 28px 28px;
 }
 
