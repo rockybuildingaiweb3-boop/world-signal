@@ -8,60 +8,67 @@
     --font-sans: "Plus Jakarta Sans", "Noto Sans SC", "PingFang SC", system-ui, -apple-system, sans-serif;
     --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
-    /* Layout & Typographic Measure Tokens */
+    /* Layout, Rhythm & Typographic Measure Tokens */
     --ws-container-max: 1320px;
     --ws-measure-prose: 68ch;
+    --ws-measure-narrow: 56ch;
     --ws-transition-fast: 160ms cubic-bezier(0.2, 0, 0, 1);
+    --ws-transition-med: 240ms cubic-bezier(0.2, 0, 0, 1);
 
     /* Archival Paper & Graphite Ink Palette (Light Theme) */
-    --ws-canvas: #f7f5f0;
-    --ws-surface: #fdfcf9;
-    --ws-surface-subtle: #efece5;
-    --ws-surface-elevated: #f9f7f2;
-    --ws-surface-hover: #f3f0e8;
+    --ws-canvas: #f6f3ec;
+    --ws-surface: #fdfcf8;
+    --ws-surface-subtle: #eeeae1;
+    --ws-surface-elevated: #faf8f3;
+    --ws-surface-hover: #f2eee5;
+    --ws-surface-tint: #ebe6db;
 
-    /* Fine Hairline Border Hierarchy */
-    --ws-border: #e2ddd3;
-    --ws-border-subtle: #ece8e0;
-    --ws-border-strong: #c6beb0;
-    --ws-rule-editorial: #1c1a17;
+    /* Fine Hairline Border & Editorial Rule Hierarchy */
+    --ws-border: #dfd9cd;
+    --ws-border-subtle: #eae5db;
+    --ws-border-strong: #c2b9a9;
+    --ws-rule-editorial: #171512;
 
-    /* Ink Hierarchy (WCAG AA+ on #F7F5F0 and #FDFCF9) */
+    /* Ink Hierarchy (WCAG AA+ on #F6F3EC and #FDFCF8) */
     --ws-ink: #141311;
-    --ws-ink-secondary: #36332e;
-    --ws-ink-muted: #615c53;
-    --ws-ink-faint: #847e73;
+    --ws-ink-secondary: #34312c;
+    --ws-ink-muted: #5d584f;
+    --ws-ink-faint: #827b6f;
 
-    /* Restrained Institutional Domain Accents */
-    --ws-world: #1e40af;
-    --ws-world-soft: #eef3fb;
-    --ws-ai: #5b21b6;
-    --ws-ai-soft: #f3effb;
-    --ws-economy: #166534;
-    --ws-economy-soft: #eef7f1;
+    /* Purposeful Institutional Domain Color Families */
+    --ws-world: #1d3f9c;
+    --ws-world-soft: #ecf2fc;
+    --ws-world-border: #c5d6f4;
+    --ws-ai: #5821ad;
+    --ws-ai-soft: #f2edfc;
+    --ws-ai-border: #d5c4f4;
+    --ws-economy: #156235;
+    --ws-economy-soft: #eaf5ee;
+    --ws-economy-border: #badcc7;
 
     /* Semantic Verification & Confidence States (Never hue-only) */
-    --ws-conf-high: #166534;
-    --ws-conf-high-soft: #eef7f1;
+    --ws-conf-high: #156235;
+    --ws-conf-high-soft: #eaf5ee;
     --ws-conf-medium: #8a4b08;
-    --ws-conf-medium-soft: #f8f3e8;
+    --ws-conf-medium-soft: #f8f2e6;
     --ws-conf-low: #9a3412;
-    --ws-conf-low-soft: #faf0ea;
+    --ws-conf-low-soft: #faefe8;
     --ws-conf-unverified: #991b1b;
-    --ws-conf-unverified-soft: #fbeeee;
+    --ws-conf-unverified-soft: #fbeded;
 
     /* Calm Editorial Caution & Diagnostic Surfaces */
     --ws-warn: #854d0e;
-    --ws-warn-soft: #f5f0e4;
-    --ws-warn-border: #dcd1b9;
+    --ws-warn-soft: #f5efe2;
+    --ws-warn-border: #d9ccb2;
     --ws-error: #991b1b;
     --ws-error-soft: #faf0f0;
     --ws-error-border: #dfbebd;
 
-    /* Interactive, Focus & Restraint Elevation */
-    --ws-focus: #1e40af;
-    --ws-shadow-sm: 0 1px 2px rgba(20, 19, 17, 0.035);
-    --ws-shadow-md: 0 6px 20px rgba(20, 19, 17, 0.07);
+    /* Interactive, Focus & Restrained Elevation */
+    --ws-focus: #1d3f9c;
+    --ws-shadow-sm: 0 1px 2px rgba(20, 19, 17, 0.04);
+    --ws-shadow-md: 0 8px 24px rgba(20, 19, 17, 0.075);
+    --ws-shadow-lg: 0 16px 40px rgba(20, 19, 17, 0.12);
     --ws-radius-sm: 0.25rem;
     --ws-radius-md: 0.375rem;
     --ws-radius-lg: 0.5rem;
@@ -69,38 +76,42 @@
 
   .dark {
     /* Deep Obsidian-Charcoal & Warm Parchment Ink (Dark Theme) */
-    --ws-canvas: #111110;
-    --ws-surface: #181715;
-    --ws-surface-subtle: #201f1c;
+    --ws-canvas: #0f0f0e;
+    --ws-surface: #171614;
+    --ws-surface-subtle: #1f1e1b;
     --ws-surface-elevated: #1c1b18;
-    --ws-surface-hover: #252420;
+    --ws-surface-hover: #25231f;
+    --ws-surface-tint: #292722;
 
-    --ws-border: #2c2a25;
-    --ws-border-subtle: #23211d;
-    --ws-border-strong: #46423a;
-    --ws-rule-editorial: #d8d3c9;
+    --ws-border: #2c2924;
+    --ws-border-subtle: #22201c;
+    --ws-border-strong: #47433b;
+    --ws-rule-editorial: #dbd5ca;
 
     /* Optical-Compensated Warm Off-White Ink */
-    --ws-ink: #efece6;
-    --ws-ink-secondary: #cbc6bc;
-    --ws-ink-muted: #989388;
-    --ws-ink-faint: #736e64;
+    --ws-ink: #f0ede7;
+    --ws-ink-secondary: #cdc8be;
+    --ws-ink-muted: #9a9489;
+    --ws-ink-faint: #746f65;
 
     --ws-world: #93c5fd;
-    --ws-world-soft: #17255452;
+    --ws-world-soft: #17255466;
+    --ws-world-border: #1e3a8a88;
     --ws-ai: #c4b5fd;
-    --ws-ai-soft: #2e106552;
+    --ws-ai-soft: #2e106566;
+    --ws-ai-border: #4c1d9588;
     --ws-economy: #86efac;
-    --ws-economy-soft: #052e1652;
+    --ws-economy-soft: #052e1666;
+    --ws-economy-border: #14532d88;
 
     --ws-conf-high: #86efac;
-    --ws-conf-high-soft: #052e1652;
+    --ws-conf-high-soft: #052e1666;
     --ws-conf-medium: #e9c46a;
-    --ws-conf-medium-soft: #3a29104d;
+    --ws-conf-medium-soft: #3a291059;
     --ws-conf-low: #f4a261;
-    --ws-conf-low-soft: #3d1d0c4d;
+    --ws-conf-low-soft: #3d1d0c59;
     --ws-conf-unverified: #f59b9b;
-    --ws-conf-unverified-soft: #3f10104d;
+    --ws-conf-unverified-soft: #3f101059;
 
     --ws-warn: #e2b866;
     --ws-warn-soft: #211d15;
@@ -110,8 +121,9 @@
     --ws-error-border: #5a2727;
 
     --ws-focus: #93c5fd;
-    --ws-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.28);
-    --ws-shadow-md: 0 8px 28px rgba(0, 0, 0, 0.45);
+    --ws-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.32);
+    --ws-shadow-md: 0 10px 28px rgba(0, 0, 0, 0.48);
+    --ws-shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.6);
   }
 
   html {
@@ -172,10 +184,15 @@
   overflow-wrap: break-word;
 }
 
-/* Editorial Rule & Surface Primitives */
+/* Editorial Rule, Folio & Surface Primitives */
 .ws-masthead-rule {
   border-top: 2px solid var(--ws-rule-editorial);
   border-bottom: 1px solid var(--ws-border-strong);
+}
+
+.ws-double-rule-top {
+  border-top: 2px solid var(--ws-rule-editorial);
+  box-shadow: inset 0 3px 0 0 var(--ws-canvas), inset 0 4px 0 0 var(--ws-border-strong);
 }
 
 .ws-section-rule {
@@ -201,10 +218,46 @@
   border-radius: var(--ws-radius-sm);
 }
 
+.ws-editorial-sheet {
+  background-color: var(--ws-surface);
+  border-top: 2px solid var(--ws-rule-editorial);
+  border-bottom: 1px solid var(--ws-border);
+}
+
 .ws-caution-panel {
   background-color: var(--ws-warn-soft);
   border: 1px solid var(--ws-warn-border);
   border-radius: var(--ws-radius-sm);
+}
+
+/* Subtle Domain Surface Washes */
+.ws-domain-wash-world {
+  background-color: var(--ws-world-soft);
+  border-color: var(--ws-world-border);
+}
+
+.ws-domain-wash-ai {
+  background-color: var(--ws-ai-soft);
+  border-color: var(--ws-ai-border);
+}
+
+.ws-domain-wash-economy {
+  background-color: var(--ws-economy-soft);
+  border-color: var(--ws-economy-border);
+}
+
+/* Subtle Architectural Grid Pattern for Editorial Art Frames */
+.ws-grid-paper {
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--ws-border) 55%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--ws-border) 55%, transparent) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* Reading Progress Hairline */
+.ws-progress-bar {
+  transform-origin: left center;
+  transition: transform 80ms linear;
 }
 
 /* Subtle Scrollbar */

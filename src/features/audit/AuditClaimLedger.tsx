@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, ShieldCheck } from 'lucide-react';
 import type {
   ClaimStatus,
   ConfidenceLevel,
@@ -95,30 +95,36 @@ export const AuditClaimLedger: React.FC<AuditClaimLedgerProps> = ({
   ]);
 
   return (
-    <section className="space-y-4 border-t border-[var(--ws-border)] pt-8">
-      <div className="space-y-1">
+    <section className="space-y-5 ws-section-rule pt-8">
+      <div className="space-y-1.5">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <h2 className="font-display text-xl font-semibold text-[var(--ws-ink)]">
-            {t.audit.claimLedgerTitle}
-          </h2>
-          <span className="font-mono-tabular text-xs text-[var(--ws-ink-muted)]">
+          <div className="space-y-0.5">
+            <div className="inline-flex items-center gap-1.5 font-mono-tabular text-[10.5px] font-semibold uppercase tracking-[0.12em] text-[var(--ws-ink-muted)]">
+              <ShieldCheck className="h-3.5 w-3.5 text-[var(--ws-economy)]" />
+              <span>{t.audit.traceFlowLabel}</span>
+            </div>
+            <h2 className="font-display text-[1.35rem] sm:text-[1.55rem] font-semibold tracking-[-0.015em] text-[var(--ws-ink)]">
+              {t.audit.claimLedgerTitle}
+            </h2>
+          </div>
+          <span className="font-mono-tabular text-xs font-medium text-[var(--ws-ink-muted)]">
             {filteredClaims.length} / {allClaims.length}
           </span>
         </div>
-        <p className="text-xs text-[var(--ws-ink-muted)]">
+        <p className="text-[12.5px] text-[var(--ws-ink-muted)]">
           {t.audit.claimLedgerSubtitle}
         </p>
       </div>
 
       {/* Filter Controls */}
-      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
         <select
           aria-label={t.audit.claimFilterStatus}
           value={claimStatusFilter}
           onChange={(e) =>
             setClaimStatusFilter(e.target.value as ClaimStatus | 'all')
           }
-          className="rounded-md border border-[var(--ws-border)] bg-[var(--ws-surface)] px-3 py-2 text-xs text-[var(--ws-ink)]"
+          className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-3 py-2 text-xs text-[var(--ws-ink)]"
         >
           <option value="all">{t.audit.claimFilterStatus}</option>
           {CLAIM_STATUSES.map((st) => (
@@ -134,7 +140,7 @@ export const AuditClaimLedger: React.FC<AuditClaimLedgerProps> = ({
           onChange={(e) =>
             setClaimConfFilter(e.target.value as ConfidenceLevel | 'all')
           }
-          className="rounded-md border border-[var(--ws-border)] bg-[var(--ws-surface)] px-3 py-2 text-xs text-[var(--ws-ink)]"
+          className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-3 py-2 text-xs text-[var(--ws-ink)]"
         >
           <option value="all">{t.audit.claimFilterConfidence}</option>
           {CONFIDENCE_LEVELS.map((c) => (
@@ -148,7 +154,7 @@ export const AuditClaimLedger: React.FC<AuditClaimLedgerProps> = ({
           aria-label={t.audit.claimFilterSignal}
           value={claimSignalFilter}
           onChange={(e) => setClaimSignalFilter(e.target.value)}
-          className="rounded-md border border-[var(--ws-border)] bg-[var(--ws-surface)] px-3 py-2 text-xs text-[var(--ws-ink)]"
+          className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-3 py-2 text-xs text-[var(--ws-ink)]"
         >
           <option value="all">{t.audit.claimFilterSignal}</option>
           {signals.map((sig) => (
@@ -166,7 +172,7 @@ export const AuditClaimLedger: React.FC<AuditClaimLedgerProps> = ({
               e.target.value as 'all' | 'with_independent' | 'without_independent'
             )
           }
-          className="rounded-md border border-[var(--ws-border)] bg-[var(--ws-surface)] px-3 py-2 text-xs text-[var(--ws-ink)]"
+          className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-3 py-2 text-xs text-[var(--ws-ink)]"
         >
           <option value="all">{t.audit.claimSourcesAll}</option>
           <option value="with_independent">
@@ -178,44 +184,51 @@ export const AuditClaimLedger: React.FC<AuditClaimLedgerProps> = ({
         </select>
       </div>
 
-      {/* Stacked Responsive Claim Evidence Trace List */}
-      <div className="ws-card divide-y divide-[var(--ws-border)] max-h-[620px] overflow-y-auto ws-scroll">
+      {/* Stacked Responsive Claim Evidence Trace Ledger */}
+      <div className="ws-editorial-sheet rounded-b-[var(--ws-radius-sm)] border-x border-[var(--ws-border)] divide-y divide-[var(--ws-border-subtle)] max-h-[620px] overflow-y-auto ws-scroll">
         {filteredClaims.length === 0 ? (
           <div className="p-8 text-center text-sm text-[var(--ws-ink-muted)]">
             {t.audit.noItemsInSection}
           </div>
         ) : (
-          filteredClaims.map(({ signal, claim, linkedSources }) => (
-            <div key={claim.claim_id} className="p-4 space-y-2">
+          filteredClaims.map(({ signal, claim, linkedSources, hasIndependentOrigin }) => (
+            <div
+              key={claim.claim_id}
+              className={`p-4 sm:px-5 space-y-2 border-l-[3px] ${
+                hasIndependentOrigin
+                  ? 'border-l-[var(--ws-conf-high)]'
+                  : 'border-l-[var(--ws-border-strong)]'
+              }`}
+            >
               <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono-tabular text-[11.5px]">
                 <button
                   type="button"
                   onClick={() => onOpenSignal(signal.signal_id)}
-                  className="font-semibold text-[var(--ws-world)] hover:underline cursor-pointer"
+                  className="font-semibold text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
                 >
                   {signal.signal_id}
                 </button>
-                <span aria-hidden="true" className="opacity-40">
+                <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
                   →
                 </span>
                 <span className="font-semibold text-[var(--ws-ink)]">
                   {claim.claim_id}
                 </span>
-                <span aria-hidden="true" className="opacity-40">
+                <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
                   ·
                 </span>
                 <span className="text-[var(--ws-ink-muted)]">
                   {t.claimStatus[claim.status]}
                 </span>
-                <span aria-hidden="true" className="opacity-40">
+                <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
                   ·
                 </span>
-                <span className={confidenceColorClass(claim.confidence)}>
+                <span className={`font-medium ${confidenceColorClass(claim.confidence)}`}>
                   {t.confidence[claim.confidence]}
                 </span>
               </div>
 
-              <p className="text-sm leading-relaxed text-[var(--ws-ink-secondary)] break-words">
+              <p className="text-[14px] leading-[1.6] text-[var(--ws-ink-secondary)] break-words">
                 {claim.statement}
               </p>
 
@@ -237,7 +250,7 @@ export const AuditClaimLedger: React.FC<AuditClaimLedgerProps> = ({
                           href={src.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-0.5 text-[var(--ws-ink-secondary)] underline decoration-[var(--ws-border-strong)] underline-offset-2 hover:text-[var(--ws-world)]"
+                          className="inline-flex items-center gap-0.5 text-[var(--ws-ink-secondary)] underline decoration-[var(--ws-border-strong)] underline-offset-4 hover:text-[var(--ws-world)]"
                         >
                           {src.outlet}
                           <ExternalLink className="h-2.5 w-2.5" />
@@ -250,7 +263,7 @@ export const AuditClaimLedger: React.FC<AuditClaimLedgerProps> = ({
                         <span
                           className={
                             src.qualifiesAsIndependent
-                              ? 'text-[var(--ws-conf-high)]'
+                              ? 'text-[var(--ws-conf-high)] font-medium'
                               : 'text-[var(--ws-ink-muted)]'
                           }
                         >

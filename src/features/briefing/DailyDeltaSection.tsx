@@ -223,7 +223,7 @@ export const DailyDeltaSection: React.FC<DailyDeltaSectionProps> = ({
     <section
       aria-label={t.dailyDelta.title}
       data-testid="daily-delta-section"
-      className="border-b border-[var(--ws-border-strong)] pb-9 space-y-5"
+      className="ws-section-rule pt-7 space-y-5"
     >
       {/* Header Row */}
       <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
@@ -232,13 +232,13 @@ export const DailyDeltaSection: React.FC<DailyDeltaSectionProps> = ({
             <History className="h-3.5 w-3.5 text-[var(--ws-ink-muted)] shrink-0" />
             <span>{t.dailyDelta.eyebrow}</span>
           </div>
-          <h2 className="font-display text-[1.25rem] sm:text-[1.4rem] font-semibold tracking-[-0.015em] text-[var(--ws-ink)]">
+          <h2 className="font-display text-[1.4rem] sm:text-[1.65rem] font-semibold tracking-[-0.018em] text-[var(--ws-ink)]">
             {t.dailyDelta.title}
           </h2>
         </div>
 
-        <div className="flex flex-col gap-1 md:items-end">
-          <div className="font-mono-tabular text-[12px] font-medium text-[var(--ws-ink-secondary)]">
+        <div className="flex flex-col gap-0.5 md:items-end">
+          <div className="font-mono-tabular text-[12px] font-semibold text-[var(--ws-ink)]">
             {t.dailyDelta.comparingRange(state.previousDate, state.currentDate)}
           </div>
           <div className="text-[11.5px] text-[var(--ws-ink-muted)]">
@@ -249,7 +249,7 @@ export const DailyDeltaSection: React.FC<DailyDeltaSectionProps> = ({
 
       {/* Explicit Archive Gap or Schema Version Context Notes (never hidden) */}
       {(state.hasDateGap || hasSchemaTransition) && (
-        <div className="space-y-1.5 text-[12px] leading-relaxed text-[var(--ws-ink-muted)] border-l-2 border-[var(--ws-border-strong)] pl-3">
+        <div className="space-y-1.5 text-[12px] leading-relaxed text-[var(--ws-ink-muted)] border-l-2 border-[var(--ws-border-strong)] pl-3.5">
           {state.hasDateGap && (
             <p>{t.dailyDelta.dateGapNote(state.dayGapCount, state.previousDate)}</p>
           )}
@@ -264,70 +264,82 @@ export const DailyDeltaSection: React.FC<DailyDeltaSectionProps> = ({
         </div>
       )}
 
-      {/* 4-Category Editorial Ledger Navigation (2x2 mobile, 4-col desktop) */}
-      <div
-        role="tablist"
-        aria-label={t.dailyDelta.title}
-        className="grid grid-cols-2 lg:grid-cols-4 border-y border-[var(--ws-border)] bg-[var(--ws-surface)]/55"
-      >
-        {CATEGORIES.map((category, idx) => {
-          const isActive = activeCategory === category;
-          const count = categoryCountFromState(state, category);
-          // Clean internal hairlines for both 2x2 mobile and 4-column desktop
-          const borderClasses = [
-            idx % 2 === 1 ? 'border-l border-[var(--ws-border)]' : '',
-            idx >= 2 ? 'border-t border-[var(--ws-border)] lg:border-t-0' : '',
-            idx === 2 ? 'lg:border-l lg:border-[var(--ws-border)]' : '',
-          ]
-            .filter(Boolean)
-            .join(' ');
+      {/* Editorial Intelligence Sheet Container */}
+      <div className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] overflow-hidden shadow-[var(--ws-shadow-sm)]">
+        {/* 4-Category Editorial Ledger Navigation (2x2 mobile, 4-col desktop) */}
+        <div
+          role="tablist"
+          aria-label={t.dailyDelta.title}
+          className="grid grid-cols-2 lg:grid-cols-4 border-b border-[var(--ws-border)] bg-[var(--ws-surface-elevated)]"
+        >
+          {CATEGORIES.map((category, idx) => {
+            const isActive = activeCategory === category;
+            const count = categoryCountFromState(state, category);
+            const borderClasses = [
+              idx % 2 === 1 ? 'border-l border-[var(--ws-border)]' : '',
+              idx >= 2 ? 'border-t border-[var(--ws-border)] lg:border-t-0' : '',
+              idx === 2 ? 'lg:border-l lg:border-[var(--ws-border)]' : '',
+            ]
+              .filter(Boolean)
+              .join(' ');
 
-          return (
-            <button
-              key={category}
-              type="button"
-              role="tab"
-              aria-selected={isActive}
-              data-testid={`delta-tab-${category}`}
-              onClick={() => handleSelectCategory(category)}
-              className={`relative text-left px-3.5 py-3 sm:px-4 sm:py-3.5 transition-colors duration-150 cursor-pointer ${borderClasses} ${
-                isActive
-                  ? 'bg-[var(--ws-surface)]'
-                  : 'hover:bg-[var(--ws-surface-hover)]/70'
-              }`}
-            >
-              {isActive && (
-                <span
-                  aria-hidden="true"
-                  className="absolute inset-x-0 top-0 h-[2px] bg-[var(--ws-rule-editorial)]"
-                />
-              )}
-              <div className="flex items-baseline justify-between gap-2">
-                <span
-                  className={`font-mono-tabular text-[11px] font-semibold uppercase tracking-[0.09em] ${
-                    isActive
-                      ? categoryAccentClass(category)
-                      : 'text-[var(--ws-ink-muted)]'
-                  }`}
-                >
-                  {t.dailyDelta.categories[category]}
-                </span>
-                <span
-                  data-testid={`delta-count-${category}`}
-                  className={`font-display text-[1.35rem] sm:text-[1.55rem] font-semibold leading-none tabular-nums ${
-                    isActive ? 'text-[var(--ws-ink)]' : 'text-[var(--ws-ink-secondary)]'
-                  }`}
-                >
-                  {count}
-                </span>
-              </div>
-              <p className="mt-1.5 hidden sm:block text-[11.5px] leading-snug text-[var(--ws-ink-muted)]">
-                {t.dailyDelta.categoryDescriptions[category]}
-              </p>
-            </button>
-          );
-        })}
-      </div>
+            const topBarColor =
+              category === 'new'
+                ? 'bg-[var(--ws-economy)]'
+                : category === 'updated'
+                ? 'bg-[var(--ws-world)]'
+                : category === 'omitted'
+                ? 'bg-[var(--ws-warn)]'
+                : 'bg-[var(--ws-rule-editorial)]';
+
+            return (
+              <button
+                key={category}
+                type="button"
+                role="tab"
+                aria-selected={isActive}
+                data-testid={`delta-tab-${category}`}
+                onClick={() => handleSelectCategory(category)}
+                className={`relative text-left px-3.5 py-3 sm:px-5 sm:py-4 transition-colors duration-150 cursor-pointer ${borderClasses} ${
+                  isActive
+                    ? 'bg-[var(--ws-surface)]'
+                    : 'hover:bg-[var(--ws-surface-hover)]/75'
+                }`}
+              >
+                {isActive && (
+                  <span
+                    aria-hidden="true"
+                    className={`absolute inset-x-0 top-0 h-[3px] ${topBarColor}`}
+                  />
+                )}
+                <div className="flex items-baseline justify-between gap-2">
+                  <span
+                    className={`font-mono-tabular text-[11px] font-semibold uppercase tracking-[0.09em] ${
+                      isActive
+                        ? categoryAccentClass(category)
+                        : 'text-[var(--ws-ink-muted)]'
+                    }`}
+                  >
+                    {t.dailyDelta.categories[category]}
+                  </span>
+                  <span
+                    data-testid={`delta-count-${category}`}
+                    className={`font-display text-[1.45rem] sm:text-[1.65rem] font-semibold leading-none tabular-nums ${
+                      isActive ? 'text-[var(--ws-ink)]' : 'text-[var(--ws-ink-secondary)]'
+                    }`}
+                  >
+                    {count}
+                  </span>
+                </div>
+                <p className="mt-1.5 hidden sm:block text-[11.5px] leading-snug text-[var(--ws-ink-muted)]">
+                  {t.dailyDelta.categoryDescriptions[category]}
+                </p>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="px-4 py-4 sm:px-6 sm:py-5">
 
       {/* Focused Category Signal List */}
       <div role="tabpanel" className="space-y-4">
@@ -399,6 +411,8 @@ export const DailyDeltaSection: React.FC<DailyDeltaSectionProps> = ({
             )}
           </>
         )}
+      </div>
+        </div>
       </div>
     </section>
   );

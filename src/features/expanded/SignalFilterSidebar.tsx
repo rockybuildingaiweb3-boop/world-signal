@@ -55,6 +55,28 @@ const SOURCE_CLASSES: readonly SourceClass[] = [
   'unknown',
 ];
 
+function domainBorderAccent(domain: SignalDomain): string {
+  switch (domain) {
+    case 'world':
+      return 'border-l-[var(--ws-world)]';
+    case 'ai':
+      return 'border-l-[var(--ws-ai)]';
+    case 'economy':
+      return 'border-l-[var(--ws-economy)]';
+  }
+}
+
+function domainBarBg(domain: SignalDomain): string {
+  switch (domain) {
+    case 'world':
+      return 'bg-[var(--ws-world)]';
+    case 'ai':
+      return 'bg-[var(--ws-ai)]';
+    case 'economy':
+      return 'bg-[var(--ws-economy)]';
+  }
+}
+
 export const SignalFilterSidebar: React.FC<SignalFilterSidebarProps> = ({
   totalCount,
   filteredSignals,
@@ -76,15 +98,15 @@ export const SignalFilterSidebar: React.FC<SignalFilterSidebarProps> = ({
       aria-label={t.expanded.title}
       className={`${
         mobileShowDetail ? 'hidden lg:flex' : 'flex'
-      } flex-col lg:sticky lg:top-[76px] lg:max-h-[calc(100vh-96px)] ws-card overflow-hidden`}
+      } flex-col lg:sticky lg:top-[76px] lg:max-h-[calc(100vh-96px)] rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] overflow-hidden shadow-[var(--ws-shadow-sm)]`}
     >
-      {/* Search & Quick Domain Controls */}
-      <div className="border-b border-[var(--ws-border)] p-4 space-y-3 bg-[var(--ws-surface)]">
-        <div className="flex items-center justify-between gap-2">
-          <h1 className="font-display text-base font-semibold text-[var(--ws-ink)]">
+      {/* Editorial Index Rail Header */}
+      <div className="border-b border-[var(--ws-border-strong)] p-4 space-y-3 bg-[var(--ws-surface)]">
+        <div className="flex items-baseline justify-between gap-2">
+          <h1 className="font-display text-[1.05rem] font-semibold tracking-[-0.01em] text-[var(--ws-ink)]">
             {t.expanded.title}
           </h1>
-          <span className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)] shrink-0">
+          <span className="font-mono-tabular text-[11px] font-medium text-[var(--ws-ink-muted)] shrink-0">
             {t.expanded.showingCount(filteredSignals.length, totalCount)}
           </span>
         </div>
@@ -100,59 +122,60 @@ export const SignalFilterSidebar: React.FC<SignalFilterSidebarProps> = ({
             }
             placeholder={t.expanded.searchPlaceholder}
             aria-label={t.expanded.searchPlaceholder}
-            className="w-full rounded-md border border-[var(--ws-border)] bg-[var(--ws-canvas)] py-1.5 pl-8 pr-3 text-xs text-[var(--ws-ink)] placeholder:text-[var(--ws-ink-muted)]"
+            className="w-full rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-canvas)] py-1.5 pl-8 pr-3 text-xs text-[var(--ws-ink)] placeholder:text-[var(--ws-ink-muted)] focus:border-[var(--ws-border-strong)] transition-colors"
           />
         </div>
 
-        {/* Domain Segmented Row */}
-        <div className="grid grid-cols-4 gap-1 rounded-md border border-[var(--ws-border)] bg-[var(--ws-surface-subtle)] p-0.5 text-[11.5px]">
+        {/* Domain Segmented Selector with Subtle Domain Accent Indicators */}
+        <div className="grid grid-cols-4 gap-1 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface-subtle)] p-0.5 text-[11.5px]">
           <button
             type="button"
             onClick={() => onChangeFilters({ ...filters, domain: 'all' })}
-            className={`rounded py-1 font-medium transition-colors cursor-pointer ${
+            className={`relative rounded-[3px] py-1.5 font-medium transition-colors cursor-pointer ${
               filters.domain === 'all'
-                ? 'bg-[var(--ws-surface)] text-[var(--ws-ink)] shadow-xs'
+                ? 'bg-[var(--ws-surface)] text-[var(--ws-ink)] shadow-xs font-semibold'
                 : 'text-[var(--ws-ink-muted)] hover:text-[var(--ws-ink)]'
             }`}
           >
-            {lang === 'zh-CN' ? '全部' : 'All'}
+            {t.expanded.domainTabShort.all}
           </button>
-          {DOMAINS.map((d) => (
-            <button
-              key={d}
-              type="button"
-              onClick={() => onChangeFilters({ ...filters, domain: d })}
-              className={`rounded py-1 font-medium transition-colors cursor-pointer truncate px-1 ${
-                filters.domain === d
-                  ? 'bg-[var(--ws-surface)] text-[var(--ws-ink)] shadow-xs'
-                  : 'text-[var(--ws-ink-muted)] hover:text-[var(--ws-ink)]'
-              }`}
-            >
-              {d === 'world'
-                ? lang === 'zh-CN'
-                  ? '世界'
-                  : 'World'
-                : d === 'ai'
-                  ? 'AI'
-                  : lang === 'zh-CN'
-                    ? '经济'
-                    : 'Econ'}
-            </button>
-          ))}
+          {DOMAINS.map((d) => {
+            const isSelected = filters.domain === d;
+            return (
+              <button
+                key={d}
+                type="button"
+                onClick={() => onChangeFilters({ ...filters, domain: d })}
+                className={`relative rounded-[3px] py-1.5 font-medium transition-colors cursor-pointer truncate px-1 ${
+                  isSelected
+                    ? `bg-[var(--ws-surface)] ${domainAccentTextClass(d)} shadow-xs font-semibold`
+                    : 'text-[var(--ws-ink-muted)] hover:text-[var(--ws-ink)]'
+                }`}
+              >
+                {isSelected && (
+                  <span
+                    aria-hidden="true"
+                    className={`absolute inset-x-1.5 bottom-0 h-[2px] ${domainBarBg(d)}`}
+                  />
+                )}
+                {t.expanded.domainTabShort[d]}
+              </button>
+            );
+          })}
         </div>
 
-        {/* Advanced Filter Toggle & Reset */}
-        <div className="flex items-center justify-between gap-2">
+        {/* Advanced Filter Toggle & Active Filter Indicator */}
+        <div className="flex items-center justify-between gap-2 pt-0.5">
           <button
             type="button"
             onClick={() => setShowAdvancedFilters((prev) => !prev)}
             aria-expanded={showAdvancedFilters}
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--ws-ink-secondary)] hover:text-[var(--ws-ink)] cursor-pointer"
+            className="inline-flex min-h-[28px] items-center gap-1.5 text-xs font-medium text-[var(--ws-ink-secondary)] hover:text-[var(--ws-ink)] cursor-pointer"
           >
             <SlidersHorizontal className="h-3.5 w-3.5" />
             <span>
               {t.expanded.filtersButton}
-              {activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}
+              {activeFilterCount > 0 ? ` · ${t.expanded.activeFiltersLabel(activeFilterCount)}` : ''}
             </span>
           </button>
 
@@ -160,7 +183,7 @@ export const SignalFilterSidebar: React.FC<SignalFilterSidebarProps> = ({
             <button
               type="button"
               onClick={() => onChangeFilters({ ...DEFAULT_FILTERS })}
-              className="inline-flex items-center gap-1 text-xs font-medium text-[var(--ws-ink-muted)] hover:text-[var(--ws-ink)] cursor-pointer"
+              className="inline-flex min-h-[28px] items-center gap-1 font-mono-tabular text-[11px] font-medium text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
             >
               <RotateCcw className="h-3 w-3" />
               {t.expanded.resetFilters}
@@ -170,7 +193,7 @@ export const SignalFilterSidebar: React.FC<SignalFilterSidebarProps> = ({
 
         {/* Structured Multi-Dimensional Filters */}
         {showAdvancedFilters && (
-          <div className="grid grid-cols-2 gap-2 border-t border-[var(--ws-border)] pt-3">
+          <div className="grid grid-cols-2 gap-2 border-t border-[var(--ws-border-subtle)] pt-3">
             <select
               aria-label={t.expanded.importanceLabel}
               value={filters.minImportance}
@@ -180,7 +203,7 @@ export const SignalFilterSidebar: React.FC<SignalFilterSidebarProps> = ({
                   minImportance: Number(e.target.value),
                 })
               }
-              className="rounded border border-[var(--ws-border)] bg-[var(--ws-canvas)] px-2 py-1.5 text-xs text-[var(--ws-ink)]"
+              className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-canvas)] px-2 py-1.5 text-xs text-[var(--ws-ink)]"
             >
               {[1, 2, 3, 4, 5].map((n) => (
                 <option key={n} value={n}>
@@ -198,7 +221,7 @@ export const SignalFilterSidebar: React.FC<SignalFilterSidebarProps> = ({
                   confidence: e.target.value as ConfidenceLevel | 'all',
                 })
               }
-              className="rounded border border-[var(--ws-border)] bg-[var(--ws-canvas)] px-2 py-1.5 text-xs text-[var(--ws-ink)]"
+              className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-canvas)] px-2 py-1.5 text-xs text-[var(--ws-ink)]"
             >
               <option value="all">{t.expanded.allConfidence}</option>
               {CONFIDENCE_LEVELS.map((c) => (
@@ -217,7 +240,7 @@ export const SignalFilterSidebar: React.FC<SignalFilterSidebarProps> = ({
                   status: e.target.value as SignalStatus | 'all',
                 })
               }
-              className="rounded border border-[var(--ws-border)] bg-[var(--ws-canvas)] px-2 py-1.5 text-xs text-[var(--ws-ink)]"
+              className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-canvas)] px-2 py-1.5 text-xs text-[var(--ws-ink)]"
             >
               <option value="all">{t.expanded.allStatus}</option>
               {SIGNAL_STATUSES.map((st) => (
@@ -233,7 +256,7 @@ export const SignalFilterSidebar: React.FC<SignalFilterSidebarProps> = ({
               onChange={(e) =>
                 onChangeFilters({ ...filters, topic: e.target.value })
               }
-              className="rounded border border-[var(--ws-border)] bg-[var(--ws-canvas)] px-2 py-1.5 text-xs text-[var(--ws-ink)]"
+              className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-canvas)] px-2 py-1.5 text-xs text-[var(--ws-ink)]"
             >
               <option value="all">{t.expanded.allTopics}</option>
               {uniqueTopics.map((topic) => (
@@ -249,7 +272,7 @@ export const SignalFilterSidebar: React.FC<SignalFilterSidebarProps> = ({
               onChange={(e) =>
                 onChangeFilters({ ...filters, tag: e.target.value })
               }
-              className="rounded border border-[var(--ws-border)] bg-[var(--ws-canvas)] px-2 py-1.5 text-xs text-[var(--ws-ink)]"
+              className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-canvas)] px-2 py-1.5 text-xs text-[var(--ws-ink)]"
             >
               <option value="all">{t.expanded.allTags}</option>
               {uniqueTags.map((tag) => (
@@ -268,7 +291,7 @@ export const SignalFilterSidebar: React.FC<SignalFilterSidebarProps> = ({
                   sourceClass: e.target.value as SourceClass | 'all',
                 })
               }
-              className="rounded border border-[var(--ws-border)] bg-[var(--ws-canvas)] px-2 py-1.5 text-xs text-[var(--ws-ink)]"
+              className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-canvas)] px-2 py-1.5 text-xs text-[var(--ws-ink)]"
             >
               <option value="all">{t.expanded.allSourceClasses}</option>
               {SOURCE_CLASSES.map((sc) => (
@@ -281,11 +304,11 @@ export const SignalFilterSidebar: React.FC<SignalFilterSidebarProps> = ({
         )}
       </div>
 
-      {/* Scrollable Signal List */}
-      <div className="flex-1 overflow-y-auto ws-scroll divide-y divide-[var(--ws-border)]">
+      {/* Scrollable Signal Index List */}
+      <div className="flex-1 overflow-y-auto ws-scroll divide-y divide-[var(--ws-border-subtle)]">
         {filteredSignals.length === 0 ? (
           <div className="p-6 text-center space-y-2">
-            <div className="text-sm font-medium text-[var(--ws-ink)]">
+            <div className="font-display text-sm font-semibold text-[var(--ws-ink)]">
               {t.expanded.noMatchesTitle}
             </div>
             <p className="text-xs text-[var(--ws-ink-muted)]">
@@ -294,14 +317,14 @@ export const SignalFilterSidebar: React.FC<SignalFilterSidebarProps> = ({
             <button
               type="button"
               onClick={() => onChangeFilters({ ...DEFAULT_FILTERS })}
-              className="mt-2 inline-flex items-center gap-1.5 rounded border border-[var(--ws-border)] px-3 py-1.5 text-xs font-medium text-[var(--ws-ink)] hover:border-[var(--ws-border-strong)] cursor-pointer"
+              className="mt-2 inline-flex items-center gap-1.5 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] px-3 py-1.5 text-xs font-medium text-[var(--ws-ink)] hover:border-[var(--ws-border-strong)] cursor-pointer"
             >
               <RotateCcw className="h-3 w-3" />
               {t.expanded.resetFilters}
             </button>
           </div>
         ) : (
-          filteredSignals.map((sig) => {
+          filteredSignals.map((sig, idx) => {
             const isActive = activeSignalId === sig.signal_id;
             return (
               <button
@@ -309,27 +332,32 @@ export const SignalFilterSidebar: React.FC<SignalFilterSidebarProps> = ({
                 type="button"
                 onClick={() => onSelectSignal(sig.signal_id)}
                 aria-current={isActive ? 'true' : undefined}
-                className={`relative w-full p-3.5 text-left transition-colors cursor-pointer ${
+                className={`relative w-full px-4 py-3.5 text-left transition-colors cursor-pointer border-l-[3px] ${
                   isActive
-                    ? 'bg-[var(--ws-surface-subtle)] border-l-2 border-l-[var(--ws-ink)]'
-                    : 'bg-[var(--ws-surface)] hover:bg-[var(--ws-surface-elevated)] border-l-2 border-l-transparent'
+                    ? `bg-[var(--ws-surface-subtle)] ${domainBorderAccent(sig.domain)}`
+                    : 'bg-[var(--ws-surface)] hover:bg-[var(--ws-surface-hover)]/70 border-l-transparent'
                 }`}
               >
                 <div className="flex items-center justify-between gap-2 font-mono-tabular text-[11px] mb-1">
-                  <span
-                    className={`font-semibold ${domainAccentTextClass(sig.domain)}`}
-                  >
-                    {t.domains[sig.domain]}
-                  </span>
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <span className="text-[var(--ws-ink-faint)]">
+                      {String(idx + 1).padStart(2, '0')}
+                    </span>
+                    <span
+                      className={`font-semibold truncate ${domainAccentTextClass(sig.domain)}`}
+                    >
+                      {t.domains[sig.domain]}
+                    </span>
+                  </div>
                   <span className="text-[var(--ws-ink-muted)] shrink-0">
-                    {t.metaLine.importance(sig.importance)} ·{' '}
+                    {sig.importance}/5 ·{' '}
                     <span className={confidenceColorClass(sig.confidence.overall)}>
                       {t.confidence[sig.confidence.overall]}
                     </span>
                   </span>
                 </div>
                 <div
-                  className={`text-[13.5px] leading-snug break-words ${
+                  className={`text-[13.5px] leading-[1.4] break-words ${
                     isActive
                       ? 'font-semibold text-[var(--ws-ink)]'
                       : 'font-medium text-[var(--ws-ink-secondary)]'

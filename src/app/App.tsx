@@ -211,7 +211,7 @@ export const App: React.FC = () => {
     null;
 
   return (
-    <div className="min-h-screen flex flex-col bg-[var(--ws-canvas)] text-[var(--ws-ink)]">
+    <div className="min-h-screen flex flex-col bg-[var(--ws-canvas)] text-[var(--ws-ink)] pb-[62px] md:pb-0">
       <TopBar
         activeView={activeView}
         onSelectView={handleSelectView}
@@ -221,7 +221,7 @@ export const App: React.FC = () => {
         lang={lang}
       />
 
-      <main className="mx-auto w-full max-w-[1320px] flex-1 px-4 pt-6 sm:px-6 sm:pt-8">
+      <main className="mx-auto w-full max-w-[1320px] flex-1 px-4 pt-5 sm:px-6 sm:pt-8">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-24 gap-3 text-sm text-[var(--ws-ink-muted)]">
             <RefreshCw className="h-5 w-5 animate-spin" />
@@ -313,26 +313,29 @@ export const App: React.FC = () => {
         )}
       </main>
 
-      {/* Minimal Editorial Footer */}
-      <footer className="border-t border-[var(--ws-border)] bg-[var(--ws-canvas)] py-6 mt-auto">
-        <div className="mx-auto max-w-[1320px] px-4 sm:px-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
-          <div>
-            <span className="font-semibold text-[var(--ws-ink)]">WORLD SIGNAL</span>{' '}
-            · {t.brandTagline}
+      {/* Minimal Editorial Publication Colophon Footer */}
+      <footer className="border-t border-[var(--ws-border-strong)] bg-[var(--ws-surface)]/55 py-6 mt-auto">
+        <div className="mx-auto max-w-[1320px] px-4 sm:px-6 flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+            <span className="font-display text-[13px] font-semibold tracking-[0.03em] text-[var(--ws-ink)]">
+              WORLD SIGNAL
+            </span>
+            <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">·</span>
+            <span>{t.brandTagline}</span>
           </div>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
             <span>America/Los_Angeles</span>
             <button
               type="button"
               onClick={() => setArchiveOpen(true)}
-              className="hover:text-[var(--ws-ink)] underline decoration-[var(--ws-border-strong)] underline-offset-2 cursor-pointer"
+              className="hover:text-[var(--ws-ink)] underline decoration-[var(--ws-border-strong)] underline-offset-4 cursor-pointer"
             >
               {t.archive.button}
             </button>
             <button
               type="button"
               onClick={() => setLocalModalOpen(true)}
-              className="hover:text-[var(--ws-ink)] underline decoration-[var(--ws-border-strong)] underline-offset-2 cursor-pointer"
+              className="hover:text-[var(--ws-ink)] underline decoration-[var(--ws-border-strong)] underline-offset-4 cursor-pointer"
             >
               {t.archive.developerTools}
             </button>

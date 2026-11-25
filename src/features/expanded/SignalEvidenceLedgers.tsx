@@ -1,5 +1,5 @@
-import React from 'react';
-import { ExternalLink } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { ChevronDown, ChevronUp, ExternalLink, ShieldCheck } from 'lucide-react';
 import type { ParsedSignal, UiLanguage } from '../../types/edition';
 import { getUiStrings } from '../../lib/i18n/uiStrings';
 import {
@@ -20,6 +20,8 @@ interface SignalEvidenceLedgersProps {
   onFilterByTag: (tag: string) => void;
 }
 
+const INITIAL_LEDGER_ITEMS = 6;
+
 export const SignalEvidenceLedgers: React.FC<SignalEvidenceLedgersProps> = ({
   signal,
   signalById,
@@ -32,16 +34,56 @@ export const SignalEvidenceLedgers: React.FC<SignalEvidenceLedgersProps> = ({
   onFilterByTag,
 }) => {
   const t = getUiStrings(lang);
+  const [showAllClaims, setShowAllClaims] = useState(false);
+  const [showAllSources, setShowAllSources] = useState(false);
+
+  // Reset progressive disclosures when switching signals
+  useEffect(() => {
+    setShowAllClaims(false);
+    setShowAllSources(false);
+  }, [signal.signal_id]);
+
+  // Automatically expand if a cross-referenced claim or source is highlighted beyond the initial slice
+  useEffect(() => {
+    if (highlightedClaimId) {
+      const idx = signal.claims.findIndex((c) => c.claim_id === highlightedClaimId);
+      if (idx >= INITIAL_LEDGER_ITEMS) setShowAllClaims(true);
+    }
+  }, [highlightedClaimId, signal.claims]);
+
+  useEffect(() => {
+    if (highlightedSourceId) {
+      const idx = signal.sources.findIndex((s) => s.source_id === highlightedSourceId);
+      if (idx >= INITIAL_LEDGER_ITEMS) setShowAllSources(true);
+    }
+  }, [highlightedSourceId, signal.sources]);
+
+  const visibleClaims = showAllClaims
+    ? signal.claims
+    : signal.claims.slice(0, INITIAL_LEDGER_ITEMS);
+  const visibleSources = showAllSources
+    ? signal.sources
+    : signal.sources.slice(0, INITIAL_LEDGER_ITEMS);
 
   return (
     <>
+      {/* Visual Provenance Chain Header */}
+      <div className="border-t-2 border-[var(--ws-rule-editorial)] pt-6 flex flex-wrap items-center justify-between gap-2">
+        <div className="flex items-center gap-2 font-mono-tabular text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--ws-ink)]">
+          <ShieldCheck className="h-3.5 w-3.5 text-[var(--ws-economy)] shrink-0" />
+          <span>{t.expanded.evidenceChainLabel}</span>
+        </div>
+        <div className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
+          {t.metaLine.claims(signal.claims.length)} ·{' '}
+          {t.masthead.recordsCount(signal.sources.length)} ·{' '}
+          {t.masthead.independentOriginsCount(signal.independentOriginCount)}
+        </div>
+      </div>
+
       {/* Interactive Claim Evidence Ledger */}
-      <section
-        id="sec-claims"
-        className="scroll-mt-28 lg:scroll-mt-24 space-y-4 border-t border-[var(--ws-border)] pt-7"
-      >
+      <section id="sec-claims" className="scroll-mt-24 space-y-4">
         <div className="flex items-baseline justify-between gap-2">
-          <h3 className="font-display text-lg font-semibold text-[var(--ws-ink)]">
+          <h3 className="font-display text-[1.2rem] font-semibold text-[var(--ws-ink)]">
             {t.expanded.sections.claims}
           </h3>
           <span className="font-mono-tabular text-xs text-[var(--ws-ink-muted)]">
@@ -54,72 +96,93 @@ export const SignalEvidenceLedgers: React.FC<SignalEvidenceLedgersProps> = ({
             {t.expanded.claimsEmpty}
           </p>
         ) : (
-          <ul className="divide-y divide-[var(--ws-border)] rounded-md border border-[var(--ws-border)] bg-[var(--ws-surface-elevated)]">
-            {signal.claims.map((claim) => {
-              const isHighlighted = highlightedClaimId === claim.claim_id;
-              return (
-                <li
-                  key={claim.claim_id}
-                  id={`dossier-claim-${claim.claim_id}`}
-                  className={`scroll-mt-28 lg:scroll-mt-24 p-4 space-y-2 transition-colors ${
-                    isHighlighted ? 'bg-[var(--ws-world-soft)]' : ''
-                  }`}
-                >
-                  <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
-                    <span className="font-semibold text-[var(--ws-ink)]">
-                      {claim.claim_id}
-                    </span>
-                    <span aria-hidden="true" className="opacity-40">
-                      ·
-                    </span>
-                    <span>{t.claimStatus[claim.status]}</span>
-                    <span aria-hidden="true" className="opacity-40">
-                      ·
-                    </span>
-                    <span className={confidenceColorClass(claim.confidence)}>
-                      {t.confidence[claim.confidence]}
-                    </span>
-                  </div>
-                  <p className="text-sm leading-relaxed text-[var(--ws-ink-secondary)] break-words">
-                    {claim.statement}
-                  </p>
-                  {claim.source_ids.length > 0 && (
-                    <div className="flex flex-wrap items-center gap-2 font-mono-tabular text-[11.5px]">
-                      <span className="text-[var(--ws-ink-muted)]">
-                        {t.expanded.supportingSources}:
+          <>
+            <ul className="divide-y divide-[var(--ws-border-subtle)] border-y border-[var(--ws-border)]">
+              {visibleClaims.map((claim) => {
+                const isHighlighted = highlightedClaimId === claim.claim_id;
+                return (
+                  <li
+                    key={claim.claim_id}
+                    id={`dossier-claim-${claim.claim_id}`}
+                    className={`scroll-mt-24 py-4 px-3 -mx-3 space-y-2 transition-colors rounded-[var(--ws-radius-sm)] ${
+                      isHighlighted ? 'bg-[var(--ws-world-soft)]' : ''
+                    }`}
+                  >
+                    <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
+                      <span className="font-semibold text-[var(--ws-ink)]">
+                        {claim.claim_id}
                       </span>
-                      {claim.source_ids.map((sid) => {
-                        const src = signal.sources.find(
-                          (s) => s.source_id === sid
-                        );
-                        return (
-                          <button
-                            key={sid}
-                            type="button"
-                            onClick={() => onInspectSource(sid)}
-                            className="text-[var(--ws-world)] underline decoration-[var(--ws-border-strong)] underline-offset-2 hover:decoration-current cursor-pointer"
-                          >
-                            {sid}
-                            {src ? ` (${src.outlet})` : ''}
-                          </button>
-                        );
-                      })}
+                      <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
+                        ·
+                      </span>
+                      <span>{t.claimStatus[claim.status]}</span>
+                      <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
+                        ·
+                      </span>
+                      <span className={`font-medium ${confidenceColorClass(claim.confidence)}`}>
+                        {t.confidence[claim.confidence]}
+                      </span>
                     </div>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
+                    <p className="text-[14px] leading-[1.6] text-[var(--ws-ink-secondary)] break-words">
+                      {claim.statement}
+                    </p>
+                    {claim.source_ids.length > 0 && (
+                      <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono-tabular text-[11.5px]">
+                        <span className="text-[var(--ws-ink-muted)]">
+                          {t.expanded.supportingSources}:
+                        </span>
+                        {claim.source_ids.map((sid) => {
+                          const src = signal.sources.find(
+                            (s) => s.source_id === sid
+                          );
+                          return (
+                            <button
+                              key={sid}
+                              type="button"
+                              onClick={() => onInspectSource(sid)}
+                              className="text-[var(--ws-world)] underline decoration-[var(--ws-border-strong)] underline-offset-4 hover:decoration-current cursor-pointer"
+                            >
+                              {sid}
+                              {src ? ` (${src.outlet})` : ''}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+
+            {signal.claims.length > INITIAL_LEDGER_ITEMS && (
+              <button
+                type="button"
+                onClick={() => setShowAllClaims((prev) => !prev)}
+                className="inline-flex min-h-[34px] items-center gap-1.5 font-mono-tabular text-[11.5px] font-medium text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
+              >
+                <span>
+                  {showAllClaims
+                    ? t.expanded.showFewerItems
+                    : t.expanded.showAllClaims(signal.claims.length)}
+                </span>
+                {showAllClaims ? (
+                  <ChevronUp className="h-3.5 w-3.5" />
+                ) : (
+                  <ChevronDown className="h-3.5 w-3.5" />
+                )}
+              </button>
+            )}
+          </>
         )}
       </section>
 
       {/* Interactive Source Ledger */}
       <section
         id="sec-sources"
-        className="scroll-mt-28 lg:scroll-mt-24 space-y-4 border-t border-[var(--ws-border)] pt-7"
+        className="scroll-mt-24 space-y-4 border-t border-[var(--ws-border)] pt-7"
       >
         <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <h3 className="font-display text-lg font-semibold text-[var(--ws-ink)]">
+          <h3 className="font-display text-[1.2rem] font-semibold text-[var(--ws-ink)]">
             {t.expanded.sections.sources}
           </h3>
           <span className="font-mono-tabular text-xs text-[var(--ws-ink-muted)]">
@@ -133,146 +196,169 @@ export const SignalEvidenceLedgers: React.FC<SignalEvidenceLedgersProps> = ({
             {t.expanded.sourcesEmpty}
           </p>
         ) : (
-          <ul className="space-y-3">
-            {signal.sources.map((src) => {
-              const isHighlighted = highlightedSourceId === src.source_id;
-              return (
-                <li
-                  key={src.source_id}
-                  id={`dossier-source-${src.source_id}`}
-                  className={`scroll-mt-28 lg:scroll-mt-24 rounded-md border p-4 space-y-2 transition-colors ${
-                    isHighlighted
-                      ? 'border-[var(--ws-world)] bg-[var(--ws-world-soft)]'
-                      : 'border-[var(--ws-border)] bg-[var(--ws-surface-elevated)]'
-                  }`}
-                >
-                  <div className="flex flex-wrap items-start justify-between gap-2">
-                    <div className="space-y-1 min-w-0">
-                      <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 font-mono-tabular text-[11.5px]">
-                        <span className="font-semibold text-[var(--ws-ink)]">
-                          {src.source_id}
-                        </span>
-                        <span aria-hidden="true" className="opacity-40">
-                          ·
-                        </span>
-                        <span className="font-semibold text-[var(--ws-ink)]">
-                          {src.outlet}
-                        </span>
-                        <span aria-hidden="true" className="opacity-40">
-                          ·
-                        </span>
-                        <span className="text-[var(--ws-ink-muted)]">
-                          {t.sourceClass[src.source_class]}
-                        </span>
-                        <span aria-hidden="true" className="opacity-40">
-                          ·
-                        </span>
-                        <span className="text-[var(--ws-ink-muted)]">
-                          {t.relationship[src.relationship]}
-                        </span>
+          <>
+            <ul className="divide-y divide-[var(--ws-border-subtle)] border-y border-[var(--ws-border)]">
+              {visibleSources.map((src) => {
+                const isHighlighted = highlightedSourceId === src.source_id;
+                return (
+                  <li
+                    key={src.source_id}
+                    id={`dossier-source-${src.source_id}`}
+                    className={`scroll-mt-24 py-4 px-3 -mx-3 space-y-2 transition-colors rounded-[var(--ws-radius-sm)] border-l-2 ${
+                      isHighlighted
+                        ? 'border-l-[var(--ws-world)] bg-[var(--ws-world-soft)]'
+                        : src.qualifiesAsIndependent
+                        ? 'border-l-[var(--ws-conf-high)]'
+                        : 'border-l-transparent'
+                    }`}
+                  >
+                    <div className="flex flex-wrap items-start justify-between gap-2">
+                      <div className="space-y-1 min-w-0">
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 font-mono-tabular text-[11.5px]">
+                          <span className="font-semibold text-[var(--ws-ink)]">
+                            {src.source_id}
+                          </span>
+                          <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
+                            ·
+                          </span>
+                          <span className="font-semibold text-[var(--ws-ink)]">
+                            {src.outlet}
+                          </span>
+                          <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
+                            ·
+                          </span>
+                          <span className="text-[var(--ws-ink-muted)]">
+                            {t.sourceClass[src.source_class]}
+                          </span>
+                          <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
+                            ·
+                          </span>
+                          <span className="text-[var(--ws-ink-muted)]">
+                            {t.relationship[src.relationship]}
+                          </span>
+                        </div>
+
+                        <div className="text-[14px] font-medium text-[var(--ws-ink)] leading-snug break-words">
+                          {src.url && src.urlSafe ? (
+                            <a
+                              href={src.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-baseline gap-1.5 hover:text-[var(--ws-world)] underline decoration-[var(--ws-border-strong)] underline-offset-4 break-words"
+                            >
+                              <span>{src.title}</span>
+                              <ExternalLink className="h-3 w-3 shrink-0 self-center" />
+                            </a>
+                          ) : (
+                            <span>{src.title}</span>
+                          )}
+                        </div>
                       </div>
 
-                      <div className="text-sm font-medium text-[var(--ws-ink)] leading-snug break-words">
-                        {src.url && src.urlSafe ? (
-                          <a
-                            href={src.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-baseline gap-1.5 hover:text-[var(--ws-world)] underline decoration-[var(--ws-border-strong)] underline-offset-2 break-words"
-                          >
-                            <span>{src.title}</span>
-                            <ExternalLink className="h-3 w-3 shrink-0 self-center" />
-                          </a>
+                      <div className="font-mono-tabular text-[11px] shrink-0">
+                        {src.qualifiesAsIndependent ? (
+                          <span className="font-semibold text-[var(--ws-conf-high)]">
+                            {t.expanded.qualifiesIndependent}
+                          </span>
                         ) : (
-                          <span>{src.title}</span>
+                          <span className="text-[var(--ws-ink-muted)]">
+                            {t.expanded.excludedFromIndependent}
+                          </span>
                         )}
                       </div>
                     </div>
 
-                    <div className="font-mono-tabular text-[11px] shrink-0">
-                      {src.qualifiesAsIndependent ? (
-                        <span className="font-semibold text-[var(--ws-conf-high)]">
-                          {t.expanded.qualifiesIndependent}
-                        </span>
-                      ) : (
-                        <span className="text-[var(--ws-ink-muted)]">
-                          {t.expanded.excludedFromIndependent}
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                      <span>
+                        {t.expanded.sourceGroupLabel}:{' '}
+                        {src.independence_group || t.audit.unassignedBadge}
+                      </span>
+                      <span>
+                        {t.expanded.registryIdLabel}:{' '}
+                        {src.registry_id &&
+                        src.registry_id.toLowerCase() !== 'null'
+                          ? src.registry_id
+                          : t.expanded.unregisteredCandidate}
+                      </span>
+                      {src.published_at && (
+                        <span>
+                          {t.expanded.publishedLabel}:{' '}
+                          {formatCompactTimestamp(src.published_at, lang)}
                         </span>
                       )}
                     </div>
-                  </div>
 
-                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
-                    <span>
-                      Group:{' '}
-                      {src.independence_group || t.audit.unassignedBadge}
-                    </span>
-                    <span>
-                      {t.expanded.registryIdLabel}:{' '}
-                      {src.registry_id &&
-                      src.registry_id.toLowerCase() !== 'null'
-                        ? src.registry_id
-                        : t.expanded.unregisteredCandidate}
-                    </span>
-                    {src.published_at && (
-                      <span>
-                        {t.expanded.publishedLabel}:{' '}
-                        {formatCompactTimestamp(src.published_at, lang)}
-                      </span>
+                    {!src.qualifiesAsIndependent && src.exclusionReason && (
+                      <div className="text-[11.5px] text-[var(--ws-ink-muted)]">
+                        {t.audit.originExclusionReasonLabel}:{' '}
+                        {t.exclusionReason[src.exclusionReason]}
+                      </div>
                     )}
-                  </div>
 
-                  {!src.qualifiesAsIndependent && src.exclusionReason && (
-                    <div className="text-[11.5px] text-[var(--ws-ink-muted)]">
-                      {t.audit.originExclusionReasonLabel}:{' '}
-                      {t.exclusionReason[src.exclusionReason]}
-                    </div>
-                  )}
+                    {src.url && !src.urlSafe && (
+                      <div className="text-[11.5px] font-medium text-[var(--ws-error)]">
+                        {t.expanded.unsafeUrlBlocked}
+                      </div>
+                    )}
 
-                  {src.url && !src.urlSafe && (
-                    <div className="text-[11.5px] font-medium text-[var(--ws-error)]">
-                      {t.expanded.unsafeUrlBlocked}
-                    </div>
-                  )}
+                    {src.supports_claim_ids.length > 0 && (
+                      <div className="flex flex-wrap items-center gap-2 pt-1 font-mono-tabular text-[11px]">
+                        <span className="text-[var(--ws-ink-muted)]">
+                          {t.expanded.supportsClaims}:
+                        </span>
+                        {src.supports_claim_ids.map((cid) => (
+                          <button
+                            key={cid}
+                            type="button"
+                            onClick={() => onInspectClaim(cid)}
+                            className="text-[var(--ws-world)] underline decoration-dotted underline-offset-2 hover:decoration-solid cursor-pointer"
+                          >
+                            {cid}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
 
-                  {src.supports_claim_ids.length > 0 && (
-                    <div className="flex flex-wrap items-center gap-2 pt-1 font-mono-tabular text-[11px]">
-                      <span className="text-[var(--ws-ink-muted)]">
-                        {t.expanded.supportsClaims}:
-                      </span>
-                      {src.supports_claim_ids.map((cid) => (
-                        <button
-                          key={cid}
-                          type="button"
-                          onClick={() => onInspectClaim(cid)}
-                          className="text-[var(--ws-world)] underline decoration-dotted underline-offset-2 hover:decoration-solid cursor-pointer"
-                        >
-                          {cid}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
+            {signal.sources.length > INITIAL_LEDGER_ITEMS && (
+              <button
+                type="button"
+                onClick={() => setShowAllSources((prev) => !prev)}
+                className="inline-flex min-h-[34px] items-center gap-1.5 font-mono-tabular text-[11.5px] font-medium text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
+              >
+                <span>
+                  {showAllSources
+                    ? t.expanded.showFewerItems
+                    : t.expanded.showAllSources(signal.sources.length)}
+                </span>
+                {showAllSources ? (
+                  <ChevronUp className="h-3.5 w-3.5" />
+                ) : (
+                  <ChevronDown className="h-3.5 w-3.5" />
+                )}
+              </button>
+            )}
+          </>
         )}
       </section>
 
       {/* Related Signals Navigation */}
       {signal.related_signal_ids.length > 0 && (
-        <section className="space-y-3 border-t border-[var(--ws-border)] pt-6">
+        <section className="space-y-3 border-t border-[var(--ws-border)] pt-7">
           <h3 className="font-display text-base font-semibold text-[var(--ws-ink)]">
             {t.expanded.relatedSignalsTitle}
           </h3>
-          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {signal.related_signal_ids.map((relId) => {
               const target = signalById.get(relId);
               if (!target) {
                 return (
                   <div
                     key={relId}
-                    className="rounded-md border border-[var(--ws-border)] bg-[var(--ws-surface-subtle)] p-3 text-xs text-[var(--ws-ink-muted)]"
+                    className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface-subtle)] p-3.5 text-xs text-[var(--ws-ink-muted)]"
                   >
                     <div className="font-mono-tabular break-all">{relId}</div>
                     <div className="mt-0.5 text-[11px]">
@@ -286,15 +372,15 @@ export const SignalEvidenceLedgers: React.FC<SignalEvidenceLedgersProps> = ({
                   key={relId}
                   type="button"
                   onClick={() => onJumpToSignal(target.signal_id)}
-                  className="rounded-md border border-[var(--ws-border)] bg-[var(--ws-surface-elevated)] p-3 text-left hover:border-[var(--ws-border-strong)] transition-colors cursor-pointer space-y-1"
+                  className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-canvas)]/55 p-3.5 text-left hover:border-[var(--ws-border-strong)] hover:bg-[var(--ws-surface-hover)]/60 transition-colors cursor-pointer space-y-1"
                 >
                   <div className="font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
-                    <span className={domainAccentTextClass(target.domain)}>
+                    <span className={`font-semibold ${domainAccentTextClass(target.domain)}`}>
                       {t.domains[target.domain]}
                     </span>{' '}
                     · {target.signal_id}
                   </div>
-                  <div className="text-xs font-semibold text-[var(--ws-ink)] leading-snug break-words">
+                  <div className="text-[13px] font-semibold text-[var(--ws-ink)] leading-snug break-words">
                     {target.headline}
                   </div>
                 </button>
@@ -304,16 +390,16 @@ export const SignalEvidenceLedgers: React.FC<SignalEvidenceLedgersProps> = ({
         </section>
       )}
 
-      {/* Tags Footer */}
+      {/* Localized Tags Footer */}
       {signal.tags.length > 0 && (
-        <footer className="border-t border-[var(--ws-border)] pt-4 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
-          <span>Tags:</span>
+        <footer className="border-t border-[var(--ws-border-subtle)] pt-4 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
+          <span>{t.expanded.sourceTagsLabel}:</span>
           {signal.tags.map((tag) => (
             <button
               key={tag}
               type="button"
               onClick={() => onFilterByTag(tag)}
-              className="hover:text-[var(--ws-ink)] underline decoration-[var(--ws-border)] underline-offset-2 cursor-pointer"
+              className="hover:text-[var(--ws-ink)] underline decoration-[var(--ws-border)] underline-offset-4 cursor-pointer"
             >
               #{tag}
             </button>

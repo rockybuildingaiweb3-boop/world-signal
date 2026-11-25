@@ -38,8 +38,7 @@ export const SynthesisView: React.FC<SynthesisViewProps> = ({
 
   // Only surface horizon impacts actually present in parsed signals
   const signalsWithHorizons = useMemo(
-    () =>
-      edition.signals.filter((s) => s.sections.horizonImpacts.length > 0),
+    () => edition.signals.filter((s) => s.sections.horizonImpacts.length > 0),
     [edition.signals]
   );
 
@@ -54,7 +53,6 @@ export const SynthesisView: React.FC<SynthesisViewProps> = ({
         out.push(sig);
       }
     }
-    // Include high-importance economy signals if not already listed (up to 4 total to stay focused)
     for (const sig of edition.signals) {
       if (out.length >= 4) break;
       if (
@@ -71,31 +69,37 @@ export const SynthesisView: React.FC<SynthesisViewProps> = ({
   }, [edition.executiveBriefing.topSignalRefs, edition.signals, signalById]);
 
   return (
-    <div className="space-y-12 pb-16">
-      {/* Page Header */}
-      <header className="border-b border-[var(--ws-border)] pb-5 pt-2 space-y-2">
-        <h1 className="font-display text-2xl sm:text-3xl font-semibold tracking-[-0.02em] text-[var(--ws-ink)]">
+    <div className="space-y-14 pb-16 sm:pb-20">
+      {/* Publication Strategy Dossier Masthead */}
+      <header className="ws-masthead-rule py-5 space-y-2.5">
+        <div className="flex flex-wrap items-center justify-between gap-2 font-mono-tabular text-[11px] uppercase tracking-[0.14em] text-[var(--ws-ink-muted)]">
+          <span>{t.nav.synthesis}</span>
+          <span>{edition.frontmatter.edition_date}</span>
+        </div>
+        <h1 className="font-display text-[1.65rem] sm:text-[2.2rem] font-semibold leading-[1.18] tracking-[-0.024em] text-[var(--ws-ink)] headline-balance">
           {t.synthesis.title}
         </h1>
-        <p className="max-w-3xl text-sm leading-relaxed text-[var(--ws-ink-muted)]">
+        <p className="max-w-3xl text-[14px] leading-[1.65] text-[var(--ws-ink-muted)]">
           {t.synthesis.subtitle}
         </p>
       </header>
 
-      {/* 1. Cross-Domain Synthesis */}
-      <section className="space-y-5">
-        <div className="space-y-1">
-          <h2 className="font-display text-xl font-semibold text-[var(--ws-ink)]">
-            {t.synthesis.crossDomainTitle}
-          </h2>
-          <p className="text-xs text-[var(--ws-ink-muted)]">
-            {edition.crossDomainSynthesis.intro || t.synthesis.crossDomainSubtitle}
-          </p>
+      {/* 1. Cross-Domain Synthesis — Magazine Monograph Layout */}
+      <section className="space-y-7">
+        <div className="flex flex-col gap-1.5 sm:flex-row sm:items-end sm:justify-between">
+          <div className="space-y-1">
+            <h2 className="font-display text-[1.4rem] sm:text-[1.65rem] font-semibold tracking-[-0.018em] text-[var(--ws-ink)]">
+              {t.synthesis.crossDomainTitle}
+            </h2>
+            <p className="max-w-3xl text-[12.5px] leading-relaxed text-[var(--ws-ink-muted)]">
+              {edition.crossDomainSynthesis.intro || t.synthesis.crossDomainSubtitle}
+            </p>
+          </div>
         </div>
 
         {establishedThreads.length === 0 && unestablishedThreads.length === 0 ? (
           edition.crossDomainSynthesis.rawMarkdown ? (
-            <div className="ws-card p-6">
+            <div className="bg-[var(--ws-surface)] border border-[var(--ws-border)] rounded-[var(--ws-radius-sm)] p-6">
               <SafeMarkdown
                 content={edition.crossDomainSynthesis.rawMarkdown}
                 onSelectSignal={onOpenSignal}
@@ -107,122 +111,145 @@ export const SynthesisView: React.FC<SynthesisViewProps> = ({
             </p>
           )
         ) : (
-          <div className="space-y-5">
-            {/* Evidence-Linked Causal Threads */}
-            <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+          <div className="space-y-8">
+            {/* Evidence-Linked Causal Threads as Asymmetric Editorial Monographs */}
+            <div className="divide-y divide-[var(--ws-border-strong)] border-y border-[var(--ws-border-strong)]">
               {establishedThreads.map((thread, idx) => (
                 <article
                   key={`${thread.title}-${idx}`}
-                  className="ws-card p-6 flex flex-col justify-between gap-4"
+                  className="py-7 sm:py-8 grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-10"
                 >
-                  <div className="space-y-3">
-                    <div className="font-mono-tabular text-[11px] font-semibold uppercase tracking-wider text-[var(--ws-world)]">
-                      {t.synthesis.establishedLabel} · 0{idx + 1}
+                  {/* Left Index & Causal Mechanism Rail */}
+                  <div className="lg:col-span-4 space-y-4 min-w-0">
+                    <div className="flex items-center gap-2.5">
+                      <span
+                        aria-hidden="true"
+                        className="inline-block h-[2.5px] w-6 bg-[var(--ws-world)] shrink-0"
+                      />
+                      <span className="font-mono-tabular text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--ws-world)]">
+                        {t.synthesis.establishedLabel} · {String(idx + 1).padStart(2, '0')}
+                      </span>
                     </div>
-                    <h3 className="font-display text-lg font-semibold leading-snug text-[var(--ws-ink)]">
+
+                    <h3 className="font-display text-[1.35rem] sm:text-[1.5rem] font-semibold leading-[1.26] tracking-[-0.018em] text-[var(--ws-ink)] headline-balance break-words">
                       {thread.title}
                     </h3>
-                    <SafeMarkdown
-                      content={thread.content}
-                      compact
-                      onSelectSignal={onOpenSignal}
-                    />
+
+                    {thread.linkedSignalIds.length > 0 && (
+                      <div className="border-t border-[var(--ws-border)] pt-3.5 space-y-2">
+                        <div className="font-mono-tabular text-[10.5px] uppercase tracking-[0.12em] text-[var(--ws-ink-muted)]">
+                          {t.synthesis.linkedSignalsLabel}
+                        </div>
+                        <div className="flex flex-wrap gap-x-3 gap-y-1.5">
+                          {thread.linkedSignalIds.map((sid) => {
+                            const target = signalById.get(sid);
+                            return (
+                              <button
+                                key={sid}
+                                type="button"
+                                onClick={() => onOpenSignal(sid)}
+                                className="inline-flex items-center gap-1 font-mono-tabular text-[11.5px] font-medium text-[var(--ws-ink)] hover:text-[var(--ws-world)] underline decoration-[var(--ws-border-strong)] underline-offset-4 cursor-pointer text-left break-all"
+                              >
+                                <span
+                                  className={
+                                    target ? domainAccentTextClass(target.domain) : ''
+                                  }
+                                >
+                                  {sid}
+                                </span>
+                                <ArrowUpRight className="h-3 w-3 opacity-60 shrink-0" />
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
                   </div>
 
-                  {thread.linkedSignalIds.length > 0 && (
-                    <div className="border-t border-[var(--ws-border)] pt-3 space-y-1.5">
-                      <div className="font-mono-tabular text-[10.5px] uppercase tracking-wider text-[var(--ws-ink-muted)]">
-                        {t.synthesis.linkedSignalsLabel}
-                      </div>
-                      <div className="flex flex-wrap gap-x-3 gap-y-1.5">
-                        {thread.linkedSignalIds.map((sid) => {
-                          const target = signalById.get(sid);
-                          return (
-                            <button
-                              key={sid}
-                              type="button"
-                              onClick={() => onOpenSignal(sid)}
-                              className="inline-flex items-center gap-1 font-mono-tabular text-xs font-medium text-[var(--ws-ink)] hover:text-[var(--ws-world)] underline decoration-[var(--ws-border-strong)] underline-offset-2 cursor-pointer"
-                            >
-                              <span
-                                className={
-                                  target ? domainAccentTextClass(target.domain) : ''
-                                }
-                              >
-                                {sid}
-                              </span>
-                              <ArrowUpRight className="h-3 w-3 opacity-60" />
-                            </button>
-                          );
-                        })}
-                      </div>
+                  {/* Right Editorial Analysis Column */}
+                  <div className="lg:col-span-8 lg:border-l lg:border-[var(--ws-border)] lg:pl-10 min-w-0">
+                    <div className="max-w-[68ch]">
+                      <SafeMarkdown
+                        content={thread.content}
+                        onSelectSignal={onOpenSignal}
+                      />
                     </div>
-                  )}
+                  </div>
                 </article>
               ))}
             </div>
 
-            {/* Explicitly Separated Unestablished Connections */}
+            {/* Explicitly Separated Unestablished Connections (Archival Exclusion Ledger) */}
             {unestablishedThreads.map((thread, idx) => (
               <div
                 key={`unestablished-${idx}`}
-                className="rounded-md border border-[var(--ws-border)] bg-[var(--ws-surface-subtle)] p-5 space-y-2.5"
+                className="rounded-[var(--ws-radius-sm)] border border-dashed border-[var(--ws-border-strong)] bg-[var(--ws-surface-subtle)]/75 p-5 sm:p-6 space-y-2.5"
               >
-                <div className="font-mono-tabular text-[11px] font-semibold uppercase tracking-wider text-[var(--ws-ink-muted)]">
+                <div className="font-mono-tabular text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--ws-ink-muted)]">
                   {t.synthesis.unestablishedLabel}
                 </div>
-                <h3 className="font-display text-base font-semibold text-[var(--ws-ink)]">
+                <h3 className="font-display text-[1.1rem] font-semibold text-[var(--ws-ink)]">
                   {thread.title}
                 </h3>
-                <SafeMarkdown
-                  content={thread.content}
-                  compact
-                  onSelectSignal={onOpenSignal}
-                />
+                <div className="max-w-[74ch]">
+                  <SafeMarkdown
+                    content={thread.content}
+                    compact
+                    onSelectSignal={onOpenSignal}
+                  />
+                </div>
               </div>
             ))}
           </div>
         )}
       </section>
 
-      {/* 2. Economic & Structural Time Horizons (Only when explicitly supported in edition content) */}
+      {/* 2. Economic & Structural Time Horizons (Connected Architectural Track) */}
       {signalsWithHorizons.length > 0 && (
-        <section className="space-y-5 border-t border-[var(--ws-border)] pt-8">
+        <section className="space-y-6 ws-section-rule pt-8">
           <div className="space-y-1">
-            <h2 className="font-display text-xl font-semibold text-[var(--ws-ink)]">
+            <h2 className="font-display text-[1.4rem] sm:text-[1.65rem] font-semibold tracking-[-0.018em] text-[var(--ws-ink)]">
               {t.synthesis.impactAnalysisTitle}
             </h2>
-            <p className="text-xs text-[var(--ws-ink-muted)]">
+            <p className="text-[12.5px] text-[var(--ws-ink-muted)]">
               {t.synthesis.impactAnalysisSubtitle}
             </p>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-6">
             {signalsWithHorizons.map((sig) => (
-              <div key={sig.signal_id} className="ws-card p-5 space-y-4">
-                <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[var(--ws-border)] pb-3">
+              <div
+                key={sig.signal_id}
+                className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] overflow-hidden"
+              >
+                <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[var(--ws-border)] bg-[var(--ws-surface-elevated)] px-5 py-3.5">
                   <button
                     type="button"
                     onClick={() => onOpenSignal(sig.signal_id)}
-                    className="font-display text-base font-semibold text-[var(--ws-ink)] hover:text-[var(--ws-world)] text-left cursor-pointer"
+                    className="font-display text-[1.08rem] font-semibold text-[var(--ws-ink)] hover:text-[var(--ws-world)] text-left cursor-pointer"
                   >
                     {sig.headline}
                   </button>
-                  <span className="font-mono-tabular text-xs text-[var(--ws-ink-muted)]">
+                  <span className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)] break-all sm:shrink-0">
                     {sig.signal_id}
                   </span>
                 </div>
 
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                  {sig.sections.horizonImpacts.map((hi) => (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[var(--ws-border)]">
+                  {sig.sections.horizonImpacts.map((hi, hIdx) => (
                     <div
                       key={hi.horizon}
-                      className="rounded-md border border-[var(--ws-border)] bg-[var(--ws-surface-elevated)] p-3.5 space-y-1.5"
+                      className="p-4 sm:p-5 space-y-2 relative"
                     >
-                      <div className="font-mono-tabular text-[11px] font-semibold uppercase tracking-wider text-[var(--ws-economy)]">
-                        {hi.label}
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-mono-tabular text-[11px] font-semibold uppercase tracking-[0.11em] text-[var(--ws-economy)]">
+                          {hi.label}
+                        </span>
+                        <span className="font-mono-tabular text-[10.5px] text-[var(--ws-ink-faint)]">
+                          0{hIdx + 1}
+                        </span>
                       </div>
-                      <p className="text-xs leading-relaxed text-[var(--ws-ink-secondary)]">
+                      <p className="text-[13px] leading-[1.62] text-[var(--ws-ink-secondary)]">
                         {hi.text}
                       </p>
                     </div>
@@ -236,29 +263,32 @@ export const SynthesisView: React.FC<SynthesisViewProps> = ({
 
       {/* 3. Conditional Scenarios Across Key Signals */}
       {keyScenarioSignals.length > 0 && (
-        <section className="space-y-5 border-t border-[var(--ws-border)] pt-8">
+        <section className="space-y-6 ws-section-rule pt-8">
           <div className="space-y-1">
-            <h2 className="font-display text-xl font-semibold text-[var(--ws-ink)]">
+            <h2 className="font-display text-[1.4rem] sm:text-[1.65rem] font-semibold tracking-[-0.018em] text-[var(--ws-ink)]">
               {t.synthesis.scenariosSectionTitle}
             </h2>
-            <p className="text-xs text-[var(--ws-ink-muted)]">
+            <p className="text-[12.5px] text-[var(--ws-ink-muted)]">
               {t.synthesis.scenariosSectionSubtitle}
             </p>
           </div>
 
-          <div className="space-y-5">
+          <div className="space-y-8">
             {keyScenarioSignals.map((sig) => (
-              <div key={sig.signal_id} className="ws-card p-5 sm:p-6 space-y-4">
+              <div
+                key={sig.signal_id}
+                className="space-y-3.5 border-b border-[var(--ws-border)] pb-7 last:border-b-0 last:pb-0"
+              >
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <button
                     type="button"
                     onClick={() => onOpenSignal(sig.signal_id)}
-                    className="font-display text-base font-semibold text-[var(--ws-ink)] hover:text-[var(--ws-world)] text-left cursor-pointer"
+                    className="font-display text-[1.15rem] sm:text-[1.25rem] font-semibold text-[var(--ws-ink)] hover:text-[var(--ws-world)] text-left cursor-pointer headline-balance"
                   >
                     {sig.headline}
                   </button>
                   <span
-                    className={`font-mono-tabular text-xs font-medium ${domainAccentTextClass(
+                    className={`font-mono-tabular text-[11.5px] font-semibold break-words min-w-0 ${domainAccentTextClass(
                       sig.domain
                     )}`}
                   >
@@ -277,15 +307,15 @@ export const SynthesisView: React.FC<SynthesisViewProps> = ({
         </section>
       )}
 
-      {/* 4. Personal Implications */}
+      {/* 4. Personal Implications — Editorial Advisory Monograph */}
       {(edition.personalImplications.sections.length > 0 ||
         edition.personalImplications.rawMarkdown) && (
-        <section className="space-y-5 border-t border-[var(--ws-border)] pt-8">
-          <div className="space-y-2.5">
-            <h2 className="font-display text-xl font-semibold text-[var(--ws-ink)]">
+        <section className="space-y-6 ws-section-rule pt-8">
+          <div className="space-y-3">
+            <h2 className="font-display text-[1.4rem] sm:text-[1.65rem] font-semibold tracking-[-0.018em] text-[var(--ws-ink)]">
               {t.synthesis.personalImplicationsTitle}
             </h2>
-            <div className="flex items-start gap-2.5 rounded-md border border-[var(--ws-border)] bg-[var(--ws-surface-subtle)] px-4 py-3 text-xs leading-relaxed text-[var(--ws-ink-muted)]">
+            <div className="flex items-start gap-2.5 border-l-2 border-[var(--ws-border-strong)] bg-[var(--ws-surface-subtle)]/70 px-4 py-3 text-[12.5px] leading-relaxed text-[var(--ws-ink-muted)]">
               <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
               <span>
                 {edition.personalImplications.disclaimer ||
@@ -295,12 +325,20 @@ export const SynthesisView: React.FC<SynthesisViewProps> = ({
           </div>
 
           {edition.personalImplications.sections.length > 0 ? (
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {edition.personalImplications.sections.map((sec, idx) => (
-                <article key={`${sec.title}-${idx}`} className="ws-card p-5 space-y-2.5">
-                  <h3 className="font-display text-base font-semibold text-[var(--ws-ink)]">
-                    {sec.title}
-                  </h3>
+                <article
+                  key={`${sec.title}-${idx}`}
+                  className="border-t-2 border-[var(--ws-rule-editorial)] bg-[var(--ws-surface)] border-x border-b border-x-[var(--ws-border)] border-b-[var(--ws-border)] rounded-b-[var(--ws-radius-sm)] p-5 sm:p-6 space-y-3"
+                >
+                  <div className="flex items-baseline justify-between gap-2">
+                    <h3 className="font-display text-[1.1rem] font-semibold text-[var(--ws-ink)]">
+                      {sec.title}
+                    </h3>
+                    <span className="font-mono-tabular text-[11px] text-[var(--ws-ink-faint)] shrink-0">
+                      {String(idx + 1).padStart(2, '0')}
+                    </span>
+                  </div>
                   <SafeMarkdown
                     content={sec.content}
                     compact
@@ -310,7 +348,7 @@ export const SynthesisView: React.FC<SynthesisViewProps> = ({
               ))}
             </div>
           ) : (
-            <div className="ws-card p-6">
+            <div className="bg-[var(--ws-surface)] border border-[var(--ws-border)] rounded-[var(--ws-radius-sm)] p-6">
               <SafeMarkdown
                 content={edition.personalImplications.rawMarkdown}
                 onSelectSignal={onOpenSignal}

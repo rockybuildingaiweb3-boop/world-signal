@@ -74,6 +74,11 @@ export interface UiDictionary {
     summaryCollapse: string;
     limitationsExpand: (count: number) => string;
     limitationsCollapse: string;
+    artworkCaption: string;
+    artworkOriginsLabel: string;
+    artworkClaimsLabel: string;
+    artworkSourcesLabel: string;
+    domainShareLabel: (pct: number) => string;
   };
   dailyDelta: {
     eyebrow: string;
@@ -181,6 +186,19 @@ export interface UiDictionary {
     openSource: string;
     relatedSignalsTitle: string;
     relatedNotInEdition: string;
+    domainTabShort: {
+      all: string;
+      world: string;
+      ai: string;
+      economy: string;
+    };
+    evidenceChainLabel: string;
+    sourceGroupLabel: string;
+    sourceTagsLabel: string;
+    showAllClaims: (total: number) => string;
+    showAllSources: (total: number) => string;
+    showFewerItems: string;
+    activeFiltersLabel: (count: number) => string;
   };
   synthesis: {
     title: string;
@@ -260,6 +278,15 @@ export interface UiDictionary {
     diagnosticsErrors: string;
     diagnosticsWarnings: string;
     noItemsInSection: string;
+    compositionTitle: string;
+    compositionQualifying: string;
+    compositionSyndicated: string;
+    compositionPrimaryResearch: string;
+    compositionOtherExcluded: string;
+    showMoreOutlets: (count: number) => string;
+    showMoreSignals: (count: number) => string;
+    showFewerList: string;
+    traceFlowLabel: string;
   };
   emptyState: {
     eyebrow: string;
@@ -375,6 +402,11 @@ const EN_DICT: UiDictionary = {
     limitationsExpand: (count) =>
       count > 1 ? `Read all ${count} editorial notes` : 'Read full editorial note',
     limitationsCollapse: 'Collapse editorial notes',
+    artworkCaption: 'Signal Telemetry Dossier',
+    artworkOriginsLabel: 'Origins',
+    artworkClaimsLabel: 'Claims',
+    artworkSourcesLabel: 'Records',
+    domainShareLabel: (pct) => `${pct}% of edition`,
   },
   dailyDelta: {
     eyebrow: 'Daily Delta',
@@ -535,6 +567,19 @@ const EN_DICT: UiDictionary = {
     openSource: 'Open source',
     relatedSignalsTitle: 'Related Signals in This Edition',
     relatedNotInEdition: 'Referenced outside current edition',
+    domainTabShort: {
+      all: 'All',
+      world: 'World',
+      ai: 'AI',
+      economy: 'Econ',
+    },
+    evidenceChainLabel: 'Signal → Claim → Source → Independent Origin',
+    sourceGroupLabel: 'Origin group',
+    sourceTagsLabel: 'Tags',
+    showAllClaims: (total) => `Show all ${total} claims`,
+    showAllSources: (total) => `Show all ${total} sources`,
+    showFewerItems: 'Show fewer',
+    activeFiltersLabel: (count) => `${count} active ${count === 1 ? 'filter' : 'filters'}`,
   },
   synthesis: {
     title: 'Cross-Domain Synthesis & Implications',
@@ -617,6 +662,15 @@ const EN_DICT: UiDictionary = {
     diagnosticsErrors: 'Errors',
     diagnosticsWarnings: 'Warnings',
     noItemsInSection: 'No entries recorded in this section.',
+    compositionTitle: 'Derived Source Record Composition',
+    compositionQualifying: 'Qualifying Original',
+    compositionSyndicated: 'Syndicated Wire',
+    compositionPrimaryResearch: 'Primary & Research',
+    compositionOtherExcluded: 'Other Excluded',
+    showMoreOutlets: (count) => `+${count} more outlets`,
+    showMoreSignals: (count) => `+${count} more signals`,
+    showFewerList: 'Collapse',
+    traceFlowLabel: 'Signal → Claim → Source → Origin',
   },
   emptyState: {
     eyebrow: 'Archive Status',
@@ -788,6 +842,11 @@ const ZH_DICT: UiDictionary = {
     limitationsExpand: (count) =>
       count > 1 ? `展开全部 ${count} 条局限与更新说明` : '展开完整说明',
     limitationsCollapse: '收起说明',
+    artworkCaption: '焦点信号证据概览',
+    artworkOriginsLabel: '独立源',
+    artworkClaimsLabel: '声明',
+    artworkSourcesLabel: '来源记录',
+    domainShareLabel: (pct) => `占本期 ${pct}%`,
   },
   dailyDelta: {
     eyebrow: '每日变动监测',
@@ -947,6 +1006,19 @@ const ZH_DICT: UiDictionary = {
     openSource: '查看原文',
     relatedSignalsTitle: '本期关联信号',
     relatedNotInEdition: '指向非本期收录的信号',
+    domainTabShort: {
+      all: '全部',
+      world: '世界',
+      ai: 'AI',
+      economy: '经济',
+    },
+    evidenceChainLabel: '信号 → 声明 → 来源记录 → 独立报道源',
+    sourceGroupLabel: '独立来源分组',
+    sourceTagsLabel: '标签',
+    showAllClaims: (total) => `展开全部 ${total} 条声明`,
+    showAllSources: (total) => `展开全部 ${total} 条来源`,
+    showFewerItems: '收起',
+    activeFiltersLabel: (count) => `已启用 ${count} 项筛选`,
   },
   synthesis: {
     title: '跨领域综合、影响与观察清单',
@@ -1029,6 +1101,15 @@ const ZH_DICT: UiDictionary = {
     diagnosticsErrors: '错误',
     diagnosticsWarnings: '提示与警告',
     noItemsInSection: '该分节暂无记录。',
+    compositionTitle: '来源记录构成比例（由单一规则引擎派生）',
+    compositionQualifying: '合格原创报道',
+    compositionSyndicated: '通稿转载去重',
+    compositionPrimaryResearch: '一级文件与研究',
+    compositionOtherExcluded: '其余排除记录',
+    showMoreOutlets: (count) => `展开其余 ${count} 个机构`,
+    showMoreSignals: (count) => `展开其余 ${count} 个信号`,
+    showFewerList: '收起',
+    traceFlowLabel: '信号 → 声明 → 来源记录 → 独立报道源',
   },
   emptyState: {
     eyebrow: '档案状态',
