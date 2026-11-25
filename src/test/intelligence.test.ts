@@ -72,7 +72,7 @@ describe('cross-edition intelligence projections', () => {
       'timeline_events: []',
       'relationships: []',
     ].join('\n');
-    let markdown = VALID_SYNTHETIC_EDITION.replace(/^schema_version:\\s*1$/m, 'schema_version: 2');
+    let markdown = VALID_SYNTHETIC_EDITION.replace('schema_version: 1', 'schema_version: 2');
     markdown = markdown.replace(/^signal_id: "[^"]+"$/gm, (line) => line + '\n' + v2Defaults);
     assert.match(markdown, /^schema_version: 2$/m);
     markdown = markdown.replace('timeline_events: []', [
@@ -103,7 +103,7 @@ describe('cross-edition intelligence projections', () => {
   });
 
   it('rejects schema-v2 signals that omit required metadata blocks', () => {
-    const markdown = VALID_SYNTHETIC_EDITION.replace(/^schema_version:\\s*1$/m, 'schema_version: 2');
+    const markdown = VALID_SYNTHETIC_EDITION.replace('schema_version: 1', 'schema_version: 2');
     assert.match(markdown, /^schema_version: 2$/m);
     const edition = parseAtDate(markdown, '2026-10-01');
     const codes = edition.validation.errors.map((issue) => issue.code);
