@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 import type {
   EditionIndexEntry,
@@ -39,6 +39,7 @@ export const App: React.FC = () => {
   const [filters, setFilters] = useState<SignalFilters>({ ...DEFAULT_FILTERS });
   const [archiveOpen, setArchiveOpen] = useState<boolean>(false);
   const [localModalOpen, setLocalModalOpen] = useState<boolean>(false);
+  const skipNextUrlSyncRef = useRef(false);
 
   const archive = useArchive(initialUrl.edition);
   const { theme, setTheme, lang, setLang } = usePreferences(
@@ -48,6 +49,15 @@ export const App: React.FC = () => {
 
   // Keep URL query state cleanly synced for shareable edition, view, and signal deep links
   useEffect(() => {
+    // Do not erase an incoming deep link while the initial archive request is pending.
+    if (archive.isLoading) return;
+
+    // popstate already changed the address bar; state restoration must not create a new entry.
+    if (skipNextUrlSyncRef.current) {
+      skipNextUrlSyncRef.current = false;
+      return;
+    }
+
     const editionDate = archive.edition?.isLocalPreview
       ? null
       : archive.edition?.frontmatter.edition_date ??
@@ -60,7 +70,7 @@ export const App: React.FC = () => {
         view: activeView,
         signal: activeView === 'expanded' ? selectedSignalId : null,
       },
-      'replace'
+      'push'
     );
   }, [
     activeView,
@@ -70,9 +80,10 @@ export const App: React.FC = () => {
     selectedSignalId,
   ]);
 
-  // Support browser back/forward navigation
+  // Support browser back/forward navigation without writing a duplicate history entry.
   useEffect(() => {
     const onPopState = () => {
+      skipNextUrlSyncRef.current = true;
       const next = parseUrlState(window.location.search);
       setActiveView(next.view);
       setSelectedSignalId(next.signal);
@@ -83,7 +94,7 @@ export const App: React.FC = () => {
     };
     window.addEventListener('popstate', onPopState);
     return () => window.removeEventListener('popstate', onPopState);
-  }, [archive]);
+  }, [archive.activeEntry?.date, archive.selectEditionByDate]);
 
   const handleSelectView = useCallback((view: ViewId) => {
     setActiveView(view);
@@ -116,7 +127,7 @@ export const App: React.FC = () => {
       await archive.selectEditionEntry(entry);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     },
-    [archive]
+    [archive.selectEditionEntry]
   );
 
   const handleLoadLocalMarkdown = useCallback(
@@ -128,7 +139,7 @@ export const App: React.FC = () => {
       setActiveView('briefing');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     },
-    [archive]
+    [archive.loadLocalMarkdown]
   );
 
   const activeEditionDate =

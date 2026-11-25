@@ -15,6 +15,31 @@ export type SignalStatus =
   | 'closed'
   | 'corrected';
 
+export type SignalLifecycle =
+  | 'new'
+  | 'developing'
+  | 'ongoing'
+  | 'monitoring'
+  | 'resolved'
+  | 'archived';
+
+export type SignalChangeType =
+  | 'initial'
+  | 'material_update'
+  | 'status_change'
+  | 'new_evidence'
+  | 'correction'
+  | 'no_material_change';
+
+export type SignalRelationshipType =
+  | 'same_event'
+  | 'contextual'
+  | 'policy_response'
+  | 'market_transmission'
+  | 'technological_dependency'
+  | 'causal_link'
+  | 'potential_link';
+
 export type ConfidenceLevel = 'high' | 'medium' | 'low' | 'unverified';
 
 export type ClaimStatus =
@@ -113,6 +138,44 @@ export interface SignalSource {
   supports_claim_ids: string[];
 }
 
+export interface SignalContinuity {
+  /** First WORLD SIGNAL edition in which this signal ID was recorded (not the event start date). */
+  first_seen_edition: string;
+  /** Most recent edition containing a material factual, evidence, status or analytical change. */
+  last_material_update: string;
+  lifecycle: SignalLifecycle;
+}
+
+export interface SignalUpdate {
+  change_type: SignalChangeType;
+  summary: string;
+  previous_edition?: string;
+  evidence_changes: {
+    added_claim_ids: string[];
+    revised_claim_ids: string[];
+    withdrawn_claim_ids: string[];
+    added_source_urls: string[];
+    removed_source_urls: string[];
+  };
+}
+
+export interface SignalTimelineEvent {
+  event_id: string;
+  occurred_at: string;
+  title: string;
+  summary: string;
+  claim_ids: string[];
+  source_ids: string[];
+}
+
+export interface SignalRelationship {
+  target_signal_id: string;
+  relationship_type: SignalRelationshipType;
+  confidence: ConfidenceLevel;
+  rationale: string;
+  supporting_claim_ids: string[];
+}
+
 export interface TimelineEntry {
   dateLabel: string | null;
   text: string;
@@ -208,6 +271,11 @@ export interface ParsedSignal {
   updated_at: string;
   tags: string[];
   related_signal_ids: string[];
+  /** Optional additive fields introduced by the schema-v2 intelligence contract. */
+  continuity?: SignalContinuity;
+  update?: SignalUpdate;
+  timelineEvents: SignalTimelineEvent[];
+  relationships: SignalRelationship[];
   claims: SignalClaim[];
   sources: SignalSource[];
   independence: SourceIndependenceMetrics;

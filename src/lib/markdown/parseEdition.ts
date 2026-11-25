@@ -18,6 +18,13 @@ import type {
   SignalDomain,
   SignalNarrativeSections,
   SignalSource,
+  SignalContinuity,
+  SignalUpdate,
+  SignalTimelineEvent,
+  SignalRelationship,
+  SignalLifecycle,
+  SignalChangeType,
+  SignalRelationshipType,
   SignalStatus,
   SourceClass,
   SourceRelationship,
@@ -78,6 +85,25 @@ const VALID_RELATIONSHIPS: readonly Exclude<SourceRelationship, 'unknown'>[] = [
   'secondary_analysis',
 ];
 const VALID_EDITION_STATUSES: readonly EditionStatus[] = ['draft', 'reviewed', 'published'];
+const VALID_SIGNAL_LIFECYCLES: readonly SignalLifecycle[] = [
+  'new', 'developing', 'ongoing', 'monitoring', 'resolved', 'archived',
+];
+const VALID_SIGNAL_CHANGE_TYPES: readonly SignalChangeType[] = [
+  'initial', 'material_update', 'status_change', 'new_evidence', 'correction', 'no_material_change',
+];
+const VALID_SIGNAL_RELATIONSHIPS: readonly SignalRelationshipType[] = [
+  'same_event', 'contextual', 'policy_response', 'market_transmission',
+  'technological_dependency', 'causal_link', 'potential_link',
+];
+
+function isValidCalendarDate(value: string): boolean {
+  if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(value)) return false;
+  const [year, month, day] = value.split('-').map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day));
+  return date.getUTCFullYear() === year &&
+    date.getUTCMonth() === month - 1 &&
+    date.getUTCDate() === day;
+}
 
 const SIGNAL_ID_REGEX = /^(WORLD|AI|ECON)-\d{8}-[a-z0-9-]+$/;
 const INLINE_SIGNAL_ID_GLOBAL = /\b(?:WORLD|AI|ECON)-\d{8}-[a-z0-9-]+\b/g;
@@ -587,6 +613,162 @@ function parseSignalBlock(
       ? (meta.event as Record<string, unknown>)
       : {};
 
+  const continuityRaw =
+    meta.continuity && typeof meta.continuity === 'object' && !Array.isArray(meta.continuity)
+      ? (meta.continuity as Record<string, unknown>)
+      : null;
+  let continuity: SignalContinuity | undefined;
+  if (continuityRaw) {
+    const firstSeen = asString(continuityRaw.first_seen_edition);
+    const lastMaterialUpdate = asString(continuityRaw.last_material_update);
+    const rawLifecycle = asString(continuityRaw.lifecycle) as SignalLifecycle;
+    if (!isValidCalendarDate(firstSeen) || !isValidCalendarDate(lastMaterialUpdate)) {
+      issues.push({
+        severity: 'warning',
+        code: 'INVALID_SIGNAL_CONTINUITY_DATE',
+        signalId,
+        message: `Signal "${signalId}" continuity dates must be valid YYYY-MM-DD calendar dates.`,
+      });
+    }
+    if (!VALID_SIGNAL_LIFECYCLES.includes(rawLifecycle)) {
+      issues.push({
+        severity: 'warning',
+        code: 'INVALID_SIGNAL_LIFECYCLE',
+        signalId,
+        message: `Signal "${signalId}" has unknown lifecycle "${rawLifecycle}".`,
+      });
+    }
+    if (isValidCalendarDate(firstSeen) && isValidCalendarDate(lastMaterialUpdate) &&
+        VALID_SIGNAL_LIFECYCLES.includes(rawLifecycle)) {
+      continuity = {
+        first_seen_edition: firstSeen,
+        last_material_update: lastMaterialUpdate,
+        lifecycle: rawLifecycle,
+      };
+    }
+  }
+
+  const updateRaw =
+    meta.update && typeof meta.update === 'object' && !Array.isArray(meta.update)
+      ? (meta.update as Record<string, unknown>)
+      : null;
+  let update: SignalUpdate | undefined;
+  if (updateRaw) {
+    const rawChangeType = asString(updateRaw.change_type) as SignalChangeType;
+    const summary = asString(updateRaw.summary);
+    const previousEdition = asString(updateRaw.previous_edition);
+    const evidenceRaw =
+      updateRaw.evidence_changes && typeof updateRaw.evidence_changes === 'object' &&
+      !Array.isArray(updateRaw.evidence_changes)
+        ? (updateRaw.evidence_changes as Record<string, unknown>)
+        : {};
+    if (!VALID_SIGNAL_CHANGE_TYPES.includes(rawChangeType)) {
+      issues.push({
+        severity: 'warning',
+        code: 'INVALID_SIGNAL_CHANGE_TYPE',
+        signalId,
+        message: `Signal "${signalId}" has unknown change_type "${rawChangeType}".`,
+      });
+    }
+    if (!summary) {
+      issues.push({
+        severity: 'warning',
+        code: 'MISSING_SIGNAL_UPDATE_SUMMARY',
+        signalId,
+        message: `Signal "${signalId}" update metadata should include a concise summary.`,
+      });
+    }
+    if (previousEdition && !isValidCalendarDate(previousEdition)) {
+      issues.push({
+        severity: 'warning',
+        code: 'INVALID_PREVIOUS_EDITION_DATE',
+        signalId,
+        message: `Signal "${signalId}" previous_edition must be a valid YYYY-MM-DD date.`,
+      });
+    }
+    if (VALID_SIGNAL_CHANGE_TYPES.includes(rawChangeType) && summary) {
+      update = {
+        change_type: rawChangeType,
+        summary,
+        previous_edition: isValidCalendarDate(previousEdition) ? previousEdition : undefined,
+        evidence_changes: {
+          added_claim_ids: asStringArray(evidenceRaw.added_claim_ids),
+          revised_claim_ids: asStringArray(evidenceRaw.revised_claim_ids),
+          withdrawn_claim_ids: asStringArray(evidenceRaw.withdrawn_claim_ids),
+          added_source_urls: asStringArray(evidenceRaw.added_source_urls),
+          removed_source_urls: asStringArray(evidenceRaw.removed_source_urls),
+        },
+      };
+    }
+  }
+
+  const timelineEventsRaw = Array.isArray(meta.timeline_events) ? meta.timeline_events : [];
+  const timelineEvents: SignalTimelineEvent[] = timelineEventsRaw.flatMap((item, idx) => {
+    const raw = item && typeof item === 'object' && !Array.isArray(item)
+      ? (item as Record<string, unknown>)
+      : {};
+    const eventId = asString(raw.event_id);
+    const occurredAt = asString(raw.occurred_at);
+    const title = asString(raw.title);
+    const summary = asString(raw.summary);
+    if (!eventId || !isValidCalendarDate(occurredAt.slice(0, 10)) || !title || !summary) {
+      issues.push({
+        severity: 'warning',
+        code: 'INVALID_TIMELINE_EVENT',
+        signalId,
+        message: `Timeline event #${idx + 1} in "${signalId}" requires event_id, valid occurred_at, title and summary.`,
+      });
+      return [];
+    }
+    return [{
+      event_id: eventId,
+      occurred_at: occurredAt,
+      title,
+      summary,
+      claim_ids: asStringArray(raw.claim_ids),
+      source_ids: asStringArray(raw.source_ids),
+    }];
+  });
+
+  const relationshipsRaw = Array.isArray(meta.relationships) ? meta.relationships : [];
+  const relationships: SignalRelationship[] = relationshipsRaw.flatMap((item, idx) => {
+    const raw = item && typeof item === 'object' && !Array.isArray(item)
+      ? (item as Record<string, unknown>)
+      : {};
+    const targetSignalId = asString(raw.target_signal_id);
+    const rawType = asString(raw.relationship_type) as SignalRelationshipType;
+    const rawConfidence = asString(raw.confidence, 'unverified') as ConfidenceLevel;
+    const rationale = asString(raw.rationale);
+    if (!SIGNAL_ID_REGEX.test(targetSignalId) ||
+        !VALID_SIGNAL_RELATIONSHIPS.includes(rawType) ||
+        !VALID_CONFIDENCE.includes(rawConfidence) ||
+        !rationale) {
+      issues.push({
+        severity: 'warning',
+        code: 'INVALID_SIGNAL_RELATIONSHIP',
+        signalId,
+        message: `Relationship #${idx + 1} in "${signalId}" requires a valid target ID, relationship type, confidence and rationale.`,
+      });
+      return [];
+    }
+    const supportingClaimIds = asStringArray(raw.supporting_claim_ids);
+    if (rawType === 'causal_link' && supportingClaimIds.length === 0) {
+      issues.push({
+        severity: 'warning',
+        code: 'UNSUPPORTED_CAUSAL_RELATIONSHIP',
+        signalId,
+        message: `Causal relationship from "${signalId}" to "${targetSignalId}" has no supporting claim references.`,
+      });
+    }
+    return [{
+      target_signal_id: targetSignalId,
+      relationship_type: rawType,
+      confidence: rawConfidence,
+      rationale,
+      supporting_claim_ids: supportingClaimIds,
+    }];
+  });
+
   const sourcesRaw = Array.isArray(meta.sources) ? meta.sources : [];
   const sources: SignalSource[] = sourcesRaw.map((item, idx) => {
     const s = (item && typeof item === 'object' ? item : {}) as Record<string, unknown>;
@@ -718,8 +900,44 @@ function parseSignalBlock(
     };
   });
 
-  // Check reverse links: source.supports_claim_ids -> claims
+  // Validate additive timeline and relationship references against this signal's ledgers.
   const claimIdSet = new Set(claims.map((c) => c.claim_id));
+  for (const timelineEvent of timelineEvents) {
+    for (const claimId of timelineEvent.claim_ids) {
+      if (!claimIdSet.has(claimId)) {
+        issues.push({
+          severity: 'warning',
+          code: 'BROKEN_TIMELINE_CLAIM_REF',
+          signalId,
+          message: `Timeline event "${timelineEvent.event_id}" references unknown claim_id "${claimId}".`,
+        });
+      }
+    }
+    for (const sourceId of timelineEvent.source_ids) {
+      if (!sourceIdSet.has(sourceId)) {
+        issues.push({
+          severity: 'warning',
+          code: 'BROKEN_TIMELINE_SOURCE_REF',
+          signalId,
+          message: `Timeline event "${timelineEvent.event_id}" references unknown source_id "${sourceId}".`,
+        });
+      }
+    }
+  }
+  for (const relationship of relationships) {
+    for (const claimId of relationship.supporting_claim_ids) {
+      if (!claimIdSet.has(claimId)) {
+        issues.push({
+          severity: 'warning',
+          code: 'BROKEN_RELATIONSHIP_CLAIM_REF',
+          signalId,
+          message: `Relationship to "${relationship.target_signal_id}" references unknown claim_id "${claimId}".`,
+        });
+      }
+    }
+  }
+
+  // Check reverse links: source.supports_claim_ids -> claims
   for (const src of sources) {
     for (const supportedClaimId of src.supports_claim_ids) {
       if (!claimIdSet.has(supportedClaimId)) {
@@ -798,6 +1016,10 @@ function parseSignalBlock(
     updated_at: asString(meta.updated_at),
     tags: asStringArray(meta.tags),
     related_signal_ids: asStringArray(meta.related_signal_ids),
+    continuity,
+    update,
+    timelineEvents,
+    relationships,
     claims,
     sources,
     independence,

@@ -30,6 +30,7 @@ describe('validateEditionPath — strict archive path hardening', () => {
       '/editions/2026/11/2026-11-23.md?foo=bar',
       '/editions/2026/11/2026-11-23.md#hash',
       '/editions/2026/10/2026-11-23.md', // folder month mismatch
+      '/editions/2026/02/2026-02-30.md', // impossible calendar date
       '/other/2026/11/2026-11-23.md',
       'javascript:alert(1)',
       '',
@@ -84,6 +85,31 @@ describe('editionClient — revision-aware cache & empty archive handling', () =
     });
     assert.equal(fetchCount, 2);
     assert.equal(evening.frontmatter.updated_at, '2026-10-01T18:30:00-07:00');
+  });
+
+  it('rejects an index entry whose declared date does not match the Markdown path', async () => {
+    const mismatchFetch: typeof fetch = async () =>
+      new Response(
+        JSON.stringify({
+          schema_version: 1,
+          latest_edition: '2026-10-02',
+          generated_at: '2026-10-02T00:00:00Z',
+          editions: [{
+            date: '2026-10-02',
+            title: 'Mismatched entry',
+            path: '/editions/2026/10/2026-10-01.md',
+            updated_at: '2026-10-02T00:00:00Z',
+            status: 'published',
+            language: 'en',
+            summary: 'Must not be selected',
+          }],
+        }),
+        { status: 200 }
+      );
+
+    const idx = await fetchEditionsIndex({ fetchImpl: mismatchFetch });
+    assert.equal(idx.editions.length, 0);
+    assert.equal(idx.latest_edition, null);
   });
 
   it('handles empty archive index and filters out malformed index paths', async () => {

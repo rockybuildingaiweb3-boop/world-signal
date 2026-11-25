@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   ChevronLeft,
   ChevronRight,
@@ -50,14 +50,65 @@ export const ArchiveDrawer: React.FC<ArchiveDrawerProps> = ({
   onOpenLocalModal,
 }) => {
   const t = getUiStrings(lang);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const dialogTitleId = React.useId();
 
   useEffect(() => {
     if (!isOpen) return;
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+
+    const previousFocus = document.activeElement instanceof HTMLElement
+      ? document.activeElement
+      : null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const getFocusable = () => {
+      const panel = panelRef.current;
+      if (!panel) return [];
+      return Array.from(
+        panel.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((element) => !element.hasAttribute('hidden') && element.getAttribute('aria-hidden') !== 'true');
     };
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
+
+    const panel = panelRef.current;
+    const firstFocusable = getFocusable()[0];
+    (firstFocusable ?? panel)?.focus();
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        onClose();
+        return;
+      }
+      if (event.key !== 'Tab') return;
+
+      const focusable = getFocusable();
+      if (focusable.length === 0) {
+        event.preventDefault();
+        panel?.focus();
+        return;
+      }
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+
+      if (event.shiftKey && (active === first || !panel?.contains(active))) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (active === last || !panel?.contains(active))) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.body.style.overflow = previousOverflow;
+      if (previousFocus?.isConnected) previousFocus.focus();
+    };
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
@@ -72,16 +123,20 @@ export const ArchiveDrawer: React.FC<ArchiveDrawerProps> = ({
       className="fixed inset-0 z-50 flex justify-end bg-black/45 backdrop-blur-[2px]"
       role="dialog"
       aria-modal="true"
-      aria-label={t.archive.title}
+      aria-labelledby={dialogTitleId}
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="flex h-full w-full max-w-md flex-col border-l border-[var(--ws-border)] bg-[var(--ws-surface)] shadow-xl">
+      <div
+        ref={panelRef}
+        tabIndex={-1}
+        className="flex h-full w-full max-w-md flex-col border-l border-[var(--ws-border)] bg-[var(--ws-surface)] shadow-xl"
+      >
         {/* Header */}
         <div className="flex items-start justify-between gap-4 border-b border-[var(--ws-border)] px-5 py-4">
           <div>
-            <h2 className="font-display text-lg font-semibold text-[var(--ws-ink)]">
+            <h2 id={dialogTitleId} className="font-display text-lg font-semibold text-[var(--ws-ink)]">
               {t.archive.title}
             </h2>
             <p className="mt-0.5 text-xs text-[var(--ws-ink-muted)]">

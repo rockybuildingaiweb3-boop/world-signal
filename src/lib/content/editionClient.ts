@@ -6,6 +6,15 @@ const EDITION_PATH_REGEX = /^\/editions\/(\d{4})\/(\d{2})\/(\d{4}-\d{2}-\d{2})\.
 
 const editionCache = new Map<string, ParsedEdition>();
 
+function isValidCalendarDate(value: string): boolean {
+  if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(value)) return false;
+  const [year, month, day] = value.split('-').map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day));
+  return date.getUTCFullYear() === year &&
+    date.getUTCMonth() === month - 1 &&
+    date.getUTCDate() === day;
+}
+
 export class ArchivePathError extends Error {
   constructor(message: string) {
     super(message);
@@ -51,6 +60,9 @@ export function validateEditionPath(rawPath: string): { normalizedPath: string; 
   }
 
   const [, year, month, fileDate] = match;
+  if (!isValidCalendarDate(fileDate)) {
+    throw new ArchivePathError(`Edition path contains an invalid calendar date "${fileDate}".`);
+  }
   if (!fileDate.startsWith(`${year}-${month}-`)) {
     throw new ArchivePathError(
       `Edition path directory "${year}/${month}" does not match filename date "${fileDate}".`
@@ -90,22 +102,46 @@ export async function fetchEditionsIndex(options?: {
   const data = (await response.json()) as Partial<EditionsIndex>;
   const rawEditions = Array.isArray(data.editions) ? data.editions : [];
 
-  // Filter out any malformed archive paths silently at index load time so bad entries cannot trigger unsafe fetches
-  const validEditions: EditionIndexEntry[] = rawEditions.filter((entry) => {
-    if (!entry || typeof entry.path !== 'string' || typeof entry.date !== 'string') {
-      return false;
+  // Reject unsafe paths and metadata that does not describe the same edition date.
+  // A malformed index entry must never be able to label one Markdown file as another date.
+  const validEditions: EditionIndexEntry[] = [];
+  const seenDates = new Set<string>();
+  const validStatuses = ['draft', 'reviewed', 'published'] as const;
+  for (const entry of rawEditions) {
+    if (
+      !entry ||
+      typeof entry.path !== 'string' ||
+      typeof entry.date !== 'string' ||
+      typeof entry.title !== 'string' ||
+      typeof entry.updated_at !== 'string' ||
+      typeof entry.status !== 'string' ||
+      !validStatuses.includes(entry.status as (typeof validStatuses)[number]) ||
+      typeof entry.language !== 'string' ||
+      typeof entry.summary !== 'string' ||
+      !Number.isFinite(Date.parse(entry.updated_at)) ||
+      !isValidCalendarDate(entry.date) ||
+      seenDates.has(entry.date)
+    ) {
+      continue;
     }
     try {
-      validateEditionPath(entry.path);
-      return true;
+      const { normalizedPath, pathDate } = validateEditionPath(entry.path);
+      if (pathDate !== entry.date) continue;
+      seenDates.add(entry.date);
+      validEditions.push({ ...entry, path: normalizedPath } as EditionIndexEntry);
     } catch {
-      return false;
+      // Invalid entries are excluded before any edition fetch is attempted.
     }
-  });
+  }
+
+  const requestedLatest = typeof data.latest_edition === 'string' ? data.latest_edition : null;
+  const latestEdition = requestedLatest && seenDates.has(requestedLatest)
+    ? requestedLatest
+    : validEditions[0]?.date ?? null;
 
   return {
     schema_version: typeof data.schema_version === 'number' ? data.schema_version : 1,
-    latest_edition: typeof data.latest_edition === 'string' ? data.latest_edition : null,
+    latest_edition: latestEdition,
     generated_at: typeof data.generated_at === 'string' ? data.generated_at : '',
     editions: validEditions,
   };
