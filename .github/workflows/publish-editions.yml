@@ -26,13 +26,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install locked dependencies
+        run: bun install --frozen-lockfile
 
       - name: Build public Markdown and edition index
-        run: node scripts/build-public-content.mjs
+        run: bun run scripts/build-public-content.mjs
 
       - name: Commit generated public assets
         run: |

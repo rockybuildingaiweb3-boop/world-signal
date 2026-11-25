@@ -36,8 +36,6 @@ The intended cadence is morning, midday, evening, and overnight. Every run updat
 6. If the run cannot preserve or validate the v2 metadata, STOP before committing. Do not downgrade the canonical file. Report the exact blocking signal and field.
 7. Before pushing, verify edition-level schema version, signal count, unique signal IDs, and all four metadata blocks for every signal. Also verify claims and source ledgers have not been unintentionally dropped.
 
-The intended cadence is morning, midday, evening, and overnight. All cycles update the same daily file.
-
 - Read the current day's edition before researching.
 - Treat the edition's existing schema version as a hard compatibility floor. A v2 edition must never be rewritten as v1.
 - Preserve every existing signal's v2 metadata, claims, sources, verified timeline events, and declared relationships unless an evidence-based correction is explicitly documented.

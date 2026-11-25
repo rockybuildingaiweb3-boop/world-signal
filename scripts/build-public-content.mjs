@@ -81,7 +81,7 @@ function readSchemaVersion(frontmatter, filePath) {
 }
 
 function isCalendarDate(value) {
-  if (typeof value !== 'string' || !/^\\d{4}-\\d{2}-\\d{2}$/.test(value)) return false;
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
   const [year, month, day] = value.split('-').map(Number);
   const date = new Date(Date.UTC(year, month - 1, day));
   return date.getUTCFullYear() === year &&
@@ -92,7 +92,7 @@ function isCalendarDate(value) {
 function isDateOrDateTime(value) {
   if (isCalendarDate(value)) return true;
   return typeof value === 'string' &&
-    /^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(?::\\d{2}(?:\\.\\d+)?)?(?:Z|[+-]\\d{2}:\\d{2})$/.test(value) &&
+    /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?(?:Z|[+-]\d{2}:\d{2})$/.test(value) &&
     isCalendarDate(value.slice(0, 10)) &&
     Number.isFinite(Date.parse(value));
 }
@@ -108,7 +108,7 @@ function requireStringArray(value, label, signalId) {
 }
 
 function parseSignalMetadataBlock(signalBlock, signalId, filePath) {
-  const fence = signalBlock.match(/^(?:~~~|\\x60\\x60\\x60)[ \\t]*yaml[ \\t]*\\r?\\n([\\s\\S]*?)\\r?\\n(?:~~~|\\x60\\x60\\x60)[ \\t]*$/m);
+  const fence = signalBlock.match(/^(?:~~~|\x60\x60\x60)[ \t]*yaml[ \t]*\r?\n([\s\S]*?)\r?\n(?:~~~|\x60\x60\x60)[ \t]*$/m);
   if (!fence) {
     throw new Error('Missing YAML metadata fence for signal ' + signalId + ' in ' + filePath);
   }
@@ -195,7 +195,7 @@ function parseSignalMetadataBlock(signalBlock, signalId, filePath) {
 }
 
 function validateSchemaV2Signals(markdown, filePath) {
-  const headingPattern = /^##\\s+((?:WORLD|AI|ECON)-[A-Za-z0-9-]+)\\s*(?:—|--|-|:)\\s*.+$/gm;
+  const headingPattern = /^##\s+((?:WORLD|AI|ECON)-[A-Za-z0-9-]+)\s*(?:—|--|-|:)\s*.+$/gm;
   const headings = [...markdown.matchAll(headingPattern)];
   if (headings.length === 0) {
     throw new Error('Schema-v2 edition contains no parseable signal headings: ' + filePath);
@@ -204,7 +204,7 @@ function validateSchemaV2Signals(markdown, filePath) {
   for (let index = 0; index < headings.length; index += 1) {
     const start = headings[index].index;
     const nextSignalStart = headings[index + 1]?.index ?? markdown.length;
-    const nextTopLevel = markdown.slice(start + headings[index][0].length).search(/^#\\s/m);
+    const nextTopLevel = markdown.slice(start + headings[index][0].length).search(/^#\s/m);
     const topLevelStart = nextTopLevel >= 0
       ? start + headings[index][0].length + nextTopLevel
       : markdown.length;
