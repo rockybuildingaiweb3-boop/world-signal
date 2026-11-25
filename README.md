@@ -1,6 +1,6 @@
 # WORLD SIGNAL
 
-**A daily global intelligence briefing built around evidence, context, and traceable sources.**
+**A daily global intelligence publication built around evidence, context, continuity, and traceable sources.**
 
 WORLD SIGNAL tracks three domains:
 
@@ -43,7 +43,7 @@ flowchart TD
 | Muse | Research, verify, analyse, and write Markdown only |
 | GitHub | Canonical content, review, and historical revisions |
 | GitHub Actions | Publish Markdown and generate the archive index |
-| AI Studio | Build the completely new frontend |
+| Frontend | Extend the active React application under src; never author editorial facts |
 | Frontend | Parse and display the content; never author or alter editorial facts |
 
 ## Repository structure
@@ -80,7 +80,7 @@ world-signal/
 │   └── workflows/
 │       └── publish-editions.yml
 ├── src/
-│   └── README.md                # frontend implementation deferred
+│   └── README.md                # active frontend architecture
 └── legacy/
     └── v3-json-renderer/        # frozen previous implementation
 ~~~
@@ -112,12 +112,12 @@ A Tier 1 label is an internal eligibility classification, not a guarantee of acc
 | [agent.md](agent.md) | Primary operating manual for all AI agents |
 | [AGENTS.md](AGENTS.md) | Compatibility entry point |
 | [MUSE.md](MUSE.md) | Strict daily research and Markdown-production instructions |
-| [AI_STUDIO_BRIEF.md](AI_STUDIO_BRIEF.md) | Frontend rebuild brief for AI Studio |
+| [AI_STUDIO_BRIEF.md](AI_STUDIO_BRIEF.md) | Active frontend implementation brief for AI Studio |
 | [Architecture](docs/ARCHITECTURE.md) | System layers and data flow |
 | [Content Schema](docs/CONTENT_SCHEMA.md) | Markdown/YAML data contract |
 | [Editorial Standards](docs/EDITORIAL_STANDARDS.md) | Story selection and analysis rules |
 | [Source Policy](docs/SOURCE_POLICY.md) | Source quality and independence |
-| [Frontend Contract](docs/FRONTEND_CONTRACT.md) | Static data interface for the future UI |
+| [Frontend Contract](docs/FRONTEND_CONTRACT.md) | Static data and frontend behavior contract |
 | [Operations](docs/OPERATIONS.md) | Daily updates and publishing process |
 
 ## Current phase

@@ -13,6 +13,9 @@ Static-first React 19 + TypeScript + Vite + Tailwind CSS 4 intelligence publicat
   - `markdown/parseEdition.ts` — AST-assisted (`unified` + `remark-parse` + `remark-gfm`) edition parser and safe `js-yaml` (`JSON_SCHEMA`) metadata parser with schema validation diagnostics and strict non-promotion of unknown source metadata.
   - `source-independence/calculateIndependence.ts` — Single authoritative Source Policy engine calculating independent reporting origins, group deduplication, and explicit exclusion reasons across all views.
   - `filtering/filterSignals.ts` — Multi-dimensional signal filtering (domain, importance, confidence, status, topic, tag, source class, and multilingual full-text search).
+  - `intelligence/edition-diff/compareEditions.ts` — Deterministic signal snapshot and edition comparison; omitted is never resolved.
+  - `intelligence/storylines/buildStorylineIndex.ts` — Cross-edition storyline history keyed by stable signal ID.
+  - `intelligence/relationships/buildRelationshipGraph.ts` — Explicit relationship graph; legacy related IDs remain contextual only.
   - `dates/formatDates.ts` — Timezone-aware (`America/Los_Angeles`) date and timestamp formatters separating event dates from publication/verification times.
   - `i18n/uiStrings.ts` — Bilingual (`zh-CN` / `en`) UI dictionary.
   - `navigation/urlState.ts` — Safe URL query state parsing and history synchronization.
@@ -28,7 +31,7 @@ Static-first React 19 + TypeScript + Vite + Tailwind CSS 4 intelligence publicat
   - `audit/AuditView.tsx` — Derived source overview, Reporting Origin Explorer grouped by `independence_group`, filterable Claim Ledger evidence trace, Confidence vs. Importance comparison, and tabbed Editorial Audit Trail.
 - `src/styles/index.css` — Centralized CSS custom properties for light and dark archival paper themes.
 - `src/types/edition.ts` — Shared TypeScript domain models.
-- `src/test/` — Automated `node:test` suites covering parser integrity, source independence rules, archive path & cache hardening, and signal filtering (synthetic fixtures live strictly under `src/test/`).
+- `src/test/` — Automated `node:test` suites covering parser integrity, source independence, archive path/cache hardening, signal filtering, and cross-edition intelligence projections (synthetic fixtures live strictly under `src/test/`).
 
 ## Commands
 
@@ -36,4 +39,5 @@ Static-first React 19 + TypeScript + Vite + Tailwind CSS 4 intelligence publicat
 - `npm run typecheck` — Strict TypeScript check (`tsc -b --noEmit`).
 - `npm run lint` — ESLint validation.
 - `npm run test` — Run automated unit & real-edition integration tests.
-- `npm run build` — Build public content index and production bundle.
+- `bun run build` — TypeScript project check plus Vite production bundle.
+- `bun run build:content` — Generate public Markdown copies and the archive index from canonical Markdown; do not edit generated files manually.

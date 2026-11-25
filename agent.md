@@ -40,12 +40,13 @@ The browser must not need Muse, a model API, a database, or the GitHub API to re
 Read `MUSE.md`.
 
 ### Frontend agent / AI Studio
-- Builds a completely new visual system and frontend codebase.
-- Reads the published archive index and the selected Markdown edition.
-- Owns layout, typography, responsive behavior, interactions, filtering, navigation, and accessibility.
-- Must not hard-code news data or alter editorial meaning.
+- Owns the active React/TypeScript frontend under `src/` and extends the current architecture.
+- Reads the published archive index and Markdown editions.
+- Owns layout, typography, responsive behavior, interactions, filtering, cross-edition projections, navigation, and accessibility.
+- Must not scaffold a replacement application, hard-code news data, or alter editorial meaning.
+- Uses deterministic intelligence utilities under `src/lib/intelligence/` and follows `docs/INTELLIGENCE_DATA_CONTRACT.md`.
 
-Read `AI_STUDIO_BRIEF.md` and `docs/FRONTEND_CONTRACT.md`.
+Read `AI_STUDIO_BRIEF.md`, `docs/FRONTEND_CONTRACT.md`, and `docs/INTELLIGENCE_DATA_CONTRACT.md`.
 
 ### Repository / engineering agent
 - Maintains schemas, editorial documentation, source registry, validation, and publishing infrastructure.

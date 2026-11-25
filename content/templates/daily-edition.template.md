@@ -1,5 +1,5 @@
 ---
-schema_version: 1
+schema_version: 2
 edition_date: "YYYY-MM-DD"
 edition_timezone: "America/Los_Angeles"
 edition_title: "WORLD SIGNAL — Daily Intelligence Briefing"

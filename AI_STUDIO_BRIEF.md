@@ -1,72 +1,109 @@
-# AI Studio Build Brief — WORLD SIGNAL
+# AI Studio Implementation Brief — WORLD SIGNAL (Active Frontend)
 
-Use this brief when the owner starts the new frontend phase.
+This is an active implementation brief for the existing frontend. **Do not start a new application or replace the current architecture.** Inspect the live repository on main before editing.
 
 ## Read first
 
-Before coding, read:
-1. `README.md`
-2. `AGENTS.md`
-3. `docs/ARCHITECTURE.md`
-4. `docs/CONTENT_SCHEMA.md`
-5. `docs/FRONTEND_CONTRACT.md`
-6. `docs/SOURCE_POLICY.md`
-7. `src/README.md`
-8. `content/templates/daily-edition.template.md`
+1. README.md
+2. AGENTS.md and agent.md
+3. docs/ARCHITECTURE.md
+4. docs/CONTENT_SCHEMA.md
+5. docs/INTELLIGENCE_DATA_CONTRACT.md
+6. docs/FRONTEND_CONTRACT.md
+7. docs/SOURCE_POLICY.md
+8. src/README.md
+9. MUSE.md
+10. content/templates/daily-edition.template.md
 
-The previous implementation is archived under `legacy/v3-json-renderer/`. You may inspect it only to understand historical product capabilities and editorial fields. **Do not reuse its visual design, layout, CSS, HTML, or single-file implementation.**
+## Existing implementation
 
-## Build scope
+The active React 19 + TypeScript + Vite frontend already exists under src/. Reuse the current App shell, archive hook, navigation components, four feature views, parser, source-independence engine, design tokens, bilingual interface, and automated tests.
 
-Create a completely new frontend experience and codebase. The architecture phase intentionally contains no UI implementation yet.
+Core new deterministic modules:
+- src/lib/intelligence/edition-diff/compareEditions.ts
+- src/lib/intelligence/storylines/buildStorylineIndex.ts
+- src/lib/intelligence/relationships/buildRelationshipGraph.ts
+- Shared types and schema-v2 parsing live in src/types/edition.ts and src/lib/markdown/parseEdition.ts.
 
-Read static published content from:
-- `/data/editions-index.json`
-- The Markdown path supplied by each index entry, normally `/editions/YYYY/MM/YYYY-MM-DD.md`
+Preserve the warm archival-paper visual system, editorial typography, restrained domain colors, light/dark themes, and bilingual UI. Do not perform a greenfield rebuild.
 
-Do not enumerate GitHub directories or call the GitHub API at runtime. Do not depend on Muse, a model API, or a backend to render a published edition.
+## Product objective
 
-## Four first-class views
+Advance WORLD SIGNAL from a daily briefing reader into a longitudinal global intelligence publication. Implement:
 
-1. **Briefing** — executive summary and highest-priority signals across World Events, AI Frontier, and Economic Outlook.
-2. **Expanded & Timelines** — full signal details, chronology, claim evidence, and ongoing-event history.
-3. **Synthesis & Personal** — cross-domain connections, economic interpretation, scenarios, personal implications, and watchpoints.
-4. **Audit & Methodology** — source records, independence groups, confidence rationale, unresolved claims, corrections, and editorial methodology.
+1. Daily Delta — compare the selected edition with the previous available edition; show genuinely new, materially updated, unchanged, and omitted signals.
+2. Storyline Tracker — follow one stable signal ID across editions, showing first-seen date, dated revisions, material changes, and current lifecycle.
+3. Evidence Panel — show claim-level evidence, source changes, independence groups, and confidence with traceable references.
+4. Cross-Edition Search — search historical signals by text, ID, domain, topic, status, and date range.
+5. Relationship Explorer — show declared signal relationships with type, confidence, rationale, and supporting claims.
 
-All views must be projections of the same selected Markdown edition. Do not duplicate news into hard-coded datasets.
+## Non-negotiable data rules
 
-## Capabilities
+- Markdown editions remain the sole editorial source of truth.
+- Do not create a second JSON news database or hard-code production stories.
+- Do not call an LLM, model API, GitHub API, or private service from the browser.
+- Read /data/editions-index.json and the Markdown path supplied by each index entry.
+- Reuse the pure intelligence engines; do not reimplement comparison logic inside React components.
+- Keep schema-v1 editions readable. Missing schema-v2 metadata in historical editions must be displayed as unavailable, never guessed.
+- A missing signal in a later edition is omitted, not resolved or retracted.
+- Signal identity is signal_id, not headline text.
+- A new source does not automatically mean independent corroboration. Continue using the single source-independence engine.
+- related_signal_ids means a coarse contextual link only. Never label it causal.
+- Never infer causality from timing, geographic proximity, correlated market movement, or narrative similarity.
+- Preserve source URLs, claim IDs, signal IDs, dates, confidence, and relationship rationale.
 
-- Edition archive navigation by date
-- Search and filters by domain, importance, confidence, status, tags, and source class
-- Signal detail expansion and timeline rendering
-- Related-signal navigation
-- Distinction between facts, claims, analysis, and forecasts
-- Source links and source-independence transparency
-- Loading, empty, invalid-content, and network-error states
-- Responsive layouts and keyboard-accessible controls
+## Implementation sequence
 
-## Visual direction
+### Step 1 — Daily Delta
 
-Design the visual system from first principles. Do not copy the legacy newspaper/card layout or its styling. Build a distinctive editorial intelligence product with strong hierarchy, typography, density control, navigation, and restrained motion.
+- Add a restrained What's Changed section near the top of Briefing.
+- Compare the selected edition with the immediately previous available edition in the archive index.
+- Use compareEditions() from the existing edition-diff module.
+- Show real counts and allow filtering to new, updated, unchanged, and omitted signals.
+- A selected row must open the corresponding signal in Expanded.
+- Show comparison unavailable when there is no previous edition; do not fabricate baseline values.
 
-## Engineering requirements
+### Step 2 — Storyline Tracker
 
-- Keep frontend code under `src/`.
-- Keep daily content outside source code.
-- Use a maintained Markdown parser and safe YAML parser.
-- Treat Markdown and YAML as untrusted content. Never execute code fences or inject arbitrary HTML.
-- Validate schema fields before rendering and fail gracefully.
-- Allow only HTTP and HTTPS external links.
-- Load the small edition index first and fetch the selected edition on demand.
-- Keep parsing independent from visual components and test it separately.
-- Never hard-code dates, headlines, item counts, or source counts.
+- Use buildStorylineIndex() from the existing storylines module.
+- Load only the editions needed for the selected signal or history view; do not eagerly parse the entire archive if the archive grows.
+- Display actual edition dates and structured timeline_events when present.
+- Distinguish first appearance, material update, unchanged appearance, and reappearance after a gap.
+- Never treat omission as closure.
 
-## Do not
+### Step 3 — Evidence and relationships
 
-- Create sample news or fabricate an initial edition.
-- Rewrite editorial content during frontend implementation.
-- Move canonical Markdown files.
-- Manually edit generated files under `public/`.
-- Add a backend or database without the owner's explicit approval.
-- Begin implementation until the owner starts the frontend phase.
+- Use the parsed claim and source ledgers.
+- Use buildRelationshipGraph() from the existing relationships module.
+- Distinguish typed schema-v2 links from coarse legacy contextual links.
+- Causal links must expose supporting claims and rationale; absent evidence means no causal assertion.
+
+### Step 4 — Cross-Edition Search
+
+- Search loaded/indexed archive content with explicit loading and partial-result states.
+- Keep query state shareable where appropriate.
+- Do not download every historical edition on initial page load.
+- Start with a deterministic client index. Consider a worker only if measurements justify it.
+
+## UX and accessibility
+
+- Preserve the four primary views.
+- Integrate new functionality into existing sections or justify a secondary navigation entry.
+- Keep the first screen focused on consequential information, not decorative metrics.
+- Support desktop, tablet, and mobile layouts.
+- Keyboard access, visible focus, semantic headings, dialog focus management, and reduced-motion support are required.
+- Provide explicit loading, empty, malformed-data, unresolved-link, and network-error states.
+- Avoid fake charts, placeholder metrics, example events presented as production, or nonfunctional controls.
+
+## Engineering rules
+
+- Keep comparison, indexing, and graph logic in pure src/lib/intelligence modules.
+- Keep React components focused on presentation and interaction.
+- Add tests for each new data rule and critical interaction.
+- Keep synthetic fixtures under src/test/fixtures/; never publish them as real editions.
+- Run bun run typecheck, bun run lint, bun run test, and bun run build.
+- Do not edit canonical Markdown, Muse rules, templates, publishing scripts, or generated public content as part of frontend work.
+
+## Delivery requirements
+
+Before implementation, report the existing files to reuse and exact files to change. Implement one coherent step at a time. After each step, report changed files, test results, unresolved limitations, and commit SHA. Never claim a check passed unless it ran.

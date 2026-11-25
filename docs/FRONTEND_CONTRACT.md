@@ -2,7 +2,7 @@
 
 ## Ownership
 
-The frontend is a new application built later with AI Studio. It owns presentation and interaction only. Markdown is the editorial source of truth; the frontend must not rewrite claims, invent source counts, or hard-code headlines.
+The active frontend is the React 19 + TypeScript + Vite application under src/. AI Studio and frontend agents must extend the current architecture rather than scaffold a replacement. Markdown is the editorial source of truth; the frontend must not rewrite claims, invent source counts, or hard-code headlines.
 
 ## Static endpoints
 
@@ -68,3 +68,15 @@ Load the small archive index first, then fetch only the selected Markdown editio
 ## Design freedom
 
 Rebuild the visual system, page composition, typography, responsive behavior, motion, and interactions from scratch. The legacy implementation is not a design constraint. Fixed requirements are the four views, content contract, static endpoints, evidence transparency, and accessibility.
+
+
+## Cross-edition intelligence layer
+
+Pure deterministic projections live under `src/lib/intelligence/`:
+
+- `edition-diff/` compares editions by stable signal ID and identifies new, materially updated, unchanged, and omitted signals.
+- `storylines/` assembles signal snapshots into dated event histories.
+- `relationships/` projects only explicitly declared links. Legacy `related_signal_ids` are coarse contextual links; never infer causal meaning.
+- New views must preserve source edition, signal ID, claim IDs, source URLs, relationship rationale, and confidence.
+
+An omitted signal is not resolved. A changed `updated_at` or `accessed_at` timestamp alone is not a material editorial change. See `docs/INTELLIGENCE_DATA_CONTRACT.md`.
