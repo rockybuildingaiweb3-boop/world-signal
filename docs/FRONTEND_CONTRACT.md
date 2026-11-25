@@ -65,9 +65,9 @@ Treat Markdown and YAML as untrusted. Do not execute code fences or permit arbit
 
 Load the small archive index first, then fetch only the selected Markdown edition. Cache parsed editions by path and handle missing editions gracefully.
 
-## Design freedom
+## Design and implementation boundaries
 
-Rebuild the visual system, page composition, typography, responsive behavior, motion, and interactions from scratch. The legacy implementation is not a design constraint. Fixed requirements are the four views, content contract, static endpoints, evidence transparency, and accessibility.
+Extend the active visual system and component architecture under `src/`. Preserve the existing archival-paper palette, editorial typography, domain accents, bilingual interface, and light/dark themes. Improve concrete usability issues without replacing the product identity or scaffolding a second application. The legacy implementation is not active code.
 
 
 ## Cross-edition intelligence layer

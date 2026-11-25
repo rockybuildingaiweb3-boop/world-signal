@@ -105,6 +105,15 @@ function isValidCalendarDate(value: string): boolean {
     date.getUTCDate() === day;
 }
 
+function isValidDateOrDateTime(value: string): boolean {
+  if (isValidCalendarDate(value)) return true;
+  const isoDateTime =
+    /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?(?:Z|[+-]\d{2}:\d{2})$/;
+  return isoDateTime.test(value) &&
+    isValidCalendarDate(value.slice(0, 10)) &&
+    Number.isFinite(Date.parse(value));
+}
+
 const SIGNAL_ID_REGEX = /^(WORLD|AI|ECON)-\d{8}-[a-z0-9-]+$/;
 const INLINE_SIGNAL_ID_GLOBAL = /\b(?:WORLD|AI|ECON)-\d{8}-[a-z0-9-]+\b/g;
 
@@ -496,6 +505,7 @@ function parseSignalBlock(
   headingTitle: string,
   blockContent: string,
   expectedDomain: SignalDomain,
+  schemaVersion: number,
   orderIndex: number,
   issues: ValidationIssue[]
 ): ParsedSignal {
@@ -617,6 +627,14 @@ function parseSignalBlock(
     meta.continuity && typeof meta.continuity === 'object' && !Array.isArray(meta.continuity)
       ? (meta.continuity as Record<string, unknown>)
       : null;
+  if (schemaVersion >= 2 && !continuityRaw) {
+    issues.push({
+      severity: 'error',
+      code: 'MISSING_V2_CONTINUITY',
+      signalId,
+      message: `Schema-v2 signal "${signalId}" is missing its continuity object.`,
+    });
+  }
   let continuity: SignalContinuity | undefined;
   if (continuityRaw) {
     const firstSeen = asString(continuityRaw.first_seen_edition);
@@ -652,6 +670,14 @@ function parseSignalBlock(
     meta.update && typeof meta.update === 'object' && !Array.isArray(meta.update)
       ? (meta.update as Record<string, unknown>)
       : null;
+  if (schemaVersion >= 2 && !updateRaw) {
+    issues.push({
+      severity: 'error',
+      code: 'MISSING_V2_UPDATE',
+      signalId,
+      message: `Schema-v2 signal "${signalId}" is missing its update object.`,
+    });
+  }
   let update: SignalUpdate | undefined;
   if (updateRaw) {
     const rawChangeType = asString(updateRaw.change_type) as SignalChangeType;
@@ -686,6 +712,25 @@ function parseSignalBlock(
         message: `Signal "${signalId}" previous_edition must be a valid YYYY-MM-DD date.`,
       });
     }
+    if (schemaVersion >= 2) {
+      const requiredEvidenceArrays = [
+        'added_claim_ids',
+        'revised_claim_ids',
+        'withdrawn_claim_ids',
+        'added_source_urls',
+        'removed_source_urls',
+      ];
+      for (const key of requiredEvidenceArrays) {
+        if (!Array.isArray(evidenceRaw[key])) {
+          issues.push({
+            severity: 'error',
+            code: 'MISSING_V2_EVIDENCE_CHANGE_ARRAY',
+            signalId,
+            message: `Schema-v2 signal "${signalId}" update.evidence_changes.${key} must be an array.`,
+          });
+        }
+      }
+    }
     if (VALID_SIGNAL_CHANGE_TYPES.includes(rawChangeType) && summary) {
       update = {
         change_type: rawChangeType,
@@ -702,6 +747,14 @@ function parseSignalBlock(
     }
   }
 
+  if (schemaVersion >= 2 && !Array.isArray(meta.timeline_events)) {
+    issues.push({
+      severity: 'error',
+      code: 'MISSING_V2_TIMELINE_EVENTS',
+      signalId,
+      message: `Schema-v2 signal "${signalId}" must include timeline_events as an array (it may be empty).`,
+    });
+  }
   const timelineEventsRaw = Array.isArray(meta.timeline_events) ? meta.timeline_events : [];
   const timelineEvents: SignalTimelineEvent[] = timelineEventsRaw.flatMap((item, idx) => {
     const raw = item && typeof item === 'object' && !Array.isArray(item)
@@ -711,7 +764,7 @@ function parseSignalBlock(
     const occurredAt = asString(raw.occurred_at);
     const title = asString(raw.title);
     const summary = asString(raw.summary);
-    if (!eventId || !isValidCalendarDate(occurredAt.slice(0, 10)) || !title || !summary) {
+    if (!eventId || !isValidDateOrDateTime(occurredAt) || !title || !summary) {
       issues.push({
         severity: 'warning',
         code: 'INVALID_TIMELINE_EVENT',
@@ -730,6 +783,14 @@ function parseSignalBlock(
     }];
   });
 
+  if (schemaVersion >= 2 && !Array.isArray(meta.relationships)) {
+    issues.push({
+      severity: 'error',
+      code: 'MISSING_V2_RELATIONSHIPS',
+      signalId,
+      message: `Schema-v2 signal "${signalId}" must include relationships as an array (it may be empty).`,
+    });
+  }
   const relationshipsRaw = Array.isArray(meta.relationships) ? meta.relationships : [];
   const relationships: SignalRelationship[] = relationshipsRaw.flatMap((item, idx) => {
     const raw = item && typeof item === 'object' && !Array.isArray(item)
@@ -1244,7 +1305,7 @@ export function parseEditionMarkdown(
     const { preamble, blocks: signalBlocks } = splitByHeadingLevel(content, 2);
     domainIntros[domain] = preamble.replace(/^>\s*/gm, '').trim();
     for (const block of signalBlocks) {
-      signals.push(parseSignalBlock(block.title, block.content, domain, orderCounter, issues));
+      signals.push(parseSignalBlock(block.title, block.content, domain, frontmatter.schema_version, orderCounter, issues));
       orderCounter += 1;
     }
   }

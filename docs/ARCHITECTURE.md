@@ -9,20 +9,23 @@ WORLD SIGNAL is a static-first global intelligence publication. Its canonical ed
 | Research and editorial production | Muse | Discover, corroborate, analyse, and write daily Markdown |
 | Canonical content and history | GitHub | Version and preserve Markdown editions |
 | Static publishing | GitHub Actions | Mirror Markdown into public assets and build the archive index |
-| Presentation | AI Studio frontend | Parse, filter, navigate, and render editions |
+| Frontend presentation | React / TypeScript app under `src/` | Parse, navigate, search, compare, and render editions |
+| Intelligence projections | Pure modules under `src/lib/intelligence/` | Deterministic edition diff, storyline history, and explicit relationships |
 
 ## Data flow
 
 ~~~mermaid
 flowchart LR
   M[Muse] --> C[Canonical Markdown]
-  C --> G[GitHub]
+  C --> G[GitHub history]
   G --> W[GitHub Actions]
-  W --> P[public/editions]
-  W --> I[public/data/editions-index.json]
-  P --> F[Frontend]
+  W --> P[Public Markdown]
+  W --> I[Edition index]
+  P --> F[React frontend]
   I --> F
-  F --> U[Four reader views]
+  F --> V[Parser and validation]
+  V --> X[Intelligence projections]
+  X --> U[Four reader views]
 ~~~
 
 The browser uses same-origin static requests. It does not enumerate GitHub directories, scrape news sites, or call a model to interpret an edition.
@@ -31,32 +34,41 @@ The browser uses same-origin static requests. It does not enumerate GitHub direc
 
 Canonical files live under `content/editions/YYYY/MM/YYYY-MM-DD.md`. There is one file per local calendar date. Morning, midday, and evening runs replace that day's complete cumulative edition. Git history preserves intermediate versions. A new date creates a new file.
 
-The project timezone is America/Los_Angeles. Timestamps still require an explicit offset or UTC.
+The project timezone is America/Los_Angeles. Timestamps require an explicit offset or UTC.
 
 ## Static publishing
 
 The publishing script mirrors canonical editions to:
+
 - `public/editions/YYYY/MM/YYYY-MM-DD.md`
 - `public/data/editions-index.json`
 
-The mirror is generated output. The index contains archive metadata and paths, not the full story content. The frontend loads the index and fetches only the selected Markdown edition.
-
-This keeps Muse's task small and avoids GitHub API rate limits in the browser.
+The mirror is generated output. The index contains archive metadata and paths, not the full story content. The frontend loads the index and fetches selected Markdown editions on demand. Never edit generated `public/` content manually.
 
 ## Content model
 
 An edition contains edition-level YAML frontmatter, an executive briefing, three domain sections, cross-domain synthesis, personal implications, a watchlist, and audit notes.
 
-Each signal is an H2 section with a stable ID, one YAML metadata fence, claim records, source records, and human-readable Markdown narrative. The metadata carries machine-readable evidence; the narrative carries explanation.
+Each signal is an H2 section with a stable ID, one YAML metadata fence, claim records, source records, and human-readable Markdown narrative. Schema v1 remains readable. Schema v2 adds continuity, update classification, structured timeline events, and explicit typed relationships. See `INTELLIGENCE_DATA_CONTRACT.md`.
 
-## Frontend projections
+## Intelligence layer
 
-The four views are projections of the same selected edition: Briefing, Expanded & Timelines, Synthesis & Personal, and Audit & Methodology. No view owns a copied dataset.
+Pure functions under `src/lib/intelligence/` derive information from parsed editions:
+
+- `edition-diff/` compares signal snapshots by stable ID. Routine sync/access timestamps are not material changes.
+- `storylines/` assembles cross-edition history. A missing signal is an omission, not a resolution.
+- `relationships/` projects declared links. Legacy `related_signal_ids` are contextual only; the system does not infer causation.
+
+These modules are deterministic projections, not a second editorial database. They preserve edition dates, signal IDs, claim IDs, source provenance, relationship rationale, and confidence.
+
+## Frontend
+
+The active React 19 + TypeScript + Vite application lives under `src/`. Its four reader views are Briefing, Expanded & Timelines, Synthesis & Personal, and Audit & Methodology. New intelligence capabilities extend these views and supporting components; do not scaffold a replacement application.
 
 ## Why Markdown-first
 
-Markdown is human-readable, reviewable in GitHub, small relative to monolithic HTML, easy for Muse to produce, suitable for a daily archive, and portable across frontend frameworks. YAML frontmatter and per-signal YAML fences provide deterministic fields for parsing.
+Markdown is human-readable, reviewable in GitHub, easy for Muse to produce, suitable for a daily archive, and portable across frontend frameworks. YAML frontmatter and per-signal YAML fences provide deterministic fields for parsing.
 
 ## Non-goals
 
-This phase does not include a live news crawler, CMS, database, user accounts, model calls at runtime, financial trading advice, or a new UI implementation.
+No live news crawler, CMS, runtime model calls, financial trading advice, or database is required for this phase. Keep the static publishing architecture until measured requirements justify a change.

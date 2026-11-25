@@ -35,9 +35,9 @@ Static-first React 19 + TypeScript + Vite + Tailwind CSS 4 intelligence publicat
 
 ## Commands
 
-- `npm run dev` — Local development server on port 3000.
-- `npm run typecheck` — Strict TypeScript check (`tsc -b --noEmit`).
-- `npm run lint` — ESLint validation.
-- `npm run test` — Run automated unit & real-edition integration tests.
+- `bun run dev` — Local development server on port 3000.
+- `bun run typecheck` — Strict TypeScript check (`tsc -b --noEmit`).
+- `bun run lint` — ESLint validation.
+- `bun run test` — Run automated unit & real-edition integration tests.
 - `bun run build` — TypeScript project check plus Vite production bundle.
 - `bun run build:content` — Generate public Markdown copies and the archive index from canonical Markdown; do not edit generated files manually.

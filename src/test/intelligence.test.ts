@@ -73,11 +73,65 @@ describe('cross-edition intelligence projections', () => {
   });
 
   it('parses additive schema-v2 timeline and relationship metadata with local reference checks', () => {
-    let markdown = VALID_SYNTHETIC_EDITION;
+    const v2Defaults = [
+      'continuity:',
+      '  first_seen_edition: "2026-10-01"',
+      '  last_material_update: "2026-10-01"',
+      '  lifecycle: "developing"',
+      'update:',
+      '  change_type: "initial"',
+      '  summary: "Initial verified archive observation."',
+      '  evidence_changes:',
+      '    added_claim_ids: []',
+      '    revised_claim_ids: []',
+      '    withdrawn_claim_ids: []',
+      '    added_source_urls: []',
+      '    removed_source_urls: []',
+      'timeline_events: []',
+      'relationships: []',
+    ].join('\\n');
+    let markdown = VALID_SYNTHETIC_EDITION.replace('schema_version: 1', 'schema_version: 2');
+    markdown = markdown.replace(/^signal_id: "[^"]+"$/gm, (line) => line + '\\n' + v2Defaults);
     markdown = markdown.replace(
-      'signal_id: "WORLD-20261001-port-treaty"',
-      `signal_id: "WORLD-20261001-port-treaty"
-continuity:
+      'timeline_events: []',
+      `timeline_events:
+  - event_id: "WORLD-20261001-port-treaty-E01"
+    occurred_at: "2026-10-01"
+    title: "Protocol signed"
+    summary: "The participating states signed the protocol."
+    claim_ids: ["WORLD-20261001-port-treaty-C01"]
+    source_ids: ["S1"]`
+    );
+    markdown = markdown.replace(
+      'relationships: []',
+      `relationships:
+  - target_signal_id: "ECON-20261001-freight-rates"
+    relationship_type: "market_transmission"
+    confidence: "medium"
+    rationale: "The protocol changes maritime capacity assumptions used in freight-rate analysis."
+    supporting_claim_ids: ["WORLD-20261001-port-treaty-C01"]`
+    );
+
+    const edition = parseAtDate(markdown, '2026-10-01');
+    const signal = edition.signals.find((item) => item.signal_id === 'WORLD-20261001-port-treaty');
+
+    assert.equal(signal?.continuity?.first_seen_edition, '2026-10-01');
+    assert.equal(signal?.update?.change_type, 'initial');
+    assert.equal(signal?.timelineEvents.length, 1);
+    assert.equal(signal?.relationships[0]?.relationship_type, 'market_transmission');
+    assert.equal(edition.validation.errors.length, 0);
+    assert.ok(!edition.validation.warnings.some((warning) => warning.code.startsWith('BROKEN_')));
+  });
+
+  it('rejects schema-v2 signals that omit required metadata blocks', () => {
+    const markdown = VALID_SYNTHETIC_EDITION.replace('schema_version: 1', 'schema_version: 2');
+    const edition = parseAtDate(markdown, '2026-10-01');
+    const codes = edition.validation.errors.map((issue) => issue.code);
+    assert.ok(codes.includes('MISSING_V2_CONTINUITY'));
+    assert.ok(codes.includes('MISSING_V2_UPDATE'));
+    assert.ok(codes.includes('MISSING_V2_TIMELINE_EVENTS'));
+    assert.ok(codes.includes('MISSING_V2_RELATIONSHIPS'));
+  });
   first_seen_edition: "2026-10-01"
   last_material_update: "2026-10-01"
   lifecycle: "developing"
