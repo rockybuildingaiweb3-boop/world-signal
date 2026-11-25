@@ -170,11 +170,11 @@ body {
    ========================================================================== */
 
 .ws-kicker {
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-variant-numeric: tabular-nums;
   font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: 0.13em;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   line-height: 1.3;
 }
@@ -188,6 +188,7 @@ body {
   letter-spacing: 0.05em;
   text-transform: none;
   font-size: 11px;
+  font-weight: 600;
 }
 
 [data-lang="zh-CN"] .font-display {
@@ -296,6 +297,27 @@ body {
 .ws-progress-bar {
   transform-origin: left center;
   transition: transform 90ms linear;
+}
+
+/* Restrained compositor-only view entrance (180ms, disabled under prefers-reduced-motion) */
+@keyframes wsViewEnter {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ws-view-enter {
+  animation: wsViewEnter 180ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Optical dark-mode legibility compensation for long-form prose */
+.dark .ws-prose {
+  letter-spacing: 0.004em;
 }
 
 /* ==========================================================================

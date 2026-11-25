@@ -1,0 +1,1571 @@
+# WORLD SIGNAL
+# PHASE 03 — THE ULTIMATE EDITORIAL EXPERIENCE
+## A Comprehensive Frontend Art Direction, Interface Design, Visual Storytelling & Design Excellence Initiative
+
+Repository: https://github.com/rockybuildingaiweb3-boop/world-signal
+
+Product: WORLD SIGNAL
+
+Product category: Bilingual global news and intelligence publication.
+
+Technology stack: React 19, TypeScript, Vite, Tailwind CSS 4, Bun.
+
+Primary editorial domains:
+- World Events
+- AI Frontier
+- Economic Outlook
+
+Primary views:
+- Briefing
+- Expanded
+- Synthesis
+- Audit
+
+---
+
+# PART 00 — THE MOST IMPORTANT INSTRUCTION
+
+I want you to approach this project as a combination of:
+
+- A world-class digital publication art director.
+- A senior editorial product designer.
+- A principal-level UI/UX designer.
+- An information-design specialist.
+- A data-visualization designer.
+- A senior frontend engineer.
+
+Your responsibility is not simply to make the existing website look cleaner.
+
+Your responsibility is to push its visual quality to an exceptionally high standard.
+
+I want WORLD SIGNAL to become a publication that people genuinely enjoy opening every day.
+
+The interface should create a strong first impression, communicate authority, make complex information approachable, sustain attention, and reward deeper reading.
+
+**Visual quality is a core product requirement, not a secondary engineering concern.**
+
+Do not interpret this task as another minor polish pass.
+
+Do not merely change colors, border radii, font sizes, card shadows, or button styles.
+
+I expect a serious reconsideration of the complete visual experience:
+
+- Overall art direction.
+- Publication identity.
+- Page architecture.
+- Layout composition.
+- Typography.
+- Editorial hierarchy.
+- Information density.
+- Visual storytelling.
+- Data visualization.
+- Reading ergonomics.
+- Navigation.
+- Responsive design.
+- Microinteractions.
+- Visual consistency.
+- Bilingual presentation.
+- Accessibility.
+
+The result must look intentionally designed, not automatically generated from a generic web template.
+
+---
+
+# PART 01 — WORKSPACE SAFETY AND RECONNAISSANCE
+
+## 1.1 Preserve the current working state
+
+IMPORTANT CONTEXT:
+
+The previous Phase 02 implementation has not yet been pushed to GitHub.
+
+Assume that its implementation has been completed in the current local workspace.
+
+The current workspace may contain:
+
+- Modified tracked files.
+- Newly added components.
+- Uncommitted visual improvements.
+- Changes to existing frontend layouts.
+- Updated design tokens.
+- Other unfinished but intentional work.
+
+Therefore:
+
+1. Inspect `git status` before doing anything.
+2. Inspect the current branch.
+3. Inspect all modified and untracked files.
+4. Review the existing diff.
+5. Identify and preserve the complete Phase 02 implementation.
+6. Treat the current local working tree as the actual source of truth.
+7. Do not assume the remote GitHub `main` branch contains the latest implementation.
+
+DO NOT:
+
+- Reset the repository.
+- Run `git reset --hard`.
+- Discard existing changes.
+- Overwrite uncommitted files.
+- Force checkout another branch.
+- Rebase or replace the current working state.
+- Push to GitHub.
+- Open or merge a pull request.
+- Delete files merely because they are untracked.
+
+Continue in the existing working branch and workspace.
+
+Do not create a separate clean branch if doing so would separate or discard the unpushed Phase 02 work.
+
+The user intends to push the combined work later.
+
+## 1.2 Inspect the complete project
+
+Before implementation, review the latest actual workspace.
+
+Read:
+
+- README.md
+- AGENTS.md / agent.md, if present
+- AI_STUDIO_BRIEF.md
+- Project architecture documentation.
+- Content schema documentation.
+- Frontend contracts.
+- Source and provenance policies.
+- Existing localization files.
+
+Inspect the frontend source, including:
+
+- `src/app/`
+- `src/components/`
+- `src/features/briefing/`
+- `src/features/expanded/`
+- `src/features/synthesis/`
+- `src/features/audit/`
+- `src/styles/`
+- `src/lib/i18n/`
+
+Do not assume every file name in this instruction still matches the current implementation.
+
+Discover the actual component structure first.
+
+Map:
+
+- All main page components.
+- All shared layout components.
+- All editorial components.
+- All typography and styling definitions.
+- All reusable data visualization components.
+- All responsive breakpoints.
+- All theme handling.
+- All localization behavior.
+
+## 1.3 Establish an actual visual baseline
+
+If browser tooling is available, start the application and inspect its actual rendering.
+
+Capture screenshots of:
+
+- Briefing, initial viewport.
+- Briefing, middle and lower sections.
+- Expanded, selected dossier.
+- Synthesis.
+- Audit.
+- Archive drawer.
+- Mobile navigation.
+
+Use:
+
+- 1440 × 900
+- 1280 × 800
+- 768 × 1024
+- 390 × 844
+- 360 × 800
+
+Inspect both English and Chinese.
+
+Inspect both light and dark themes.
+
+Do not pretend that source-code inspection is equivalent to visual browser inspection.
+
+If browser tooling is not available, explicitly document this limitation and still complete all code-level work.
+
+## 1.4 Produce a visual diagnosis
+
+Before changing code, identify:
+
+1. The strongest existing visual elements.
+2. The most visually repetitive elements.
+3. The weakest page composition.
+4. Typography problems.
+5. Spacing and density problems.
+6. Inconsistent visual conventions.
+7. Poor component proportions.
+8. Desktop-specific weaknesses.
+9. Mobile-specific weaknesses.
+10. Existing improvements that should remain untouched.
+
+Create a concise visual diagnosis and implementation plan.
+
+Then proceed directly to implementation.
+
+Do not stop at the diagnosis.
+
+---
+
+# PART 02 — ART DIRECTION: DEFINE A DISTINCTIVE PUBLICATION IDENTITY
+
+## 2.1 The design ambition
+
+The intended product should feel like a sophisticated international intelligence publication.
+
+Its design language should combine:
+
+- Editorial authority.
+- Contemporary magazine art direction.
+- Serious analytical presentation.
+- Modern information design.
+- High-end typography.
+- Carefully controlled visual experimentation.
+- Excellent digital usability.
+
+Use publications and studios as design references, not templates to copy.
+
+Study the visual principles of:
+
+- The New York Times.
+- Financial Times.
+- The Economist.
+- Reuters Graphics.
+- Bloomberg.
+- The Information.
+- Monocle.
+- Premium independent editorial publications.
+- Award-winning digital editorial and information-design projects.
+
+Do not reproduce their logos, layouts, or proprietary identity.
+
+Find a distinctive design direction for WORLD SIGNAL itself.
+
+## 2.2 Avoid the generic AI product aesthetic
+
+The following patterns are explicitly discouraged:
+
+- Generic SaaS dashboards.
+- Repetitive Bento layouts.
+- Endless rounded rectangles.
+- Excessive glassmorphism.
+- Random gradients.
+- Oversized decorative blobs.
+- Generic icon-and-card combinations.
+- Excessive colored pills.
+- Tiny technical metadata everywhere.
+- Generic AI-generated illustrations.
+- Repeated headline/metadata/body/card structures.
+- Overuse of three-column layouts.
+- Decorative charts that communicate nothing.
+- Animations added merely to make the page appear sophisticated.
+
+A strong design is not created by adding more decoration.
+
+It is created by controlling visual hierarchy, composition, rhythm, contrast, typography, and the relationship between content and visual form.
+
+## 2.3 Establish a clear visual signature
+
+Develop a recognizable WORLD SIGNAL design identity.
+
+Explore a coherent system involving:
+
+- A distinctive masthead.
+- A recognizable publication mark.
+- A strong display typography system.
+- A disciplined editorial grid.
+- A consistent set of information-design conventions.
+- Domain-specific visual accents.
+- A sophisticated visual language for signals and evidence.
+- A restrained but memorable motion language.
+
+The identity should remain recognizable even if all content-specific text is removed.
+
+Do not force a logo redesign if the existing mark is already suitable.
+
+Instead, evaluate whether the entire publication frame, typography, spacing, section labels, and recurring visual elements work together as a recognizable system.
+
+## 2.4 Color system
+
+Refine the existing palette.
+
+Preserve the warm archival-paper direction if it continues to work, but do not be afraid to improve it.
+
+Build semantic color roles for:
+
+- Main background.
+- Secondary background.
+- Elevated surfaces.
+- Main text.
+- Secondary text.
+- Muted metadata.
+- Dividers.
+- Strong borders.
+- Interactive states.
+- Focus states.
+- Domain colors.
+- Evidence states.
+- Confidence indicators.
+- Risk and uncertainty.
+- Positive, negative, and neutral changes.
+
+Domain identity:
+
+- World Events.
+- AI Frontier.
+- Economic Outlook.
+
+The three domains should be visually distinguishable but should not create a childish rainbow interface.
+
+Use color purposefully.
+
+Maintain sufficient contrast in both themes.
+
+Never rely on color alone to communicate critical meaning.
+
+---
+
+# PART 03 — GLOBAL LAYOUT AND COMPOSITION SYSTEM
+
+This is one of the most important parts of the entire task.
+
+A premium frontend requires deliberate control over proportions and composition.
+
+Do not simply place existing components into a larger container.
+
+## 3.1 Establish a professional editorial grid
+
+Evaluate and implement a coherent responsive grid.
+
+Consider:
+
+- A 12-column desktop grid.
+- Flexible page margins.
+- Consistent gutters.
+- Strong content alignment.
+- Multiple content widths.
+- Carefully controlled reading measures.
+- Intentional asymmetric composition.
+
+Suggested starting points, to be validated in the actual interface:
+
+- Large desktop page margins: approximately 48–80px.
+- Standard desktop page margins: approximately 32–48px.
+- Tablet margins: approximately 24–32px.
+- Mobile margins: approximately 16–20px.
+- Main editorial canvas: approximately 1240–1440px maximum width.
+- Long-form reading column: approximately 680–800px.
+- Main article sidebar: approximately 240–300px.
+
+These values are starting references, not rigid requirements.
+
+The correct proportions should be established through actual visual inspection.
+
+## 3.2 Establish vertical rhythm
+
+Every page needs intentional pacing.
+
+Define consistent relationships between:
+
+- Masthead and page title.
+- Page title and introduction.
+- Section headings and content.
+- Editorial modules.
+- Narrative sections.
+- Data visualizations.
+- Footnotes and sources.
+- Page endings.
+
+Do not allow all sections to have identical vertical spacing.
+
+Large editorial transitions should receive more space.
+
+Dense data sections should be compact but readable.
+
+The page should feel composed rather than mechanically assembled.
+
+## 3.3 Build compositional variety
+
+Use different layout patterns according to the nature of the information.
+
+Appropriate patterns include:
+
+- Large editorial hero.
+- Asymmetric split composition.
+- Multi-column news grid.
+- Numbered editorial sequence.
+- Horizontal timeline.
+- Vertical evidence ledger.
+- Data table.
+- Structured relationship diagram.
+- Full-width analytical section.
+- Narrow long-form reading column.
+- Compact side rail.
+- Typographic pull quote.
+- Modular evidence callout.
+
+Do not make all content look like cards.
+
+Use open layouts, whitespace, borders, typography, background changes, and grid alignment to distinguish sections.
+
+**A good page should have visual rhythm.**
+
+It must not look like the same card repeated 20 times.
+
+---
+
+# PART 04 — TYPOGRAPHY: MAKE THE PUBLICATION FEEL EXPENSIVE
+
+Typography is central to this project.
+
+Treat it as a major design system rather than simply selecting fonts.
+
+## 4.1 Establish a complete type hierarchy
+
+Define deliberate roles for:
+
+- Publication masthead.
+- Page titles.
+- Lead headlines.
+- Secondary headlines.
+- Story titles.
+- Section headings.
+- Subsection headings.
+- Article body.
+- Summary text.
+- Pull quotes.
+- Data labels.
+- Metadata.
+- Source references.
+- Footnotes.
+- Buttons and controls.
+
+Create a coherent responsive type scale.
+
+Use fluid sizing where appropriate.
+
+Large headlines must scale gracefully rather than overflow or become awkwardly small on mobile.
+
+## 4.2 Font pairing
+
+Review the existing typography direction.
+
+The existing Fraunces, Plus Jakarta Sans, and IBM Plex Mono combination can remain if it is still effective.
+
+Possible roles:
+
+- Editorial display: refined serif.
+- Navigation and interface: highly legible sans-serif.
+- Long-form reading: comfortable text face.
+- Technical identifiers and timestamps: restrained monospace.
+
+Do not use monospace for every metadata label.
+
+Do not make all headings visually identical.
+
+## 4.3 Chinese and English typography
+
+The Chinese interface is a first-class design target.
+
+It must not feel like a translated afterthought.
+
+Carefully evaluate:
+
+- Chinese font fallback.
+- Chinese punctuation.
+- Chinese line height.
+- Chinese headline wrapping.
+- English/Chinese mixed text.
+- Numerals.
+- Latin metadata within Chinese paragraphs.
+- Table column behavior.
+- Different character widths.
+
+The English and Chinese interfaces should have equivalent visual quality.
+
+Do not force identical text widths when the languages have different typographic requirements.
+
+Test actual long Chinese headlines and paragraphs.
+
+## 4.4 Reading ergonomics
+
+Long-form body text should be comfortable to read.
+
+Pay attention to:
+
+- Line length.
+- Line height.
+- Paragraph spacing.
+- Heading spacing.
+- Link contrast.
+- Inline emphasis.
+- Citation placement.
+- List indentation.
+- Quote composition.
+
+Avoid overly wide text columns.
+
+Avoid tiny text simply to fit more information.
+
+Premium editorial design prioritizes readable information density.
+
+---
+
+# PART 05 — BRIEFING: DESIGN AN EXCEPTIONAL DIGITAL NEWS FRONT PAGE
+
+Briefing is the most important entry point.
+
+It is the page most likely to determine whether a first-time visitor continues exploring the publication.
+
+Its visual quality must be exceptional.
+
+## 5.1 First-screen experience
+
+Within five seconds, a reader should understand:
+
+- What publication they are visiting.
+- What the most important current development is.
+- Why it matters.
+- What the publication considers important today.
+- Where to go next.
+
+Do not overwhelm the reader with metadata, controls, or technical labels.
+
+The first screen must establish editorial authority.
+
+## 5.2 Masthead and publication introduction
+
+Treat the top of Briefing as a real publication masthead.
+
+Improve:
+
+- Brand positioning.
+- Publication title.
+- Edition date.
+- Edition status.
+- Primary navigation.
+- Secondary metadata.
+- Visual hierarchy.
+- Responsive behavior.
+
+The masthead should feel editorial rather than SaaS-like.
+
+Consider a distinctive date and edition composition.
+
+Make the publication identity memorable without making the header unnecessarily tall.
+
+## 5.3 Lead story — build a real editorial hero
+
+This is a priority.
+
+The lead story must be the strongest visual element on the front page.
+
+Do not simply place a headline next to a generic illustration.
+
+Design a complete editorial composition consisting of:
+
+- A carefully scaled headline.
+- A strong editorial introduction.
+- Clear domain identity.
+- Relevant time and location context, when verified.
+- A visual representation of the story.
+- A meaningful summary.
+- A restrained evidence/confidence presentation.
+- A clear path to the full dossier.
+
+Explore sophisticated asymmetry.
+
+Consider a composition where typography and illustration are designed together rather than independently.
+
+The artwork should support the story's identity.
+
+It should not compete with the headline.
+
+## 5.4 Story-specific visual storytelling
+
+The previous implementation introduced `EditorialSignalArtwork`.
+
+Treat it as a foundation, not a final solution.
+
+Investigate whether the current visual system can become genuinely expressive.
+
+Explore a family of custom editorial visuals:
+
+- Distinct compositions for important stories.
+- Abstract geopolitical compositions.
+- Technology architecture-inspired illustrations.
+- Economic structural diagrams.
+- Typographic story compositions.
+- Carefully constructed visual timelines.
+- Evidence-inspired graphics.
+
+Use actual structured information only.
+
+Never fabricate a photograph, event location, geopolitical boundary, market movement, causal connection, or statistic.
+
+If story-specific information is insufficient, use a clearly illustrative abstract visual.
+
+The artwork must never pretend to be documentary evidence.
+
+## 5.5 Top signals — editorial hierarchy, not repetitive cards
+
+This area should feel like a curated editorial selection.
+
+Create deliberate differences in visual weight.
+
+For example:
+
+- One strong secondary story.
+- Two balanced editorial features.
+- Compact supporting stories.
+- Clearly separated domain sections.
+
+Vary headline sizes, column spans, text widths, and composition according to importance.
+
+Do not randomly vary layouts for visual novelty.
+
+The hierarchy must communicate editorial priority.
+
+## 5.6 Three domains — create recognizable visual identities
+
+World Events, AI Frontier, and Economic Outlook should each have a distinct visual presentation.
+
+Explore:
+
+- Domain-specific graphic language.
+- Elegant index compositions.
+- Editorial typography.
+- Real edition statistics.
+- Thoughtful visual summaries.
+- Meaningful links to deeper coverage.
+
+Avoid three identical cards with an icon, a number, and a short paragraph.
+
+## 5.7 Daily Delta
+
+Preserve its implemented comparison engine and current editorial placement.
+
+Make its presentation more polished.
+
+The four categories — New, Updated, Unchanged, Omitted — must be easy to understand.
+
+The interface should distinguish meaningful editorial change from insignificant technical changes.
+
+Preserve all existing omission safeguards.
+
+Never imply that omission means resolution.
+
+## 5.8 Lower-page editorial flow
+
+Improve the transitions between:
+
+- Daily Delta.
+- Top Signals.
+- Domain overview.
+- Additional Signals.
+- Editorial Reading Path.
+
+The page should feel like one intentional publication, not a stack of components.
+
+Add visual pauses and clear section beginnings.
+
+Do not let every module compete for attention.
+
+---
+
+# PART 06 — EXPANDED: CREATE AN IMMERSIVE INVESTIGATIVE READING EXPERIENCE
+
+Expanded should feel like a premium long-form intelligence report.
+
+It should not look like a developer dashboard or an administrative document viewer.
+
+## 6.1 Signal discovery
+
+Review the current filtering and signal selection interface.
+
+The reader should be able to discover stories quickly without feeling surrounded by controls.
+
+Refine:
+
+- Filter hierarchy.
+- Search.
+- Domain selection.
+- Selected signal states.
+- Filter grouping.
+- Results count.
+- Empty states.
+- Mobile list presentation.
+
+Controls should be visually quiet but unmistakably usable.
+
+## 6.2 Dossier opening
+
+The article's opening should have the visual authority of a serious investigative report.
+
+Create a clear sequence:
+
+1. Domain or editorial category.
+2. Main headline.
+3. Concise summary.
+4. Relevant date and geography.
+5. Editorial importance.
+6. Evidence quality and confidence.
+7. Article navigation.
+
+Do not display all metadata at equal visual priority.
+
+Make the headline dominant.
+
+Keep supporting information immediately accessible.
+
+## 6.3 Reading canvas
+
+Consider a three-zone desktop reading experience where suitable:
+
+- Left: signal discovery or section navigation.
+- Center: primary editorial reading column.
+- Right: contextual evidence, timeline, or article navigation.
+
+Do not force all three zones onto smaller screens.
+
+Use a comfortable central reading width.
+
+The article should feel spacious and focused.
+
+## 6.4 Section design
+
+Different narrative sections need different visual treatments.
+
+Design a clear distinction between:
+
+- What happened.
+- Verified facts.
+- Editorial analysis.
+- Interpretations.
+- Uncertainties.
+- Possible developments.
+- Implications.
+
+Do not put every section inside a bordered card.
+
+Use typographic hierarchy, side rules, background shifts, numbered sections, and concise callouts where appropriate.
+
+## 6.5 Timeline
+
+Develop a visually compelling timeline.
+
+Requirements:
+
+- Clear chronological direction.
+- Distinct event markers.
+- Readable dates.
+- Strong visual grouping.
+- Clear event descriptions.
+- Responsive behavior.
+- Legible distinction between historical events and prospective developments, when present.
+
+A timeline should help explain how a story evolved.
+
+It should not be merely decorative.
+
+## 6.6 Evidence and source presentation
+
+Evidence needs a precise information hierarchy.
+
+Preserve traceability.
+
+Use carefully designed visual structures to distinguish:
+
+- Claim.
+- Supporting evidence.
+- Source.
+- Reporting origin.
+- Confidence.
+- Important limitations.
+
+Keep source references accessible.
+
+Do not make citations so tiny or visually obscure that readers cannot inspect them.
+
+Do not transform uncertain evidence into definitive statements through visual design.
+
+---
+
+# PART 07 — SYNTHESIS: CREATE A VISUAL ANALYST'S WORKSPACE
+
+Synthesis should feel different from the front page and investigative reading view.
+
+Its purpose is to help readers understand structural relationships and possible futures.
+
+It should feel like an intelligent analytical publication.
+
+## 7.1 Cross-domain analysis
+
+Develop a strong visual method for showing relationships among signals.
+
+Possible approaches:
+
+- Evidence-linked network diagrams.
+- Relationship matrices.
+- Analytical chains.
+- Structured cross-domain maps.
+- Editorial relationship narratives.
+
+A relationship diagram should only display relationships explicitly supported by the existing relationship engine and data contracts.
+
+Each edge must preserve its actual relationship type and supporting context.
+
+Do not infer causality.
+
+Do not draw decorative connections between unrelated signals.
+
+Never turn temporal coincidence into a causal claim.
+
+## 7.2 Relationship visualization
+
+If creating a network visualization:
+
+- Use clear node hierarchy.
+- Avoid unnecessary overlapping labels.
+- Support different screen sizes.
+- Provide an accessible textual alternative.
+- Make connections distinguishable.
+- Allow navigation to underlying signals.
+- Preserve evidence references.
+
+Do not make a technically impressive but unreadable network diagram.
+
+Clarity comes before visual complexity.
+
+## 7.3 Time horizons
+
+Improve short-, medium-, and long-term analysis.
+
+Explore a visually coherent time-horizon composition.
+
+Make differences in timeframe clear.
+
+Connect the analysis to actual available signals.
+
+Avoid unsupported forecasts.
+
+## 7.4 Scenarios
+
+Improve Base, Upside, and Downside scenario presentation.
+
+Present differences clearly through:
+
+- Typographic hierarchy.
+- Structured columns or comparisons.
+- Conditional pathways.
+- Relevant evidence.
+- Clear limitations.
+
+Do not fabricate probabilities or confidence percentages.
+
+## 7.5 Personal implications and watchlist
+
+Make implications easier to understand and act upon.
+
+Use a sophisticated editorial tone.
+
+Avoid an artificial recommendation-dashboard appearance.
+
+The watchlist should be easy to scan, navigate, and understand.
+
+---
+
+# PART 08 — AUDIT: MAKE TRANSPARENCY VISUALLY EXCELLENT
+
+Audit must communicate credibility and methodological discipline.
+
+Its information density may be higher than other views, but the presentation must still be elegant.
+
+## 8.1 Visual identity
+
+Develop an evidence-desk aesthetic.
+
+Consider:
+
+- Structured editorial tables.
+- Clear source groupings.
+- Hierarchical evidence records.
+- Fine typographic distinctions.
+- Restrained analytical graphics.
+- Consistent provenance notation.
+- Strong navigation between claims and evidence.
+
+Avoid the appearance of a conventional admin panel.
+
+## 8.2 Reporting origins
+
+Improve the visual representation of reporting origins.
+
+Help readers understand how reporting support is distributed.
+
+Make groups and their relationships readable.
+
+Do not imply that multiple URLs automatically equal independent reporting origins.
+
+Preserve the actual independence and origin definitions supplied by the project.
+
+## 8.3 Claim ledger
+
+Create a highly usable ledger.
+
+Optimize:
+
+- Claim title and content.
+- Source reference.
+- Supporting evidence.
+- Confidence.
+- Claim status.
+- Relevant signal.
+- Expandable details.
+
+Use good table design.
+
+On mobile, do not simply shrink a desktop table until the text becomes unreadable.
+
+Use responsive record layouts or another suitable presentation while retaining all necessary information.
+
+## 8.4 Visual analytics
+
+Improve the existing confidence and importance visualizations.
+
+Every chart needs:
+
+- A meaningful title.
+- Clear labels.
+- Units where applicable.
+- A visible data source or definition.
+- Appropriate scales.
+- Explanatory context.
+
+Use real application data only.
+
+Avoid misleading truncated axes, meaningless color scales, and decorative metrics.
+
+## 8.5 Methodology and diagnostics
+
+Make methodology, corrections, diagnostics, and open questions easier to inspect.
+
+The design should convey rigor without making the page visually intimidating.
+
+---
+
+# PART 09 — GLOBAL NAVIGATION AND INFORMATION ARCHITECTURE
+
+Evaluate the entire navigation experience.
+
+Review:
+
+- Masthead.
+- Desktop top navigation.
+- Mobile bottom navigation.
+- Archive drawer.
+- Active states.
+- Reading progress.
+- Page transitions.
+- Section navigation.
+- Back and forward behavior.
+
+Do not duplicate existing navigation or reading-progress functionality.
+
+The navigation system should feel lightweight, stable, and integrated.
+
+## 9.1 Desktop navigation
+
+Make the selected view unmistakable.
+
+Balance publication identity and navigation.
+
+Avoid oversized navigation controls.
+
+Keep secondary functions visually secondary.
+
+## 9.2 Mobile navigation
+
+The mobile bottom navigation must:
+
+- Respect safe-area insets.
+- Never overlap critical content.
+- Avoid obscuring buttons or citations.
+- Maintain an obvious active state.
+- Have practical touch targets.
+- Remain visually lightweight.
+
+Ensure the page has sufficient bottom padding.
+
+## 9.3 Archive
+
+The archive is an important part of an intelligence publication.
+
+Make browsing editions feel like exploring a publication archive rather than selecting records from an administrative dropdown.
+
+Improve:
+
+- Edition hierarchy.
+- Date presentation.
+- Status labels.
+- Search and filtering.
+- Selected edition state.
+- Mobile behavior.
+
+Preserve existing URLs and archive logic.
+
+---
+
+# PART 10 — MICROINTERACTIONS AND MOTION DESIGN
+
+Motion should make the product feel polished.
+
+It must not become a distraction.
+
+Develop a coherent interaction language.
+
+Consider:
+
+- Subtle page entrance.
+- Editorial section transitions.
+- Navigation underline movement.
+- Story hover states.
+- Focus transitions.
+- Expanding evidence details.
+- Timeline interaction.
+- Signal selection.
+- Archive drawer motion.
+- Smooth but restrained data visualization transitions.
+
+Motion should communicate state and hierarchy.
+
+Avoid:
+
+- Large parallax effects.
+- Continuous unnecessary movement.
+- Excessive spring animations.
+- Large page-wide entrance sequences.
+- Repeated bouncing.
+- Decorative particles.
+- Motion that interferes with reading.
+
+Respect `prefers-reduced-motion`.
+
+All interactive elements must have appropriate:
+
+- Hover states.
+- Focus states.
+- Active states.
+- Disabled states.
+- Loading states.
+- Error states.
+
+---
+
+# PART 11 — RESPONSIVE DESIGN MUST BE ART-DIRECTED
+
+Responsive design is not simply making desktop components narrower.
+
+Each viewport deserves deliberate composition.
+
+## Desktop
+
+At 1440px and above:
+
+- Use the editorial grid fully.
+- Create meaningful asymmetry.
+- Use the space to improve context and evidence presentation.
+- Avoid excessive empty space.
+- Avoid stretching article paragraphs across the entire screen.
+
+## Standard laptop
+
+At 1280px:
+
+- Maintain a balanced grid.
+- Preserve readable text widths.
+- Ensure navigation does not become cramped.
+- Reflow secondary sidebars intelligently.
+
+## Tablet
+
+At 768px:
+
+- Reconsider multi-column structures.
+- Reduce unnecessary side content.
+- Maintain strong hierarchy.
+- Make data visualization readable.
+- Prevent compressed tables.
+
+## Mobile
+
+At 390px and 360px:
+
+- Design a genuinely mobile-first reading experience.
+- Recompose editorial heroes.
+- Ensure headlines wrap beautifully.
+- Simplify multi-column relationships.
+- Present evidence clearly.
+- Maintain usable touch targets.
+- Eliminate horizontal overflow.
+- Keep the navigation practical.
+- Preserve visual identity.
+
+Do not simply stack every desktop card vertically.
+
+Mobile should feel like a designed digital publication in its own right.
+
+---
+
+# PART 12 — DATA VISUALIZATION AND EDITORIAL GRAPHICS
+
+Build a coherent visual vocabulary for information.
+
+Different data types require different visual representations.
+
+Possible approaches:
+
+- Timeline.
+- Relationship network.
+- Distribution chart.
+- Comparison matrix.
+- Evidence provenance diagram.
+- Structured time horizon.
+- Progression or sequence.
+- Editorial infographic.
+- Compact numerical summary.
+
+Do not use a chart merely because the page needs a graphic.
+
+Choose a representation that improves understanding.
+
+All visualizations must:
+
+1. Be grounded in actual application data.
+2. Have correct labels.
+3. Preserve underlying values.
+4. Avoid fabricated information.
+5. Remain readable on mobile.
+6. Provide meaningful empty states.
+7. Have accessible text alternatives.
+8. Avoid misleading scales.
+9. Be visually consistent.
+
+SVG is appropriate for carefully controlled custom visualizations.
+
+Avoid introducing large visualization libraries unless there is a clear engineering justification.
+
+---
+
+# PART 13 — COMPONENT QUALITY AND CSS ARCHITECTURE
+
+A better design must also be easier to maintain.
+
+Inspect the existing design token system before modifying it.
+
+Create a coherent component vocabulary.
+
+Potential primitives:
+
+- EditorialMasthead.
+- EditorialSectionHeader.
+- StoryFeature.
+- SignalMetadata.
+- EditorialCallout.
+- EvidenceBlock.
+- Timeline.
+- ProvenanceGroup.
+- RelationshipDiagram.
+- AnalyticalComparison.
+- DataLabel.
+- ReadingNavigation.
+- ResponsiveRecord.
+
+These are conceptual examples, not mandatory component names.
+
+Create abstractions only when they improve clarity and consistency.
+
+Do not create one abstraction for every small visual element.
+
+Avoid huge components containing the entire page.
+
+Keep concerns separated:
+
+- Content/data logic.
+- Presentation.
+- Layout.
+- Interaction.
+- Localization.
+
+Maintain semantic HTML.
+
+Use clear and predictable CSS conventions.
+
+Avoid scattered one-off overrides and specificity conflicts.
+
+Keep the styling approach compatible with the existing Tailwind CSS 4 architecture.
+
+---
+
+# PART 14 — ACCESSIBILITY AND USABILITY
+
+The visual experience must remain usable.
+
+Verify:
+
+- Sufficient text contrast.
+- Keyboard navigation.
+- Visible focus indicators.
+- Semantic headings.
+- Accessible buttons and links.
+- Appropriate ARIA labels.
+- Screen-reader-friendly charts.
+- Table semantics.
+- Reduced-motion support.
+- Touch target sizes.
+- Clear interaction states.
+
+Avoid using color as the only means of communicating evidence status.
+
+Make interactive charts or diagrams understandable without relying exclusively on visual perception.
+
+Aim for WCAG 2.2 AA quality wherever applicable.
+
+Do not sacrifice accessibility for aesthetics.
+
+---
+
+# PART 15 — PERFORMANCE AND IMPLEMENTATION QUALITY
+
+Visual quality must not come at the expense of performance.
+
+Avoid:
+
+- Excessive JavaScript animation.
+- Heavy unnecessary dependencies.
+- Large unoptimized image assets.
+- Expensive continuous rendering.
+- Unnecessary DOM complexity.
+- Unstable layout shifts.
+- Excessively large SVG markup.
+- Duplicated implementations.
+
+Use CSS for simple transitions.
+
+Use SVG for custom graphics where appropriate.
+
+Optimize image usage.
+
+Keep visual assets responsive.
+
+Maintain existing loading and error-handling behavior.
+
+Do not introduce unnecessary network requests.
+
+Do not introduce new external APIs.
+
+---
+
+# PART 16 — DESIGN REVIEW: ITERATE UNTIL THE QUALITY BAR IS MET
+
+This section is mandatory.
+
+Do not stop when the first implementation compiles.
+
+Do not stop when TypeScript passes.
+
+Do not stop when the pages look superficially cleaner.
+
+Perform multiple visual refinement passes.
+
+## Pass 1 — Structural composition
+
+Check:
+
+- Page proportions.
+- Grid.
+- Visual hierarchy.
+- Section sequence.
+- Content density.
+- White space.
+- Relationships between modules.
+
+## Pass 2 — Typography and detail
+
+Check:
+
+- Font scale.
+- Headline wrapping.
+- Paragraph readability.
+- Metadata size.
+- Line heights.
+- Borders.
+- Dividers.
+- Spacing.
+- Alignment.
+
+## Pass 3 — Visual storytelling
+
+Check:
+
+- Lead artwork.
+- Domain identities.
+- Editorial illustrations.
+- Data visualization.
+- Timelines.
+- Evidence presentation.
+- Relationship diagrams.
+
+## Pass 4 — Responsive experience
+
+Check every required viewport.
+
+Look for:
+
+- Unbalanced compositions.
+- Broken headlines.
+- Overflow.
+- Tiny text.
+- Overlapping controls.
+- Awkward card stacking.
+- Poor navigation.
+
+## Pass 5 — Overall art direction
+
+Take a step back and evaluate the entire product.
+
+Ask:
+
+- Does this feel like one recognizable publication?
+- Does it look professionally art-directed?
+- Are the four views visually distinct?
+- Is there a memorable first impression?
+- Is the page composition interesting without becoming chaotic?
+- Is it genuinely enjoyable to read?
+- Does the design feel intentional at every scale?
+
+If the answer is no, continue improving it.
+
+---
+
+# PART 17 — FORMAL VISUAL ACCEPTANCE CRITERIA
+
+Evaluate the final implementation using this rubric.
+
+| Dimension | Weight |
+|---|---:|
+| Overall art direction and visual identity | 20 |
+| Layout composition and information hierarchy | 15 |
+| Typography and reading experience | 15 |
+| Briefing visual quality | 10 |
+| Expanded reading experience | 10 |
+| Synthesis information design | 10 |
+| Audit evidence presentation | 5 |
+| Responsive design | 5 |
+| Interaction and motion quality | 5 |
+| Chinese/English consistency and accessibility | 5 |
+| Total | 100 |
+
+Target: 90/100 or higher.
+
+A score must be supported by concrete screenshot observations, not simply self-declared.
+
+Any major defect in responsive behavior, readability, factual representation, or navigation is a blocker even if the total score is high.
+
+## The five-second test
+
+Show the Briefing first screen without explanation.
+
+Can a new visitor understand the publication's identity and identify the most important current development within five seconds?
+
+## The thumbnail test
+
+View screenshots at a reduced size.
+
+Can the design hierarchy still be understood?
+
+A page that only looks good when inspecting individual components has not passed.
+
+## The repetition test
+
+Inspect consecutive sections.
+
+Do they look like meaningfully different editorial compositions, or do they repeat the same design pattern?
+
+## The reading test
+
+Read a long-form article.
+
+Does the design support sustained reading without visual fatigue?
+
+## The credibility test
+
+Do all graphics and data displays accurately represent their underlying source information?
+
+Visual polish must never create false certainty.
+
+---
+
+# PART 18 — REQUIRED TESTING AND DELIVERABLES
+
+Test these viewports:
+
+- 1440 × 900.
+- 1280 × 800.
+- 768 × 1024.
+- 390 × 844.
+- 360 × 800.
+
+Test these pages:
+
+1. Briefing.
+2. Expanded.
+3. Synthesis.
+4. Audit.
+5. Archive drawer.
+
+Test:
+
+- English.
+- Chinese.
+- Light theme.
+- Dark theme.
+- Long headlines.
+- Missing optional information.
+- Empty states.
+- Unavailable states.
+- Dense evidence records.
+- Mobile navigation.
+
+Capture before-and-after screenshots if tooling permits.
+
+Store them in an appropriate local QA folder or provide them through the available preview environment.
+
+Do not commit generated screenshots or build artifacts unless the repository explicitly requires them.
+
+Run:
+
+`bun run typecheck`
+
+`bun run lint`
+
+`bun run test`
+
+`bun run build`
+
+Report actual results.
+
+Do not claim a test passed unless it was executed successfully.
+
+Do not claim browser QA was completed without actually inspecting the browser rendering.
+
+---
+
+# PART 19 — STRICT DATA AND PROJECT CONSTRAINTS
+
+The following must remain intact:
+
+- Markdown remains the canonical editorial source of truth.
+- Existing schema-v1 support.
+- Existing schema-v2 functionality.
+- Stable signal IDs.
+- Claim IDs.
+- Source IDs.
+- Signal relationships.
+- Continuity metadata.
+- Timeline events.
+- Reporting origin information.
+- Daily Delta comparison logic.
+- Existing evidence and provenance contracts.
+- Archive navigation.
+- URL synchronization.
+- Filtering.
+- Bilingual localization.
+- Light and dark themes.
+
+Do not:
+
+- Rewrite canonical editions.
+- Add fabricated editorial content.
+- Hard-code sample stories into production.
+- Invent statistics.
+- Invent relationships.
+- Infer causality.
+- Modify Muse research instructions.
+- Modify automated publishing behavior.
+- Replace real data with visual fixtures.
+- Change the product's underlying intelligence architecture.
+
+This is a frontend design initiative.
+
+Preserve the product's credibility and data integrity.
+
+---
+
+# PART 20 — FINAL DELIVERY REPORT
+
+When implementation is complete, provide:
+
+1. The working branch.
+2. Initial working-tree status.
+3. The Phase 02 changes preserved.
+4. Main design problems discovered.
+5. Art direction selected.
+6. Global design-system changes.
+7. Briefing improvements.
+8. Expanded improvements.
+9. Synthesis improvements.
+10. Audit improvements.
+11. Mobile and tablet improvements.
+12. Typography and localization improvements.
+13. Accessibility improvements.
+14. Files changed.
+15. Actual test results.
+16. Before-and-after screenshots.
+17. Remaining limitations.
+18. Final working-tree status.
+
+Do not push to GitHub.
+
+Do not open a pull request.
+
+Do not discard or reset the combined Phase 02 and Phase 03 work.
+
+The user will push the combined implementation later.
+
+---
+
+# FINAL CREATIVE DIRECTION
+
+I want you to aim substantially higher than an ordinary frontend redesign.
+
+WORLD SIGNAL should feel like a carefully art-directed international intelligence publication.
+
+A visitor should immediately notice the quality of the visual hierarchy.
+
+A reader should feel that every element has a purpose.
+
+A story should look important because of its editorial presentation, not because it has a colorful badge.
+
+An analytical relationship should become easier to understand because of the way it is visualized.
+
+Evidence should become easier to inspect because of the way it is organized.
+
+The four primary views should feel like different editorial experiences inside one unmistakable publication.
+
+The interface must be beautiful without sacrificing clarity, rigorous without feeling cold, sophisticated without becoming complicated, and visually rich without becoming noisy.
+
+**Do not optimize for the smallest possible code diff. Optimize for the best coherent design outcome while preserving the existing product architecture and data integrity.**
+
+Do not settle for the first acceptable result.
+
+Inspect it, critique it, improve it, and inspect it again.
+
+The ultimate objective:
+
+**Make WORLD SIGNAL look and feel like a world-class digital publication that readers genuinely want to return to.**

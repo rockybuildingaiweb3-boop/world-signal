@@ -52,6 +52,12 @@ export const OriginGroupExplorer: React.FC<OriginGroupExplorerProps> = ({
     });
   };
 
+  const qualifyingGroupCount = useMemo(
+    () => originGroups.filter((g) => g.qualifiesAny).length,
+    [originGroups]
+  );
+  const excludedGroupCount = originGroups.length - qualifyingGroupCount;
+
   const filteredOriginGroups = useMemo(() => {
     return originGroups.filter((g) => {
       if (originFilter === 'qualifying') return g.qualifiesAny;
@@ -67,13 +73,18 @@ export const OriginGroupExplorer: React.FC<OriginGroupExplorerProps> = ({
   return (
     <section className="space-y-5 ws-section-rule pt-8">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div className="space-y-1">
+        <div className="space-y-1.5">
           <h2 className="font-display text-[1.35rem] sm:text-[1.55rem] font-semibold tracking-[-0.015em] text-[var(--ws-ink)]">
             {t.audit.originExplorerTitle}
           </h2>
           <p className="max-w-2xl text-[12.5px] leading-relaxed text-[var(--ws-ink-muted)]">
             {t.audit.originExplorerSubtitle}
           </p>
+          {originGroups.length > 0 && (
+            <div className="pt-0.5 font-mono-tabular text-[11.5px] font-medium text-[var(--ws-ink-secondary)]">
+              {t.audit.originSummaryRibbon(qualifyingGroupCount, excludedGroupCount)}
+            </div>
+          )}
         </div>
 
         <div className="inline-flex rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface-subtle)] p-0.5 text-xs shrink-0 self-start">
@@ -129,7 +140,11 @@ export const OriginGroupExplorer: React.FC<OriginGroupExplorerProps> = ({
             return (
               <article
                 key={group.group}
-                className="relative overflow-hidden rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] flex flex-col justify-between"
+                className={`relative overflow-hidden rounded-[var(--ws-radius-sm)] border flex flex-col justify-between transition-colors ${
+                  group.qualifiesAny
+                    ? 'border-[var(--ws-border)] bg-[var(--ws-surface)]'
+                    : 'border-[var(--ws-border-subtle)] bg-[var(--ws-surface-elevated)]/65'
+                }`}
               >
                 {/* Top verification status hairline */}
                 <div
@@ -153,6 +168,10 @@ export const OriginGroupExplorer: React.FC<OriginGroupExplorerProps> = ({
                             group.qualifyingRecordCount,
                             group.totalRecordCount
                           )}
+                          {' · '}
+                          <span className="font-semibold text-[var(--ws-ink-secondary)]">
+                            {qualifyingRatio}%
+                          </span>
                         </div>
                       </div>
 

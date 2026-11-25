@@ -1,10 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ChevronLeft,
   ChevronRight,
   FileCode2,
   Moon,
   RefreshCw,
+  Search,
   Sun,
   X,
 } from 'lucide-react';
@@ -52,6 +53,27 @@ export const ArchiveDrawer: React.FC<ArchiveDrawerProps> = ({
   const t = getUiStrings(lang);
   const panelRef = useRef<HTMLDivElement>(null);
   const dialogTitleId = React.useId();
+  const [archiveQuery, setArchiveQuery] = useState('');
+
+  useEffect(() => {
+    if (!isOpen) {
+      setArchiveQuery('');
+    }
+  }, [isOpen]);
+
+  const filteredEditions = useMemo(() => {
+    const q = archiveQuery.trim().toLowerCase();
+    if (!q) return editions;
+    return editions.filter((entry) => {
+      const statusLocalized = (t.editionStatus[entry.status] ?? entry.status).toLowerCase();
+      return (
+        entry.date.toLowerCase().includes(q) ||
+        entry.status.toLowerCase().includes(q) ||
+        statusLocalized.includes(q) ||
+        (entry.summary ?? '').toLowerCase().includes(q)
+      );
+    });
+  }, [archiveQuery, editions, t.editionStatus]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -316,13 +338,52 @@ export const ArchiveDrawer: React.FC<ArchiveDrawerProps> = ({
               </div>
             )}
 
+            {/* Archival Edition Search */}
+            {editions.length > 0 && (
+              <div className="space-y-1.5">
+                <div className="relative">
+                  <Search
+                    aria-hidden="true"
+                    className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--ws-ink-faint)]"
+                  />
+                  <input
+                    type="search"
+                    value={archiveQuery}
+                    onChange={(e) => setArchiveQuery(e.target.value)}
+                    placeholder={t.archive.searchPlaceholder}
+                    aria-label={t.archive.searchPlaceholder}
+                    className="w-full min-h-[36px] rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] py-1.5 pl-8.5 pr-8 text-[12.5px] text-[var(--ws-ink)] placeholder:text-[var(--ws-ink-faint)] focus:border-[var(--ws-border-strong)] focus:outline-none"
+                  />
+                  {archiveQuery.trim().length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setArchiveQuery('')}
+                      aria-label={t.archive.close}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-[var(--ws-ink-muted)] hover:text-[var(--ws-ink)] cursor-pointer"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  )}
+                </div>
+                {archiveQuery.trim().length > 0 && (
+                  <div className="font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                    {t.archive.matchingCount(filteredEditions.length, editions.length)}
+                  </div>
+                )}
+              </div>
+            )}
+
             {editions.length === 0 ? (
               <p className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] p-4 text-sm text-[var(--ws-ink-muted)]">
                 {t.archive.emptyArchive}
               </p>
+            ) : filteredEditions.length === 0 ? (
+              <p className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] p-4 text-xs text-[var(--ws-ink-muted)]">
+                {t.archive.noMatchingEditions}
+              </p>
             ) : (
               <ul className="space-y-2.5">
-                {editions.map((entry) => {
+                {filteredEditions.map((entry) => {
                   const isSelected = !isLocalPreview && entry.date === selectedDate;
                   const isLatest = entry.date === latestDate;
                   return (
@@ -346,10 +407,16 @@ export const ArchiveDrawer: React.FC<ArchiveDrawerProps> = ({
                           />
                         )}
                         <div className="flex items-baseline justify-between gap-2">
-                          <span className="font-display text-[1rem] font-semibold text-[var(--ws-ink)]">
+                          <span className="font-display text-[1.02rem] font-semibold text-[var(--ws-ink)]">
                             {formatEditionDate(entry.date, lang)}
                           </span>
-                          <span className="font-mono-tabular text-[11px] font-medium text-[var(--ws-ink-muted)] shrink-0">
+                          <span
+                            className={`font-mono-tabular text-[11px] font-semibold shrink-0 ${
+                              isLatest
+                                ? 'text-[var(--ws-editorial-accent)]'
+                                : 'text-[var(--ws-ink-muted)]'
+                            }`}
+                          >
                             {isLatest ? `${t.archive.latest} · ` : ''}
                             {t.editionStatus[entry.status] ?? entry.status}
                           </span>

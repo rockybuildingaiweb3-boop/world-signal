@@ -272,7 +272,10 @@ export const App: React.FC = () => {
             onOpenLocalModal={() => setLocalModalOpen(true)}
           />
         ) : (
-          <>
+          <div
+            key={`${activeView}-${edition.frontmatter.edition_date}-${edition.isLocalPreview ? 'local' : 'pub'}`}
+            className="ws-view-enter"
+          >
             {activeView === 'briefing' && (
               <BriefingView
                 edition={edition}
@@ -316,7 +319,7 @@ export const App: React.FC = () => {
                 onOpenSignal={handleOpenSignal}
               />
             )}
-          </>
+          </div>
         )}
       </main>
 

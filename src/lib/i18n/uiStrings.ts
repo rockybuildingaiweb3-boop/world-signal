@@ -43,6 +43,9 @@ export interface UiDictionary {
     localPreviewActive: string;
     exitPreview: string;
     close: string;
+    searchPlaceholder: string;
+    noMatchingEditions: string;
+    matchingCount: (shown: number, total: number) => string;
   };
   masthead: {
     editionLabel: string;
@@ -92,6 +95,7 @@ export interface UiDictionary {
     domainImpOtherLabel: string;
     mastheadDescriptor: string;
     coverPlateTitles: Record<SignalDomain, string>;
+    coverPlateFolio: Record<SignalDomain, string>;
     coverEditionDeskLabel: string;
   };
   dailyDelta: {
@@ -226,6 +230,11 @@ export interface UiDictionary {
     legacyRelatedTitle: string;
     legacyRelatedNote: string;
     structuredTimelineBadge: string;
+    dossierOutlineTitle: string;
+    evidenceSnapshotTitle: string;
+    prevSignal: string;
+    nextSignal: string;
+    signalPosition: (current: number, total: number) => string;
   };
   synthesis: {
     title: string;
@@ -344,6 +353,7 @@ export interface UiDictionary {
     claimShowingRange: (shown: number, total: number) => string;
     verificationRatioLabel: string;
     matrixAxisNote: string;
+    originSummaryRibbon: (qualifying: number, excluded: number) => string;
   };
   emptyState: {
     eyebrow: string;
@@ -425,6 +435,9 @@ const EN_DICT: UiDictionary = {
     localPreviewActive: 'Local Markdown Preview (not from archive)',
     exitPreview: 'Return to published archive',
     close: 'Close',
+    searchPlaceholder: 'Filter editions by date, status, or summary…',
+    noMatchingEditions: 'No archived editions match this query.',
+    matchingCount: (shown, total) => `${shown} of ${total} editions`,
   },
   masthead: {
     editionLabel: 'Edition',
@@ -480,6 +493,11 @@ const EN_DICT: UiDictionary = {
       world: 'Geopolitical Meridian Plate',
       ai: 'Frontier Topology Plate',
       economy: 'Macro Balance Plate',
+    },
+    coverPlateFolio: {
+      world: 'PLATE I',
+      ai: 'PLATE II',
+      economy: 'PLATE III',
     },
     coverEditionDeskLabel: 'Edition Desk',
   },
@@ -668,6 +686,11 @@ const EN_DICT: UiDictionary = {
     legacyRelatedTitle: 'Coarse Contextual References',
     legacyRelatedNote: 'Declared in related_signal_ids only; contextual association without causal assertion.',
     structuredTimelineBadge: 'Evidence-linked chronology',
+    dossierOutlineTitle: 'Dossier Sections',
+    evidenceSnapshotTitle: 'Evidence Ledger',
+    prevSignal: 'Previous signal',
+    nextSignal: 'Next signal',
+    signalPosition: (current, total) => `Signal ${String(current).padStart(2, '0')} of ${String(total).padStart(2, '0')}`,
   },
   synthesis: {
     title: 'Cross-Domain Synthesis & Implications',
@@ -789,6 +812,7 @@ const EN_DICT: UiDictionary = {
     claimShowingRange: (shown, total) => `Showing ${shown} of ${total} matching claims`,
     verificationRatioLabel: 'Qualifying original share',
     matrixAxisNote: 'Rows measure editorial importance (impact); columns measure verification confidence.',
+    originSummaryRibbon: (q, e) => `${q} qualifying independent ${q === 1 ? 'origin' : 'origins'} · ${e} excluded/syndicated ${e === 1 ? 'group' : 'groups'}`,
   },
   emptyState: {
     eyebrow: 'Archive Status',
@@ -943,6 +967,9 @@ const ZH_DICT: UiDictionary = {
     localPreviewActive: '本地 Markdown 预览模式（非正式档案）',
     exitPreview: '返回已发布档案',
     close: '关闭',
+    searchPlaceholder: '按日期、状态或提要关键词筛选期刊…',
+    noMatchingEditions: '没有符合筛选条件的归档期刊。',
+    matchingCount: (shown, total) => `显示 ${shown} / ${total} 期`,
   },
   masthead: {
     editionLabel: '期次',
@@ -996,6 +1023,11 @@ const ZH_DICT: UiDictionary = {
       world: '地缘经纬结构图版',
       ai: '前沿架构拓扑图版',
       economy: '宏观传导结构图版',
+    },
+    coverPlateFolio: {
+      world: '图版一',
+      ai: '图版二',
+      economy: '图版三',
     },
     coverEditionDeskLabel: '本期编务简报',
   },
@@ -1183,6 +1215,11 @@ const ZH_DICT: UiDictionary = {
     legacyRelatedTitle: '背景关联信号',
     legacyRelatedNote: '仅来自 related_signal_ids 的粗粒度背景关联，不代表因果关系。',
     structuredTimelineBadge: '绑定证据链的纪实节点',
+    dossierOutlineTitle: '档案目录',
+    evidenceSnapshotTitle: '证据速览',
+    prevSignal: '上一信号',
+    nextSignal: '下一信号',
+    signalPosition: (current, total) => `第 ${String(current).padStart(2, '0')} / ${String(total).padStart(2, '0')} 篇`,
   },
   synthesis: {
     title: '跨领域综合、影响与观察清单',
@@ -1304,6 +1341,7 @@ const ZH_DICT: UiDictionary = {
     claimShowingRange: (shown, total) => `当前显示 ${shown} / ${total} 条匹配声明`,
     verificationRatioLabel: '合格原创记录占比',
     matrixAxisNote: '纵轴衡量编辑重要性（影响级别），横轴衡量证据核验置信度，二者独立评估。',
+    originSummaryRibbon: (q, e) => `${q} 个计入独立报道源 · ${e} 个排除/转载分组`,
   },
   emptyState: {
     eyebrow: '档案状态',

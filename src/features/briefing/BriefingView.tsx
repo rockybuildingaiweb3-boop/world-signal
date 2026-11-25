@@ -279,7 +279,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
       {/* 2. Front-Page Cover Story Spread: Commanding Lead Story (7) + Edition Desk Folio (5) */}
       <section className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-0 lg:items-start">
         {leadEntry && (
-          <article className="lg:col-span-7 lg:border-r lg:border-[var(--ws-border)] lg:pr-10 space-y-5">
+          <article className="lg:col-span-7 lg:border-r lg:border-[var(--ws-border)] lg:pr-10 space-y-4 sm:space-y-5">
             {/* Lead Kicker & Signal Identifier */}
             <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
               <div className="flex items-center gap-2.5 shrink-0">
@@ -297,8 +297,8 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
             </div>
 
             {/* Monumental Cover Headline + Clean Provenance Metadata */}
-            <div className="space-y-3">
-              <h2 className="font-display ws-headline-cover text-[1.95rem] sm:text-[2.45rem] lg:text-[2.85rem] font-semibold text-[var(--ws-ink)] headline-balance">
+            <div className="space-y-2.5">
+              <h2 className="font-display ws-headline-cover text-[1.9rem] sm:text-[2.4rem] lg:text-[2.75rem] font-semibold text-[var(--ws-ink)] headline-balance">
                 <button
                   type="button"
                   onClick={() => onOpenSignal(leadEntry.signal.signal_id)}
@@ -310,20 +310,20 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
               <SignalMetaLine signal={leadEntry.signal} lang={lang} showClaims />
             </div>
 
+            {/* Cover Editorial Deck — Above Artwork for 5-Second First-Screen Comprehension */}
+            <div className="max-w-[64ch] ws-prose text-[15.25px] sm:text-[15.75px]">
+              <SafeMarkdown
+                content={leadEntry.editorialSummary}
+                onSelectSignal={onOpenSignal}
+              />
+            </div>
+
             {/* Bespoke Art-Directed Editorial Visual Plate */}
             <EditorialSignalArtwork
               signal={leadEntry.signal}
               lang={lang}
               signalDomainById={signalDomainById}
             />
-
-            {/* Cover Editorial Deck */}
-            <div className="max-w-[64ch] ws-prose text-[15.5px] sm:text-[16px]">
-              <SafeMarkdown
-                content={leadEntry.editorialSummary}
-                onSelectSignal={onOpenSignal}
-              />
-            </div>
 
             {leadEntry.signal.confidence.rationale && (
               <div className="max-w-[64ch] ws-folio-note px-4 py-3">
@@ -336,11 +336,11 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
               </div>
             )}
 
-            <div className="pt-1">
+            <div className="pt-0.5">
               <button
                 type="button"
                 onClick={() => onOpenSignal(leadEntry.signal.signal_id)}
-                className="group inline-flex min-h-[42px] items-center gap-2.5 text-[14px] font-semibold text-[var(--ws-ink)] hover:text-[var(--ws-editorial-accent)] transition-colors duration-150 cursor-pointer"
+                className="group inline-flex min-h-[40px] items-center gap-2.5 text-[14px] font-semibold text-[var(--ws-ink)] hover:text-[var(--ws-editorial-accent)] transition-colors duration-150 cursor-pointer"
               >
                 <span className="border-b-[1.5px] border-[var(--ws-rule-editorial)] pb-0.5 group-hover:border-[var(--ws-editorial-accent)] transition-colors duration-150">
                   {t.briefing.readDossier}

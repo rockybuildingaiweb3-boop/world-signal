@@ -211,11 +211,11 @@ export const SignalDossierHeader: React.FC<SignalDossierHeaderProps> = ({
         </div>
       )}
 
-      {/* Editorial Section Jump Navigation */}
+      {/* Editorial Section Jump Navigation (Compact viewports; xl+ uses Sticky Editorial Margin Rail) */}
       {jumpSections.length > 0 && (
         <nav
           aria-label={t.expanded.sectionJumpLabel}
-          className="flex flex-wrap items-center gap-x-4 gap-y-1.5 pt-1 font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]"
+          className="xl:hidden flex flex-wrap items-center gap-x-4 gap-y-1.5 pt-1 font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]"
         >
           <span className="ws-kicker text-[var(--ws-ink-faint)]">
             {t.expanded.sectionJumpLabel}
