@@ -104,6 +104,10 @@ The example URL is a placeholder. Never copy placeholder values into a real edit
 - claims are individual factual statements with status, confidence, and source references.
 - sources are source-ledger records.
 
+## Additive signal metadata v2
+
+The v1 fields remain valid. Schema v2 adds optional continuity, update, structured timeline, and typed relationship metadata. See [Intelligence Data Contract](INTELLIGENCE_DATA_CONTRACT.md) for exact fields, allowed values, validation rules, and migration policy. Historical v1 editions remain supported and must not be bulk-rewritten with invented metadata.
+
 Claim statuses: confirmed, reported, official_claim, disputed, unverified.
 
 Source classes: tier_1_newsroom, specialist_publication, primary_source, research_paper.

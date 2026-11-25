@@ -49,6 +49,22 @@ updated_at: "YYYY-MM-DDTHH:mm:ssZ"
 tags:
   - "tag-one"
 related_signal_ids: []
+continuity:
+  first_seen_edition: "YYYY-MM-DD"
+  last_material_update: "YYYY-MM-DD"
+  lifecycle: "developing"
+update:
+  change_type: "initial"
+  summary: "Describe the verified change in this edition; do not repeat the headline."
+  previous_edition: null
+  evidence_changes:
+    added_claim_ids: []
+    revised_claim_ids: []
+    withdrawn_claim_ids: []
+    added_source_urls: []
+    removed_source_urls: []
+timeline_events: []
+relationships: []
 claims:
   - claim_id: "WORLD-YYYYMMDD-short-slug-C01"
     statement: "One testable factual claim."
@@ -137,6 +153,22 @@ updated_at: "YYYY-MM-DDTHH:mm:ssZ"
 tags:
   - "reasoning"
 related_signal_ids: []
+continuity:
+  first_seen_edition: "YYYY-MM-DD"
+  last_material_update: "YYYY-MM-DD"
+  lifecycle: "developing"
+update:
+  change_type: "initial"
+  summary: "Describe the verified change in this edition; do not repeat the headline."
+  previous_edition: null
+  evidence_changes:
+    added_claim_ids: []
+    revised_claim_ids: []
+    withdrawn_claim_ids: []
+    added_source_urls: []
+    removed_source_urls: []
+timeline_events: []
+relationships: []
 claims:
   - claim_id: "AI-YYYYMMDD-short-slug-C01"
     statement: "A specific technical claim with a defined scope."
@@ -225,6 +257,22 @@ updated_at: "YYYY-MM-DDTHH:mm:ssZ"
 tags:
   - "inflation"
 related_signal_ids: []
+continuity:
+  first_seen_edition: "YYYY-MM-DD"
+  last_material_update: "YYYY-MM-DD"
+  lifecycle: "developing"
+update:
+  change_type: "initial"
+  summary: "Describe the verified change in this edition; do not repeat the headline."
+  previous_edition: null
+  evidence_changes:
+    added_claim_ids: []
+    revised_claim_ids: []
+    withdrawn_claim_ids: []
+    added_source_urls: []
+    removed_source_urls: []
+timeline_events: []
+relationships: []
 claims:
   - claim_id: "ECON-YYYYMMDD-short-slug-C01"
     statement: "A specific economic fact including period and unit."

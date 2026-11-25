@@ -86,11 +86,51 @@ Claim statuses: `confirmed`, `reported`, `official_claim`, `disputed`, `unverifi
 
 An official statement proves that the statement was made; it does not automatically prove the allegation inside it.
 
-## 6. Signal continuity
+## 6. Signal continuity and cross-edition updates
 
-Each story has a stable ID. Create it once and reuse it in later editions while the underlying event or development continues. Do not create a new ID for every update. Use a new ID only for a genuinely distinct signal. Link related signals through `related_signal_ids`.
+Each story has a permanent `signal_id`. Reuse it while the underlying event or development continues. Never create a new ID merely because a new article, update, market move, or daily edition exists. Create a new signal only for a genuinely distinct development.
 
-Suggested prefixes: `WORLD-`, `AI-`, and `ECON-`, followed by the first-seen date and a short slug.
+Before writing the current edition:
+1. Read the current date's canonical Markdown file and the immediately preceding edition.
+2. Inspect the previous same-day revision when available so morning/midday/evening changes are not lost.
+3. Match ongoing stories by stable `signal_id`, not headline wording.
+4. Preserve established claims, prior verified timeline events, and source provenance.
+5. Record only changes supported by new evidence; do not infer resolution from omission.
+
+Every signal in a new or updated `schema_version: 2` edition must include these additive metadata blocks:
+
+~~~yaml
+continuity:
+  first_seen_edition: "YYYY-MM-DD"
+  last_material_update: "YYYY-MM-DD"
+  lifecycle: "developing"
+update:
+  change_type: "material_update"
+  summary: "What materially changed since the previous available snapshot."
+  previous_edition: "YYYY-MM-DD"
+  evidence_changes:
+    added_claim_ids: []
+    revised_claim_ids: []
+    withdrawn_claim_ids: []
+    added_source_urls: []
+    removed_source_urls: []
+timeline_events: []
+relationships: []
+~~~
+
+Use the exact rules in `docs/INTELLIGENCE_DATA_CONTRACT.md`:
+
+- `first_seen_edition` is the first WORLD SIGNAL edition containing the signal ID, not the real-world event start date. Do not invent missing historical dates.
+- `last_material_update` changes only when facts, evidence, status, or analysis materially change. A routine sync is not a material update.
+- `lifecycle` must be one of `new`, `developing`, `ongoing`, `monitoring`, `resolved`, or `archived`. Use `resolved` only when evidence supports closure.
+- `change_type` must be one of `initial`, `material_update`, `status_change`, `new_evidence`, `correction`, or `no_material_change`. Do not call a headline rewrite a material update.
+- `previous_edition` means the prior dated edition in which this signal was recorded, when known. It does not mean an unverified timestamp.
+- Claim IDs remain stable while the proposition remains the same. Explain revised or withdrawn claims in the audit trail; never silently erase an important prior claim.
+- `timeline_events` is cumulative, has stable event IDs, uses event dates rather than publication dates, and references only claim/source IDs present in that signal's current ledgers.
+- `relationships` must identify an explicit relationship type, confidence, rationale, and supporting claim IDs. A temporal coincidence is not causation. Use `potential_link` for an unproven hypothesis and `causal_link` only when the mechanism is supported by evidence.
+- Keep `related_signal_ids` for backward compatibility, but treat it only as a coarse contextual link.
+
+For historical schema-v1 editions, do not bulk-invent or fabricate metadata. Backfill only when the archive supports it; otherwise state that continuity is incomplete or leave a field unavailable.
 
 ## 7. Required Markdown structure
 
@@ -119,7 +159,10 @@ Before upload, verify:
 - AI claims identify concrete artifacts or are marked as claims.
 - Economic data includes measurement period, unit, and release context.
 - Personal implications are general decision support, not individualized financial advice.
-- Ongoing stories keep stable IDs.
+- Ongoing stories keep stable IDs and include continuity/update metadata for schema v2.
+- Update classifications match real evidence changes, not editorial rewrites or routine syncs.
+- Timeline events are cumulative and use event dates, not publication dates.
+- Relationship types are explicit and do not imply causality without supporting claims.
 - The edition is cumulative and has no duplicate signals.
 - All required top-level headings are present.
 
@@ -127,4 +170,4 @@ If no important development exists in a domain, say so. Do not invent volume.
 
 ## 9. Output discipline
 
-The only deliverable is one Markdown file at the canonical daily path. Do not generate the public index; GitHub Actions handles that after the file is pushed to `main`.
+The only write deliverable is the current date's canonical Markdown file at `content/editions/YYYY/MM/YYYY-MM-DD.md`. Commit/push that file to `main` when repository write access is available. Never manually upload, edit, or commit files under `public/`; the publishing workflow generates the public Markdown copies and archive index after the canonical file is pushed. Do not modify templates, schemas, docs, scripts, workflows, or frontend files during a daily editorial run.
