@@ -42,8 +42,22 @@ export const App: React.FC = () => {
   const skipNextUrlSyncRef = useRef(false);
 
   const archive = useArchive(initialUrl.edition);
+  const {
+    activeEntry,
+    edition,
+    error,
+    index,
+    isLoading,
+    isRefreshing,
+    refreshFeedback,
+    selectEditionByDate,
+    selectEditionEntry,
+    refreshArchive,
+    loadLocalMarkdown,
+    exitLocalPreview,
+  } = archive;
   const { theme, setTheme, lang, setLang } = usePreferences(
-    archive.edition?.frontmatter.content_language
+    edition?.frontmatter.content_language
   );
   const t = getUiStrings(lang);
   const handleCloseArchive = useCallback(() => setArchiveOpen(false), []);
@@ -51,7 +65,7 @@ export const App: React.FC = () => {
   // Keep URL query state cleanly synced for shareable edition, view, and signal deep links
   useEffect(() => {
     // Do not erase an incoming deep link while the initial archive request is pending.
-    if (archive.isLoading) return;
+    if (isLoading) return;
 
     // popstate already changed the address bar; state restoration must not create a new entry.
     if (skipNextUrlSyncRef.current) {
@@ -59,10 +73,10 @@ export const App: React.FC = () => {
       return;
     }
 
-    const editionDate = archive.edition?.isLocalPreview
+    const editionDate = edition?.isLocalPreview
       ? null
-      : archive.edition?.frontmatter.edition_date ??
-        archive.activeEntry?.date ??
+      : edition?.frontmatter.edition_date ??
+        activeEntry?.date ??
         null;
 
     syncUrlState(
@@ -75,10 +89,10 @@ export const App: React.FC = () => {
     );
   }, [
     activeView,
-    archive.isLoading,
-    archive.activeEntry?.date,
-    archive.edition?.frontmatter.edition_date,
-    archive.edition?.isLocalPreview,
+    isLoading,
+    activeEntry?.date,
+    edition?.frontmatter.edition_date,
+    edition?.isLocalPreview,
     selectedSignalId,
   ]);
 
@@ -90,13 +104,13 @@ export const App: React.FC = () => {
       setActiveView(next.view);
       setSelectedSignalId(next.signal);
       setMobileShowDetail(Boolean(next.signal));
-      if (next.edition && next.edition !== archive.activeEntry?.date) {
-        void archive.selectEditionByDate(next.edition);
+      if (next.edition && next.edition !== activeEntry?.date) {
+        void selectEditionByDate(next.edition);
       }
     };
     window.addEventListener('popstate', onPopState);
     return () => window.removeEventListener('popstate', onPopState);
-  }, [archive.activeEntry?.date, archive.selectEditionByDate]);
+  }, [activeEntry?.date, selectEditionByDate]);
 
   const handleSelectView = useCallback((view: ViewId) => {
     setActiveView(view);
@@ -126,10 +140,10 @@ export const App: React.FC = () => {
       setFilters({ ...DEFAULT_FILTERS });
       setSelectedSignalId(null);
       setMobileShowDetail(false);
-      await archive.selectEditionEntry(entry);
+      await selectEditionEntry(entry);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     },
-    [archive.selectEditionEntry]
+    [selectEditionEntry]
   );
 
   const handleLoadLocalMarkdown = useCallback(
@@ -137,16 +151,16 @@ export const App: React.FC = () => {
       setFilters({ ...DEFAULT_FILTERS });
       setSelectedSignalId(null);
       setMobileShowDetail(false);
-      archive.loadLocalMarkdown(markdown, label);
+      loadLocalMarkdown(markdown, label);
       setActiveView('briefing');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     },
-    [archive.loadLocalMarkdown]
+    [loadLocalMarkdown]
   );
 
   const activeEditionDate =
-    archive.edition?.frontmatter.edition_date ??
-    archive.activeEntry?.date ??
+    edition?.frontmatter.edition_date ??
+    activeEntry?.date ??
     null;
 
   return (
@@ -155,18 +169,18 @@ export const App: React.FC = () => {
         activeView={activeView}
         onSelectView={handleSelectView}
         activeEditionDate={activeEditionDate}
-        isLocalPreview={Boolean(archive.edition?.isLocalPreview)}
+        isLocalPreview={Boolean(edition?.isLocalPreview)}
         onOpenArchive={() => setArchiveOpen(true)}
         lang={lang}
       />
 
       <main className="mx-auto w-full max-w-[1320px] flex-1 px-4 pt-6 sm:px-6 sm:pt-8">
-        {archive.isLoading ? (
+        {isLoading ? (
           <div className="flex flex-col items-center justify-center py-24 gap-3 text-sm text-[var(--ws-ink-muted)]">
             <RefreshCw className="h-5 w-5 animate-spin" />
             <span className="font-mono-tabular text-xs">{t.loading}</span>
           </div>
-        ) : archive.error ? (
+        ) : error ? (
           <div className="mx-auto max-w-xl py-16">
             <div className="ws-card p-6 sm:p-8 space-y-4">
               <div className="flex items-center gap-2 text-[var(--ws-error)]">
@@ -176,12 +190,12 @@ export const App: React.FC = () => {
                 </h1>
               </div>
               <p className="text-sm leading-relaxed text-[var(--ws-ink-secondary)]">
-                {archive.error}
+                {error}
               </p>
               <div className="flex flex-wrap gap-2.5 pt-1">
                 <button
                   type="button"
-                  onClick={() => void archive.refreshArchive()}
+                  onClick={() => void refreshArchive()}
                   className="inline-flex items-center gap-2 rounded-md bg-[var(--ws-ink)] px-4 py-2 text-xs font-medium text-[var(--ws-surface)] hover:opacity-90 cursor-pointer"
                 >
                   <RefreshCw className="h-3.5 w-3.5" />
@@ -197,29 +211,29 @@ export const App: React.FC = () => {
               </div>
             </div>
           </div>
-        ) : !archive.edition ? (
+        ) : !edition ? (
           <ArchiveEmptyState
             lang={lang}
-            onRefresh={() => void archive.refreshArchive()}
+            onRefresh={() => void refreshArchive()}
             onOpenLocalModal={() => setLocalModalOpen(true)}
           />
         ) : (
           <>
             {activeView === 'briefing' && (
               <BriefingView
-                edition={archive.edition}
+                edition={edition}
                 lang={lang}
                 onOpenSignal={handleOpenSignal}
                 onExploreDomain={handleExploreDomain}
                 onSwitchView={handleSelectView}
-                onRefresh={() => void archive.refreshArchive()}
-                isRefreshing={archive.isRefreshing}
+                onRefresh={() => void refreshArchive()}
+                isRefreshing={isRefreshing}
               />
             )}
 
             {activeView === 'expanded' && (
               <ExpandedView
-                edition={archive.edition}
+                edition={edition}
                 lang={lang}
                 filters={filters}
                 onChangeFilters={setFilters}
@@ -232,7 +246,7 @@ export const App: React.FC = () => {
 
             {activeView === 'synthesis' && (
               <SynthesisView
-                edition={archive.edition}
+                edition={edition}
                 lang={lang}
                 onOpenSignal={handleOpenSignal}
               />
@@ -240,7 +254,7 @@ export const App: React.FC = () => {
 
             {activeView === 'audit' && (
               <AuditView
-                edition={archive.edition}
+                edition={edition}
                 lang={lang}
                 onOpenSignal={handleOpenSignal}
               />
@@ -279,23 +293,23 @@ export const App: React.FC = () => {
       <ArchiveDrawer
         isOpen={archiveOpen}
         onClose={handleCloseArchive}
-        editions={archive.index?.editions ?? []}
-        latestDate={archive.index?.latest_edition ?? null}
-        selectedDate={archive.activeEntry?.date ?? null}
+        editions={index?.editions ?? []}
+        latestDate={index?.latest_edition ?? null}
+        selectedDate={activeEntry?.date ?? null}
         onSelectEdition={handleSelectEdition}
-        onRefresh={() => void archive.refreshArchive()}
-        isRefreshing={archive.isRefreshing}
+        onRefresh={() => void refreshArchive()}
+        isRefreshing={isRefreshing}
         refreshFeedback={
-          archive.refreshFeedback
-            ? `${t.archive.refreshedNotice} (${archive.refreshFeedback})`
+          refreshFeedback
+            ? `${t.archive.refreshedNotice} (${refreshFeedback})`
             : null
         }
         theme={theme}
         onChangeTheme={setTheme}
         lang={lang}
         onChangeLang={setLang}
-        isLocalPreview={Boolean(archive.edition?.isLocalPreview)}
-        onExitLocalPreview={() => void archive.exitLocalPreview()}
+        isLocalPreview={Boolean(edition?.isLocalPreview)}
+        onExitLocalPreview={() => void exitLocalPreview()}
         onOpenLocalModal={() => setLocalModalOpen(true)}
       />
 

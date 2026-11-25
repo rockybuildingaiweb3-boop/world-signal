@@ -110,7 +110,7 @@ describe('parseEditionMarkdown — synthetic fixtures', () => {
 });
 
 describe('parseEditionMarkdown — real published edition integration (2026-11-23)', () => {
-  it('parses public/editions/2026/11/2026-11-23.md accurately with all 24 signals and derived independence metrics', () => {
+  it('parses public/editions/2026/11/2026-11-23.md accurately with all 35 signals and derived independence metrics', () => {
     const editionPath = path.resolve(
       process.cwd(),
       'public/editions/2026/11/2026-11-23.md'
@@ -126,7 +126,7 @@ describe('parseEditionMarkdown — real published edition integration (2026-11-2
     assert.equal(edition.validation.errors.length, 0);
 
     // Real edition counts
-    assert.equal(edition.signals.length, 24);
+    assert.equal(edition.signals.length, 35);
     assert.equal(edition.executiveBriefing.topSignalRefs.length, 5);
     assert.equal(edition.executiveBriefing.caveats.length, 1);
 
