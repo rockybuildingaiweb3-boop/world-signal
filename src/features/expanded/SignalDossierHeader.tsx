@@ -44,7 +44,7 @@ export const SignalDossierHeader: React.FC<SignalDossierHeaderProps> = ({
 
   return (
     <header className="space-y-5 border-b border-[var(--ws-border-strong)] pb-6">
-      {/* Top Domain Rule & Kicker Strip */}
+      {/* Top Domain Rule & Quiet Accession Line */}
       <div className="space-y-3">
         <div
           aria-hidden="true"
@@ -52,10 +52,10 @@ export const SignalDossierHeader: React.FC<SignalDossierHeaderProps> = ({
         />
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 font-mono-tabular text-[11.5px]">
-            <span className={`font-semibold uppercase tracking-[0.12em] ${domainAccentTextClass(signal.domain)}`}>
+            <span className={`ws-kicker ${domainAccentTextClass(signal.domain)}`}>
               {t.domains[signal.domain]}
             </span>
-            <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">·</span>
+            <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">/</span>
             <span className="text-[var(--ws-ink-muted)] break-all">
               {signal.signal_id}
             </span>
@@ -83,18 +83,18 @@ export const SignalDossierHeader: React.FC<SignalDossierHeaderProps> = ({
         </div>
       </div>
 
-      {/* Expressive Magazine Dossier Display Headline */}
+      {/* Monumental Magazine Dossier Headline */}
       <div className="space-y-3">
-        <h2 className="font-display text-[1.7rem] sm:text-[2.15rem] lg:text-[2.35rem] font-semibold leading-[1.18] tracking-[-0.024em] text-[var(--ws-ink)] headline-balance break-words">
+        <h2 className="font-display ws-headline-dossier text-[1.75rem] sm:text-[2.25rem] lg:text-[2.5rem] font-semibold text-[var(--ws-ink)] headline-balance break-words">
           {signal.headline}
         </h2>
         <SignalMetaLine signal={signal} lang={lang} showClaims />
       </div>
 
-      {/* Clean Hairline-Divided Provenance Strip */}
+      {/* Hairline Provenance Strip */}
       <dl className="grid grid-cols-2 gap-x-6 gap-y-3.5 border-y border-[var(--ws-border)] py-3.5 sm:grid-cols-4 text-xs">
         <div className="min-w-0">
-          <dt className="font-mono-tabular text-[10.5px] uppercase tracking-[0.1em] text-[var(--ws-ink-muted)]">
+          <dt className="ws-kicker text-[var(--ws-ink-faint)]">
             {t.expanded.eventDateLabel}
           </dt>
           <dd className="mt-1 font-mono-tabular font-semibold text-[var(--ws-ink)] break-words">
@@ -107,7 +107,7 @@ export const SignalDossierHeader: React.FC<SignalDossierHeaderProps> = ({
         </div>
 
         <div className="min-w-0 sm:border-l sm:border-[var(--ws-border-subtle)] sm:pl-4">
-          <dt className="font-mono-tabular text-[10.5px] uppercase tracking-[0.1em] text-[var(--ws-ink-muted)]">
+          <dt className="ws-kicker text-[var(--ws-ink-faint)]">
             {t.expanded.updatedLabel}
           </dt>
           <dd className="mt-1 font-mono-tabular font-medium text-[var(--ws-ink)] break-words">
@@ -116,7 +116,7 @@ export const SignalDossierHeader: React.FC<SignalDossierHeaderProps> = ({
         </div>
 
         <div className="min-w-0 sm:border-l sm:border-[var(--ws-border-subtle)] sm:pl-4">
-          <dt className="font-mono-tabular text-[10.5px] uppercase tracking-[0.1em] text-[var(--ws-ink-muted)]">
+          <dt className="ws-kicker text-[var(--ws-ink-faint)]">
             {t.expanded.topicLabel}
           </dt>
           <dd className="mt-1 font-medium text-[var(--ws-ink)] break-words">
@@ -125,21 +125,21 @@ export const SignalDossierHeader: React.FC<SignalDossierHeaderProps> = ({
         </div>
 
         <div className="min-w-0 sm:border-l sm:border-[var(--ws-border-subtle)] sm:pl-4">
-          <dt className="font-mono-tabular text-[10.5px] uppercase tracking-[0.1em] text-[var(--ws-ink-muted)]">
+          <dt className="ws-kicker text-[var(--ws-ink-faint)]">
             {t.expanded.geographyLabel}
           </dt>
           <dd className="mt-1 font-medium text-[var(--ws-ink)] break-words">
             {signal.event.geography.length > 0
-              ? signal.event.geography.join(', ')
+              ? signal.event.geography.join(' · ')
               : '—'}
           </dd>
         </div>
       </dl>
 
-      {/* Calibrated Importance & Schema-v2 Storyline Continuity Strip */}
+      {/* Calibrated Importance Scale & Schema-v2 Storyline Continuity */}
       <div className="flex flex-wrap items-center justify-between gap-x-5 gap-y-2 text-[11.5px] font-mono-tabular text-[var(--ws-ink-muted)]">
         <div className="inline-flex items-center gap-2.5">
-          <span className="uppercase tracking-[0.1em] text-[10.5px] text-[var(--ws-ink-faint)]">
+          <span className="ws-kicker text-[var(--ws-ink-faint)]">
             {t.expanded.importanceLabel}
           </span>
           <span
@@ -150,7 +150,7 @@ export const SignalDossierHeader: React.FC<SignalDossierHeaderProps> = ({
               <span
                 key={step}
                 aria-hidden="true"
-                className={`h-2.5 w-1.5 rounded-[1px] ${
+                className={`h-2.5 w-2 rounded-[1px] ${
                   step <= signal.importance
                     ? domainTopBarClass(signal.domain)
                     : 'bg-[var(--ws-border)]'
@@ -165,7 +165,7 @@ export const SignalDossierHeader: React.FC<SignalDossierHeaderProps> = ({
 
         {signal.continuity && (
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            <span className="uppercase tracking-[0.1em] text-[10.5px] text-[var(--ws-ink-faint)]">
+            <span className="ws-kicker text-[var(--ws-ink-faint)]">
               {t.expanded.continuityLabel}
             </span>
             <span className="font-semibold text-[var(--ws-ink)]">
@@ -198,7 +198,7 @@ export const SignalDossierHeader: React.FC<SignalDossierHeaderProps> = ({
 
       {/* Hairline-Framed Confidence Rationale */}
       {signal.confidence.rationale && (
-        <div className="ws-folio-note px-4 py-3 text-[13px] leading-[1.65] text-[var(--ws-ink-secondary)]">
+        <div className="ws-folio-note px-4 py-3 text-[13px] leading-[1.68] text-[var(--ws-ink-secondary)]">
           <span
             className={`font-semibold ${confidenceColorClass(
               signal.confidence.overall
@@ -215,9 +215,9 @@ export const SignalDossierHeader: React.FC<SignalDossierHeaderProps> = ({
       {jumpSections.length > 0 && (
         <nav
           aria-label={t.expanded.sectionJumpLabel}
-          className="flex flex-wrap items-center gap-x-3.5 gap-y-1.5 pt-1 font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]"
+          className="flex flex-wrap items-center gap-x-4 gap-y-1.5 pt-1 font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]"
         >
-          <span className="uppercase tracking-[0.12em] text-[10.5px] text-[var(--ws-ink-faint)]">
+          <span className="ws-kicker text-[var(--ws-ink-faint)]">
             {t.expanded.sectionJumpLabel}
           </span>
           {jumpSections.map((sec) => (

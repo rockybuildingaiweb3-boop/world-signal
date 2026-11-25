@@ -80,7 +80,7 @@ export const ScenariosGrid: React.FC<ScenariosGridProps> = ({
             <div className="p-4 flex-1 flex flex-col gap-2.5">
               <div className="flex items-center justify-between gap-2">
                 <div
-                  className={`inline-flex items-center gap-1.5 font-mono-tabular text-[11px] font-semibold uppercase tracking-[0.12em] ${tone.accent}`}
+                  className={`inline-flex items-center gap-1.5 ws-kicker ${tone.accent}`}
                 >
                   <span aria-hidden="true">{tone.symbol}</span>
                   <span>{title}</span>

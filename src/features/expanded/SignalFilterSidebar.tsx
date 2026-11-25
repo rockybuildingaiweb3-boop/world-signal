@@ -324,17 +324,17 @@ export const SignalFilterSidebar: React.FC<SignalFilterSidebarProps> = ({
                 className={`relative w-full px-4 py-3.5 text-left transition-colors cursor-pointer ${
                   isActive
                     ? 'bg-[var(--ws-surface-subtle)]'
-                    : 'bg-[var(--ws-surface)] hover:bg-[var(--ws-surface-hover)]/70'
+                    : 'bg-[var(--ws-surface)] hover:bg-[var(--ws-surface-hover)]/65'
                 }`}
               >
+                {isActive && (
+                  <span
+                    aria-hidden="true"
+                    className={`absolute inset-x-0 top-0 h-[2px] ${domainBarBg(sig.domain)}`}
+                  />
+                )}
                 <div className="flex items-center justify-between gap-2 font-mono-tabular text-[11px] mb-1">
                   <div className="flex items-center gap-1.5 min-w-0">
-                    <span
-                      aria-hidden="true"
-                      className={`inline-block h-2.5 w-[2.5px] rounded-[1px] shrink-0 ${
-                        isActive ? domainBarBg(sig.domain) : 'bg-[var(--ws-border)]'
-                      }`}
-                    />
                     <span className="text-[var(--ws-ink-faint)]">
                       {String(idx + 1).padStart(2, '0')}
                     </span>
@@ -352,7 +352,7 @@ export const SignalFilterSidebar: React.FC<SignalFilterSidebarProps> = ({
                   </span>
                 </div>
                 <div
-                  className={`text-[13.5px] leading-[1.4] break-words ${
+                  className={`text-[13.5px] leading-[1.42] break-words ${
                     isActive
                       ? 'font-semibold text-[var(--ws-ink)]'
                       : 'font-medium text-[var(--ws-ink-secondary)]'

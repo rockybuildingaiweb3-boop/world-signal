@@ -90,6 +90,9 @@ export interface UiDictionary {
     domainImp5Label: string;
     domainImp4Label: string;
     domainImpOtherLabel: string;
+    mastheadDescriptor: string;
+    coverPlateTitles: Record<SignalDomain, string>;
+    coverEditionDeskLabel: string;
   };
   dailyDelta: {
     eyebrow: string;
@@ -263,6 +266,10 @@ export interface UiDictionary {
     relationshipEdgeCount: (shown: number, total: number) => string;
     watchlistFilterAll: string;
     watchlistFilterLinked: string;
+    relationshipFocusAll: string;
+    relationshipFocusLabel: string;
+    relationshipClearFocus: string;
+    relationshipKeyboardHint: string;
   };
   audit: {
     title: string;
@@ -332,6 +339,11 @@ export interface UiDictionary {
     matrixImportanceAxis: string;
     matrixTotalCol: string;
     matrixTotalRow: string;
+    claimLoadMore: (count: number) => string;
+    claimShowAll: (total: number) => string;
+    claimShowingRange: (shown: number, total: number) => string;
+    verificationRatioLabel: string;
+    matrixAxisNote: string;
   };
   emptyState: {
     eyebrow: string;
@@ -463,6 +475,13 @@ const EN_DICT: UiDictionary = {
     domainImp5Label: 'Imp 5',
     domainImp4Label: 'Imp 4',
     domainImpOtherLabel: 'Imp 1–3',
+    mastheadDescriptor: 'Independent Global Intelligence',
+    coverPlateTitles: {
+      world: 'Geopolitical Meridian Plate',
+      ai: 'Frontier Topology Plate',
+      economy: 'Macro Balance Plate',
+    },
+    coverEditionDeskLabel: 'Edition Desk',
   },
   dailyDelta: {
     eyebrow: 'Daily Delta',
@@ -690,6 +709,10 @@ const EN_DICT: UiDictionary = {
     relationshipEdgeCount: (shown, total) => `${shown} of ${total} links`,
     watchlistFilterAll: 'All checkpoints',
     watchlistFilterLinked: 'Linked to signals',
+    relationshipFocusAll: 'All connected signals',
+    relationshipFocusLabel: 'Focus signal',
+    relationshipClearFocus: 'Show full map',
+    relationshipKeyboardHint: 'Use Tab and Enter to inspect any node or link.',
   },
   audit: {
     title: 'Audit, Provenance & Methodology',
@@ -761,6 +784,11 @@ const EN_DICT: UiDictionary = {
     matrixImportanceAxis: 'Importance',
     matrixTotalCol: 'Total',
     matrixTotalRow: 'Column Total',
+    claimLoadMore: (count) => `Load ${count} more claims`,
+    claimShowAll: (total) => `Show all ${total} claims`,
+    claimShowingRange: (shown, total) => `Showing ${shown} of ${total} matching claims`,
+    verificationRatioLabel: 'Qualifying original share',
+    matrixAxisNote: 'Rows measure editorial importance (impact); columns measure verification confidence.',
   },
   emptyState: {
     eyebrow: 'Archive Status',
@@ -963,6 +991,13 @@ const ZH_DICT: UiDictionary = {
     domainImp5Label: '5/5 极高',
     domainImp4Label: '4/5 高',
     domainImpOtherLabel: '1–3/5 常规',
+    mastheadDescriptor: '独立全球情报与循证简报',
+    coverPlateTitles: {
+      world: '地缘经纬结构图版',
+      ai: '前沿架构拓扑图版',
+      economy: '宏观传导结构图版',
+    },
+    coverEditionDeskLabel: '本期编务简报',
   },
   dailyDelta: {
     eyebrow: '每日变动监测',
@@ -1189,6 +1224,10 @@ const ZH_DICT: UiDictionary = {
     relationshipEdgeCount: (shown, total) => `显示 ${shown} / ${total} 条关联`,
     watchlistFilterAll: '全部观察项',
     watchlistFilterLinked: '仅看关联信号项',
+    relationshipFocusAll: '全部关联信号',
+    relationshipFocusLabel: '聚焦信号',
+    relationshipClearFocus: '恢复全图',
+    relationshipKeyboardHint: '支持键盘 Tab 与回车键逐项检视节点与关联。',
   },
   audit: {
     title: '来源审计、证据链与方法论',
@@ -1260,6 +1299,11 @@ const ZH_DICT: UiDictionary = {
     matrixImportanceAxis: '重要性',
     matrixTotalCol: '合计',
     matrixTotalRow: '各列合计',
+    claimLoadMore: (count) => `再加载 ${count} 条声明`,
+    claimShowAll: (total) => `展开全部 ${total} 条声明`,
+    claimShowingRange: (shown, total) => `当前显示 ${shown} / ${total} 条匹配声明`,
+    verificationRatioLabel: '合格原创记录占比',
+    matrixAxisNote: '纵轴衡量编辑重要性（影响级别），横轴衡量证据核验置信度，二者独立评估。',
   },
   emptyState: {
     eyebrow: '档案状态',

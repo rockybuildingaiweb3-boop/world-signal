@@ -36,12 +36,12 @@ export const SignalMetaLine: React.FC<SignalMetaLineProps> = ({
       {!hideDomain && (
         <>
           <span
-            className={`font-semibold tracking-tight ${domainAccentTextClass(signal.domain)}`}
+            className={`font-semibold ${domainAccentTextClass(signal.domain)}`}
           >
             {t.domains[signal.domain]}
           </span>
           <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
-            ·
+            /
           </span>
         </>
       )}

@@ -1,174 +1,156 @@
 @import "tailwindcss";
+
 @custom-variant dark (&:where(.dark, .dark *));
 
-@layer base {
-  :root {
-    /* Typography — Editorial Latin + CJK Pairing (CJK fallback included in mono to prevent missing glyphs) */
-    --font-display: "Fraunces", "Noto Serif SC", "Songti SC", "STSong", Georgia, serif;
-    --font-sans: "Plus Jakarta Sans", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", system-ui, -apple-system, sans-serif;
-    --font-mono: "IBM Plex Mono", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", ui-monospace, SFMono-Regular, Menlo, monospace;
+/* ==========================================================================
+   WORLD SIGNAL — Signature Archival Broadsheet & Monograph Design System
+   Light: Archival Alabaster (#F8F6F1) + Crisp Paper (#FFFFFF) + Deep Ink
+   Dark:  Obsidian Slate (#0D1014) + Graphite Sheet (#14181F) + Alabaster Ink
+   Signature Editorial Punctuation: Archival Vermilion (#B43A24 / #E56B52)
+   ========================================================================== */
 
-    /* Layout, Rhythm & Typographic Measure Tokens */
-    --ws-container-max: 1320px;
-    --ws-measure-prose: 68ch;
-    --ws-measure-narrow: 56ch;
-    --ws-transition-fast: 160ms cubic-bezier(0.2, 0, 0, 1);
-    --ws-transition-med: 240ms cubic-bezier(0.2, 0, 0, 1);
+:root {
+  color-scheme: light;
 
-    /* Archival Paper & Graphite Ink Palette (Light Theme) */
-    --ws-canvas: #f6f3ec;
-    --ws-surface: #fdfcf8;
-    --ws-surface-subtle: #eeeae1;
-    --ws-surface-elevated: #faf8f3;
-    --ws-surface-hover: #f2eee5;
-    --ws-surface-tint: #ebe6db;
+  /* 60% Canvas & Surface Layers */
+  --ws-canvas: #f8f6f1;
+  --ws-surface: #ffffff;
+  --ws-surface-subtle: #f1ede4;
+  --ws-surface-elevated: #fcfbf8;
+  --ws-surface-hover: #ebe5d9;
 
-    /* Fine Hairline Border & Editorial Rule Hierarchy */
-    --ws-border: #dfd9cd;
-    --ws-border-subtle: #eae5db;
-    --ws-border-strong: #c2b9a9;
-    --ws-rule-editorial: #171512;
+  /* Typography & Ink Hierarchy (WCAG AA+ verified) */
+  --ws-ink: #121417;
+  --ws-ink-secondary: #2e343c;
+  --ws-ink-muted: #59606b;
+  --ws-ink-faint: #757d88;
 
-    /* Ink Hierarchy (WCAG AA+ on #F6F3EC and #FDFCF8) */
-    --ws-ink: #141311;
-    --ws-ink-secondary: #34312c;
-    --ws-ink-muted: #5d584f;
-    --ws-ink-faint: #827b6f;
+  /* Architectural Rules & Borders */
+  --ws-border: #dfd9cc;
+  --ws-border-strong: #c2b9a7;
+  --ws-border-subtle: #ebe6db;
+  --ws-rule-editorial: #121417;
 
-    /* Purposeful Institutional Domain Color Families */
-    --ws-world: #1d3f9c;
-    --ws-world-soft: #ecf2fc;
-    --ws-world-border: #c5d6f4;
-    --ws-ai: #5821ad;
-    --ws-ai-soft: #f2edfc;
-    --ws-ai-border: #d5c4f4;
-    --ws-economy: #156235;
-    --ws-economy-soft: #eaf5ee;
-    --ws-economy-border: #badcc7;
+  /* Signature Editorial Punctuation (Lead marker & Masthead folio) */
+  --ws-editorial-accent: #b43a24;
+  --ws-editorial-accent-soft: #faeae6;
 
-    /* Semantic Verification & Confidence States (Never hue-only) */
-    --ws-conf-high: #156235;
-    --ws-conf-high-soft: #eaf5ee;
-    --ws-conf-medium: #8a4b08;
-    --ws-conf-medium-soft: #f8f2e6;
-    --ws-conf-low: #9a3412;
-    --ws-conf-low-soft: #faefe8;
-    --ws-conf-unverified: #991b1b;
-    --ws-conf-unverified-soft: #fbeded;
+  /* Domain Semantic Signatures */
+  --ws-world: #1e4b7a;
+  --ws-world-soft: #eaf1f8;
+  --ws-world-border: #bdd0e6;
 
-    /* Calm Editorial Caution & Diagnostic Surfaces */
-    --ws-warn: #854d0e;
-    --ws-warn-soft: #f5efe2;
-    --ws-warn-border: #d9ccb2;
-    --ws-error: #991b1b;
-    --ws-error-soft: #faf0f0;
-    --ws-error-border: #dfbebd;
+  --ws-ai: #54398e;
+  --ws-ai-soft: #f0ecf8;
+  --ws-ai-border: #cfc2e8;
 
-    /* Interactive, Focus & Restrained Elevation */
-    --ws-focus: #1d3f9c;
-    --ws-shadow-sm: 0 1px 2px rgba(20, 19, 17, 0.04);
-    --ws-shadow-md: 0 8px 24px rgba(20, 19, 17, 0.075);
-    --ws-shadow-lg: 0 16px 40px rgba(20, 19, 17, 0.12);
-    --ws-radius-sm: 0.25rem;
-    --ws-radius-md: 0.375rem;
-    --ws-radius-lg: 0.5rem;
-  }
+  --ws-economy: #18634b;
+  --ws-economy-soft: #e9f5f0;
+  --ws-economy-border: #b8dacb;
 
-  .dark {
-    /* Deep Obsidian-Charcoal & Warm Parchment Ink (Dark Theme) */
-    --ws-canvas: #0f0f0e;
-    --ws-surface: #171614;
-    --ws-surface-subtle: #1f1e1b;
-    --ws-surface-elevated: #1c1b18;
-    --ws-surface-hover: #25231f;
-    --ws-surface-tint: #292722;
+  /* Verification Confidence Tokens (Strictly separated from Importance) */
+  --ws-conf-high: #18634b;
+  --ws-conf-medium: #9a5d12;
+  --ws-conf-low: #b43a24;
+  --ws-conf-unverified: #5f6670;
 
-    --ws-border: #2c2924;
-    --ws-border-subtle: #22201c;
-    --ws-border-strong: #47433b;
-    --ws-rule-editorial: #dbd5ca;
+  /* Diagnostic & Caution Surfaces */
+  --ws-warn: #9a5d12;
+  --ws-warn-soft: #faf3e4;
+  --ws-warn-border: #e5cca0;
+  --ws-error: #a62626;
+  --ws-error-soft: #fbecec;
+  --ws-error-border: #e7b9b9;
 
-    /* Optical-Compensated Warm Off-White Ink */
-    --ws-ink: #f0ede7;
-    --ws-ink-secondary: #cdc8be;
-    --ws-ink-muted: #9f998e;
-    --ws-ink-faint: #787369;
+  /* Typography Stacks (CJK fallbacks included in mono so Chinese numerals always render) */
+  --font-display: "Fraunces", "Noto Serif SC", "Songti SC", "STSong", Georgia, serif;
+  --font-sans: "Plus Jakarta Sans", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "IBM Plex Mono", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", ui-monospace, SFMono-Regular, Menlo, monospace;
 
-    --ws-world: #93c5fd;
-    --ws-world-soft: #17255466;
-    --ws-world-border: #1e3a8a88;
-    --ws-ai: #c4b5fd;
-    --ws-ai-soft: #2e106566;
-    --ws-ai-border: #4c1d9588;
-    --ws-economy: #86efac;
-    --ws-economy-soft: #052e1666;
-    --ws-economy-border: #14532d88;
-
-    --ws-conf-high: #86efac;
-    --ws-conf-high-soft: #052e1666;
-    --ws-conf-medium: #e9c46a;
-    --ws-conf-medium-soft: #3a291059;
-    --ws-conf-low: #f4a261;
-    --ws-conf-low-soft: #3d1d0c59;
-    --ws-conf-unverified: #f59b9b;
-    --ws-conf-unverified-soft: #3f101059;
-
-    --ws-warn: #e2b866;
-    --ws-warn-soft: #211d15;
-    --ws-warn-border: #433927;
-    --ws-error: #f59b9b;
-    --ws-error-soft: #2b1414;
-    --ws-error-border: #5a2727;
-
-    --ws-focus: #93c5fd;
-    --ws-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.32);
-    --ws-shadow-md: 0 10px 28px rgba(0, 0, 0, 0.48);
-    --ws-shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.6);
-  }
-
-  html {
-    font-family: var(--font-sans);
-    background-color: var(--ws-canvas);
-    color: var(--ws-ink);
-    scroll-behavior: smooth;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  body {
-    background-color: var(--ws-canvas);
-    color: var(--ws-ink);
-    overflow-x: clip;
-    font-feature-settings: "kern" 1, "liga" 1;
-  }
-
-  .dark body {
-    letter-spacing: 0.006em;
-  }
-
-  :where(button, a, select, input, textarea, [tabindex]):focus-visible {
-    outline: 2px solid var(--ws-focus);
-    outline-offset: 2px;
-    border-radius: var(--ws-radius-sm);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    html {
-      scroll-behavior: auto;
-    }
-
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-    }
-  }
+  /* Radius & Tactile Elevation */
+  --ws-radius-sm: 3px;
+  --ws-radius-md: 5px;
+  --ws-shadow-sm: 0 1px 2px rgba(18, 20, 23, 0.045);
+  --ws-shadow-md: 0 6px 20px -4px rgba(18, 20, 23, 0.08);
+  --ws-shadow-lg: 0 18px 42px -12px rgba(18, 20, 23, 0.16);
 }
 
-/* Typographic Utility Primitives */
+.dark {
+  color-scheme: dark;
+
+  --ws-canvas: #0d1014;
+  --ws-surface: #14181f;
+  --ws-surface-subtle: #1b212b;
+  --ws-surface-elevated: #171c24;
+  --ws-surface-hover: #222a36;
+
+  --ws-ink: #ece9e2;
+  --ws-ink-secondary: #c5cbd3;
+  --ws-ink-muted: #919aa6;
+  --ws-ink-faint: #737c89;
+
+  --ws-border: #262e3a;
+  --ws-border-strong: #394455;
+  --ws-border-subtle: #1d232d;
+  --ws-rule-editorial: #ece9e2;
+
+  --ws-editorial-accent: #e56b52;
+  --ws-editorial-accent-soft: #2a1916;
+
+  --ws-world: #73aef0;
+  --ws-world-soft: #152336;
+  --ws-world-border: #264161;
+
+  --ws-ai: #b79ff8;
+  --ws-ai-soft: #201a34;
+  --ws-ai-border: #3d3063;
+
+  --ws-economy: #5cc99f;
+  --ws-economy-soft: #122821;
+  --ws-economy-border: #224b3e;
+
+  --ws-conf-high: #5cc99f;
+  --ws-conf-medium: #e5af58;
+  --ws-conf-low: #e56b52;
+  --ws-conf-unverified: #9aa2ad;
+
+  --ws-warn: #e5af58;
+  --ws-warn-soft: #261f12;
+  --ws-warn-border: #4a3a1d;
+  --ws-error: #f07676;
+  --ws-error-soft: #2c1618;
+  --ws-error-border: #592629;
+
+  --ws-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --ws-shadow-md: 0 8px 24px -4px rgba(0, 0, 0, 0.5);
+  --ws-shadow-lg: 0 22px 48px -10px rgba(0, 0, 0, 0.68);
+}
+
+/* ==========================================================================
+   Base Document & Typography
+   ========================================================================== */
+
+html {
+  background-color: var(--ws-canvas);
+  color: var(--ws-ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+  overflow-x: clip;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--ws-canvas);
+  color: var(--ws-ink);
+  overflow-x: clip;
+  line-height: 1.65;
+}
+
 .font-display {
   font-family: var(--font-display);
   font-optical-sizing: auto;
@@ -179,99 +161,174 @@
   font-variant-numeric: tabular-nums;
 }
 
-.tabular-nums {
-  font-variant-numeric: tabular-nums;
-}
-
 .headline-balance {
   text-wrap: balance;
-  overflow-wrap: break-word;
 }
 
-/* Editorial Rule, Folio & Surface Primitives */
+/* ==========================================================================
+   Editorial Kicker & Bilingual CJK Optical Adjustments
+   ========================================================================== */
+
+.ws-kicker {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  line-height: 1.3;
+}
+
+/* CJK Optical Calibration: relaxed leading, tighter tracking, balanced display rhythm */
+[data-lang="zh-CN"] {
+  line-height: 1.74;
+}
+
+[data-lang="zh-CN"] .ws-kicker {
+  letter-spacing: 0.05em;
+  text-transform: none;
+  font-size: 11px;
+}
+
+[data-lang="zh-CN"] .font-display {
+  letter-spacing: -0.005em;
+}
+
+[data-lang="zh-CN"] .ws-headline-cover {
+  line-height: 1.24;
+  letter-spacing: -0.01em;
+}
+
+[data-lang="zh-CN"] .ws-headline-dossier {
+  line-height: 1.28;
+  letter-spacing: -0.01em;
+}
+
+[data-lang="zh-CN"] .ws-prose {
+  line-height: 1.82;
+}
+
+.ws-headline-cover {
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.ws-headline-dossier {
+  line-height: 1.16;
+  letter-spacing: -0.025em;
+}
+
+.ws-prose {
+  line-height: 1.74;
+}
+
+/* ==========================================================================
+   Signature Publication Primitives (Zero Left-Border Callout Clichés)
+   ========================================================================== */
+
+/* Double-rule broadsheet masthead frame */
 .ws-masthead-rule {
-  border-top: 2px solid var(--ws-rule-editorial);
+  border-top: 2.5px solid var(--ws-rule-editorial);
   border-bottom: 1px solid var(--ws-border-strong);
+  position: relative;
 }
 
-.ws-double-rule-top {
-  border-top: 2px solid var(--ws-rule-editorial);
-  box-shadow: inset 0 3px 0 0 var(--ws-canvas), inset 0 4px 0 0 var(--ws-border-strong);
+.ws-masthead-rule::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-color: var(--ws-border-strong);
+  pointer-events: none;
 }
 
+/* Crisp primary editorial section divider */
 .ws-section-rule {
-  border-top: 1px solid var(--ws-border-strong);
+  border-top: 1.5px solid var(--ws-rule-editorial);
 }
 
-.ws-card {
-  background-color: var(--ws-surface);
-  border: 1px solid var(--ws-border);
-  border-radius: var(--ws-radius-md);
-  box-shadow: var(--ws-shadow-sm);
-}
-
-.ws-card-subtle {
-  background-color: var(--ws-surface-subtle);
-  border: 1px solid var(--ws-border);
-  border-radius: var(--ws-radius-md);
-}
-
-.ws-editorial-panel {
-  background-color: var(--ws-surface);
-  border: 1px solid var(--ws-border);
-  border-radius: var(--ws-radius-sm);
-}
-
+/* Elevated archival broadsheet sheet */
 .ws-editorial-sheet {
   background-color: var(--ws-surface);
   border-top: 2px solid var(--ws-rule-editorial);
   border-bottom: 1px solid var(--ws-border);
 }
 
-/* Restrained Editorial Note Framing (replaces heavy left-border callout clichés) */
+/* Archival dossier folio note — calm hairline frame, no left accent bar */
 .ws-folio-note {
-  border-top: 1px solid var(--ws-border);
-  border-bottom: 1px solid var(--ws-border);
-  background-color: var(--ws-surface-elevated);
+  background-color: var(--ws-surface-subtle);
+  border: 1px solid var(--ws-border);
+  border-radius: var(--ws-radius-sm);
 }
 
+/* Editorial caution / limitations sheet — restrained amber hairline frame */
 .ws-caution-panel {
   background-color: var(--ws-warn-soft);
   border: 1px solid var(--ws-warn-border);
   border-radius: var(--ws-radius-sm);
 }
 
-/* Subtle Domain Surface Washes */
-.ws-domain-wash-world {
-  background-color: var(--ws-world-soft);
-  border-color: var(--ws-world-border);
+/* Editorial significance band — top & bottom hairlines, open canvas feel */
+.ws-significance-band {
+  border-top: 1px solid var(--ws-border-strong);
+  border-bottom: 1px solid var(--ws-border-strong);
+  background-color: var(--ws-surface-elevated);
 }
 
-.ws-domain-wash-ai {
-  background-color: var(--ws-ai-soft);
-  border-color: var(--ws-ai-border);
+/* Standard subtle surface card */
+.ws-card {
+  background-color: var(--ws-surface);
+  border: 1px solid var(--ws-border);
+  border-radius: var(--ws-radius-sm);
+  box-shadow: var(--ws-shadow-sm);
 }
 
-.ws-domain-wash-economy {
-  background-color: var(--ws-economy-soft);
-  border-color: var(--ws-economy-border);
+/* Quiet recessed editorial panel */
+.ws-editorial-panel {
+  background-color: var(--ws-surface-subtle);
+  border: 1px solid var(--ws-border);
+  border-radius: var(--ws-radius-sm);
 }
 
-/* Subtle Architectural Grid Pattern for Editorial Art Frames */
-.ws-grid-paper {
-  background-image:
-    linear-gradient(to right, color-mix(in srgb, var(--ws-border) 48%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in srgb, var(--ws-border) 48%, transparent) 1px, transparent 1px);
-  background-size: 28px 28px;
-}
-
-/* Reading Progress Hairline */
+/* Top reading progress hairline */
 .ws-progress-bar {
   transform-origin: left center;
-  transition: transform 80ms linear;
+  transition: transform 90ms linear;
 }
 
-/* Subtle Scrollbar */
+/* ==========================================================================
+   Accessibility, Focus & Motion Discipline
+   ========================================================================== */
+
+:focus-visible {
+  outline: 2px solid var(--ws-world);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* SVG keyboard focus indicator */
+svg [role="button"]:focus-visible,
+svg a:focus-visible {
+  outline: 2px solid var(--ws-world);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Restrained editorial scrollbar */
 .ws-scroll::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -282,10 +339,6 @@
 }
 
 .ws-scroll::-webkit-scrollbar-thumb {
-  background-color: rgba(97, 92, 83, 0.28);
-  border-radius: 3px;
-}
-
-.dark .ws-scroll::-webkit-scrollbar-thumb {
-  background-color: rgba(152, 147, 136, 0.3);
+  background: var(--ws-border-strong);
+  border-radius: 9999px;
 }

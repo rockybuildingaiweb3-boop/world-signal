@@ -342,7 +342,7 @@ export const ArchiveDrawer: React.FC<ArchiveDrawerProps> = ({
                         {isSelected && (
                           <span
                             aria-hidden="true"
-                            className="absolute inset-y-0 left-0 w-[3px] bg-[var(--ws-rule-editorial)]"
+                            className="absolute inset-x-0 top-0 h-[2.5px] bg-[var(--ws-editorial-accent)]"
                           />
                         )}
                         <div className="flex items-baseline justify-between gap-2">

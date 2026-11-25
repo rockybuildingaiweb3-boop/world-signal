@@ -179,8 +179,8 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
 
   return (
     <div className="pb-16">
-      {/* Split-Pane Editorial Research & Dossier Workspace */}
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[336px_minmax(0,1fr)] xl:grid-cols-[356px_minmax(0,1fr)] lg:items-start">
+      {/* Split-Pane Editorial Research & Monograph Dossier Workspace */}
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[332px_minmax(0,1fr)] xl:grid-cols-[352px_minmax(0,1fr)] lg:items-start">
         <SignalFilterSidebar
           totalCount={edition.signals.length}
           filteredSignals={filteredSignals}
@@ -194,14 +194,14 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
           onSelectSignal={handleSelectFromList}
         />
 
-        {/* RIGHT PANE: Open Long-Form Editorial Dossier Reading Canvas */}
+        {/* RIGHT PANE: Long-Form Investigative Monograph Canvas */}
         <section
           ref={dossierTopRef}
           className={`${
             mobileShowDetail ? 'block' : 'hidden lg:block'
           } min-w-0 scroll-mt-24`}
         >
-          {/* Mobile Back-to-List Bar (Preserves Filters & Scroll Context) */}
+          {/* Mobile Back-to-List Bar */}
           <div className="mb-4 lg:hidden">
             <button
               type="button"
@@ -223,7 +223,7 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
               </p>
             </div>
           ) : (
-            <article className="bg-[var(--ws-surface)] border-y lg:border border-[var(--ws-border)] lg:rounded-[var(--ws-radius-sm)] -mx-4 px-4 py-6 sm:mx-0 sm:px-8 sm:py-9 lg:px-11 lg:py-10 space-y-9">
+            <article className="bg-[var(--ws-surface)] border-y lg:border border-[var(--ws-border)] lg:rounded-[var(--ws-radius-sm)] -mx-4 px-4 py-6 sm:mx-0 sm:px-8 sm:py-9 lg:px-12 lg:py-11 space-y-10 shadow-[var(--ws-shadow-sm)]">
               <SignalDossierHeader
                 signal={activeSignal}
                 lang={lang}
@@ -233,147 +233,164 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
                 jumpSections={jumpSections}
               />
 
-              {/* Long-Form Editorial Narrative Body (Comfortable 68ch Reading Measure) */}
-              <div className="max-w-[70ch] space-y-9">
-                {/* Part I · Factual Record & Chronology */}
-                {(activeSignal.sections.whatHappened ||
-                  activeSignal.sections.verifiedFacts ||
-                  activeSignal.sections.timeline ||
-                  activeSignal.timelineEvents.length > 0) && (
-                  <div className="space-y-8">
-                    <div className="font-mono-tabular text-[10.5px] font-semibold uppercase tracking-[0.15em] text-[var(--ws-ink-faint)]">
-                      {t.expanded.layerFactual}
-                    </div>
+              {/* PART I · FACTUAL RECORD & CHRONOLOGY */}
+              {(activeSignal.sections.whatHappened ||
+                activeSignal.sections.verifiedFacts ||
+                activeSignal.sections.timeline ||
+                activeSignal.timelineEvents.length > 0) && (
+                <div className="max-w-[70ch] space-y-8">
+                  <div className="ws-kicker text-[var(--ws-ink-faint)]">
+                    {t.expanded.layerFactual}
+                  </div>
 
-                    {activeSignal.sections.whatHappened && (
-                      <section
-                        id="sec-what-happened"
-                        className="scroll-mt-24 space-y-3"
-                      >
-                        <h3 className="font-display text-[1.22rem] font-semibold text-[var(--ws-ink)]">
-                          {t.expanded.sections.whatHappened}
-                        </h3>
-                        <div className="text-[15px] sm:text-[15.5px]">
-                          <SafeMarkdown
-                            content={activeSignal.sections.whatHappened}
-                            onSelectSignal={handleJumpToSignal}
-                            onInspectSource={handleInspectSource}
-                            sources={activeSignal.sources}
-                          />
-                        </div>
-                      </section>
-                    )}
+                  {/* Layer 1: What Happened — Authoritative Magazine Opening Deck */}
+                  {activeSignal.sections.whatHappened && (
+                    <section
+                      id="sec-what-happened"
+                      className="scroll-mt-24 space-y-3"
+                    >
+                      <h3 className="ws-kicker text-[var(--ws-ink-muted)]">
+                        {t.expanded.sections.whatHappened}
+                      </h3>
+                      <div className="ws-prose text-[16px] sm:text-[16.75px] text-[var(--ws-ink)]">
+                        <SafeMarkdown
+                          content={activeSignal.sections.whatHappened}
+                          className="text-[var(--ws-ink)]"
+                          onSelectSignal={handleJumpToSignal}
+                          onInspectSource={handleInspectSource}
+                          sources={activeSignal.sources}
+                        />
+                      </div>
+                    </section>
+                  )}
 
-                    {activeSignal.sections.verifiedFacts && (
-                      <section
-                        id="sec-verified-facts"
-                        className="scroll-mt-24 ws-folio-note px-5 py-4 space-y-3"
-                      >
-                        <h3 className="font-display text-[1.12rem] font-semibold text-[var(--ws-ink)]">
-                          {t.expanded.sections.verifiedFacts}
-                        </h3>
+                  {/* Layer 2: Verified Facts — Crisp Archival Dossier Box */}
+                  {activeSignal.sections.verifiedFacts && (
+                    <section
+                      id="sec-verified-facts"
+                      className="scroll-mt-24 ws-folio-note border-t-2 border-t-[var(--ws-rule-editorial)] px-5 py-5 sm:px-6 space-y-3"
+                    >
+                      <h3 className="font-display text-[1.15rem] font-semibold text-[var(--ws-ink)]">
+                        {t.expanded.sections.verifiedFacts}
+                      </h3>
+                      <div className="ws-prose">
                         <SafeMarkdown
                           content={activeSignal.sections.verifiedFacts}
                           onSelectSignal={handleJumpToSignal}
                           onInspectSource={handleInspectSource}
                           sources={activeSignal.sources}
                         />
-                      </section>
-                    )}
+                      </div>
+                    </section>
+                  )}
 
-                    {(activeSignal.sections.timeline ||
-                      activeSignal.timelineEvents.length > 0) && (
-                      <section
-                        id="sec-timeline"
-                        className="scroll-mt-24 space-y-4 border-t border-[var(--ws-border-subtle)] pt-7"
-                      >
-                        <h3 className="font-display text-[1.2rem] font-semibold text-[var(--ws-ink)]">
-                          {t.expanded.sections.timeline}
-                        </h3>
-                        <TimelineTrack
-                          entries={activeSignal.sections.timelineEntries}
-                          rawFallback={activeSignal.sections.timeline}
-                          structuredEvents={activeSignal.timelineEvents}
-                          lang={lang}
-                          onSelectSignal={handleJumpToSignal}
-                          onInspectSource={handleInspectSource}
-                          onInspectClaim={handleInspectClaim}
-                          sources={activeSignal.sources}
-                        />
-                      </section>
-                    )}
+                  {/* Layer 3: Timeline — Structured Chronological Spine */}
+                  {(activeSignal.sections.timeline ||
+                    activeSignal.timelineEvents.length > 0) && (
+                    <section
+                      id="sec-timeline"
+                      className="scroll-mt-24 space-y-4 border-t border-[var(--ws-border-subtle)] pt-7"
+                    >
+                      <h3 className="font-display text-[1.25rem] font-semibold text-[var(--ws-ink)]">
+                        {t.expanded.sections.timeline}
+                      </h3>
+                      <TimelineTrack
+                        entries={activeSignal.sections.timelineEntries}
+                        rawFallback={activeSignal.sections.timeline}
+                        structuredEvents={activeSignal.timelineEvents}
+                        lang={lang}
+                        onSelectSignal={handleJumpToSignal}
+                        onInspectSource={handleInspectSource}
+                        onInspectClaim={handleInspectClaim}
+                        sources={activeSignal.sources}
+                      />
+                    </section>
+                  )}
+                </div>
+              )}
+
+              {/* PART II · INTERPRETIVE SIGNIFICANCE & LONG-FORM ANALYSIS */}
+              {(activeSignal.sections.whyItMatters ||
+                activeSignal.sections.sourcePerspectives ||
+                activeSignal.sections.analysis) && (
+                <div className="max-w-[70ch] space-y-8 border-t border-[var(--ws-border-strong)] pt-8">
+                  <div className="ws-kicker text-[var(--ws-ink-faint)]">
+                    {t.expanded.layerInterpretive}
                   </div>
-                )}
 
-                {/* Part II · Interpretive Significance & Analysis */}
-                {(activeSignal.sections.whyItMatters ||
-                  activeSignal.sections.sourcePerspectives ||
-                  activeSignal.sections.analysis) && (
-                  <div className="space-y-8 border-t border-[var(--ws-border-strong)] pt-7">
-                    <div className="font-mono-tabular text-[10.5px] font-semibold uppercase tracking-[0.15em] text-[var(--ws-ink-faint)]">
-                      {t.expanded.layerInterpretive}
-                    </div>
-
-                    {activeSignal.sections.whyItMatters && (
-                      <section className="space-y-3">
-                        <h3 className="font-display text-[1.2rem] font-semibold text-[var(--ws-ink)]">
-                          {t.expanded.sections.whyItMatters}
-                        </h3>
+                  {/* Layer 4: Why It Matters — Elevated Significance Band (Top & Bottom Hairlines) */}
+                  {activeSignal.sections.whyItMatters && (
+                    <section className="ws-significance-band px-5 py-5 sm:px-6 sm:py-6 space-y-2.5">
+                      <h3 className="ws-kicker text-[var(--ws-editorial-accent)]">
+                        {t.expanded.sections.whyItMatters}
+                      </h3>
+                      <div className="ws-prose text-[15.5px] text-[var(--ws-ink)]">
                         <SafeMarkdown
                           content={activeSignal.sections.whyItMatters}
+                          className="text-[var(--ws-ink)]"
                           onSelectSignal={handleJumpToSignal}
                           onInspectSource={handleInspectSource}
                           sources={activeSignal.sources}
                         />
-                      </section>
-                    )}
+                      </div>
+                    </section>
+                  )}
 
-                    {activeSignal.sections.sourcePerspectives && (
-                      <section className="space-y-3 border-t border-[var(--ws-border-subtle)] pt-7">
-                        <h3 className="font-display text-[1.15rem] font-semibold text-[var(--ws-ink)]">
-                          {t.expanded.sections.sourcePerspectives}
-                        </h3>
+                  {/* Layer 5: Source Perspectives — Multi-Voice Attribution Band */}
+                  {activeSignal.sections.sourcePerspectives && (
+                    <section className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-canvas)]/55 px-5 py-4.5 sm:px-6 space-y-3">
+                      <h3 className="font-display text-[1.15rem] font-semibold text-[var(--ws-ink)]">
+                        {t.expanded.sections.sourcePerspectives}
+                      </h3>
+                      <div className="ws-prose">
                         <SafeMarkdown
                           content={activeSignal.sections.sourcePerspectives}
+                          compact
                           onSelectSignal={handleJumpToSignal}
                           onInspectSource={handleInspectSource}
                           sources={activeSignal.sources}
                         />
-                      </section>
-                    )}
+                      </div>
+                    </section>
+                  )}
 
-                    {activeSignal.sections.analysis && (
-                      <section
-                        id="sec-analysis"
-                        className="scroll-mt-24 space-y-3 border-t border-[var(--ws-border-subtle)] pt-7"
-                      >
-                        <h3 className="font-display text-[1.2rem] font-semibold text-[var(--ws-ink)]">
-                          {t.expanded.sections.analysis}
-                        </h3>
+                  {/* Layer 6: Analysis — Open Long-Form Essay Measure */}
+                  {activeSignal.sections.analysis && (
+                    <section
+                      id="sec-analysis"
+                      className="scroll-mt-24 space-y-3 pt-1"
+                    >
+                      <h3 className="font-display text-[1.3rem] font-semibold text-[var(--ws-ink)]">
+                        {t.expanded.sections.analysis}
+                      </h3>
+                      <div className="ws-prose">
                         <SafeMarkdown
                           content={activeSignal.sections.analysis}
                           onSelectSignal={handleJumpToSignal}
                           onInspectSource={handleInspectSource}
                           sources={activeSignal.sources}
                         />
-                      </section>
-                    )}
-                  </div>
-                )}
+                      </div>
+                    </section>
+                  )}
+                </div>
+              )}
 
-                {/* Part III · Uncertainties & Forward-Looking Scenarios */}
-                {activeSignal.sections.uncertainties && (
-                  <div className="space-y-4 border-t border-[var(--ws-border-strong)] pt-7">
-                    <div className="font-mono-tabular text-[10.5px] font-semibold uppercase tracking-[0.15em] text-[var(--ws-ink-faint)]">
-                      {t.expanded.layerForwardLooking}
-                    </div>
-                    <section
-                      id="sec-uncertainties"
-                      className="scroll-mt-24 ws-caution-panel p-5 space-y-2.5"
-                    >
-                      <h3 className="font-mono-tabular text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--ws-warn)]">
-                        {t.expanded.sections.uncertainties}
-                      </h3>
+              {/* PART III · UNCERTAINTIES & FORWARD-LOOKING SCENARIOS */}
+              {activeSignal.sections.uncertainties && (
+                <div className="max-w-[70ch] space-y-4 border-t border-[var(--ws-border-strong)] pt-8">
+                  <div className="ws-kicker text-[var(--ws-ink-faint)]">
+                    {t.expanded.layerForwardLooking}
+                  </div>
+                  {/* Layer 7: Uncertainties — Restrained Amber Caution Folio */}
+                  <section
+                    id="sec-uncertainties"
+                    className="scroll-mt-24 ws-caution-panel p-5 sm:p-6 space-y-2.5"
+                  >
+                    <h3 className="ws-kicker text-[var(--ws-warn)]">
+                      {t.expanded.sections.uncertainties}
+                    </h3>
+                    <div className="ws-prose">
                       <SafeMarkdown
                         content={activeSignal.sections.uncertainties}
                         compact
@@ -381,23 +398,23 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
                         onInspectSource={handleInspectSource}
                         sources={activeSignal.sources}
                       />
-                    </section>
-                  </div>
-                )}
-              </div>
+                    </div>
+                  </section>
+                </div>
+              )}
 
-              {/* Forward-Looking Scenarios (Full Dossier Width for 3-column architectural framing) */}
+              {/* Layer 8: Scenarios — Full Dossier Width Architectural Pathways */}
               {activeSignal.sections.scenarios && (
                 <section
                   id="sec-scenarios"
-                  className="scroll-mt-24 space-y-4 border-t border-[var(--ws-border)] pt-7"
+                  className="scroll-mt-24 space-y-4 border-t border-[var(--ws-border)] pt-8"
                 >
                   {!activeSignal.sections.uncertainties && (
-                    <div className="font-mono-tabular text-[10.5px] font-semibold uppercase tracking-[0.15em] text-[var(--ws-ink-faint)]">
+                    <div className="ws-kicker text-[var(--ws-ink-faint)]">
                       {t.expanded.layerForwardLooking}
                     </div>
                   )}
-                  <h3 className="font-display text-[1.2rem] font-semibold text-[var(--ws-ink)]">
+                  <h3 className="font-display text-[1.28rem] font-semibold text-[var(--ws-ink)]">
                     {t.expanded.sections.scenarios}
                   </h3>
                   <ScenariosGrid
@@ -411,35 +428,53 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
                 </section>
               )}
 
-              {/* Personal Relevance & What to Watch */}
+              {/* Layers 9 & 10: Personal Relevance & What to Watch — Intentional Split Practical Brief */}
               {(activeSignal.sections.personalRelevance ||
                 activeSignal.sections.whatToWatch) && (
-                <div className="max-w-[70ch] space-y-7 border-t border-[var(--ws-border-subtle)] pt-7">
+                <div className="border-t border-[var(--ws-border)] pt-8 grid grid-cols-1 gap-7 md:grid-cols-2 md:gap-0">
                   {activeSignal.sections.personalRelevance && (
-                    <section className="space-y-2.5">
-                      <h3 className="font-display text-[1.15rem] font-semibold text-[var(--ws-ink)]">
+                    <section
+                      className={`space-y-3 ${
+                        activeSignal.sections.whatToWatch
+                          ? 'md:border-r md:border-[var(--ws-border)] md:pr-8'
+                          : 'md:col-span-2 max-w-[70ch]'
+                      }`}
+                    >
+                      <h3 className="font-display text-[1.18rem] font-semibold text-[var(--ws-ink)]">
                         {t.expanded.sections.personalRelevance}
                       </h3>
-                      <SafeMarkdown
-                        content={activeSignal.sections.personalRelevance}
-                        onSelectSignal={handleJumpToSignal}
-                        onInspectSource={handleInspectSource}
-                        sources={activeSignal.sources}
-                      />
+                      <div className="ws-prose">
+                        <SafeMarkdown
+                          content={activeSignal.sections.personalRelevance}
+                          compact
+                          onSelectSignal={handleJumpToSignal}
+                          onInspectSource={handleInspectSource}
+                          sources={activeSignal.sources}
+                        />
+                      </div>
                     </section>
                   )}
 
                   {activeSignal.sections.whatToWatch && (
-                    <section className="space-y-2.5">
-                      <h3 className="font-display text-[1.15rem] font-semibold text-[var(--ws-ink)]">
+                    <section
+                      className={`space-y-3 ${
+                        activeSignal.sections.personalRelevance
+                          ? 'border-t border-[var(--ws-border-subtle)] pt-6 md:border-t-0 md:pt-0 md:pl-8'
+                          : 'md:col-span-2 max-w-[70ch]'
+                      }`}
+                    >
+                      <h3 className="font-display text-[1.18rem] font-semibold text-[var(--ws-ink)]">
                         {t.expanded.sections.whatToWatch}
                       </h3>
-                      <SafeMarkdown
-                        content={activeSignal.sections.whatToWatch}
-                        onSelectSignal={handleJumpToSignal}
-                        onInspectSource={handleInspectSource}
-                        sources={activeSignal.sources}
-                      />
+                      <div className="ws-prose">
+                        <SafeMarkdown
+                          content={activeSignal.sections.whatToWatch}
+                          compact
+                          onSelectSignal={handleJumpToSignal}
+                          onInspectSource={handleInspectSource}
+                          sources={activeSignal.sources}
+                        />
+                      </div>
                     </section>
                   )}
                 </div>

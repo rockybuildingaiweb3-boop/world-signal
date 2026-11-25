@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ExternalLink, Search, ShieldCheck } from 'lucide-react';
 import type {
   ClaimStatus,
@@ -38,6 +38,7 @@ const CONFIDENCE_LEVELS: readonly ConfidenceLevel[] = [
   'low',
   'unverified',
 ];
+const PAGE_SIZE = 20;
 
 export const AuditClaimLedger: React.FC<AuditClaimLedgerProps> = ({
   signals,
@@ -58,6 +59,19 @@ export const AuditClaimLedger: React.FC<AuditClaimLedgerProps> = ({
   const [claimSourceCoverage, setClaimSourceCoverage] = useState<
     'all' | 'with_independent' | 'without_independent'
   >('all');
+  const [visibleLimit, setVisibleLimit] = useState<number>(PAGE_SIZE);
+
+  // Reset pagination whenever filters or edition claims change
+  useEffect(() => {
+    setVisibleLimit(PAGE_SIZE);
+  }, [
+    allClaims,
+    claimQuery,
+    claimStatusFilter,
+    claimConfFilter,
+    claimSignalFilter,
+    claimSourceCoverage,
+  ]);
 
   const filteredClaims = useMemo(() => {
     const q = claimQuery.trim().toLowerCase();
@@ -115,16 +129,22 @@ export const AuditClaimLedger: React.FC<AuditClaimLedgerProps> = ({
     claimStatusFilter,
   ]);
 
+  const visibleClaims = useMemo(
+    () => filteredClaims.slice(0, visibleLimit),
+    [filteredClaims, visibleLimit]
+  );
+  const remainingCount = Math.max(0, filteredClaims.length - visibleClaims.length);
+
   return (
     <section className="space-y-5 ws-section-rule pt-8">
       <div className="space-y-1.5">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <div className="space-y-0.5">
-            <div className="inline-flex items-center gap-1.5 font-mono-tabular text-[10.5px] font-semibold uppercase tracking-[0.12em] text-[var(--ws-ink-muted)]">
+          <div className="space-y-1">
+            <div className="inline-flex items-center gap-1.5 ws-kicker text-[var(--ws-ink-muted)]">
               <ShieldCheck className="h-3.5 w-3.5 text-[var(--ws-economy)]" />
               <span>{t.audit.traceFlowLabel}</span>
             </div>
-            <h2 className="font-display text-[1.35rem] sm:text-[1.55rem] font-semibold tracking-[-0.015em] text-[var(--ws-ink)]">
+            <h2 className="font-display text-[1.4rem] sm:text-[1.65rem] font-semibold tracking-[-0.018em] text-[var(--ws-ink)]">
               {t.audit.claimLedgerTitle}
             </h2>
           </div>
@@ -132,7 +152,7 @@ export const AuditClaimLedger: React.FC<AuditClaimLedgerProps> = ({
             {filteredClaims.length} / {allClaims.length}
           </span>
         </div>
-        <p className="text-[12.5px] text-[var(--ws-ink-muted)]">
+        <p className="text-[13px] text-[var(--ws-ink-muted)]">
           {t.audit.claimLedgerSubtitle}
         </p>
       </div>
@@ -151,172 +171,219 @@ export const AuditClaimLedger: React.FC<AuditClaimLedgerProps> = ({
           />
         </div>
         <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
-        <select
-          aria-label={t.audit.claimFilterStatus}
-          value={claimStatusFilter}
-          onChange={(e) =>
-            setClaimStatusFilter(e.target.value as ClaimStatus | 'all')
-          }
-          className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-3 py-2 text-xs text-[var(--ws-ink)]"
-        >
-          <option value="all">{t.audit.claimFilterStatus}</option>
-          {CLAIM_STATUSES.map((st) => (
-            <option key={st} value={st}>
-              {t.claimStatus[st]}
-            </option>
-          ))}
-        </select>
+          <select
+            aria-label={t.audit.claimFilterStatus}
+            value={claimStatusFilter}
+            onChange={(e) =>
+              setClaimStatusFilter(e.target.value as ClaimStatus | 'all')
+            }
+            className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-3 py-2 text-xs text-[var(--ws-ink)]"
+          >
+            <option value="all">{t.audit.claimFilterStatus}</option>
+            {CLAIM_STATUSES.map((st) => (
+              <option key={st} value={st}>
+                {t.claimStatus[st]}
+              </option>
+            ))}
+          </select>
 
-        <select
-          aria-label={t.audit.claimFilterConfidence}
-          value={claimConfFilter}
-          onChange={(e) =>
-            setClaimConfFilter(e.target.value as ConfidenceLevel | 'all')
-          }
-          className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-3 py-2 text-xs text-[var(--ws-ink)]"
-        >
-          <option value="all">{t.audit.claimFilterConfidence}</option>
-          {CONFIDENCE_LEVELS.map((c) => (
-            <option key={c} value={c}>
-              {t.confidence[c]}
-            </option>
-          ))}
-        </select>
+          <select
+            aria-label={t.audit.claimFilterConfidence}
+            value={claimConfFilter}
+            onChange={(e) =>
+              setClaimConfFilter(e.target.value as ConfidenceLevel | 'all')
+            }
+            className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-3 py-2 text-xs text-[var(--ws-ink)]"
+          >
+            <option value="all">{t.audit.claimFilterConfidence}</option>
+            {CONFIDENCE_LEVELS.map((c) => (
+              <option key={c} value={c}>
+                {t.confidence[c]}
+              </option>
+            ))}
+          </select>
 
-        <select
-          aria-label={t.audit.claimFilterSignal}
-          value={claimSignalFilter}
-          onChange={(e) => setClaimSignalFilter(e.target.value)}
-          className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-3 py-2 text-xs text-[var(--ws-ink)]"
-        >
-          <option value="all">{t.audit.claimFilterSignal}</option>
-          {signals.map((sig) => (
-            <option key={sig.signal_id} value={sig.signal_id}>
-              {sig.signal_id}
-            </option>
-          ))}
-        </select>
+          <select
+            aria-label={t.audit.claimFilterSignal}
+            value={claimSignalFilter}
+            onChange={(e) => setClaimSignalFilter(e.target.value)}
+            className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-3 py-2 text-xs text-[var(--ws-ink)]"
+          >
+            <option value="all">{t.audit.claimFilterSignal}</option>
+            {signals.map((sig) => (
+              <option key={sig.signal_id} value={sig.signal_id}>
+                {sig.signal_id}
+              </option>
+            ))}
+          </select>
 
-        <select
-          aria-label={t.audit.claimFilterSources}
-          value={claimSourceCoverage}
-          onChange={(e) =>
-            setClaimSourceCoverage(
-              e.target.value as 'all' | 'with_independent' | 'without_independent'
-            )
-          }
-          className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-3 py-2 text-xs text-[var(--ws-ink)]"
-        >
-          <option value="all">{t.audit.claimSourcesAll}</option>
-          <option value="with_independent">
-            {t.audit.claimSourcesWithIndependent}
-          </option>
-          <option value="without_independent">
-            {t.audit.claimSourcesNoIndependent}
-          </option>
-        </select>
+          <select
+            aria-label={t.audit.claimFilterSources}
+            value={claimSourceCoverage}
+            onChange={(e) =>
+              setClaimSourceCoverage(
+                e.target.value as 'all' | 'with_independent' | 'without_independent'
+              )
+            }
+            className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-3 py-2 text-xs text-[var(--ws-ink)]"
+          >
+            <option value="all">{t.audit.claimSourcesAll}</option>
+            <option value="with_independent">
+              {t.audit.claimSourcesWithIndependent}
+            </option>
+            <option value="without_independent">
+              {t.audit.claimSourcesNoIndependent}
+            </option>
+          </select>
         </div>
       </div>
 
-      {/* Stacked Responsive Claim Evidence Trace Ledger */}
-      <div className="ws-editorial-sheet rounded-b-[var(--ws-radius-sm)] border-x border-[var(--ws-border)] divide-y divide-[var(--ws-border-subtle)] max-h-[620px] overflow-y-auto ws-scroll">
-        {filteredClaims.length === 0 ? (
-          <div className="p-8 text-center text-sm text-[var(--ws-ink-muted)]">
-            {t.audit.noItemsInSection}
-          </div>
-        ) : (
-          filteredClaims.map(({ signal, claim, linkedSources, hasIndependentOrigin }) => (
-            <div
-              key={claim.claim_id}
-              className="p-4 sm:px-5 space-y-2"
-            >
-              <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono-tabular text-[11.5px]">
-                <span
-                  aria-hidden="true"
-                  className={`h-1.5 w-1.5 rounded-full shrink-0 ${
-                    hasIndependentOrigin
-                      ? 'bg-[var(--ws-conf-high)]'
-                      : 'bg-[var(--ws-border-strong)]'
-                  }`}
-                />
+      {/* Paginated Claim Evidence Ledger (Zero Nested-Scroll Trap) */}
+      <div className="ws-editorial-sheet rounded-b-[var(--ws-radius-sm)] border-x border-[var(--ws-border)] overflow-hidden shadow-[var(--ws-shadow-sm)]">
+        <div className="divide-y divide-[var(--ws-border-subtle)]">
+          {visibleClaims.length === 0 ? (
+            <div className="p-8 text-center text-sm text-[var(--ws-ink-muted)]">
+              {t.audit.noItemsInSection}
+            </div>
+          ) : (
+            visibleClaims.map(
+              ({ signal, claim, linkedSources, hasIndependentOrigin }) => (
+                <div
+                  key={claim.claim_id}
+                  className="p-4 sm:px-6 sm:py-4.5 space-y-2"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 font-mono-tabular text-[11.5px]">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                      <button
+                        type="button"
+                        onClick={() => onOpenSignal(signal.signal_id)}
+                        className="font-semibold text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
+                      >
+                        {signal.signal_id}
+                      </button>
+                      <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
+                        →
+                      </span>
+                      <span className="font-semibold text-[var(--ws-ink)]">
+                        {claim.claim_id}
+                      </span>
+                      <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
+                        ·
+                      </span>
+                      <span className="text-[var(--ws-ink-secondary)]">
+                        {t.claimStatus[claim.status]}
+                      </span>
+                      <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
+                        ·
+                      </span>
+                      <span
+                        className={`font-semibold ${confidenceColorClass(
+                          claim.confidence
+                        )}`}
+                      >
+                        {t.confidence[claim.confidence]}
+                      </span>
+                    </div>
+
+                    <span
+                      className={`text-[11px] font-medium ${
+                        hasIndependentOrigin
+                          ? 'text-[var(--ws-conf-high)]'
+                          : 'text-[var(--ws-ink-faint)]'
+                      }`}
+                    >
+                      {hasIndependentOrigin
+                        ? t.audit.originCountedBadge
+                        : t.audit.originExcludedBadge}
+                    </span>
+                  </div>
+
+                  <p className="ws-prose text-[14px] text-[var(--ws-ink)] break-words">
+                    {claim.statement}
+                  </p>
+
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                    <span>{t.audit.claimTraceLabel}:</span>
+                    {linkedSources.length === 0 ? (
+                      <span className="text-[var(--ws-error)]">—</span>
+                    ) : (
+                      linkedSources.map((src) => (
+                        <span
+                          key={src.source_id}
+                          className="inline-flex flex-wrap items-center gap-1"
+                        >
+                          <span className="font-semibold text-[var(--ws-ink)]">
+                            {src.source_id}
+                          </span>
+                          {src.url && src.urlSafe ? (
+                            <a
+                              href={src.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-0.5 text-[var(--ws-ink-secondary)] underline decoration-[var(--ws-border-strong)] underline-offset-4 hover:text-[var(--ws-world)]"
+                            >
+                              {src.outlet}
+                              <ExternalLink className="h-2.5 w-2.5" />
+                            </a>
+                          ) : (
+                            <span>{src.outlet}</span>
+                          )}
+                          <span>
+                            [{src.independence_group || t.audit.unassignedBadge} ·{' '}
+                            <span
+                              className={
+                                src.qualifiesAsIndependent
+                                  ? 'text-[var(--ws-conf-high)] font-medium'
+                                  : 'text-[var(--ws-ink-muted)]'
+                              }
+                            >
+                              {src.qualifiesAsIndependent
+                                ? t.audit.originCountedBadge
+                                : t.audit.originExcludedBadge}
+                            </span>
+                            ]
+                          </span>
+                        </span>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )
+            )
+          )}
+        </div>
+
+        {/* Clean Progressive Pagination Bar */}
+        {filteredClaims.length > 0 && (
+          <div className="border-t border-[var(--ws-border)] bg-[var(--ws-surface-elevated)] px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+            <span className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
+              {t.audit.claimShowingRange(
+                visibleClaims.length,
+                filteredClaims.length
+              )}
+            </span>
+
+            {remainingCount > 0 && (
+              <div className="flex flex-wrap items-center gap-3">
                 <button
                   type="button"
-                  onClick={() => onOpenSignal(signal.signal_id)}
-                  className="font-semibold text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
+                  onClick={() =>
+                    setVisibleLimit((prev) => prev + PAGE_SIZE)
+                  }
+                  className="inline-flex min-h-[32px] items-center rounded-[var(--ws-radius-sm)] border border-[var(--ws-border-strong)] bg-[var(--ws-surface)] px-3 py-1 font-mono-tabular text-[11.5px] font-medium text-[var(--ws-ink)] hover:bg-[var(--ws-surface-hover)] transition-colors cursor-pointer"
                 >
-                  {signal.signal_id}
+                  {t.audit.claimLoadMore(Math.min(PAGE_SIZE, remainingCount))}
                 </button>
-                <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
-                  →
-                </span>
-                <span className="font-semibold text-[var(--ws-ink)]">
-                  {claim.claim_id}
-                </span>
-                <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
-                  ·
-                </span>
-                <span className="text-[var(--ws-ink-muted)]">
-                  {t.claimStatus[claim.status]}
-                </span>
-                <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
-                  ·
-                </span>
-                <span className={`font-medium ${confidenceColorClass(claim.confidence)}`}>
-                  {t.confidence[claim.confidence]}
-                </span>
+                <button
+                  type="button"
+                  onClick={() => setVisibleLimit(filteredClaims.length)}
+                  className="font-mono-tabular text-[11.5px] font-medium text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
+                >
+                  {t.audit.claimShowAll(filteredClaims.length)}
+                </button>
               </div>
-
-              <p className="text-[14px] leading-[1.6] text-[var(--ws-ink-secondary)] break-words">
-                {claim.statement}
-              </p>
-
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
-                <span>{t.audit.claimTraceLabel}:</span>
-                {linkedSources.length === 0 ? (
-                  <span className="text-[var(--ws-error)]">—</span>
-                ) : (
-                  linkedSources.map((src) => (
-                    <span
-                      key={src.source_id}
-                      className="inline-flex flex-wrap items-center gap-1"
-                    >
-                      <span className="font-semibold text-[var(--ws-ink)]">
-                        {src.source_id}
-                      </span>
-                      {src.url && src.urlSafe ? (
-                        <a
-                          href={src.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-0.5 text-[var(--ws-ink-secondary)] underline decoration-[var(--ws-border-strong)] underline-offset-4 hover:text-[var(--ws-world)]"
-                        >
-                          {src.outlet}
-                          <ExternalLink className="h-2.5 w-2.5" />
-                        </a>
-                      ) : (
-                        <span>{src.outlet}</span>
-                      )}
-                      <span>
-                        [{src.independence_group || t.audit.unassignedBadge} ·{' '}
-                        <span
-                          className={
-                            src.qualifiesAsIndependent
-                              ? 'text-[var(--ws-conf-high)] font-medium'
-                              : 'text-[var(--ws-ink-muted)]'
-                          }
-                        >
-                          {src.qualifiesAsIndependent
-                            ? t.audit.originCountedBadge
-                            : t.audit.originExcludedBadge}
-                        </span>
-                        ]
-                      </span>
-                    </span>
-                  ))
-                )}
-              </div>
-            </div>
-          ))
+            )}
+          </div>
         )}
       </div>
     </section>

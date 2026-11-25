@@ -105,16 +105,20 @@ export const AuditView: React.FC<AuditViewProps> = ({
 
   return (
     <div className="space-y-14 pb-16 sm:pb-20">
-      {/* Publication Audit & Methodology Masthead */}
+      {/* Evidence & Provenance Inspection Room Masthead */}
       <header className="ws-masthead-rule py-5 space-y-2.5">
-        <div className="flex flex-wrap items-center justify-between gap-2 font-mono-tabular text-[11px] uppercase tracking-[0.14em] text-[var(--ws-ink-muted)]">
-          <span>{t.nav.audit}</span>
-          <span>{edition.frontmatter.edition_date}</span>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <span className="ws-kicker text-[var(--ws-editorial-accent)]">
+            {t.nav.audit}
+          </span>
+          <span className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
+            {edition.frontmatter.edition_date}
+          </span>
         </div>
-        <h1 className="font-display text-[1.65rem] sm:text-[2.2rem] font-semibold leading-[1.18] tracking-[-0.024em] text-[var(--ws-ink)] headline-balance">
+        <h1 className="font-display ws-headline-dossier text-[1.75rem] sm:text-[2.3rem] font-semibold text-[var(--ws-ink)] headline-balance">
           {t.audit.title}
         </h1>
-        <p className="max-w-3xl text-[14px] leading-[1.65] text-[var(--ws-ink-muted)]">
+        <p className="max-w-3xl text-[14px] leading-[1.68] text-[var(--ws-ink-muted)]">
           {t.audit.subtitle}
         </p>
       </header>
@@ -218,13 +222,18 @@ export const AuditView: React.FC<AuditViewProps> = ({
         </div>
 
         {/* Derived Importance × Confidence 5×4 Cross-Matrix */}
-        <div className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] p-5 sm:p-6 space-y-4">
-          <div className="space-y-1">
-            <h3 className="font-mono-tabular text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--ws-ink-muted)]">
-              {t.audit.matrixTitle}
-            </h3>
-            <p className="text-xs text-[var(--ws-ink-muted)]">
-              {t.audit.matrixSubtitle}
+        <div className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] p-5 sm:p-6 space-y-4 shadow-[var(--ws-shadow-sm)]">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+            <div className="space-y-1">
+              <h3 className="ws-kicker text-[var(--ws-ink-muted)]">
+                {t.audit.matrixTitle}
+              </h3>
+              <p className="text-[12.5px] text-[var(--ws-ink-muted)]">
+                {t.audit.matrixSubtitle}
+              </p>
+            </div>
+            <p className="font-mono-tabular text-[11px] text-[var(--ws-ink-faint)]">
+              {t.audit.matrixAxisNote}
             </p>
           </div>
 
@@ -373,7 +382,7 @@ export const AuditView: React.FC<AuditViewProps> = ({
                   {isActive && (
                     <span
                       aria-hidden="true"
-                      className="absolute inset-x-2 bottom-0 h-[2.5px] bg-[var(--ws-rule-editorial)]"
+                      className="absolute inset-x-2 bottom-0 h-[2.5px] bg-[var(--ws-editorial-accent)]"
                     />
                   )}
                 </button>

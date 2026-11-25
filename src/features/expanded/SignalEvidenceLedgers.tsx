@@ -69,7 +69,7 @@ export const SignalEvidenceLedgers: React.FC<SignalEvidenceLedgersProps> = ({
     <>
       {/* Visual Provenance Chain Header */}
       <div className="border-t-2 border-[var(--ws-rule-editorial)] pt-6 flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2 font-mono-tabular text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--ws-ink)]">
+        <div className="flex items-center gap-2 ws-kicker text-[var(--ws-ink)]">
           <ShieldCheck className="h-3.5 w-3.5 text-[var(--ws-economy)] shrink-0" />
           <span>{t.expanded.evidenceChainLabel}</span>
         </div>
@@ -251,15 +251,7 @@ export const SignalEvidenceLedgers: React.FC<SignalEvidenceLedgersProps> = ({
                         </div>
                       </div>
 
-                      <div className="inline-flex items-center gap-1.5 font-mono-tabular text-[11px] shrink-0">
-                        <span
-                          aria-hidden="true"
-                          className={`h-1.5 w-1.5 rounded-full shrink-0 ${
-                            src.qualifiesAsIndependent
-                              ? 'bg-[var(--ws-conf-high)]'
-                              : 'bg-[var(--ws-border-strong)]'
-                          }`}
-                        />
+                      <div className="font-mono-tabular text-[11px] shrink-0">
                         {src.qualifiesAsIndependent ? (
                           <span className="font-semibold text-[var(--ws-conf-high)]">
                             {t.expanded.qualifiesIndependent}

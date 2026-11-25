@@ -69,6 +69,10 @@ export const App: React.FC = () => {
   const t = getUiStrings(lang);
   const handleCloseArchive = useCallback(() => setArchiveOpen(false), []);
 
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
+
   // Keep URL query state cleanly synced for shareable edition, view, and signal deep links
   useEffect(() => {
     // Do not erase an incoming deep link while the initial archive request is pending.
@@ -211,7 +215,10 @@ export const App: React.FC = () => {
     null;
 
   return (
-    <div className="min-h-screen flex flex-col bg-[var(--ws-canvas)] text-[var(--ws-ink)] pb-[62px] md:pb-0">
+    <div
+      data-lang={lang}
+      className="min-h-screen flex flex-col bg-[var(--ws-canvas)] text-[var(--ws-ink)] pb-[60px] md:pb-0"
+    >
       <TopBar
         activeView={activeView}
         onSelectView={handleSelectView}

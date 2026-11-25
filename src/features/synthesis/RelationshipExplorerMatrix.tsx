@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { ArrowRight, ArrowUpRight } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, X } from 'lucide-react';
 import type {
   ParsedEdition,
   ParsedSignal,
@@ -37,15 +37,15 @@ const COLUMNS: readonly {
   x: number;
   color: string;
 }[] = [
-  { domain: 'world', x: 24, color: 'var(--ws-world)' },
+  { domain: 'world', x: 22, color: 'var(--ws-world)' },
   { domain: 'ai', x: 332, color: 'var(--ws-ai)' },
-  { domain: 'economy', x: 640, color: 'var(--ws-economy)' },
+  { domain: 'economy', x: 642, color: 'var(--ws-economy)' },
 ];
 
 const NODE_WIDTH = 216;
-const NODE_HEIGHT = 44;
+const NODE_HEIGHT = 48;
 const NODE_GAP = 14;
-const TOP_OFFSET = 46;
+const TOP_OFFSET = 50;
 const SVG_WIDTH = 880;
 const MAX_LEDGER_INITIAL = 12;
 
@@ -121,6 +121,7 @@ export const RelationshipExplorerMatrix: React.FC<
   const [includeLegacy, setIncludeLegacy] = useState(
     model.explicitEdges.length === 0 && model.legacyContextualEdges.length > 0
   );
+  const [focusedSignalId, setFocusedSignalId] = useState<string>('all');
   const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null);
   const [showAllLedger, setShowAllLedger] = useState(false);
 
@@ -132,7 +133,8 @@ export const RelationshipExplorerMatrix: React.FC<
     [model.explicitTypeCounts]
   );
 
-  const visibleEdges = useMemo(() => {
+  // Edges matching type + legacy selection (before signal focus)
+  const typeFilteredEdges = useMemo(() => {
     const explicit =
       selectedType === 'all'
         ? model.explicitEdges
@@ -151,6 +153,30 @@ export const RelationshipExplorerMatrix: React.FC<
     selectedType,
   ]);
 
+  // Signals participating in current edge pool (ordered by connection count descending for hub focus selector)
+  const connectedHubSignals = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const e of typeFilteredEdges) {
+      counts.set(e.sourceSignalId, (counts.get(e.sourceSignalId) ?? 0) + 1);
+      counts.set(e.targetSignalId, (counts.get(e.targetSignalId) ?? 0) + 1);
+    }
+    return Array.from(counts.entries())
+      .map(([id, degree]) => ({ id, degree, signal: signalById.get(id) }))
+      .filter((item): item is { id: string; degree: number; signal: ParsedSignal } =>
+        Boolean(item.signal)
+      )
+      .sort((a, b) => b.degree - a.degree || b.signal.importance - a.signal.importance);
+  }, [signalById, typeFilteredEdges]);
+
+  const visibleEdges = useMemo(() => {
+    if (focusedSignalId === 'all') return typeFilteredEdges;
+    return typeFilteredEdges.filter(
+      (e) =>
+        e.sourceSignalId === focusedSignalId ||
+        e.targetSignalId === focusedSignalId
+    );
+  }, [focusedSignalId, typeFilteredEdges]);
+
   const activeEdge = useMemo(() => {
     if (selectedEdgeId) {
       const match = visibleEdges.find((e) => edgeKey(e) === selectedEdgeId);
@@ -159,8 +185,8 @@ export const RelationshipExplorerMatrix: React.FC<
     return visibleEdges[0] ?? null;
   }, [selectedEdgeId, visibleEdges]);
 
-  // Project only nodes participating in the currently visible edges (capped to explicit or first 24 edges for diagram readability)
-  const diagramEdges = useMemo(() => visibleEdges.slice(0, 28), [visibleEdges]);
+  // Cap diagram projection to keep visual lines legible; full list always remains accessible in ledger
+  const diagramEdges = useMemo(() => visibleEdges.slice(0, 26), [visibleEdges]);
 
   const layout = useMemo(() => {
     const participatingIds = new Set<string>();
@@ -205,8 +231,8 @@ export const RelationshipExplorerMatrix: React.FC<
     });
 
     const svgHeight = Math.max(
-      210,
-      TOP_OFFSET + maxColNodes * (NODE_HEIGHT + NODE_GAP) + 22
+      220,
+      TOP_OFFSET + maxColNodes * (NODE_HEIGHT + NODE_GAP) + 24
     );
 
     return { positions, byDomain, svgHeight };
@@ -223,85 +249,138 @@ export const RelationshipExplorerMatrix: React.FC<
     ? visibleEdges
     : visibleEdges.slice(0, MAX_LEDGER_INITIAL);
 
+  const handleActivateNode = (signalId: string) => {
+    const firstEdge = visibleEdges.find(
+      (e) => e.sourceSignalId === signalId || e.targetSignalId === signalId
+    );
+    if (firstEdge) {
+      setSelectedEdgeId(edgeKey(firstEdge));
+    }
+  };
+
   return (
     <section className="space-y-5">
       {/* Section Header */}
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div className="space-y-1">
-          <h2 className="font-display text-[1.4rem] sm:text-[1.65rem] font-semibold tracking-[-0.018em] text-[var(--ws-ink)]">
+          <h2 className="font-display text-[1.45rem] sm:text-[1.75rem] font-semibold tracking-[-0.018em] text-[var(--ws-ink)]">
             {t.synthesis.relationshipMapTitle}
           </h2>
-          <p className="max-w-3xl text-[12.5px] leading-relaxed text-[var(--ws-ink-muted)]">
+          <p className="max-w-3xl text-[13px] leading-relaxed text-[var(--ws-ink-muted)]">
             {t.synthesis.relationshipMapSubtitle}
           </p>
         </div>
-        <span className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)] shrink-0">
+        <span className="font-mono-tabular text-[11.5px] font-medium text-[var(--ws-ink-muted)] shrink-0">
           {t.synthesis.relationshipEdgeCount(visibleEdges.length, totalAllEdges)}
         </span>
       </div>
 
-      {/* Type Filter Strip & Legacy Contextual Toggle */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-y border-[var(--ws-border)] py-3">
-        <div className="flex flex-wrap items-center gap-1.5">
-          {model.explicitEdges.length > 0 ? (
-            <>
-              <button
-                type="button"
-                onClick={() => setSelectedType('all')}
-                className={`rounded-[var(--ws-radius-sm)] border px-2.5 py-1 font-mono-tabular text-[11px] font-medium transition-colors cursor-pointer ${
-                  selectedType === 'all'
-                    ? 'border-[var(--ws-rule-editorial)] bg-[var(--ws-rule-editorial)] text-[var(--ws-surface)]'
-                    : 'border-[var(--ws-border)] bg-[var(--ws-surface)] text-[var(--ws-ink-secondary)] hover:border-[var(--ws-border-strong)]'
-                }`}
-              >
-                {t.synthesis.relationshipFilterAllExplicit} ({model.explicitEdges.length})
-              </button>
-              {presentExplicitTypes.map((type) => {
-                const isSelected = selectedType === type;
-                return (
-                  <button
-                    key={type}
-                    type="button"
-                    onClick={() => setSelectedType(type)}
-                    className={`rounded-[var(--ws-radius-sm)] border px-2.5 py-1 font-mono-tabular text-[11px] font-medium transition-colors cursor-pointer ${
-                      isSelected
-                        ? 'border-[var(--ws-rule-editorial)] bg-[var(--ws-rule-editorial)] text-[var(--ws-surface)]'
-                        : 'border-[var(--ws-border)] bg-[var(--ws-surface)] text-[var(--ws-ink-secondary)] hover:border-[var(--ws-border-strong)]'
-                    }`}
-                  >
-                    {t.signalRelationshipType[type]} ({model.explicitTypeCounts[type]})
-                  </button>
-                );
-              })}
-            </>
-          ) : (
-            <span className="text-xs text-[var(--ws-ink-muted)]">
-              {t.synthesis.relationshipNoExplicit}
-            </span>
+      {/* Controls Strip: Type Filters + Signal Focus Selector + Legacy Toggle */}
+      <div className="space-y-3 border-y border-[var(--ws-border)] py-3.5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-1.5">
+            {model.explicitEdges.length > 0 ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setSelectedType('all')}
+                  className={`rounded-[var(--ws-radius-sm)] border px-2.5 py-1 font-mono-tabular text-[11px] font-medium transition-colors cursor-pointer ${
+                    selectedType === 'all'
+                      ? 'border-[var(--ws-rule-editorial)] bg-[var(--ws-rule-editorial)] text-[var(--ws-surface)]'
+                      : 'border-[var(--ws-border)] bg-[var(--ws-surface)] text-[var(--ws-ink-secondary)] hover:border-[var(--ws-border-strong)]'
+                  }`}
+                >
+                  {t.synthesis.relationshipFilterAllExplicit} ({model.explicitEdges.length})
+                </button>
+                {presentExplicitTypes.map((type) => {
+                  const isSelected = selectedType === type;
+                  return (
+                    <button
+                      key={type}
+                      type="button"
+                      onClick={() => setSelectedType(type)}
+                      className={`rounded-[var(--ws-radius-sm)] border px-2.5 py-1 font-mono-tabular text-[11px] font-medium transition-colors cursor-pointer ${
+                        isSelected
+                          ? 'border-[var(--ws-rule-editorial)] bg-[var(--ws-rule-editorial)] text-[var(--ws-surface)]'
+                          : 'border-[var(--ws-border)] bg-[var(--ws-surface)] text-[var(--ws-ink-secondary)] hover:border-[var(--ws-border-strong)]'
+                      }`}
+                    >
+                      {t.signalRelationshipType[type]} ({model.explicitTypeCounts[type]})
+                    </button>
+                  );
+                })}
+              </>
+            ) : (
+              <span className="text-xs text-[var(--ws-ink-muted)]">
+                {t.synthesis.relationshipNoExplicit}
+              </span>
+            )}
+          </div>
+
+          {model.legacyContextualEdges.length > 0 && (
+            <label className="inline-flex items-center gap-2 font-mono-tabular text-[11.5px] text-[var(--ws-ink-secondary)] cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={includeLegacy}
+                onChange={(e) => setIncludeLegacy(e.target.checked)}
+                className="h-3.5 w-3.5 accent-[var(--ws-world)] cursor-pointer"
+              />
+              <span>
+                {t.synthesis.relationshipToggleLegacy(
+                  model.legacyContextualEdges.length
+                )}
+              </span>
+            </label>
           )}
         </div>
 
-        {model.legacyContextualEdges.length > 0 && (
-          <label className="inline-flex items-center gap-2 font-mono-tabular text-[11.5px] text-[var(--ws-ink-secondary)] cursor-pointer select-none">
-            <input
-              type="checkbox"
-              checked={includeLegacy}
-              onChange={(e) => setIncludeLegacy(e.target.checked)}
-              className="h-3.5 w-3.5 accent-[var(--ws-world)] cursor-pointer"
-            />
-            <span>
-              {t.synthesis.relationshipToggleLegacy(
-                model.legacyContextualEdges.length
-              )}
-            </span>
-          </label>
-        )}
+        {/* Signal Focus Selector & Keyboard Navigation Hint */}
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-1 border-t border-[var(--ws-border-subtle)]">
+          <div className="flex flex-wrap items-center gap-2 min-w-0">
+            <label
+              htmlFor="relationship-focus-select"
+              className="ws-kicker text-[var(--ws-ink-faint)] shrink-0"
+            >
+              {t.synthesis.relationshipFocusLabel}
+            </label>
+            <select
+              id="relationship-focus-select"
+              value={focusedSignalId}
+              onChange={(e) => {
+                setFocusedSignalId(e.target.value);
+                setSelectedEdgeId(null);
+              }}
+              className="max-w-[300px] sm:max-w-[380px] rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-2.5 py-1 text-xs text-[var(--ws-ink)]"
+            >
+              <option value="all">
+                {t.synthesis.relationshipFocusAll} ({connectedHubSignals.length})
+              </option>
+              {connectedHubSignals.map(({ id, degree, signal }) => (
+                <option key={id} value={id}>
+                  [{degree}] {signal.headline}
+                </option>
+              ))}
+            </select>
+            {focusedSignalId !== 'all' && (
+              <button
+                type="button"
+                onClick={() => setFocusedSignalId('all')}
+                className="inline-flex items-center gap-1 font-mono-tabular text-[11px] font-medium text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
+              >
+                <X className="h-3 w-3" />
+                <span>{t.synthesis.relationshipClearFocus}</span>
+              </button>
+            )}
+          </div>
+          <span className="hidden md:inline font-mono-tabular text-[11px] text-[var(--ws-ink-faint)]">
+            {t.synthesis.relationshipKeyboardHint}
+          </span>
+        </div>
       </div>
 
-      {/* Main Workspace: 3-Column Spatial Map (Desktop/Tablet) + Selected Link Inspector */}
+      {/* Main Workspace: Keyboard-Accessible Cross-Domain Atlas (Desktop/Tablet) + Live Inspector */}
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-12 items-start">
-        {/* Desktop/Tablet Architectural Cross-Domain SVG Diagram */}
-        <div className="hidden md:block xl:col-span-8 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] p-4 overflow-hidden">
+        <div className="hidden md:block xl:col-span-8 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] p-4 sm:p-5 overflow-hidden shadow-[var(--ws-shadow-sm)]">
           {diagramEdges.length === 0 ? (
             <div className="py-12 text-center text-xs text-[var(--ws-ink-muted)]">
               {t.synthesis.relationshipNoExplicit}
@@ -310,24 +389,38 @@ export const RelationshipExplorerMatrix: React.FC<
             <svg
               viewBox={`0 0 ${SVG_WIDTH} ${layout.svgHeight}`}
               className="w-full h-auto block"
-              role="img"
+              role="group"
               aria-label={t.synthesis.relationshipMapTitle}
             >
-              {/* Column Headers & Guide Rules */}
+              <defs>
+                <marker
+                  id="ws-rel-arrow-active"
+                  viewBox="0 0 8 8"
+                  refX="6.5"
+                  refY="4"
+                  markerWidth="6"
+                  markerHeight="6"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M 0 1 L 7 4 L 0 7 z" fill="var(--ws-editorial-accent)" />
+                </marker>
+              </defs>
+
+              {/* Column Headers & Domain Axis Guides */}
               {COLUMNS.map((col) => (
                 <g key={col.domain}>
                   <line
                     x1={col.x}
-                    y1={28}
+                    y1={30}
                     x2={col.x + NODE_WIDTH}
-                    y2={28}
+                    y2={30}
                     stroke={col.color}
-                    strokeWidth="2"
-                    opacity="0.8"
+                    strokeWidth="2.5"
+                    opacity="0.88"
                   />
                   <text
                     x={col.x}
-                    y={20}
+                    y={21}
                     fill={col.color}
                     fontSize="11"
                     fontWeight="600"
@@ -338,7 +431,7 @@ export const RelationshipExplorerMatrix: React.FC<
                 </g>
               ))}
 
-              {/* Directed Relationship Paths */}
+              {/* Keyboard-Accessible Directed Relationship Arcs */}
               {diagramEdges.map((edge, idx) => {
                 const src = layout.positions.get(edge.sourceSignalId);
                 const tgt = layout.positions.get(edge.targetSignalId);
@@ -346,7 +439,9 @@ export const RelationshipExplorerMatrix: React.FC<
 
                 const key = edgeKey(edge);
                 const isSelected = activeEdge ? edgeKey(activeEdge) === key : false;
-                const stroke = edgeStrokeColor(edge);
+                const stroke = isSelected
+                  ? 'var(--ws-editorial-accent)'
+                  : edgeStrokeColor(edge);
                 const isDashed =
                   !edge.isExplicitlyTyped ||
                   edge.relationshipType === 'potential_link';
@@ -356,10 +451,9 @@ export const RelationshipExplorerMatrix: React.FC<
                 const y2 = tgt.y + NODE_HEIGHT / 2;
 
                 if (src.colIndex === tgt.colIndex) {
-                  // Same-column loop routed cleanly on the inner/outer rail
                   const onRight = src.colIndex === 2;
                   const anchorX = onRight ? src.x : src.x + NODE_WIDTH;
-                  const offset = (onRight ? -1 : 1) * (24 + (idx % 3) * 10);
+                  const offset = (onRight ? -1 : 1) * (24 + (idx % 3) * 11);
                   pathD = `M ${anchorX} ${y1} C ${anchorX + offset} ${y1}, ${anchorX + offset} ${y2}, ${anchorX} ${y2}`;
                 } else {
                   const goingRight = src.colIndex < tgt.colIndex;
@@ -372,13 +466,25 @@ export const RelationshipExplorerMatrix: React.FC<
                   pathD = `M ${x1} ${y1} C ${cx1} ${y1}, ${cx2} ${y2}, ${x2} ${y2}`;
                 }
 
+                const edgeAriaLabel = `${t.signalRelationshipType[edge.relationshipType]}: ${src.signal.headline} → ${tgt.signal.headline}`;
+
                 return (
                   <g
                     key={key}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={edgeAriaLabel}
+                    aria-pressed={isSelected}
                     onClick={() => setSelectedEdgeId(key)}
-                    className="cursor-pointer"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setSelectedEdgeId(key);
+                      }
+                    }}
+                    className="cursor-pointer focus:outline-none"
                   >
-                    {/* Wider invisible hit target for easy clicking */}
+                    <title>{edgeAriaLabel}</title>
                     <path
                       d={pathD}
                       fill="none"
@@ -389,13 +495,18 @@ export const RelationshipExplorerMatrix: React.FC<
                       d={pathD}
                       fill="none"
                       stroke={stroke}
-                      strokeWidth={isSelected ? 2.4 : 1.25}
+                      strokeWidth={isSelected ? 2.4 : 1.2}
                       strokeDasharray={isDashed ? '4 3' : undefined}
+                      markerEnd={
+                        isSelected && edge.isExplicitlyTyped
+                          ? 'url(#ws-rel-arrow-active)'
+                          : undefined
+                      }
                       opacity={
                         activeEdge
                           ? isSelected
-                            ? 0.98
-                            : 0.28
+                            ? 1
+                            : 0.22
                           : 0.65
                       }
                     />
@@ -403,30 +514,34 @@ export const RelationshipExplorerMatrix: React.FC<
                 );
               })}
 
-              {/* Signal Nodes */}
+              {/* Keyboard-Accessible Signal Nodes (Clean Top Hairline Accent, No Left-Bar Cliché) */}
               {Array.from(layout.positions.values()).map(({ signal, x, y }) => {
                 const isEndpoint =
                   activeEdge?.sourceSignalId === signal.signal_id ||
                   activeEdge?.targetSignalId === signal.signal_id;
+                const isFocused = focusedSignalId === signal.signal_id;
                 const colColor =
                   COLUMNS.find((c) => c.domain === signal.domain)?.color ??
                   'var(--ws-ink)';
 
-                const shortHeadline = truncateSvgLabel(signal.headline, 24);
-                const shortId = truncateSvgLabel(signal.signal_id, 28);
+                const shortHeadline = truncateSvgLabel(signal.headline, 22);
+                const shortId = truncateSvgLabel(signal.signal_id, 24);
 
                 return (
                   <g
                     key={signal.signal_id}
-                    onClick={() => {
-                      const firstEdge = visibleEdges.find(
-                        (e) =>
-                          e.sourceSignalId === signal.signal_id ||
-                          e.targetSignalId === signal.signal_id
-                      );
-                      if (firstEdge) setSelectedEdgeId(edgeKey(firstEdge));
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`${signal.headline} (${t.domains[signal.domain]}, ${signal.importance}/5)`}
+                    aria-pressed={isEndpoint}
+                    onClick={() => handleActivateNode(signal.signal_id)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleActivateNode(signal.signal_id);
+                      }
                     }}
-                    className="cursor-pointer"
+                    className="cursor-pointer focus:outline-none"
                   >
                     <title>{`${signal.headline} (${signal.signal_id})`}</title>
                     <rect
@@ -436,25 +551,31 @@ export const RelationshipExplorerMatrix: React.FC<
                       height={NODE_HEIGHT}
                       rx="3"
                       fill={
-                        isEndpoint
+                        isEndpoint || isFocused
                           ? 'var(--ws-surface-subtle)'
                           : 'var(--ws-canvas)'
                       }
-                      stroke={isEndpoint ? colColor : 'var(--ws-border-strong)'}
-                      strokeWidth={isEndpoint ? 1.5 : 0.9}
+                      stroke={
+                        isEndpoint
+                          ? 'var(--ws-editorial-accent)'
+                          : isFocused
+                          ? colColor
+                          : 'var(--ws-border-strong)'
+                      }
+                      strokeWidth={isEndpoint || isFocused ? 1.5 : 0.9}
                     />
                     <rect
-                      x={x}
-                      y={y}
-                      width="3"
-                      height={NODE_HEIGHT}
+                      x={x + 0.5}
+                      y={y + 0.5}
+                      width={NODE_WIDTH - 1}
+                      height="2.5"
                       rx="1"
-                      fill={colColor}
-                      opacity={isEndpoint ? 1 : 0.65}
+                      fill={isEndpoint ? 'var(--ws-editorial-accent)' : colColor}
+                      opacity={isEndpoint ? 1 : 0.72}
                     />
                     <text
                       x={x + 10}
-                      y={y + 18}
+                      y={y + 21}
                       fill="var(--ws-ink)"
                       fontSize="11.5"
                       fontWeight={isEndpoint ? '600' : '500'}
@@ -463,12 +584,23 @@ export const RelationshipExplorerMatrix: React.FC<
                     </text>
                     <text
                       x={x + 10}
-                      y={y + 34}
+                      y={y + 38}
                       fill="var(--ws-ink-muted)"
                       fontSize="9.5"
                       className="font-mono-tabular"
                     >
                       {shortId}
+                    </text>
+                    <text
+                      x={x + NODE_WIDTH - 9}
+                      y={y + 38}
+                      textAnchor="end"
+                      fill={colColor}
+                      fontSize="9.5"
+                      fontWeight="600"
+                      className="font-mono-tabular"
+                    >
+                      {signal.importance}/5
                     </text>
                   </g>
                 );
@@ -477,15 +609,13 @@ export const RelationshipExplorerMatrix: React.FC<
           )}
         </div>
 
-        {/* Selected Relationship Evidence Inspector */}
-        <aside className="xl:col-span-4 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] p-5 space-y-4">
+        {/* Synchronized Evidence & Mechanism Inspector */}
+        <aside className="xl:col-span-4 ws-editorial-sheet rounded-b-[var(--ws-radius-sm)] border-x border-[var(--ws-border)] p-5 space-y-4 shadow-[var(--ws-shadow-sm)]">
           {activeEdge ? (
             <>
               <div className="flex flex-wrap items-center justify-between gap-2 font-mono-tabular text-[11px]">
                 <span
-                  className={`font-semibold uppercase tracking-[0.08em] ${edgeBadgeTextClass(
-                    activeEdge
-                  )}`}
+                  className={`ws-kicker ${edgeBadgeTextClass(activeEdge)}`}
                 >
                   {t.signalRelationshipType[activeEdge.relationshipType]}
                 </span>
@@ -496,7 +626,7 @@ export const RelationshipExplorerMatrix: React.FC<
                 </span>
               </div>
 
-              <div className="space-y-3 border-y border-[var(--ws-border-subtle)] py-3.5">
+              <div className="space-y-3.5 border-y border-[var(--ws-border-subtle)] py-3.5">
                 {[
                   {
                     label: t.synthesis.relationshipSourceNode,
@@ -510,7 +640,7 @@ export const RelationshipExplorerMatrix: React.FC<
                   const sig = signalById.get(id);
                   return (
                     <div key={`${label}-${id}`} className="space-y-0.5">
-                      <div className="font-mono-tabular text-[10px] uppercase tracking-[0.12em] text-[var(--ws-ink-faint)]">
+                      <div className="ws-kicker text-[var(--ws-ink-faint)]">
                         {label}
                       </div>
                       {sig ? (
@@ -544,7 +674,7 @@ export const RelationshipExplorerMatrix: React.FC<
                 })}
               </div>
 
-              <div className="flex items-center justify-between font-mono-tabular text-[11px]">
+              <div className="flex items-center justify-between font-mono-tabular text-[11.5px]">
                 <span className="text-[var(--ws-ink-muted)]">
                   {t.expanded.confidenceLabel}
                 </span>
@@ -558,14 +688,14 @@ export const RelationshipExplorerMatrix: React.FC<
               </div>
 
               {activeEdge.rationale && (
-                <p className="text-[13px] leading-[1.6] text-[var(--ws-ink-secondary)] break-words">
+                <p className="ws-prose text-[13px] text-[var(--ws-ink-secondary)] break-words">
                   {activeEdge.rationale}
                 </p>
               )}
 
               {activeEdge.supportingClaimIds.length > 0 && (
                 <div className="space-y-1.5 border-t border-[var(--ws-border-subtle)] pt-3">
-                  <div className="font-mono-tabular text-[10.5px] uppercase tracking-[0.1em] text-[var(--ws-ink-muted)]">
+                  <div className="ws-kicker text-[var(--ws-ink-faint)]">
                     {t.synthesis.relationshipEvidenceClaims}
                   </div>
                   <div className="flex flex-wrap gap-x-2.5 gap-y-1 font-mono-tabular text-[11px] text-[var(--ws-world)]">
@@ -584,7 +714,7 @@ export const RelationshipExplorerMatrix: React.FC<
         </aside>
       </div>
 
-      {/* Responsive Interactive Edge Ledger (Mobile-first & full inspection list) */}
+      {/* Responsive Keyboard-Navigable Edge Ledger (Mobile-first & full inspection list) */}
       {visibleEdges.length > 0 && (
         <div className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] overflow-hidden">
           <ul className="divide-y divide-[var(--ws-border-subtle)]">
@@ -597,8 +727,9 @@ export const RelationshipExplorerMatrix: React.FC<
                 <li key={key}>
                   <button
                     type="button"
+                    aria-pressed={isSelected}
                     onClick={() => setSelectedEdgeId(key)}
-                    className={`w-full px-4 py-3 text-left transition-colors cursor-pointer flex flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between ${
+                    className={`relative w-full px-4 py-3 text-left transition-colors cursor-pointer flex flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between ${
                       isSelected
                         ? 'bg-[var(--ws-surface-subtle)]'
                         : 'hover:bg-[var(--ws-surface-hover)]/55'
@@ -607,9 +738,7 @@ export const RelationshipExplorerMatrix: React.FC<
                     <div className="min-w-0 space-y-1">
                       <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 font-mono-tabular text-[11px]">
                         <span
-                          className={`font-semibold uppercase tracking-[0.06em] ${edgeBadgeTextClass(
-                            edge
-                          )}`}
+                          className={`ws-kicker ${edgeBadgeTextClass(edge)}`}
                         >
                           {t.signalRelationshipType[edge.relationshipType]}
                         </span>
@@ -654,10 +783,10 @@ export const RelationshipExplorerMatrix: React.FC<
               >
                 {showAllLedger
                   ? t.expanded.showFewerItems
-                  : `${t.synthesis.relationshipEdgeCount(
+                  : t.synthesis.relationshipEdgeCount(
                       visibleEdges.length,
                       visibleEdges.length
-                    )}`}
+                    )}
               </button>
             </div>
           )}

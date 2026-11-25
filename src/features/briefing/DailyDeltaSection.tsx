@@ -228,11 +228,11 @@ export const DailyDeltaSection: React.FC<DailyDeltaSectionProps> = ({
       {/* Header Row */}
       <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
         <div className="space-y-1">
-          <div className="flex items-center gap-2 font-mono-tabular text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ws-ink-muted)]">
-            <History className="h-3.5 w-3.5 text-[var(--ws-ink-muted)] shrink-0" />
+          <div className="flex items-center gap-2 ws-kicker text-[var(--ws-ink-muted)]">
+            <History className="h-3.5 w-3.5 text-[var(--ws-editorial-accent)] shrink-0" />
             <span>{t.dailyDelta.eyebrow}</span>
           </div>
-          <h2 className="font-display text-[1.4rem] sm:text-[1.65rem] font-semibold tracking-[-0.018em] text-[var(--ws-ink)]">
+          <h2 className="font-display text-[1.45rem] sm:text-[1.75rem] font-semibold tracking-[-0.018em] text-[var(--ws-ink)]">
             {t.dailyDelta.title}
           </h2>
         </div>
@@ -381,7 +381,7 @@ export const DailyDeltaSection: React.FC<DailyDeltaSectionProps> = ({
             data-testid="delta-omitted-safeguard"
             className="ws-caution-panel px-4 py-3 space-y-1"
           >
-            <div className="font-mono-tabular text-[11px] font-semibold uppercase tracking-[0.11em] text-[var(--ws-warn)]">
+            <div className="ws-kicker text-[var(--ws-warn)]">
               {t.dailyDelta.omittedNoticeTitle}
             </div>
             <p className="text-[12.5px] leading-relaxed text-[var(--ws-ink-secondary)]">
