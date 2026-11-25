@@ -106,7 +106,18 @@ The example URL is a placeholder. Never copy placeholder values into a real edit
 
 ## Additive signal metadata v2
 
-The v1 fields remain valid. Schema v2 adds optional continuity, update, structured timeline, and typed relationship metadata. See [Intelligence Data Contract](INTELLIGENCE_DATA_CONTRACT.md) for exact fields, allowed values, validation rules, and migration policy. Historical v1 editions remain supported and must not be bulk-rewritten with invented metadata.
+Schema v1 remains supported for historical editions. New editions and every subsequent update to a schema-v2 daily file must use schema v2. Once a canonical daily edition has moved to v2, later same-day revisions—including overnight runs—must never downgrade it to v1.
+
+Every signal in a schema-v2 edition requires all four blocks:
+
+- `continuity` — first-seen date, last material update, `history_complete`, and lifecycle.
+- `update` — change type, concise summary, previous edition, and all five evidence-change arrays.
+- `timeline_events` — a structured array; it may be empty when no event can be supported.
+- `relationships` — a structured array; it may be empty when no relationship is established.
+
+Continuity dates may be explicit YAML `null` when the historical lookback is incomplete. Set `history_complete: true` only after checking every available canonical edition for the signal ID. Never fabricate dates.
+
+The exact field definitions, allowed values, and migration rules are in [Intelligence Data Contract](INTELLIGENCE_DATA_CONTRACT.md). The publishing script validates every v2 signal and rejects same-day schema downgrades. Historical v1 editions remain unchanged unless a deliberate, evidence-supported migration is performed.
 
 Claim statuses: confirmed, reported, official_claim, disputed, unverified.
 

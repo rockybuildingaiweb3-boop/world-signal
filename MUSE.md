@@ -22,11 +22,25 @@ You may read:
 
 You may write only the daily Markdown edition. Never edit source registry, templates, docs, scripts, workflows, generated public files, or frontend files. Do not write HTML, CSS, JavaScript, JSON, React, or UI code.
 
-## 2. Three cycles, one file
+## 2. Three cycles, one file — schema version lock
 
-The intended cadence is morning, midday, and evening. All three runs update the same daily file.
+The intended cadence is morning, midday, evening, and overnight. Every run updates the same canonical daily file. Scheduled and overnight runs are subject to exactly the same schema and editorial requirements as interactive runs.
+
+**Mandatory schema lock:**
+
+1. Before researching or writing, inspect the existing target file's `schema_version`.
+2. If the existing target edition is `schema_version: 2`, the next revision MUST remain schema v2. Never replace it with schema v1.
+3. The latest repository instructions (`MUSE.md`, `docs/INTELLIGENCE_DATA_CONTRACT.md`, and `docs/CONTENT_SCHEMA.md`) take precedence over any older saved run prompt, memory, or cached v1 template.
+4. Preserve all four v2 blocks on every retained signal: `continuity`, `update`, `timeline_events`, and `relationships`. Preserve their existing verified values and update only what new evidence justifies.
+5. Do not remove fields, reset arrays, rewrite all signals as `initial`, or replace known continuity dates with null during an ordinary overnight sync.
+6. If the run cannot preserve or validate the v2 metadata, STOP before committing. Do not downgrade the canonical file. Report the exact blocking signal and field.
+7. Before pushing, verify edition-level schema version, signal count, unique signal IDs, and all four metadata blocks for every signal. Also verify claims and source ledgers have not been unintentionally dropped.
+
+The intended cadence is morning, midday, evening, and overnight. All cycles update the same daily file.
 
 - Read the current day's edition before researching.
+- Treat the edition's existing schema version as a hard compatibility floor. A v2 edition must never be rewritten as v1.
+- Preserve every existing signal's v2 metadata, claims, sources, verified timeline events, and declared relationships unless an evidence-based correction is explicitly documented.
 - Preserve relevant earlier findings.
 - Add new developments and update changed facts, confidence, and analysis.
 - Replace the complete file with the latest cumulative edition.
@@ -167,10 +181,14 @@ Before upload, verify:
 - Timeline events are cumulative and use event dates, not publication dates.
 - Relationship types are explicit and do not imply causality without supporting claims.
 - The edition is cumulative and has no duplicate signals.
+- If the previous revision was schema v2, the current revision remains schema v2.
+- Every schema-v2 signal contains continuity, update, timeline_events, and relationships.
+- No claim ID is repurposed for a materially different proposition.
+- No claim/source ledger is unintentionally truncated or silently discarded.
 - All required top-level headings are present.
 
 If no important development exists in a domain, say so. Do not invent volume.
 
 ## 9. Output discipline
 
-The only write deliverable is the current date's canonical Markdown file at `content/editions/YYYY/MM/YYYY-MM-DD.md`. Commit/push that file to `main` when repository write access is available. Never manually upload, edit, or commit files under `public/`; the publishing workflow generates the public Markdown copies and archive index after the canonical file is pushed. Do not modify templates, schemas, docs, scripts, workflows, or frontend files during a daily editorial run.
+The only write deliverable is the current date's canonical Markdown file at `content/editions/YYYY/MM/YYYY-MM-DD.md`. Commit/push that file to `main` when repository write access is available. Never manually upload, edit, or commit files under `public/`; the publishing workflow validates schema-v2 metadata, rejects schema downgrades, and generates the public Markdown copies and archive index after the canonical file is pushed. Do not modify templates, schemas, docs, scripts, workflows, or frontend files during a daily editorial run.
