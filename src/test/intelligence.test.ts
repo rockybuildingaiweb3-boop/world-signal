@@ -9,8 +9,8 @@ import { VALID_SYNTHETIC_EDITION } from './fixtures/syntheticEdition';
 function parseAtDate(markdown: string, date: string) {
   const dated = markdown
     .replace('edition_date: "2026-10-01"', `edition_date: "${date}"`)
-    .replace('generated_at: "2026-10-01T07:00:00-07:00"', `generated_at: "${date}T07:00:00-07:00`)
-    .replace('updated_at: "2026-10-01T14:00:00-07:00"', `updated_at: "${date}T14:00:00-07:00`);
+    .replace('generated_at: "2026-10-01T07:00:00-07:00"', `generated_at: "${date}T07:00:00-07:00"`)
+    .replace('updated_at: "2026-10-01T14:00:00-07:00"', `updated_at: "${date}T14:00:00-07:00"`);
   return parseEditionMarkdown(dated, `/editions/${date.slice(0, 4)}/${date.slice(5, 7)}/${date}.md`, {
     expectedDate: date,
   });
@@ -71,9 +71,9 @@ describe('cross-edition intelligence projections', () => {
       '    removed_source_urls: []',
       'timeline_events: []',
       'relationships: []',
-    ].join('\\n');
+    ].join('\n');
     let markdown = VALID_SYNTHETIC_EDITION.replace('schema_version: 1', 'schema_version: 2');
-    markdown = markdown.replace(/^signal_id: "[^"]+"$/gm, (line) => line + '\\n' + v2Defaults);
+    markdown = markdown.replace(/^signal_id: "[^"]+"$/gm, (line) => line + '\n' + v2Defaults);
     markdown = markdown.replace('timeline_events: []', [
       'timeline_events:',
       '  - event_id: "WORLD-20261001-port-treaty-E01"',
@@ -82,7 +82,7 @@ describe('cross-edition intelligence projections', () => {
       '    summary: "The participating states signed the protocol."',
       '    claim_ids: ["WORLD-20261001-port-treaty-C01"]',
       '    source_ids: ["S1"]',
-    ].join('\\n'));
+    ].join('\n'));
     markdown = markdown.replace('relationships: []', [
       'relationships:',
       '  - target_signal_id: "ECON-20261001-freight-rates"',
@@ -90,7 +90,7 @@ describe('cross-edition intelligence projections', () => {
       '    confidence: "medium"',
       '    rationale: "The protocol changes maritime capacity assumptions used in freight-rate analysis."',
       '    supporting_claim_ids: ["WORLD-20261001-port-treaty-C01"]',
-    ].join('\\n'));
+    ].join('\n'));
     const edition = parseAtDate(markdown, '2026-10-01');
     const signal = edition.signals.find((item) => item.signal_id === 'WORLD-20261001-port-treaty');
     assert.equal(edition.frontmatter.schema_version, 2);
