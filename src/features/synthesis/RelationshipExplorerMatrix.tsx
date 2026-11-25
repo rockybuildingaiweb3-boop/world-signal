@@ -37,16 +37,16 @@ const COLUMNS: readonly {
   x: number;
   color: string;
 }[] = [
-  { domain: 'world', x: 22, color: 'var(--ws-world)' },
-  { domain: 'ai', x: 332, color: 'var(--ws-ai)' },
-  { domain: 'economy', x: 642, color: 'var(--ws-economy)' },
+  { domain: 'world', x: 18, color: 'var(--ws-world)' },
+  { domain: 'ai', x: 350, color: 'var(--ws-ai)' },
+  { domain: 'economy', x: 682, color: 'var(--ws-economy)' },
 ];
 
-const NODE_WIDTH = 216;
-const NODE_HEIGHT = 48;
-const NODE_GAP = 14;
-const TOP_OFFSET = 50;
-const SVG_WIDTH = 880;
+const NODE_WIDTH = 240;
+const NODE_HEIGHT = 60;
+const NODE_GAP = 16;
+const TOP_OFFSET = 54;
+const SVG_WIDTH = 940;
 const MAX_LEDGER_INITIAL = 12;
 
 function edgeStrokeColor(edge: SignalRelationshipEdge): string {
@@ -92,13 +92,39 @@ function truncateSvgLabel(text: string, maxUnits: number): string {
   let cut = 0;
   for (let i = 0; i < text.length; i += 1) {
     const code = text.charCodeAt(i);
-    units += code > 0x2e80 ? 1.75 : 1;
+    units += code > 0x2e80 ? 1.72 : 1;
     if (units > maxUnits) {
       return `${text.slice(0, Math.max(1, cut)).trimEnd()}…`;
     }
     cut = i + 1;
   }
   return text;
+}
+
+/**
+ * Splits a signal headline into up to 2 legible SVG lines so atlas nodes
+ * remain immediately recognizable in both Simplified Chinese and English.
+ */
+function wrapSvgHeadline(text: string, maxUnitsPerLine: number): [string, string | null] {
+  let units = 0;
+  let splitIdx = -1;
+  let lastSpaceIdx = -1;
+  for (let i = 0; i < text.length; i += 1) {
+    const ch = text[i];
+    if (ch === ' ') lastSpaceIdx = i;
+    units += text.charCodeAt(i) > 0x2e80 ? 1.72 : 1;
+    if (units > maxUnitsPerLine) {
+      splitIdx = lastSpaceIdx > 6 ? lastSpaceIdx : i;
+      break;
+    }
+  }
+  if (splitIdx === -1) {
+    return [text, null];
+  }
+  const line1 = text.slice(0, splitIdx).trimEnd();
+  const remainder = text.slice(splitIdx).trimStart();
+  const line2 = truncateSvgLabel(remainder, maxUnitsPerLine);
+  return [line1, line2];
 }
 
 function edgeKey(edge: SignalRelationshipEdge): string {
@@ -230,12 +256,17 @@ export const RelationshipExplorerMatrix: React.FC<
       });
     });
 
+    const aiBottom =
+      byDomain.ai.length > 0
+        ? TOP_OFFSET + byDomain.ai.length * (NODE_HEIGHT + NODE_GAP)
+        : TOP_OFFSET;
+
     const svgHeight = Math.max(
-      220,
-      TOP_OFFSET + maxColNodes * (NODE_HEIGHT + NODE_GAP) + 24
+      240,
+      TOP_OFFSET + maxColNodes * (NODE_HEIGHT + NODE_GAP) + 38
     );
 
-    return { positions, byDomain, svgHeight };
+    return { positions, byDomain, svgHeight, aiBottom };
   }, [diagramEdges, edition.signals]);
 
   const totalAllEdges =
@@ -284,7 +315,7 @@ export const RelationshipExplorerMatrix: React.FC<
                 <button
                   type="button"
                   onClick={() => setSelectedType('all')}
-                  className={`rounded-[var(--ws-radius-sm)] border px-2.5 py-1 font-mono-tabular text-[11px] font-medium transition-colors cursor-pointer ${
+                  className={`rounded-[var(--ws-radius-sm)] border px-2.5 py-1 text-[12px] font-medium transition-colors cursor-pointer tabular-nums ${
                     selectedType === 'all'
                       ? 'border-[var(--ws-rule-editorial)] bg-[var(--ws-rule-editorial)] text-[var(--ws-surface)]'
                       : 'border-[var(--ws-border)] bg-[var(--ws-surface)] text-[var(--ws-ink-secondary)] hover:border-[var(--ws-border-strong)]'
@@ -299,7 +330,7 @@ export const RelationshipExplorerMatrix: React.FC<
                       key={type}
                       type="button"
                       onClick={() => setSelectedType(type)}
-                      className={`rounded-[var(--ws-radius-sm)] border px-2.5 py-1 font-mono-tabular text-[11px] font-medium transition-colors cursor-pointer ${
+                      className={`rounded-[var(--ws-radius-sm)] border px-2.5 py-1 text-[12px] font-medium transition-colors cursor-pointer tabular-nums ${
                         isSelected
                           ? 'border-[var(--ws-rule-editorial)] bg-[var(--ws-rule-editorial)] text-[var(--ws-surface)]'
                           : 'border-[var(--ws-border)] bg-[var(--ws-surface)] text-[var(--ws-ink-secondary)] hover:border-[var(--ws-border-strong)]'
@@ -318,7 +349,7 @@ export const RelationshipExplorerMatrix: React.FC<
           </div>
 
           {model.legacyContextualEdges.length > 0 && (
-            <label className="inline-flex items-center gap-2 font-mono-tabular text-[11.5px] text-[var(--ws-ink-secondary)] cursor-pointer select-none">
+            <label className="inline-flex items-center gap-2 text-[12px] text-[var(--ws-ink-secondary)] cursor-pointer select-none tabular-nums">
               <input
                 type="checkbox"
                 checked={includeLegacy}
@@ -335,8 +366,8 @@ export const RelationshipExplorerMatrix: React.FC<
         </div>
 
         {/* Signal Focus Selector & Keyboard Navigation Hint */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-1 border-t border-[var(--ws-border-subtle)]">
-          <div className="flex flex-wrap items-center gap-2 min-w-0">
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-[var(--ws-border-subtle)]">
+          <div className="flex flex-wrap items-center gap-2.5 min-w-0">
             <label
               htmlFor="relationship-focus-select"
               className="ws-kicker text-[var(--ws-ink-faint)] shrink-0"
@@ -350,7 +381,7 @@ export const RelationshipExplorerMatrix: React.FC<
                 setFocusedSignalId(e.target.value);
                 setSelectedEdgeId(null);
               }}
-              className="max-w-[300px] sm:max-w-[380px] rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-2.5 py-1 text-xs text-[var(--ws-ink)]"
+              className="max-w-[300px] sm:max-w-[380px] rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-2.5 py-1.5 text-xs text-[var(--ws-ink)]"
             >
               <option value="all">
                 {t.synthesis.relationshipFocusAll} ({connectedHubSignals.length})
@@ -365,22 +396,22 @@ export const RelationshipExplorerMatrix: React.FC<
               <button
                 type="button"
                 onClick={() => setFocusedSignalId('all')}
-                className="inline-flex items-center gap-1 font-mono-tabular text-[11px] font-medium text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
+                className="inline-flex items-center gap-1 text-[12px] font-medium text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
               >
                 <X className="h-3 w-3" />
                 <span>{t.synthesis.relationshipClearFocus}</span>
               </button>
             )}
           </div>
-          <span className="hidden md:inline font-mono-tabular text-[11px] text-[var(--ws-ink-faint)]">
+          <span className="hidden md:inline text-[11.5px] text-[var(--ws-ink-faint)]">
             {t.synthesis.relationshipKeyboardHint}
           </span>
         </div>
       </div>
 
-      {/* Main Workspace: Keyboard-Accessible Cross-Domain Atlas (Desktop/Tablet) + Live Inspector */}
+      {/* Main Workspace: Keyboard-Accessible Cross-Domain Atlas (Desktop/Tablet) + Sticky Live Inspector */}
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-12 items-start">
-        <div className="hidden md:block xl:col-span-8 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] p-4 sm:p-5 overflow-hidden shadow-[var(--ws-shadow-sm)]">
+        <div className="hidden md:block xl:col-span-8 ws-broadsheet-ledger p-4 sm:p-5 overflow-hidden">
           {diagramEdges.length === 0 ? (
             <div className="py-12 text-center text-xs text-[var(--ws-ink-muted)]">
               {t.synthesis.relationshipNoExplicit}
@@ -398,8 +429,8 @@ export const RelationshipExplorerMatrix: React.FC<
                   viewBox="0 0 8 8"
                   refX="6.5"
                   refY="4"
-                  markerWidth="6"
-                  markerHeight="6"
+                  markerWidth="6.5"
+                  markerHeight="6.5"
                   orient="auto-start-reverse"
                 >
                   <path d="M 0 1 L 7 4 L 0 7 z" fill="var(--ws-editorial-accent)" />
@@ -411,18 +442,18 @@ export const RelationshipExplorerMatrix: React.FC<
                 <g key={col.domain}>
                   <line
                     x1={col.x}
-                    y1={30}
+                    y1={32}
                     x2={col.x + NODE_WIDTH}
-                    y2={30}
+                    y2={32}
                     stroke={col.color}
                     strokeWidth="2.5"
-                    opacity="0.88"
+                    opacity="0.9"
                   />
                   <text
                     x={col.x}
-                    y={21}
+                    y={22}
                     fill={col.color}
-                    fontSize="11"
+                    fontSize="11.5"
                     fontWeight="600"
                     className="font-mono-tabular uppercase"
                   >
@@ -453,14 +484,27 @@ export const RelationshipExplorerMatrix: React.FC<
                 if (src.colIndex === tgt.colIndex) {
                   const onRight = src.colIndex === 2;
                   const anchorX = onRight ? src.x : src.x + NODE_WIDTH;
-                  const offset = (onRight ? -1 : 1) * (24 + (idx % 3) * 11);
+                  const offset = (onRight ? -1 : 1) * (28 + (idx % 3) * 12);
                   pathD = `M ${anchorX} ${y1} C ${anchorX + offset} ${y1}, ${anchorX + offset} ${y2}, ${anchorX} ${y2}`;
+                } else if (Math.abs(src.colIndex - tgt.colIndex) === 2) {
+                  // World <-> Economy cross-span: arc cleanly below the AI center column when space allows so lines don't slash behind AI nodes
+                  const goingRight = src.colIndex < tgt.colIndex;
+                  const x1 = goingRight ? src.x + NODE_WIDTH : src.x;
+                  const x2 = goingRight ? tgt.x : tgt.x + NODE_WIDTH;
+                  const detourY = Math.max(
+                    layout.aiBottom + 14 + (idx % 4) * 6,
+                    Math.max(y1, y2) + 18
+                  );
+                  const clampedY = Math.min(detourY, layout.svgHeight - 8);
+                  const midX1 = goingRight ? x1 + 92 : x1 - 92;
+                  const midX2 = goingRight ? x2 - 92 : x2 + 92;
+                  pathD = `M ${x1} ${y1} C ${midX1} ${clampedY}, ${midX2} ${clampedY}, ${x2} ${y2}`;
                 } else {
                   const goingRight = src.colIndex < tgt.colIndex;
                   const x1 = goingRight ? src.x + NODE_WIDTH : src.x;
                   const x2 = goingRight ? tgt.x : tgt.x + NODE_WIDTH;
                   const span = Math.abs(x2 - x1);
-                  const ctrlOffset = Math.min(span * 0.45, 95);
+                  const ctrlOffset = Math.min(span * 0.46, 54);
                   const cx1 = goingRight ? x1 + ctrlOffset : x1 - ctrlOffset;
                   const cx2 = goingRight ? x2 - ctrlOffset : x2 + ctrlOffset;
                   pathD = `M ${x1} ${y1} C ${cx1} ${y1}, ${cx2} ${y2}, ${x2} ${y2}`;
@@ -495,7 +539,7 @@ export const RelationshipExplorerMatrix: React.FC<
                       d={pathD}
                       fill="none"
                       stroke={stroke}
-                      strokeWidth={isSelected ? 2.4 : 1.2}
+                      strokeWidth={isSelected ? 2.5 : 1.25}
                       strokeDasharray={isDashed ? '4 3' : undefined}
                       markerEnd={
                         isSelected && edge.isExplicitlyTyped
@@ -506,15 +550,15 @@ export const RelationshipExplorerMatrix: React.FC<
                         activeEdge
                           ? isSelected
                             ? 1
-                            : 0.22
-                          : 0.65
+                            : 0.28
+                          : 0.68
                       }
                     />
                   </g>
                 );
               })}
 
-              {/* Keyboard-Accessible Signal Nodes (Clean Top Hairline Accent, No Left-Bar Cliché) */}
+              {/* Keyboard-Accessible Signal Nodes (2-Line Headline Clarity + Clean Top Hairline) */}
               {Array.from(layout.positions.values()).map(({ signal, x, y }) => {
                 const isEndpoint =
                   activeEdge?.sourceSignalId === signal.signal_id ||
@@ -524,8 +568,8 @@ export const RelationshipExplorerMatrix: React.FC<
                   COLUMNS.find((c) => c.domain === signal.domain)?.color ??
                   'var(--ws-ink)';
 
-                const shortHeadline = truncateSvgLabel(signal.headline, 22);
-                const shortId = truncateSvgLabel(signal.signal_id, 24);
+                const [line1, line2] = wrapSvgHeadline(signal.headline, 24);
+                const shortId = truncateSvgLabel(signal.signal_id, 26);
 
                 return (
                   <g
@@ -571,20 +615,31 @@ export const RelationshipExplorerMatrix: React.FC<
                       height="2.5"
                       rx="1"
                       fill={isEndpoint ? 'var(--ws-editorial-accent)' : colColor}
-                      opacity={isEndpoint ? 1 : 0.72}
+                      opacity={isEndpoint ? 1 : 0.78}
                     />
                     <text
                       x={x + 10}
-                      y={y + 21}
+                      y={line2 ? y + 19 : y + 24}
                       fill="var(--ws-ink)"
                       fontSize="11.5"
                       fontWeight={isEndpoint ? '600' : '500'}
                     >
-                      {shortHeadline}
+                      {line1}
                     </text>
+                    {line2 && (
+                      <text
+                        x={x + 10}
+                        y={y + 34}
+                        fill="var(--ws-ink)"
+                        fontSize="11.5"
+                        fontWeight={isEndpoint ? '600' : '500'}
+                      >
+                        {line2}
+                      </text>
+                    )}
                     <text
                       x={x + 10}
-                      y={y + 38}
+                      y={y + 51}
                       fill="var(--ws-ink-muted)"
                       fontSize="9.5"
                       className="font-mono-tabular"
@@ -593,7 +648,7 @@ export const RelationshipExplorerMatrix: React.FC<
                     </text>
                     <text
                       x={x + NODE_WIDTH - 9}
-                      y={y + 38}
+                      y={y + 51}
                       textAnchor="end"
                       fill={colColor}
                       fontSize="9.5"
@@ -609,11 +664,11 @@ export const RelationshipExplorerMatrix: React.FC<
           )}
         </div>
 
-        {/* Synchronized Evidence & Mechanism Inspector */}
-        <aside className="xl:col-span-4 ws-editorial-sheet rounded-b-[var(--ws-radius-sm)] border-x border-[var(--ws-border)] p-5 space-y-4 shadow-[var(--ws-shadow-sm)]">
+        {/* Synchronized Sticky Evidence & Mechanism Inspector */}
+        <aside className="xl:col-span-4 xl:sticky xl:top-[84px] ws-folio-panel p-5 sm:p-6 space-y-4">
           {activeEdge ? (
             <>
-              <div className="flex flex-wrap items-center justify-between gap-2 font-mono-tabular text-[11px]">
+              <div className="flex flex-wrap items-center justify-between gap-2 text-[11.5px]">
                 <span
                   className={`ws-kicker ${edgeBadgeTextClass(activeEdge)}`}
                 >
@@ -674,7 +729,7 @@ export const RelationshipExplorerMatrix: React.FC<
                 })}
               </div>
 
-              <div className="flex items-center justify-between font-mono-tabular text-[11.5px]">
+              <div className="flex items-center justify-between text-[12px]">
                 <span className="text-[var(--ws-ink-muted)]">
                   {t.expanded.confidenceLabel}
                 </span>
@@ -688,7 +743,7 @@ export const RelationshipExplorerMatrix: React.FC<
               </div>
 
               {activeEdge.rationale && (
-                <p className="ws-prose text-[13px] text-[var(--ws-ink-secondary)] break-words">
+                <p className="ws-prose text-[13.5px] text-[var(--ws-ink-secondary)] break-words">
                   {activeEdge.rationale}
                 </p>
               )}
@@ -716,7 +771,7 @@ export const RelationshipExplorerMatrix: React.FC<
 
       {/* Responsive Keyboard-Navigable Edge Ledger (Mobile-first & full inspection list) */}
       {visibleEdges.length > 0 && (
-        <div className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] overflow-hidden">
+        <div className="ws-broadsheet-ledger overflow-hidden">
           <ul className="divide-y divide-[var(--ws-border-subtle)]">
             {displayedLedgerEdges.map((edge) => {
               const key = edgeKey(edge);

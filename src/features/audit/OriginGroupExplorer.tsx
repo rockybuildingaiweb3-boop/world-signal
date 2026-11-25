@@ -112,11 +112,11 @@ export const OriginGroupExplorer: React.FC<OriginGroupExplorerProps> = ({
       </div>
 
       {filteredOriginGroups.length === 0 ? (
-        <div className="bg-[var(--ws-surface)] border border-[var(--ws-border)] rounded-[var(--ws-radius-sm)] p-6 text-center text-xs text-[var(--ws-ink-muted)]">
+        <div className="ws-broadsheet-ledger p-6 text-center text-xs text-[var(--ws-ink-muted)]">
           {t.audit.noItemsInSection}
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="ws-broadsheet-ledger divide-y divide-[var(--ws-border)]">
           {filteredOriginGroups.map((group) => {
             const qualifyingRatio =
               group.totalRecordCount > 0
@@ -140,119 +140,110 @@ export const OriginGroupExplorer: React.FC<OriginGroupExplorerProps> = ({
             return (
               <article
                 key={group.group}
-                className={`relative overflow-hidden rounded-[var(--ws-radius-sm)] border flex flex-col justify-between transition-colors ${
+                className={`p-4 sm:px-6 sm:py-5 grid grid-cols-1 gap-4 lg:grid-cols-12 lg:gap-6 items-start transition-colors ${
                   group.qualifiesAny
-                    ? 'border-[var(--ws-border)] bg-[var(--ws-surface)]'
-                    : 'border-[var(--ws-border-subtle)] bg-[var(--ws-surface-elevated)]/65'
+                    ? 'hover:bg-[var(--ws-surface-elevated)]/45'
+                    : 'bg-[var(--ws-surface-elevated)]/40 hover:bg-[var(--ws-surface-elevated)]/70'
                 }`}
               >
-                {/* Top verification status hairline */}
-                <div
-                  aria-hidden="true"
-                  className={`h-[2.5px] w-full ${
-                    group.qualifiesAny
-                      ? 'bg-[var(--ws-conf-high)]'
-                      : 'bg-[var(--ws-border-strong)]'
-                  }`}
-                />
-
-                <div className="p-4 sm:p-5 space-y-3 flex-1 flex flex-col justify-between">
-                  <div className="space-y-3">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0">
-                        <div className="font-mono-tabular text-[14px] font-semibold text-[var(--ws-ink)] break-words">
-                          {group.group}
-                        </div>
-                        <div className="mt-0.5 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
-                          {t.audit.originRecordsLabel(
-                            group.qualifyingRecordCount,
-                            group.totalRecordCount
-                          )}
-                          {' · '}
-                          <span className="font-semibold text-[var(--ws-ink-secondary)]">
-                            {qualifyingRatio}%
-                          </span>
-                        </div>
-                      </div>
-
-                      <span
-                        className={`font-mono-tabular text-[11px] font-semibold shrink-0 ${
-                          group.qualifiesAny
-                            ? 'text-[var(--ws-conf-high)]'
-                            : 'text-[var(--ws-ink-muted)]'
-                        }`}
-                      >
-                        {group.qualifiesAny
-                          ? t.audit.originCountedBadge
-                          : t.audit.originExcludedBadge}
-                      </span>
+                {/* Left 4 cols: Origin Group Identity, Status & Qualifying Ratio */}
+                <div className="lg:col-span-4 space-y-2.5 min-w-0">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="font-mono-tabular text-[14.5px] font-semibold text-[var(--ws-ink)] break-words min-w-0">
+                      {group.group}
                     </div>
+                    <span
+                      className={`text-[11.5px] font-semibold shrink-0 ${
+                        group.qualifiesAny
+                          ? 'text-[var(--ws-conf-high)]'
+                          : 'text-[var(--ws-ink-muted)]'
+                      }`}
+                    >
+                      {group.qualifiesAny
+                        ? t.audit.originCountedBadge
+                        : t.audit.originExcludedBadge}
+                    </span>
+                  </div>
 
-                    {/* Derived Qualifying vs. Total Proportion Micro-Bar */}
-                    <div className="h-1.5 w-full overflow-hidden rounded-[1px] bg-[var(--ws-surface-subtle)]">
-                      <div
-                        className={`h-full ${
-                          group.qualifiesAny
-                            ? 'bg-[var(--ws-conf-high)]'
-                            : 'bg-[var(--ws-border-strong)]'
-                        }`}
-                        style={{ width: `${qualifyingRatio}%` }}
-                      />
-                    </div>
+                  {/* Derived Qualifying vs. Total Proportion Micro-Bar */}
+                  <div className="h-1.5 w-full overflow-hidden rounded-[1px] bg-[var(--ws-surface-subtle)]">
+                    <div
+                      className={`h-full ${
+                        group.qualifiesAny
+                          ? 'bg-[var(--ws-conf-high)]'
+                          : 'bg-[var(--ws-border-strong)]'
+                      }`}
+                      style={{ width: `${qualifyingRatio}%` }}
+                    />
+                  </div>
 
-                    {/* Outlets with Progressive Disclosure for Large Syndication Groups */}
-                    <div className="text-[12.5px] leading-relaxed text-[var(--ws-ink-secondary)] break-words">
-                      <span className="font-mono-tabular text-[11px] font-semibold text-[var(--ws-ink-muted)]">
-                        {t.audit.originOutletsLabel}:{' '}
-                      </span>
-                      <span>{visibleOutlets.join(', ')}</span>
-                      {group.outlets.length > MAX_COLLAPSED_OUTLETS && (
-                        <>
-                          {' '}
-                          <button
-                            type="button"
-                            onClick={() => toggleOutletGroup(group.group)}
-                            className="font-mono-tabular text-[11px] font-medium text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
-                          >
-                            {isOutletsExpanded
-                              ? t.audit.showFewerList
-                              : t.audit.showMoreOutlets(hiddenOutletsCount)}
-                          </button>
-                        </>
+                  <div className="flex items-center justify-between gap-2 font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
+                    <span>
+                      {t.audit.originRecordsLabel(
+                        group.qualifyingRecordCount,
+                        group.totalRecordCount
                       )}
-                    </div>
+                    </span>
+                    <span className="font-semibold text-[var(--ws-ink-secondary)]">
+                      {qualifyingRatio}%
+                    </span>
+                  </div>
+                </div>
 
-                    <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
-                      <span>
-                        {group.sourceClasses
-                          .map((sc) => t.sourceClass[sc])
-                          .join(' / ')}
-                      </span>
-                      <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
-                        ·
-                      </span>
-                      <span>
-                        {group.relationships
-                          .map((rel) => t.relationship[rel])
-                          .join(' / ')}
-                      </span>
-                    </div>
-
-                    {group.exclusionReasons.length > 0 && (
-                      <div className="ws-folio-note px-3 py-1.5 text-[11.5px] text-[var(--ws-ink-muted)]">
-                        <span className="font-medium text-[var(--ws-ink-secondary)]">
-                          {t.audit.originExclusionReasonLabel}:{' '}
-                        </span>
-                        {group.exclusionReasons
-                          .map((r) => t.exclusionReason[r])
-                          .join('; ')}
-                      </div>
+                {/* Right 8 cols: Outlets, Classification, Exclusion Rationale & Linked Signals */}
+                <div className="lg:col-span-8 space-y-2.5 min-w-0 lg:border-l lg:border-[var(--ws-border-subtle)] lg:pl-6">
+                  {/* Outlets with Progressive Disclosure */}
+                  <div className="text-[13px] leading-[1.6] text-[var(--ws-ink-secondary)] break-words">
+                    <span className="font-semibold text-[var(--ws-ink-muted)]">
+                      {t.audit.originOutletsLabel}:{' '}
+                    </span>
+                    <span>{visibleOutlets.join(', ')}</span>
+                    {group.outlets.length > MAX_COLLAPSED_OUTLETS && (
+                      <>
+                        {' '}
+                        <button
+                          type="button"
+                          onClick={() => toggleOutletGroup(group.group)}
+                          className="font-mono-tabular text-[11.5px] font-medium text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
+                        >
+                          {isOutletsExpanded
+                            ? t.audit.showFewerList
+                            : t.audit.showMoreOutlets(hiddenOutletsCount)}
+                        </button>
+                      </>
                     )}
                   </div>
 
+                  <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[12px] text-[var(--ws-ink-muted)]">
+                    <span>
+                      {group.sourceClasses
+                        .map((sc) => t.sourceClass[sc])
+                        .join(' / ')}
+                    </span>
+                    <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
+                      ·
+                    </span>
+                    <span>
+                      {group.relationships
+                        .map((rel) => t.relationship[rel])
+                        .join(' / ')}
+                    </span>
+                  </div>
+
+                  {group.exclusionReasons.length > 0 && (
+                    <div className="ws-folio-note px-3 py-1.5 text-[12px] text-[var(--ws-ink-muted)]">
+                      <span className="font-medium text-[var(--ws-ink-secondary)]">
+                        {t.audit.originExclusionReasonLabel}:{' '}
+                      </span>
+                      {group.exclusionReasons
+                        .map((r) => t.exclusionReason[r])
+                        .join('; ')}
+                    </div>
+                  )}
+
                   {group.signalIds.length > 0 && (
-                    <div className="border-t border-[var(--ws-border-subtle)] pt-3 flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono-tabular text-[11px]">
-                      <span className="text-[var(--ws-ink-muted)]">
+                    <div className="pt-1 flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono-tabular text-[11.5px]">
+                      <span className="font-sans text-[var(--ws-ink-muted)]">
                         {t.audit.originSignalsLabel} ({group.signalIds.length}):
                       </span>
                       {visibleSignals.map((sid) => (
@@ -295,16 +286,16 @@ export const OriginGroupExplorer: React.FC<OriginGroupExplorerProps> = ({
                 {t.audit.unassignedTitle} ({unassignedRecords.length})
               </h3>
             </div>
-            <p className="text-xs leading-relaxed text-[var(--ws-ink-secondary)]">
+            <p className="text-[12.5px] leading-relaxed text-[var(--ws-ink-secondary)]">
               {t.audit.unassignedSubtitle}
             </p>
           </div>
 
-          <ul className="space-y-2">
+          <ul className="border-y border-[var(--ws-border)] bg-[var(--ws-surface)] divide-y divide-[var(--ws-border-subtle)]">
             {unassignedRecords.map((rec, idx) => (
               <li
                 key={`${rec.signal_id ?? 'edition'}-${rec.source_id}-${idx}`}
-                className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] p-3.5 space-y-1.5"
+                className="px-4 py-3.5 space-y-1.5"
               >
                 <div className="flex flex-wrap items-center justify-between gap-2 font-mono-tabular text-[11.5px]">
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">

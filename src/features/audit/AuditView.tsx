@@ -146,208 +146,211 @@ export const AuditView: React.FC<AuditViewProps> = ({
         onOpenSignal={onOpenSignal}
       />
 
-      {/* 4. Confidence vs. Importance Distribution (Data-Journalism Comparison Panel) */}
+      {/* 4. Confidence vs. Importance Analytical Spread (Unified Cross-Matrix + Marginals) */}
       <section className="space-y-5 ws-section-rule pt-8">
         <div className="space-y-1">
-          <h2 className="font-display text-[1.35rem] sm:text-[1.55rem] font-semibold tracking-[-0.015em] text-[var(--ws-ink)]">
+          <h2 className="font-display text-[1.4rem] sm:text-[1.65rem] font-semibold tracking-[-0.018em] text-[var(--ws-ink)]">
             {t.audit.distributionTitle}
           </h2>
-          <p className="text-[12.5px] text-[var(--ws-ink-muted)]">
+          <p className="text-[13px] text-[var(--ws-ink-muted)]">
             {t.audit.distributionSubtitle}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 border-y border-[var(--ws-border-strong)] bg-[var(--ws-surface)] divide-y md:divide-y-0 md:divide-x divide-[var(--ws-border)]">
-          <div className="p-5 sm:p-6 space-y-4">
-            <h3 className="font-mono-tabular text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--ws-ink-muted)]">
-              {t.audit.confidenceDistribution}
-            </h3>
-            <div className="space-y-3">
-              {CONFIDENCE_LEVELS.map((level) => {
-                const count = confidenceCounts[level];
-                const pct = Math.round((count / totalSignals) * 100);
-                return (
-                  <div key={level} className="space-y-1.5">
-                    <div className="flex items-center justify-between text-xs font-mono-tabular">
-                      <span
-                        className={`font-semibold ${confidenceColorClass(level)}`}
-                      >
-                        {t.confidence[level]}
-                      </span>
-                      <span className="text-[var(--ws-ink-secondary)]">
-                        {count} ({pct}%)
-                      </span>
-                    </div>
-                    <div className="h-2 w-full rounded-[1px] bg-[var(--ws-surface-subtle)] overflow-hidden">
-                      <div
-                        className={`h-full ${confidenceBarBg(level)}`}
-                        style={{ width: `${pct}%` }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="p-5 sm:p-6 space-y-4">
-            <h3 className="font-mono-tabular text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--ws-ink-muted)]">
-              {t.audit.importanceDistribution}
-            </h3>
-            <div className="space-y-3">
-              {[5, 4, 3, 2, 1].map((imp) => {
-                const count = importanceCounts[imp] ?? 0;
-                const pct = Math.round((count / totalSignals) * 100);
-                return (
-                  <div key={imp} className="space-y-1.5">
-                    <div className="flex items-center justify-between text-xs font-mono-tabular">
-                      <span className="font-semibold text-[var(--ws-ink)]">
-                        {t.metaLine.importance(imp)}
-                      </span>
-                      <span className="text-[var(--ws-ink-secondary)]">
-                        {count} ({pct}%)
-                      </span>
-                    </div>
-                    <div className="h-2 w-full rounded-[1px] bg-[var(--ws-surface-subtle)] overflow-hidden">
-                      <div
-                        className="h-full bg-[var(--ws-world)]"
-                        style={{ width: `${pct}%` }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-        {/* Derived Importance × Confidence 5×4 Cross-Matrix */}
-        <div className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] p-5 sm:p-6 space-y-4 shadow-[var(--ws-shadow-sm)]">
-          <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-            <div className="space-y-1">
-              <h3 className="ws-kicker text-[var(--ws-ink-muted)]">
-                {t.audit.matrixTitle}
-              </h3>
-              <p className="text-[12.5px] text-[var(--ws-ink-muted)]">
-                {t.audit.matrixSubtitle}
+        <div className="ws-broadsheet-ledger grid grid-cols-1 lg:grid-cols-12">
+          {/* Left 7 cols: Derived Importance × Confidence 5×4 Cross-Matrix */}
+          <div className="lg:col-span-7 p-5 sm:p-7 space-y-4 border-b lg:border-b-0 lg:border-r border-[var(--ws-border)]">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+              <div className="space-y-1">
+                <h3 className="ws-kicker text-[var(--ws-ink-muted)]">
+                  {t.audit.matrixTitle}
+                </h3>
+                <p className="text-[12.5px] text-[var(--ws-ink-muted)]">
+                  {t.audit.matrixSubtitle}
+                </p>
+              </div>
+              <p className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-faint)]">
+                {t.audit.matrixAxisNote}
               </p>
             </div>
-            <p className="font-mono-tabular text-[11px] text-[var(--ws-ink-faint)]">
-              {t.audit.matrixAxisNote}
-            </p>
-          </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[440px] border-collapse font-mono-tabular text-xs">
-              <thead>
-                <tr className="border-b border-[var(--ws-border-strong)] text-[10.5px] uppercase tracking-[0.1em] text-[var(--ws-ink-muted)]">
-                  <th className="py-2.5 pr-3 text-left font-semibold">
-                    {t.audit.matrixImportanceAxis}
-                  </th>
-                  {CONFIDENCE_LEVELS.map((level) => (
-                    <th
-                      key={level}
-                      className={`px-3 py-2.5 text-center font-semibold ${confidenceColorClass(
-                        level
-                      )}`}
-                    >
-                      {t.confidence[level]}
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[420px] border-collapse text-xs">
+                <thead>
+                  <tr className="border-b border-[var(--ws-border-strong)] text-[11.5px] text-[var(--ws-ink-muted)]">
+                    <th className="py-2.5 pr-3 text-left font-semibold">
+                      {t.audit.matrixImportanceAxis}
                     </th>
-                  ))}
-                  <th className="py-2.5 pl-3 text-right font-semibold text-[var(--ws-ink)]">
-                    {t.audit.matrixTotalCol}
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[var(--ws-border-subtle)]">
-                {matrix.rows.map((row) => (
-                  <tr key={row.importance}>
-                    <td className="py-2.5 pr-3 font-semibold text-[var(--ws-ink)] whitespace-nowrap">
-                      {row.importance}/5
-                    </td>
-                    {CONFIDENCE_LEVELS.map((level) => {
-                      const val = row.counts[level];
-                      const ratio =
-                        matrix.maxCellCount > 0
-                          ? val / matrix.maxCellCount
-                          : 0;
-                      const cellBg =
-                        val === 0
-                          ? 'transparent'
-                          : level === 'high'
-                          ? `color-mix(in srgb, var(--ws-conf-high) ${Math.round(
-                              10 + ratio * 22
-                            )}%, transparent)`
-                          : level === 'medium'
-                          ? `color-mix(in srgb, var(--ws-conf-medium) ${Math.round(
-                              10 + ratio * 22
-                            )}%, transparent)`
-                          : level === 'low'
-                          ? `color-mix(in srgb, var(--ws-conf-low) ${Math.round(
-                              10 + ratio * 22
-                            )}%, transparent)`
-                          : `color-mix(in srgb, var(--ws-conf-unverified) ${Math.round(
-                              10 + ratio * 22
-                            )}%, transparent)`;
+                    {CONFIDENCE_LEVELS.map((level) => (
+                      <th
+                        key={level}
+                        className={`px-3 py-2.5 text-center font-semibold ${confidenceColorClass(
+                          level
+                        )}`}
+                      >
+                        {t.confidence[level]}
+                      </th>
+                    ))}
+                    <th className="py-2.5 pl-3 text-right font-semibold text-[var(--ws-ink)]">
+                      {t.audit.matrixTotalCol}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[var(--ws-border-subtle)] font-mono-tabular">
+                  {matrix.rows.map((row) => (
+                    <tr key={row.importance}>
+                      <td className="py-3 pr-3 font-semibold text-[var(--ws-ink)] whitespace-nowrap">
+                        {row.importance}/5
+                      </td>
+                      {CONFIDENCE_LEVELS.map((level) => {
+                        const val = row.counts[level];
+                        const ratio =
+                          matrix.maxCellCount > 0
+                            ? val / matrix.maxCellCount
+                            : 0;
+                        const cellBg =
+                          val === 0
+                            ? 'transparent'
+                            : level === 'high'
+                            ? `color-mix(in srgb, var(--ws-conf-high) ${Math.round(
+                                10 + ratio * 22
+                              )}%, transparent)`
+                            : level === 'medium'
+                            ? `color-mix(in srgb, var(--ws-conf-medium) ${Math.round(
+                                10 + ratio * 22
+                              )}%, transparent)`
+                            : level === 'low'
+                            ? `color-mix(in srgb, var(--ws-conf-low) ${Math.round(
+                                10 + ratio * 22
+                              )}%, transparent)`
+                            : `color-mix(in srgb, var(--ws-conf-unverified) ${Math.round(
+                                10 + ratio * 22
+                              )}%, transparent)`;
 
-                      return (
-                        <td
-                          key={level}
-                          className="px-3 py-2.5 text-center border-x border-[var(--ws-border-subtle)]"
-                          style={{ backgroundColor: cellBg }}
-                        >
-                          <span
-                            className={
-                              val > 0
-                                ? 'font-semibold text-[var(--ws-ink)]'
-                                : 'text-[var(--ws-ink-faint)]'
-                            }
+                        return (
+                          <td
+                            key={level}
+                            className="px-3 py-3 text-center border-x border-[var(--ws-border-subtle)]"
+                            style={{ backgroundColor: cellBg }}
                           >
-                            {val > 0 ? val : '—'}
-                          </span>
-                        </td>
-                      );
-                    })}
-                    <td className="py-2.5 pl-3 text-right font-semibold text-[var(--ws-ink)]">
-                      {row.rowTotal}
+                            <span
+                              className={
+                                val > 0
+                                  ? 'font-semibold text-[var(--ws-ink)]'
+                                  : 'text-[var(--ws-ink-faint)]'
+                              }
+                            >
+                              {val > 0 ? val : '—'}
+                            </span>
+                          </td>
+                        );
+                      })}
+                      <td className="py-3 pl-3 text-right font-semibold text-[var(--ws-ink)]">
+                        {row.rowTotal}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+                <tfoot>
+                  <tr className="border-t border-[var(--ws-border-strong)] bg-[var(--ws-surface-subtle)]/60 font-mono-tabular font-semibold text-[var(--ws-ink)]">
+                    <td className="py-2.5 pr-3 font-sans text-[11.5px] font-semibold text-[var(--ws-ink-muted)]">
+                      {t.audit.matrixTotalRow}
+                    </td>
+                    {CONFIDENCE_LEVELS.map((level) => (
+                      <td
+                        key={level}
+                        className="px-3 py-2.5 text-center border-x border-[var(--ws-border-subtle)]"
+                      >
+                        {matrix.columnTotals[level]}
+                      </td>
+                    ))}
+                    <td className="py-2.5 pl-3 text-right">
+                      {matrix.totalSignals}
                     </td>
                   </tr>
-                ))}
-              </tbody>
-              <tfoot>
-                <tr className="border-t border-[var(--ws-border-strong)] bg-[var(--ws-surface-subtle)]/60 font-semibold text-[var(--ws-ink)]">
-                  <td className="py-2.5 pr-3 text-[11px] uppercase tracking-[0.08em] text-[var(--ws-ink-muted)]">
-                    {t.audit.matrixTotalRow}
-                  </td>
-                  {CONFIDENCE_LEVELS.map((level) => (
-                    <td
-                      key={level}
-                      className="px-3 py-2.5 text-center border-x border-[var(--ws-border-subtle)]"
-                    >
-                      {matrix.columnTotals[level]}
-                    </td>
-                  ))}
-                  <td className="py-2.5 pl-3 text-right">
-                    {matrix.totalSignals}
-                  </td>
-                </tr>
-              </tfoot>
-            </table>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+
+          {/* Right 5 cols: Confidence & Importance Marginal Distributions */}
+          <div className="lg:col-span-5 p-5 sm:p-7 flex flex-col justify-between gap-6 bg-[var(--ws-surface-elevated)]/45">
+            <div className="space-y-3">
+              <h3 className="ws-kicker text-[var(--ws-ink-muted)]">
+                {t.audit.confidenceDistribution}
+              </h3>
+              <div className="space-y-2.5">
+                {CONFIDENCE_LEVELS.map((level) => {
+                  const count = confidenceCounts[level];
+                  const pct = Math.round((count / totalSignals) * 100);
+                  return (
+                    <div key={level} className="space-y-1">
+                      <div className="flex items-center justify-between text-[12px]">
+                        <span
+                          className={`font-semibold ${confidenceColorClass(level)}`}
+                        >
+                          {t.confidence[level]}
+                        </span>
+                        <span className="font-mono-tabular text-[var(--ws-ink-secondary)]">
+                          {count} ({pct}%)
+                        </span>
+                      </div>
+                      <div className="h-2 w-full rounded-[1px] bg-[var(--ws-surface-subtle)] overflow-hidden">
+                        <div
+                          className={`h-full ${confidenceBarBg(level)}`}
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="border-t border-[var(--ws-border)] pt-5 space-y-3">
+              <h3 className="ws-kicker text-[var(--ws-ink-muted)]">
+                {t.audit.importanceDistribution}
+              </h3>
+              <div className="space-y-2.5">
+                {[5, 4, 3, 2, 1].map((imp) => {
+                  const count = importanceCounts[imp] ?? 0;
+                  const pct = Math.round((count / totalSignals) * 100);
+                  return (
+                    <div key={imp} className="space-y-1">
+                      <div className="flex items-center justify-between text-[12px]">
+                        <span className="font-medium text-[var(--ws-ink)]">
+                          {t.metaLine.importance(imp)}
+                        </span>
+                        <span className="font-mono-tabular text-[var(--ws-ink-secondary)]">
+                          {count} ({pct}%)
+                        </span>
+                      </div>
+                      <div className="h-2 w-full rounded-[1px] bg-[var(--ws-surface-subtle)] overflow-hidden">
+                        <div
+                          className="h-full bg-[var(--ws-world)]"
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* 5. Editorial Audit Trail */}
       <section className="space-y-5 ws-section-rule pt-8">
-        <h2 className="font-display text-[1.35rem] sm:text-[1.55rem] font-semibold tracking-[-0.015em] text-[var(--ws-ink)]">
+        <h2 className="font-display text-[1.4rem] sm:text-[1.65rem] font-semibold tracking-[-0.018em] text-[var(--ws-ink)]">
           {t.audit.editorialTrailTitle}
         </h2>
 
-        <div className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] overflow-hidden">
+        <div className="ws-broadsheet-ledger overflow-hidden">
           <div
             role="tablist"
             aria-label={t.audit.editorialTrailTitle}
-            className="flex flex-wrap gap-0.5 border-b border-[var(--ws-border)] bg-[var(--ws-surface-elevated)] px-2 pt-1"
+            className="flex flex-wrap gap-0.5 border-b border-[var(--ws-border)] bg-[var(--ws-surface-elevated)]/65 px-2 pt-1"
           >
             {(
               [

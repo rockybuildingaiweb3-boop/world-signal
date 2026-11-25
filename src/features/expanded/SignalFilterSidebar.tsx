@@ -87,15 +87,15 @@ export const SignalFilterSidebar: React.FC<SignalFilterSidebarProps> = ({
       aria-label={t.expanded.title}
       className={`${
         mobileShowDetail ? 'hidden lg:flex' : 'flex'
-      } flex-col lg:sticky lg:top-[76px] lg:max-h-[calc(100vh-96px)] rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] overflow-hidden shadow-[var(--ws-shadow-sm)]`}
+      } flex-col lg:sticky lg:top-[76px] lg:max-h-[calc(100vh-96px)] ws-editorial-sheet lg:border-x lg:border-x-[var(--ws-border-subtle)] overflow-hidden`}
     >
       {/* Editorial Index Rail Header */}
       <div className="border-b border-[var(--ws-border-strong)] p-4 space-y-3 bg-[var(--ws-surface)]">
         <div className="flex items-baseline justify-between gap-2">
-          <h1 className="font-display text-[1.05rem] font-semibold tracking-[-0.01em] text-[var(--ws-ink)]">
+          <h1 className="font-display text-[1.1rem] font-semibold tracking-[-0.012em] text-[var(--ws-ink)]">
             {t.expanded.title}
           </h1>
-          <span className="font-mono-tabular text-[11px] font-medium text-[var(--ws-ink-muted)] shrink-0">
+          <span className="font-mono-tabular text-[11.5px] font-medium text-[var(--ws-ink-muted)] shrink-0">
             {t.expanded.showingCount(filteredSignals.length, totalCount)}
           </span>
         </div>

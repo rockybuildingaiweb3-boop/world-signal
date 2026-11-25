@@ -165,11 +165,11 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
   return (
     <div className="space-y-8 sm:space-y-14 lg:space-y-16 pb-16 sm:pb-20">
       {/* 1. Publication Front-Page Masthead & Edition Dateline */}
-      <section className="ws-masthead-rule pt-3 pb-3 sm:pt-5 sm:pb-4 space-y-2 sm:space-y-3">
+      <section className="ws-masthead-rule pt-3 pb-3.5 sm:pt-4 sm:pb-4 space-y-2.5 sm:space-y-3">
         {/* Top Dateline & Edition Scope Folio */}
         <div className="flex flex-col gap-1 lg:flex-row lg:items-center lg:justify-between border-b border-[var(--ws-border-subtle)] pb-2 sm:pb-2.5">
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
-            <span className="font-semibold text-[var(--ws-ink)]">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[12px] text-[var(--ws-ink-muted)]">
+            <span className="font-semibold text-[var(--ws-ink)] tabular-nums">
               {formatEditionDate(edition.frontmatter.edition_date, lang)}
             </span>
             <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">·</span>
@@ -232,7 +232,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                 {t.briefing.mastheadDescriptor}
               </span>
               {edition.frontmatter.coverage_window_start && (
-                <span className="font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                <span className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
                   {t.masthead.coverageWindowLabel}:{' '}
                   <span className="text-[var(--ws-ink-secondary)]">
                     {formatCoverageWindow(
@@ -244,13 +244,13 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                 </span>
               )}
             </div>
-            <h1 className="font-display text-[1.25rem] sm:text-[1.55rem] font-semibold leading-tight text-[var(--ws-ink)] headline-balance">
+            <h1 className="font-display text-[1.35rem] sm:text-[1.7rem] font-semibold leading-tight tracking-[-0.018em] text-[var(--ws-ink)] headline-balance">
               {edition.frontmatter.edition_title}
             </h1>
           </div>
 
           <div className="flex flex-wrap items-center gap-3 shrink-0">
-            <span className="font-mono-tabular text-[11px] text-[var(--ws-ink-muted)] whitespace-nowrap">
+            <span className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)] whitespace-nowrap">
               {t.masthead.updatedLabel}:{' '}
               <span className="text-[var(--ws-ink-secondary)]">
                 {formatPublicationTimestamp(edition.frontmatter.updated_at, lang)}
@@ -262,7 +262,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                 type="button"
                 onClick={onRefresh}
                 disabled={isRefreshing}
-                className="inline-flex min-h-[32px] items-center gap-1.5 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-2.5 py-1 text-[11.5px] font-mono-tabular font-medium text-[var(--ws-ink-secondary)] hover:text-[var(--ws-ink)] hover:border-[var(--ws-border-strong)] hover:bg-[var(--ws-surface-hover)] disabled:opacity-50 transition-colors duration-150 cursor-pointer shrink-0"
+                className="inline-flex min-h-[32px] items-center gap-1.5 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-3 py-1 text-[12px] font-medium text-[var(--ws-ink-secondary)] hover:text-[var(--ws-ink)] hover:border-[var(--ws-border-strong)] hover:bg-[var(--ws-surface-hover)] disabled:opacity-50 transition-colors duration-150 cursor-pointer shrink-0"
               >
                 <RefreshCw
                   className={`h-3 w-3 shrink-0 ${isRefreshing ? 'animate-spin' : ''}`}
@@ -276,10 +276,10 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
         </div>
       </section>
 
-      {/* 2. Front-Page Cover Story Spread: Commanding Lead Story (7) + Edition Desk Folio (5) */}
+      {/* 2. Front-Page Cover Story Spread: Commanding Lead Story (7) + Open Edition Desk Folio (5) */}
       <section className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-0 lg:items-start">
         {leadEntry && (
-          <article className="lg:col-span-7 lg:border-r lg:border-[var(--ws-border)] lg:pr-10 space-y-4 sm:space-y-5">
+          <article className="lg:col-span-7 lg:border-r lg:border-[var(--ws-border)] lg:pr-10 space-y-5">
             {/* Lead Kicker & Signal Identifier */}
             <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
               <div className="flex items-center gap-2.5 shrink-0">
@@ -291,14 +291,14 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                   {t.briefing.leadKicker}
                 </span>
               </div>
-              <span className="font-mono-tabular text-[11px] text-[var(--ws-ink-faint)]">
+              <span className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-faint)]">
                 {leadEntry.signal.signal_id}
               </span>
             </div>
 
             {/* Monumental Cover Headline + Clean Provenance Metadata */}
-            <div className="space-y-2.5">
-              <h2 className="font-display ws-headline-cover text-[1.9rem] sm:text-[2.4rem] lg:text-[2.75rem] font-semibold text-[var(--ws-ink)] headline-balance">
+            <div className="space-y-3">
+              <h2 className="font-display ws-headline-cover text-[1.95rem] sm:text-[2.45rem] lg:text-[2.85rem] font-semibold text-[var(--ws-ink)] headline-balance">
                 <button
                   type="button"
                   onClick={() => onOpenSignal(leadEntry.signal.signal_id)}
@@ -310,15 +310,15 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
               <SignalMetaLine signal={leadEntry.signal} lang={lang} showClaims />
             </div>
 
-            {/* Cover Editorial Deck — Above Artwork for 5-Second First-Screen Comprehension */}
-            <div className="max-w-[64ch] ws-prose text-[15.25px] sm:text-[15.75px]">
+            {/* Cover Editorial Deck — Above Artwork for Immediate 5-Second Comprehension */}
+            <div className="max-w-[64ch] ws-prose text-[15.5px] sm:text-[16px]">
               <SafeMarkdown
                 content={leadEntry.editorialSummary}
                 onSelectSignal={onOpenSignal}
               />
             </div>
 
-            {/* Bespoke Art-Directed Editorial Visual Plate */}
+            {/* Bespoke Art-Directed Full-Canvas Editorial Visual Plate */}
             <EditorialSignalArtwork
               signal={leadEntry.signal}
               lang={lang}
@@ -351,23 +351,23 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
           </article>
         )}
 
-        {/* Right Folio Column: Edition Desk Executive Summary & Coverage Limitations */}
+        {/* Right Folio Column: Open Broadsheet Edition Desk Executive Summary & Caveats */}
         <aside
           className={`${
             leadEntry ? 'lg:col-span-5 lg:pl-10' : 'lg:col-span-12'
-          } space-y-5`}
+          } space-y-6`}
         >
-          <div className="ws-editorial-sheet rounded-b-[var(--ws-radius-sm)] border-x border-[var(--ws-border)] p-5 sm:p-6 space-y-4 shadow-[var(--ws-shadow-sm)]">
-            <div className="flex items-center justify-between gap-2 border-b border-[var(--ws-border-subtle)] pb-2.5">
+          <div className="ws-folio-panel px-5 py-5 sm:px-6 sm:py-6 space-y-4">
+            <div className="flex items-baseline justify-between gap-2 border-b border-[var(--ws-border-subtle)] pb-3">
               <div className="space-y-0.5">
                 <div className="ws-kicker text-[var(--ws-ink-faint)]">
                   {t.briefing.coverEditionDeskLabel}
                 </div>
-                <h2 className="font-display text-[1.15rem] font-semibold text-[var(--ws-ink)]">
+                <h2 className="font-display text-[1.22rem] font-semibold text-[var(--ws-ink)]">
                   {t.briefing.executiveSummaryTitle}
                 </h2>
               </div>
-              <span className="font-mono-tabular text-[11px] text-[var(--ws-ink-faint)]">
+              <span className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
                 {edition.frontmatter.edition_date}
               </span>
             </div>
@@ -384,7 +384,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
               <button
                 type="button"
                 onClick={() => setSummaryExpanded((prev) => !prev)}
-                className="font-mono-tabular text-[11.5px] font-medium text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
+                className="text-[12.5px] font-semibold text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
               >
                 {summaryExpanded ? t.briefing.summaryCollapse : t.briefing.summaryExpand}
               </button>
@@ -392,7 +392,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
 
             {/* Real Edition Domain Footprint Micro-Strip */}
             {edition.signals.length > 0 && (
-              <div className="border-t border-[var(--ws-border-subtle)] pt-3.5 space-y-2.5">
+              <div className="border-t border-[var(--ws-border-subtle)] pt-4 space-y-2.5">
                 <div
                   role="img"
                   aria-label={domainSummaries
@@ -412,7 +412,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                     ) : null
                   )}
                 </div>
-                <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 font-mono-tabular text-[11px]">
+                <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1.5 text-[12px]">
                   {domainSummaries.map((d) => (
                     <button
                       key={d.domain}
@@ -424,10 +424,10 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                         aria-hidden="true"
                         className={`h-2 w-2 rounded-[1px] ${domainAccentRuleClass(d.domain)}`}
                       />
-                      <span className={domainAccentTextClass(d.domain)}>
+                      <span className={`font-medium ${domainAccentTextClass(d.domain)}`}>
                         {t.domains[d.domain]}
                       </span>
-                      <span className="font-semibold text-[var(--ws-ink)] tabular-nums">
+                      <span className="font-mono-tabular font-semibold text-[var(--ws-ink)]">
                         {d.total}
                       </span>
                     </button>
@@ -438,7 +438,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
           </div>
 
           {edition.executiveBriefing.caveats.length > 0 && (
-            <div className="ws-caution-panel p-5 space-y-2.5">
+            <div className="ws-caution-panel px-5 py-4.5 sm:px-6 space-y-2.5">
               <h3 className="ws-kicker text-[var(--ws-warn)]">
                 {t.briefing.editorialLimitationsTitle}
               </h3>
@@ -460,7 +460,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setLimitationsExpanded((prev) => !prev)}
-                  className="pt-0.5 font-mono-tabular text-[11.5px] font-medium text-[var(--ws-warn)] hover:underline underline-offset-4 cursor-pointer"
+                  className="pt-0.5 text-[12px] font-semibold text-[var(--ws-warn)] hover:underline underline-offset-4 cursor-pointer"
                 >
                   {limitationsExpanded
                     ? t.briefing.limitationsCollapse
@@ -486,10 +486,10 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
       {secondaryTopEntries.length > 0 && (
         <section className="ws-section-rule pt-8 space-y-8">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <h2 className="font-display text-[1.45rem] sm:text-[1.75rem] font-semibold tracking-[-0.018em] text-[var(--ws-ink)]">
+            <h2 className="font-display text-[1.5rem] sm:text-[1.8rem] font-semibold tracking-[-0.018em] text-[var(--ws-ink)]">
               {t.briefing.topSignalsTitle}
             </h2>
-            <span className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
+            <span className="text-[12px] text-[var(--ws-ink-muted)]">
               {t.briefing.topSignalsNote}
             </span>
           </div>
@@ -499,7 +499,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
             <article className="border-y border-[var(--ws-border-strong)] bg-[var(--ws-surface)] p-5 sm:p-7 lg:p-8 grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-10 items-start">
               <div className="lg:col-span-8 space-y-3.5 min-w-0">
                 <div className="flex flex-wrap items-center gap-3">
-                  <span className="font-display text-[1.5rem] font-semibold leading-none text-[var(--ws-ink-faint)] tabular-nums">
+                  <span className="font-display text-[1.55rem] font-semibold leading-none text-[var(--ws-ink-faint)] tabular-nums">
                     02
                   </span>
                   <span
@@ -511,7 +511,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                   <SignalMetaLine signal={featureDispatch.signal} lang={lang} compact />
                 </div>
 
-                <h3 className="font-display text-[1.4rem] sm:text-[1.75rem] font-semibold leading-[1.22] tracking-[-0.02em] text-[var(--ws-ink)] headline-balance">
+                <h3 className="font-display text-[1.45rem] sm:text-[1.8rem] font-semibold leading-[1.22] tracking-[-0.02em] text-[var(--ws-ink)] headline-balance">
                   <button
                     type="button"
                     onClick={() => onOpenSignal(featureDispatch.signal.signal_id)}
@@ -531,12 +531,12 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
 
               {/* Complementary Evidence Folio Rail for Dispatch #02 */}
               <div className="lg:col-span-4 lg:border-l lg:border-[var(--ws-border)] lg:pl-8 flex flex-col justify-between gap-5 h-full">
-                <dl className="grid grid-cols-2 lg:grid-cols-1 gap-3.5 text-xs">
+                <dl className="grid grid-cols-2 lg:grid-cols-1 gap-4 text-xs">
                   <div>
                     <dt className="ws-kicker text-[var(--ws-ink-faint)]">
                       {t.expanded.eventDateLabel}
                     </dt>
-                    <dd className="mt-1 font-mono-tabular font-semibold text-[var(--ws-ink)]">
+                    <dd className="mt-1 font-mono-tabular text-[12.5px] font-semibold text-[var(--ws-ink)]">
                       {formatEventDateRange(
                         featureDispatch.signal.event.start_date,
                         featureDispatch.signal.event.end_date,
@@ -548,7 +548,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                     <dt className="ws-kicker text-[var(--ws-ink-faint)]">
                       {t.expanded.geographyLabel}
                     </dt>
-                    <dd className="mt-1 font-medium text-[var(--ws-ink-secondary)]">
+                    <dd className="mt-1 text-[13px] font-medium text-[var(--ws-ink-secondary)]">
                       {featureDispatch.signal.event.geography.length > 0
                         ? featureDispatch.signal.event.geography.join(' · ')
                         : featureDispatch.signal.topic}
@@ -558,7 +558,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                     <dt className="ws-kicker text-[var(--ws-ink-faint)]">
                       {t.briefing.artworkClaimsLabel} / {t.briefing.artworkOriginsLabel}
                     </dt>
-                    <dd className="mt-1 font-mono-tabular text-[var(--ws-ink)]">
+                    <dd className="mt-1 font-mono-tabular text-[12.5px] text-[var(--ws-ink)]">
                       {t.metaLine.claims(featureDispatch.signal.claims.length)} ·{' '}
                       {t.metaLine.origins(featureDispatch.signal.independentOriginCount)}
                     </dd>
@@ -572,7 +572,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                   <button
                     type="button"
                     onClick={() => onOpenSignal(featureDispatch.signal.signal_id)}
-                    className="group inline-flex items-center gap-1.5 text-[13px] font-semibold text-[var(--ws-ink)] hover:text-[var(--ws-world)] transition-colors cursor-pointer shrink-0"
+                    className="group inline-flex items-center gap-1.5 text-[13px] font-semibold text-[var(--ws-ink)] hover:text-[var(--ws-editorial-accent)] transition-colors cursor-pointer shrink-0"
                   >
                     <span>{t.briefing.readDossier}</span>
                     <ArrowRight className="h-3.5 w-3.5 transition-transform duration-150 group-hover:translate-x-0.5" />
@@ -582,7 +582,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
             </article>
           )}
 
-          {/* Ranks #03+ — Multi-Column Editorial Dispatch Deck (Open Hairline Columns, No Cluttered Boxes) */}
+          {/* Ranks #03+ — Multi-Column Editorial Dispatch Deck (Open Hairline Columns, Clean Eyebrow + Single-Line Meta) */}
           {deckDispatches.length > 0 && (
             <div
               className={`grid grid-cols-1 gap-8 md:grid-cols-2 ${
@@ -594,31 +594,36 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                 return (
                   <article
                     key={signal.signal_id}
-                    className={`flex flex-col justify-between gap-4 border-t border-[var(--ws-border)] pt-5 ${
+                    className={`flex flex-col justify-between gap-4 border-t-[1.5px] border-[var(--ws-border-strong)] pt-5 ${
                       isLeadDeck ? 'md:pr-2' : ''
                     }`}
                   >
                     <div className="space-y-2.5">
-                      <div className="flex items-center justify-between gap-2 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
-                        <div className="flex items-center gap-2 font-semibold">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 min-w-0">
                           <span
                             aria-hidden="true"
-                            className={`inline-block h-[2.5px] w-4 ${domainAccentRuleClass(
+                            className={`inline-block h-[2.5px] w-4 shrink-0 ${domainAccentRuleClass(
                               signal.domain
                             )}`}
                           />
-                          <span className="text-[var(--ws-ink)]">
+                          <span className="font-mono-tabular text-[12px] font-semibold text-[var(--ws-ink)]">
                             {formatEditorialIndex(idx + 3)}
                           </span>
+                          <span
+                            className={`ws-kicker truncate ${domainAccentTextClass(
+                              signal.domain
+                            )}`}
+                          >
+                            {t.domains[signal.domain]}
+                          </span>
                         </div>
-                        <span className="text-[var(--ws-ink-faint)] truncate max-w-[190px]">
+                        <span className="font-mono-tabular text-[11px] text-[var(--ws-ink-faint)] truncate max-w-[140px] shrink-0">
                           {signal.event.geography[0] ?? signal.topic}
                         </span>
                       </div>
 
-                      <SignalMetaLine signal={signal} lang={lang} compact />
-
-                      <h3 className="font-display text-[1.15rem] sm:text-[1.24rem] font-semibold leading-[1.3] tracking-[-0.015em] text-[var(--ws-ink)] headline-balance">
+                      <h3 className="font-display text-[1.2rem] sm:text-[1.28rem] font-semibold leading-[1.3] tracking-[-0.015em] text-[var(--ws-ink)] headline-balance">
                         <button
                           type="button"
                           onClick={() => onOpenSignal(signal.signal_id)}
@@ -628,7 +633,9 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                         </button>
                       </h3>
 
-                      <div className="line-clamp-4 ws-prose">
+                      <SignalMetaLine signal={signal} lang={lang} compact hideDomain />
+
+                      <div className="line-clamp-4 ws-prose pt-0.5">
                         <SafeMarkdown
                           content={editorialSummary}
                           compact
@@ -638,13 +645,13 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                     </div>
 
                     <div className="flex items-center justify-between border-t border-[var(--ws-border-subtle)] pt-3 text-xs">
-                      <span className="font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                      <span className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
                         {t.metaLine.claims(signal.claims.length)}
                       </span>
                       <button
                         type="button"
                         onClick={() => onOpenSignal(signal.signal_id)}
-                        className="group inline-flex items-center gap-1.5 font-semibold text-[var(--ws-ink)] hover:text-[var(--ws-world)] transition-colors duration-150 cursor-pointer"
+                        className="group inline-flex items-center gap-1.5 font-semibold text-[var(--ws-ink)] hover:text-[var(--ws-editorial-accent)] transition-colors duration-150 cursor-pointer"
                       >
                         <span>{t.briefing.readDossier}</span>
                         <ArrowRight className="h-3.5 w-3.5 transition-transform duration-150 group-hover:translate-x-0.5" />
@@ -738,7 +745,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                       >
                         {t.domains[item.domain]}
                       </h3>
-                      <div className="font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                      <div className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
                         {t.briefing.domainShareLabel(item.sharePct)} ·{' '}
                         {t.masthead.independentOriginsCount(item.independentOrigins)}
                       </div>
@@ -784,7 +791,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                       />
                     )}
                   </div>
-                  <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5 font-mono-tabular text-[10.5px] text-[var(--ws-ink-muted)]">
+                  <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5 font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
                     <span>
                       {t.briefing.domainImp5Label}:{' '}
                       <strong className="text-[var(--ws-ink)]">{item.imp5Count}</strong>
@@ -798,7 +805,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                       <strong className="text-[var(--ws-ink)]">{item.impLowerCount}</strong>
                     </span>
                   </div>
-                  <div className="font-mono-tabular text-[10.5px] text-[var(--ws-ink-faint)]">
+                  <div className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-faint)]">
                     {t.masthead.claimsCount(item.totalClaims)}
                   </div>
                 </div>

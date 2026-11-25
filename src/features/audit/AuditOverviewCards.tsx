@@ -101,8 +101,8 @@ export const AuditOverviewCards: React.FC<AuditOverviewCardsProps> = ({
         {t.audit.overviewTitle}
       </h2>
 
-      {/* Asymmetric Editorial Verification Brief (Replaces 6 Uniform KPI Cards) */}
-      <div className="ws-editorial-sheet rounded-b-[var(--ws-radius-sm)] border-x border-[var(--ws-border)] grid grid-cols-1 lg:grid-cols-12 shadow-[var(--ws-shadow-sm)]">
+      {/* Asymmetric Editorial Verification Brief (Open Broadsheet Ledger) */}
+      <div className="ws-broadsheet-ledger grid grid-cols-1 lg:grid-cols-12">
         {/* Primary Provenance Hero Column (5 cols) */}
         <div className="lg:col-span-5 p-5 sm:p-7 flex flex-col justify-between gap-6 border-b lg:border-b-0 lg:border-r border-[var(--ws-border)]">
           <div className="grid grid-cols-2 gap-6 items-end">
@@ -110,7 +110,7 @@ export const AuditOverviewCards: React.FC<AuditOverviewCardsProps> = ({
               <div className="ws-kicker text-[var(--ws-conf-high)]">
                 {t.audit.overviewCards.independentOrigins}
               </div>
-              <div className="font-display text-[2.75rem] sm:text-[3.25rem] font-semibold leading-none tracking-[-0.03em] text-[var(--ws-conf-high)] tabular-nums">
+              <div className="font-display text-[2.75rem] sm:text-[3.35rem] font-semibold leading-none tracking-[-0.03em] text-[var(--ws-conf-high)] tabular-nums">
                 {summary.independentOriginCount}
               </div>
             </div>
@@ -119,46 +119,46 @@ export const AuditOverviewCards: React.FC<AuditOverviewCardsProps> = ({
               <div className="ws-kicker text-[var(--ws-ink-muted)]">
                 {t.audit.verificationRatioLabel}
               </div>
-              <div className="font-display text-[2rem] sm:text-[2.35rem] font-semibold leading-none tracking-[-0.02em] text-[var(--ws-ink)] tabular-nums">
+              <div className="font-display text-[2rem] sm:text-[2.4rem] font-semibold leading-none tracking-[-0.02em] text-[var(--ws-ink)] tabular-nums">
                 {qualifyingSharePct}%
               </div>
-              <div className="font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+              <div className="font-mono-tabular text-[12px] text-[var(--ws-ink-muted)]">
                 {summary.qualifyingRecords} / {summary.totalRecords}
               </div>
             </div>
           </div>
 
           {/* Quiet Secondary Audit Ledger */}
-          <dl className="grid grid-cols-2 gap-x-6 gap-y-3 border-t border-[var(--ws-border-subtle)] pt-4 text-xs">
+          <dl className="grid grid-cols-2 gap-x-6 gap-y-3.5 border-t border-[var(--ws-border-subtle)] pt-4">
             <div>
-              <dt className="text-[11.5px] text-[var(--ws-ink-muted)]">
+              <dt className="text-[12px] text-[var(--ws-ink-muted)]">
                 {t.audit.overviewCards.claimsAudited}
               </dt>
-              <dd className="mt-0.5 font-mono-tabular text-[15px] font-semibold text-[var(--ws-ink)]">
+              <dd className="mt-0.5 font-mono-tabular text-[16px] font-semibold text-[var(--ws-ink)]">
                 {totalClaims}
               </dd>
             </div>
             <div>
-              <dt className="text-[11.5px] text-[var(--ws-ink-muted)]">
+              <dt className="text-[12px] text-[var(--ws-ink-muted)]">
                 {t.audit.overviewCards.qualifyingRecords}
               </dt>
-              <dd className="mt-0.5 font-mono-tabular text-[15px] font-semibold text-[var(--ws-ink)]">
+              <dd className="mt-0.5 font-mono-tabular text-[16px] font-semibold text-[var(--ws-ink)]">
                 {summary.qualifyingRecords}
               </dd>
             </div>
             <div>
-              <dt className="text-[11.5px] text-[var(--ws-ink-muted)]">
+              <dt className="text-[12px] text-[var(--ws-ink-muted)]">
                 {t.audit.overviewCards.primaryAndResearch}
               </dt>
-              <dd className="mt-0.5 font-mono-tabular text-[15px] font-semibold text-[var(--ws-ai)]">
+              <dd className="mt-0.5 font-mono-tabular text-[16px] font-semibold text-[var(--ws-ai)]">
                 {primaryResearchCount}
               </dd>
             </div>
             <div>
-              <dt className="text-[11.5px] text-[var(--ws-ink-muted)]">
+              <dt className="text-[12px] text-[var(--ws-ink-muted)]">
                 {t.audit.overviewCards.excludedRecords}
               </dt>
-              <dd className="mt-0.5 font-mono-tabular text-[15px] font-semibold text-[var(--ws-ink-secondary)]">
+              <dd className="mt-0.5 font-mono-tabular text-[16px] font-semibold text-[var(--ws-ink-secondary)]">
                 {summary.excludedRecords}
               </dd>
             </div>
@@ -166,7 +166,7 @@ export const AuditOverviewCards: React.FC<AuditOverviewCardsProps> = ({
         </div>
 
         {/* Proportional Composition & Source Class Analysis Column (7 cols) */}
-        <div className="lg:col-span-7 p-5 sm:p-7 flex flex-col justify-between gap-6 bg-[var(--ws-surface-elevated)]/65">
+        <div className="lg:col-span-7 p-5 sm:p-7 flex flex-col justify-between gap-6 bg-[var(--ws-surface-elevated)]/45">
           {summary.totalRecords > 0 && (
             <>
               {/* Derived Record Independence Composition */}
@@ -197,7 +197,7 @@ export const AuditOverviewCards: React.FC<AuditOverviewCardsProps> = ({
                   ))}
                 </div>
 
-                <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 font-mono-tabular text-[11.5px]">
+                <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[12px]">
                   {segments.map((seg) => (
                     <div key={seg.key} className="inline-flex items-center gap-2">
                       <span
@@ -205,9 +205,9 @@ export const AuditOverviewCards: React.FC<AuditOverviewCardsProps> = ({
                         className={`h-2.5 w-2.5 rounded-[1px] ${seg.barClass} shrink-0`}
                       />
                       <span className="text-[var(--ws-ink-secondary)]">
-                        {seg.label}:
+                        {seg.label}
                       </span>
-                      <span className="font-semibold text-[var(--ws-ink)]">
+                      <span className="font-mono-tabular font-semibold text-[var(--ws-ink)]">
                         {seg.count} ({seg.pct}%)
                       </span>
                     </div>
@@ -217,11 +217,11 @@ export const AuditOverviewCards: React.FC<AuditOverviewCardsProps> = ({
 
               {/* Source Class Breakdown */}
               <div className="border-t border-[var(--ws-border)] pt-5 space-y-3">
-                <div className="flex flex-wrap items-baseline justify-between gap-2 font-mono-tabular text-[11px]">
+                <div className="flex flex-wrap items-baseline justify-between gap-2 text-[12px]">
                   <span className="ws-kicker text-[var(--ws-ink-muted)]">
                     {t.audit.sourceBreakdownTitle}
                   </span>
-                  <span className="text-[var(--ws-ink-muted)]">
+                  <span className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
                     {t.expanded.unregisteredCandidate}: {summary.unregisteredRecords}
                     {summary.unassignedRecords.length > 0 && (
                       <>
@@ -251,7 +251,7 @@ export const AuditOverviewCards: React.FC<AuditOverviewCardsProps> = ({
                   ))}
                 </div>
 
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px] text-[var(--ws-ink-muted)]">
                   {classBars.map((c) => (
                     <span
                       key={c.key}
@@ -261,8 +261,8 @@ export const AuditOverviewCards: React.FC<AuditOverviewCardsProps> = ({
                         aria-hidden="true"
                         className={`h-2 w-2 rounded-[1px] ${c.barClass} shrink-0`}
                       />
-                      <span>{c.label}:</span>
-                      <span className="font-semibold text-[var(--ws-ink)]">
+                      <span>{c.label}</span>
+                      <span className="font-mono-tabular font-semibold text-[var(--ws-ink)]">
                         {c.count}
                       </span>
                     </span>

@@ -215,17 +215,17 @@ export const ArchiveDrawer: React.FC<ArchiveDrawerProps> = ({
           )}
 
           {/* Reading Preferences: Appearance & Interface Language */}
-          <section className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] p-4">
-            <div className="grid grid-cols-2 gap-3.5">
+          <section className="border-b border-[var(--ws-border)] pb-5">
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <div className="mb-2 font-mono-tabular text-[10.5px] font-semibold uppercase tracking-[0.12em] text-[var(--ws-ink-muted)]">
+                <div className="mb-2 ws-kicker text-[var(--ws-ink-muted)]">
                   {t.archive.appearance}
                 </div>
                 <div className="grid grid-cols-2 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface-subtle)] p-0.5">
                   <button
                     type="button"
                     onClick={() => onChangeTheme('light')}
-                    className={`inline-flex min-h-[32px] items-center justify-center gap-1.5 rounded-[3px] px-2 py-1 text-xs font-medium transition-colors cursor-pointer ${
+                    className={`inline-flex min-h-[34px] items-center justify-center gap-1.5 rounded-[3px] px-2 py-1 text-xs font-medium transition-colors cursor-pointer ${
                       theme === 'light'
                         ? 'bg-[var(--ws-surface)] text-[var(--ws-ink)] shadow-xs font-semibold'
                         : 'text-[var(--ws-ink-muted)] hover:text-[var(--ws-ink)]'
@@ -237,7 +237,7 @@ export const ArchiveDrawer: React.FC<ArchiveDrawerProps> = ({
                   <button
                     type="button"
                     onClick={() => onChangeTheme('dark')}
-                    className={`inline-flex min-h-[32px] items-center justify-center gap-1.5 rounded-[3px] px-2 py-1 text-xs font-medium transition-colors cursor-pointer ${
+                    className={`inline-flex min-h-[34px] items-center justify-center gap-1.5 rounded-[3px] px-2 py-1 text-xs font-medium transition-colors cursor-pointer ${
                       theme === 'dark'
                         ? 'bg-[var(--ws-surface)] text-[var(--ws-ink)] shadow-xs font-semibold'
                         : 'text-[var(--ws-ink-muted)] hover:text-[var(--ws-ink)]'
@@ -250,14 +250,14 @@ export const ArchiveDrawer: React.FC<ArchiveDrawerProps> = ({
               </div>
 
               <div>
-                <div className="mb-2 font-mono-tabular text-[10.5px] font-semibold uppercase tracking-[0.12em] text-[var(--ws-ink-muted)]">
+                <div className="mb-2 ws-kicker text-[var(--ws-ink-muted)]">
                   {t.archive.interfaceLanguage}
                 </div>
                 <div className="grid grid-cols-2 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface-subtle)] p-0.5">
                   <button
                     type="button"
                     onClick={() => onChangeLang('zh-CN')}
-                    className={`min-h-[32px] rounded-[3px] px-2 py-1 text-xs font-medium transition-colors cursor-pointer ${
+                    className={`min-h-[34px] rounded-[3px] px-2 py-1 text-xs font-medium transition-colors cursor-pointer ${
                       lang === 'zh-CN'
                         ? 'bg-[var(--ws-surface)] text-[var(--ws-ink)] shadow-xs font-semibold'
                         : 'text-[var(--ws-ink-muted)] hover:text-[var(--ws-ink)]'
@@ -268,7 +268,7 @@ export const ArchiveDrawer: React.FC<ArchiveDrawerProps> = ({
                   <button
                     type="button"
                     onClick={() => onChangeLang('en')}
-                    className={`min-h-[32px] rounded-[3px] px-2 py-1 text-xs font-medium transition-colors cursor-pointer ${
+                    className={`min-h-[34px] rounded-[3px] px-2 py-1 text-xs font-medium transition-colors cursor-pointer ${
                       lang === 'en'
                         ? 'bg-[var(--ws-surface)] text-[var(--ws-ink)] shadow-xs font-semibold'
                         : 'text-[var(--ws-ink-muted)] hover:text-[var(--ws-ink)]'
@@ -283,8 +283,8 @@ export const ArchiveDrawer: React.FC<ArchiveDrawerProps> = ({
 
           {/* Archive Index & Same-Day Refresh */}
           <section className="space-y-3.5">
-            <div className="flex items-center justify-between gap-2 border-b border-[var(--ws-border)] pb-2.5">
-              <div className="font-mono-tabular text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--ws-ink-muted)]">
+            <div className="flex items-center justify-between gap-2 pb-1">
+              <div className="ws-kicker text-[var(--ws-ink-muted)]">
                 {t.archive.editionsCount(editions.length)}
               </div>
               <button
@@ -374,15 +374,15 @@ export const ArchiveDrawer: React.FC<ArchiveDrawerProps> = ({
             )}
 
             {editions.length === 0 ? (
-              <p className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] p-4 text-sm text-[var(--ws-ink-muted)]">
+              <p className="border-y border-[var(--ws-border)] bg-[var(--ws-surface)] p-4 text-sm text-[var(--ws-ink-muted)]">
                 {t.archive.emptyArchive}
               </p>
             ) : filteredEditions.length === 0 ? (
-              <p className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] p-4 text-xs text-[var(--ws-ink-muted)]">
+              <p className="border-y border-[var(--ws-border)] bg-[var(--ws-surface)] p-4 text-xs text-[var(--ws-ink-muted)]">
                 {t.archive.noMatchingEditions}
               </p>
             ) : (
-              <ul className="space-y-2.5">
+              <ul className="border-y border-[var(--ws-border-strong)] bg-[var(--ws-surface)] divide-y divide-[var(--ws-border-subtle)]">
                 {filteredEditions.map((entry) => {
                   const isSelected = !isLocalPreview && entry.date === selectedDate;
                   const isLatest = entry.date === latestDate;
@@ -394,10 +394,10 @@ export const ArchiveDrawer: React.FC<ArchiveDrawerProps> = ({
                           onSelectEdition(entry);
                           onClose();
                         }}
-                        className={`relative w-full overflow-hidden rounded-[var(--ws-radius-sm)] border p-4 text-left transition-colors cursor-pointer ${
+                        className={`relative w-full px-4 py-4 text-left transition-colors cursor-pointer ${
                           isSelected
-                            ? 'border-[var(--ws-rule-editorial)] bg-[var(--ws-surface)] shadow-[var(--ws-shadow-sm)]'
-                            : 'border-[var(--ws-border)] bg-[var(--ws-surface)]/75 hover:border-[var(--ws-border-strong)] hover:bg-[var(--ws-surface)]'
+                            ? 'bg-[var(--ws-surface-elevated)]'
+                            : 'hover:bg-[var(--ws-surface-hover)]/70'
                         }`}
                       >
                         {isSelected && (
@@ -407,11 +407,11 @@ export const ArchiveDrawer: React.FC<ArchiveDrawerProps> = ({
                           />
                         )}
                         <div className="flex items-baseline justify-between gap-2">
-                          <span className="font-display text-[1.02rem] font-semibold text-[var(--ws-ink)]">
+                          <span className="font-display text-[1.06rem] font-semibold tracking-[-0.01em] text-[var(--ws-ink)]">
                             {formatEditionDate(entry.date, lang)}
                           </span>
                           <span
-                            className={`font-mono-tabular text-[11px] font-semibold shrink-0 ${
+                            className={`text-[11.5px] font-semibold shrink-0 ${
                               isLatest
                                 ? 'text-[var(--ws-editorial-accent)]'
                                 : 'text-[var(--ws-ink-muted)]'
@@ -421,13 +421,13 @@ export const ArchiveDrawer: React.FC<ArchiveDrawerProps> = ({
                             {t.editionStatus[entry.status] ?? entry.status}
                           </span>
                         </div>
-                        <div className="mt-1 flex items-center gap-2 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                        <div className="mt-1 flex items-center gap-2 font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
                           <span>{entry.date}</span>
                           <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">·</span>
                           <span>{formatCompactTimestamp(entry.updated_at, lang)}</span>
                         </div>
                         {entry.summary && (
-                          <p className="mt-2.5 line-clamp-3 text-[12.5px] leading-[1.6] text-[var(--ws-ink-secondary)]">
+                          <p className="mt-2 line-clamp-3 text-[12.5px] leading-[1.6] text-[var(--ws-ink-secondary)]">
                             {entry.summary}
                           </p>
                         )}
@@ -441,7 +441,7 @@ export const ArchiveDrawer: React.FC<ArchiveDrawerProps> = ({
 
           {/* Secondary Local Verification Utility */}
           <section className="border-t border-[var(--ws-border)] pt-5 space-y-2.5">
-            <div className="font-mono-tabular text-[10.5px] font-semibold uppercase tracking-[0.12em] text-[var(--ws-ink-muted)]">
+            <div className="ws-kicker text-[var(--ws-ink-muted)]">
               {t.archive.developerTools}
             </div>
             <p className="text-[12px] leading-relaxed text-[var(--ws-ink-muted)]">

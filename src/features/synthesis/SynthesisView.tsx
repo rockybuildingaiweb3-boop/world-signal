@@ -225,13 +225,13 @@ export const SynthesisView: React.FC<SynthesisViewProps> = ({
             {signalsWithHorizons.map((sig) => (
               <div
                 key={sig.signal_id}
-                className="ws-editorial-sheet rounded-b-[var(--ws-radius-sm)] border-x border-[var(--ws-border)] overflow-hidden shadow-[var(--ws-shadow-sm)]"
+                className="ws-broadsheet-ledger overflow-hidden"
               >
                 <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[var(--ws-border)] bg-[var(--ws-surface-elevated)] px-5 py-3.5">
                   <button
                     type="button"
                     onClick={() => onOpenSignal(sig.signal_id)}
-                    className="font-display text-[1.1rem] font-semibold text-[var(--ws-ink)] hover:text-[var(--ws-world)] text-left cursor-pointer"
+                    className="font-display text-[1.12rem] font-semibold text-[var(--ws-ink)] hover:text-[var(--ws-world)] text-left cursor-pointer headline-balance"
                   >
                     {sig.headline}
                   </button>

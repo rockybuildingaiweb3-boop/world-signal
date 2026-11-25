@@ -91,13 +91,13 @@ export const SignalDossierHeader: React.FC<SignalDossierHeaderProps> = ({
         <SignalMetaLine signal={signal} lang={lang} showClaims />
       </div>
 
-      {/* Hairline Provenance Strip */}
-      <dl className="grid grid-cols-2 gap-x-6 gap-y-3.5 border-y border-[var(--ws-border)] py-3.5 sm:grid-cols-4 text-xs">
+      {/* Hairline Provenance Strip (2x2 on compact/1024px to prevent timestamp splits, 4-col on xl+) */}
+      <dl className="grid grid-cols-2 gap-x-6 gap-y-4 border-y border-[var(--ws-border)] py-4 xl:grid-cols-4 text-xs">
         <div className="min-w-0">
           <dt className="ws-kicker text-[var(--ws-ink-faint)]">
             {t.expanded.eventDateLabel}
           </dt>
-          <dd className="mt-1 font-mono-tabular font-semibold text-[var(--ws-ink)] break-words">
+          <dd className="mt-1 font-mono-tabular text-[12.5px] font-semibold text-[var(--ws-ink)] whitespace-nowrap">
             {formatEventDateRange(
               signal.event.start_date,
               signal.event.end_date,
@@ -106,29 +106,29 @@ export const SignalDossierHeader: React.FC<SignalDossierHeaderProps> = ({
           </dd>
         </div>
 
-        <div className="min-w-0 sm:border-l sm:border-[var(--ws-border-subtle)] sm:pl-4">
+        <div className="min-w-0 border-l border-[var(--ws-border-subtle)] pl-4">
           <dt className="ws-kicker text-[var(--ws-ink-faint)]">
             {t.expanded.updatedLabel}
           </dt>
-          <dd className="mt-1 font-mono-tabular font-medium text-[var(--ws-ink)] break-words">
+          <dd className="mt-1 font-mono-tabular text-[12.5px] font-medium text-[var(--ws-ink)] whitespace-nowrap">
             {formatCompactTimestamp(signal.updated_at, lang)}
           </dd>
         </div>
 
-        <div className="min-w-0 sm:border-l sm:border-[var(--ws-border-subtle)] sm:pl-4">
+        <div className="min-w-0 xl:border-l xl:border-[var(--ws-border-subtle)] xl:pl-4">
           <dt className="ws-kicker text-[var(--ws-ink-faint)]">
             {t.expanded.topicLabel}
           </dt>
-          <dd className="mt-1 font-medium text-[var(--ws-ink)] break-words">
+          <dd className="mt-1 text-[13px] font-medium text-[var(--ws-ink)] break-words">
             {signal.topic}
           </dd>
         </div>
 
-        <div className="min-w-0 sm:border-l sm:border-[var(--ws-border-subtle)] sm:pl-4">
+        <div className="min-w-0 border-l border-[var(--ws-border-subtle)] pl-4">
           <dt className="ws-kicker text-[var(--ws-ink-faint)]">
             {t.expanded.geographyLabel}
           </dt>
-          <dd className="mt-1 font-medium text-[var(--ws-ink)] break-words">
+          <dd className="mt-1 text-[13px] font-medium text-[var(--ws-ink)] break-words">
             {signal.event.geography.length > 0
               ? signal.event.geography.join(' · ')
               : '—'}

@@ -264,8 +264,8 @@ export const DailyDeltaSection: React.FC<DailyDeltaSectionProps> = ({
         </div>
       )}
 
-      {/* Editorial Intelligence Sheet Container */}
-      <div className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] overflow-hidden shadow-[var(--ws-shadow-sm)]">
+      {/* Open Broadsheet Intelligence Ledger Container */}
+      <div className="ws-broadsheet-ledger overflow-hidden">
         {/* Real Proportional Turnover Bar across New / Updated / Unchanged / Omitted */}
         {(() => {
           const totalDelta =
@@ -332,7 +332,7 @@ export const DailyDeltaSection: React.FC<DailyDeltaSectionProps> = ({
                 aria-selected={isActive}
                 data-testid={`delta-tab-${category}`}
                 onClick={() => handleSelectCategory(category)}
-                className={`relative text-left px-3.5 py-3 sm:px-5 sm:py-4 transition-colors duration-150 cursor-pointer ${borderClasses} ${
+                className={`relative text-left px-4 py-3.5 sm:px-5 sm:py-4 transition-colors duration-150 cursor-pointer ${borderClasses} ${
                   isActive
                     ? 'bg-[var(--ws-surface)]'
                     : 'hover:bg-[var(--ws-surface-hover)]/75'
@@ -346,7 +346,7 @@ export const DailyDeltaSection: React.FC<DailyDeltaSectionProps> = ({
                 )}
                 <div className="flex items-baseline justify-between gap-2">
                   <span
-                    className={`font-mono-tabular text-[11px] font-semibold uppercase tracking-[0.09em] ${
+                    className={`ws-kicker ${
                       isActive
                         ? categoryAccentClass(category)
                         : 'text-[var(--ws-ink-muted)]'
@@ -356,14 +356,14 @@ export const DailyDeltaSection: React.FC<DailyDeltaSectionProps> = ({
                   </span>
                   <span
                     data-testid={`delta-count-${category}`}
-                    className={`font-display text-[1.45rem] sm:text-[1.65rem] font-semibold leading-none tabular-nums ${
+                    className={`font-display text-[1.5rem] sm:text-[1.75rem] font-semibold leading-none tabular-nums ${
                       isActive ? 'text-[var(--ws-ink)]' : 'text-[var(--ws-ink-secondary)]'
                     }`}
                   >
                     {count}
                   </span>
                 </div>
-                <p className="mt-1.5 hidden sm:block text-[11.5px] leading-snug text-[var(--ws-ink-muted)]">
+                <p className="mt-1.5 hidden sm:block text-[12px] leading-snug text-[var(--ws-ink-muted)]">
                   {t.dailyDelta.categoryDescriptions[category]}
                 </p>
               </button>
@@ -372,78 +372,77 @@ export const DailyDeltaSection: React.FC<DailyDeltaSectionProps> = ({
         </div>
 
         <div className="px-4 py-4 sm:px-6 sm:py-5">
-
-      {/* Focused Category Signal List */}
-      <div role="tabpanel" className="space-y-4">
-        {/* Explicit Editorial Safeguard Banner for OMITTED Category */}
-        {activeCategory === 'omitted' && (
-          <div
-            data-testid="delta-omitted-safeguard"
-            className="ws-caution-panel px-4 py-3 space-y-1"
-          >
-            <div className="ws-kicker text-[var(--ws-warn)]">
-              {t.dailyDelta.omittedNoticeTitle}
-            </div>
-            <p className="text-[12.5px] leading-relaxed text-[var(--ws-ink-secondary)]">
-              {t.dailyDelta.omittedNoticeBody(state.previousDate, state.currentDate)}
-            </p>
-          </div>
-        )}
-
-        {items.length === 0 ? (
-          <p className="py-4 text-[13px] text-[var(--ws-ink-muted)]">
-            {t.dailyDelta.emptyCategory}
-          </p>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8">
-              {visibleItems.map((change) => (
-                <DeltaSignalRow
-                  key={change.signalId}
-                  change={change}
-                  currentDate={state.currentDate}
-                  previousDate={state.previousDate}
-                  lang={lang}
-                  isExpanded={expandedSignalIds.has(change.signalId)}
-                  onToggleEvidence={() => toggleEvidenceDisclosure(change.signalId)}
-                  onOpenSignalInEdition={onOpenSignalInEdition}
-                />
-              ))}
-            </div>
-
-            {hasMoreItems && (
-              <div className="pt-1 flex items-center justify-between border-t border-[var(--ws-border-subtle)]">
-                <button
-                  type="button"
-                  data-testid="delta-toggle-all"
-                  onClick={() => setShowAllInCategory((prev) => !prev)}
-                  className="inline-flex min-h-[36px] items-center gap-1.5 font-mono-tabular text-[12px] font-medium text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
-                >
-                  {showAllInCategory ? (
-                    <>
-                      <span>{t.dailyDelta.showFewerCategory}</span>
-                      <ChevronUp className="h-3.5 w-3.5" />
-                    </>
-                  ) : (
-                    <>
-                      <span>
-                        {t.dailyDelta.showAllCategory(
-                          items.length,
-                          t.dailyDelta.categories[activeCategory]
-                        )}
-                      </span>
-                      <ChevronDown className="h-3.5 w-3.5" />
-                    </>
-                  )}
-                </button>
-                <span className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-faint)]">
-                  {visibleItems.length} / {items.length}
-                </span>
+          {/* Focused Category Signal List */}
+          <div role="tabpanel" className="space-y-4">
+            {/* Explicit Editorial Safeguard Banner for OMITTED Category */}
+            {activeCategory === 'omitted' && (
+              <div
+                data-testid="delta-omitted-safeguard"
+                className="ws-caution-panel px-4 py-3 space-y-1"
+              >
+                <div className="ws-kicker text-[var(--ws-warn)]">
+                  {t.dailyDelta.omittedNoticeTitle}
+                </div>
+                <p className="text-[12.5px] leading-relaxed text-[var(--ws-ink-secondary)]">
+                  {t.dailyDelta.omittedNoticeBody(state.previousDate, state.currentDate)}
+                </p>
               </div>
             )}
-          </>
-        )}
-      </div>
+
+            {items.length === 0 ? (
+              <p className="py-4 text-[13px] text-[var(--ws-ink-muted)]">
+                {t.dailyDelta.emptyCategory}
+              </p>
+            ) : (
+              <>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-9">
+                  {visibleItems.map((change) => (
+                    <DeltaSignalRow
+                      key={change.signalId}
+                      change={change}
+                      currentDate={state.currentDate}
+                      previousDate={state.previousDate}
+                      lang={lang}
+                      isExpanded={expandedSignalIds.has(change.signalId)}
+                      onToggleEvidence={() => toggleEvidenceDisclosure(change.signalId)}
+                      onOpenSignalInEdition={onOpenSignalInEdition}
+                    />
+                  ))}
+                </div>
+
+                {hasMoreItems && (
+                  <div className="pt-2 flex items-center justify-between border-t border-[var(--ws-border-subtle)]">
+                    <button
+                      type="button"
+                      data-testid="delta-toggle-all"
+                      onClick={() => setShowAllInCategory((prev) => !prev)}
+                      className="inline-flex min-h-[36px] items-center gap-1.5 text-[12.5px] font-semibold text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
+                    >
+                      {showAllInCategory ? (
+                        <>
+                          <span>{t.dailyDelta.showFewerCategory}</span>
+                          <ChevronUp className="h-3.5 w-3.5" />
+                        </>
+                      ) : (
+                        <>
+                          <span>
+                            {t.dailyDelta.showAllCategory(
+                              items.length,
+                              t.dailyDelta.categories[activeCategory]
+                            )}
+                          </span>
+                          <ChevronDown className="h-3.5 w-3.5" />
+                        </>
+                      )}
+                    </button>
+                    <span className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-faint)]">
+                      {visibleItems.length} / {items.length}
+                    </span>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
         </div>
       </div>
     </section>

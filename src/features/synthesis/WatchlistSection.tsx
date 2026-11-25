@@ -83,10 +83,10 @@ export const WatchlistSection: React.FC<WatchlistSectionProps> = ({
       {rows.length > 0 ? (
         <>
           {/* Desktop / Tablet Institutional Ledger Table */}
-          <div className="hidden md:block ws-editorial-sheet rounded-b-[var(--ws-radius-sm)] border-x border-[var(--ws-border)] overflow-hidden">
+          <div className="hidden md:block ws-broadsheet-ledger overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full border-collapse text-left text-sm">
-                <thead className="bg-[var(--ws-surface-elevated)] font-mono-tabular text-[11px] uppercase tracking-[0.1em] text-[var(--ws-ink-muted)]">
+                <thead className="bg-[var(--ws-surface-elevated)] text-[11.5px] font-semibold tracking-[0.06em] text-[var(--ws-ink-muted)]">
                   <tr>
                     <th className="border-b border-[var(--ws-border-strong)] px-5 py-3.5 w-[24%]">
                       {t.synthesis.watchlistCols.indicator}

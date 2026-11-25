@@ -226,7 +226,7 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
   return (
     <div className="pb-16">
       {/* Split-Pane Editorial Research & Monograph Dossier Workspace */}
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[332px_minmax(0,1fr)] xl:grid-cols-[352px_minmax(0,1fr)] lg:items-start">
+      <div className="grid grid-cols-1 gap-7 lg:grid-cols-[292px_minmax(0,1fr)] xl:grid-cols-[336px_minmax(0,1fr)] lg:items-start">
         <SignalFilterSidebar
           totalCount={edition.signals.length}
           filteredSignals={filteredSignals}
@@ -260,7 +260,7 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
           </div>
 
           {!activeSignal ? (
-            <div className="ws-editorial-sheet rounded-b-[var(--ws-radius-sm)] border-x border-[var(--ws-border)] p-10 text-center space-y-3">
+            <div className="ws-editorial-sheet p-10 text-center space-y-3">
               <h2 className="font-display text-xl font-semibold text-[var(--ws-ink)]">
                 {t.expanded.noMatchesTitle}
               </h2>
@@ -269,7 +269,7 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
               </p>
             </div>
           ) : (
-            <article className="bg-[var(--ws-surface)] border-y lg:border border-[var(--ws-border)] lg:rounded-[var(--ws-radius-sm)] -mx-4 px-4 py-6 sm:mx-0 sm:px-8 sm:py-9 lg:px-12 lg:py-11 space-y-10 shadow-[var(--ws-shadow-sm)]">
+            <article className="ws-editorial-sheet -mx-4 px-4 py-6 sm:mx-0 sm:px-8 sm:py-9 lg:px-10 lg:py-10 xl:px-12 xl:py-11 space-y-10">
               <SignalDossierHeader
                 signal={activeSignal}
                 lang={lang}
@@ -280,7 +280,7 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
               />
 
               {/* 3-Zone Monograph Reading Canvas on xl+: Long-Form Editorial Column + Sticky Editorial Margin Rail */}
-              <div className="xl:grid xl:grid-cols-[minmax(0,66ch)_214px] xl:gap-10 xl:items-start">
+              <div className="xl:grid xl:grid-cols-[minmax(0,66ch)_210px] xl:gap-10 xl:items-start">
                 <div className="min-w-0 max-w-[68ch] space-y-10">
                   {/* PART I · FACTUAL RECORD & CHRONOLOGY */}
                   {(activeSignal.sections.whatHappened ||
@@ -301,7 +301,7 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
                           <h3 className="ws-kicker text-[var(--ws-ink-muted)]">
                             {t.expanded.sections.whatHappened}
                           </h3>
-                          <div className="ws-prose text-[16px] sm:text-[16.75px] text-[var(--ws-ink)]">
+                          <div className="ws-prose text-[16px] sm:text-[17px] text-[var(--ws-ink)]">
                             <SafeMarkdown
                               content={activeSignal.sections.whatHappened}
                               className="text-[var(--ws-ink)]"
@@ -313,13 +313,13 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
                         </section>
                       )}
 
-                      {/* Layer 2: Verified Facts — Crisp Archival Dossier Box */}
+                      {/* Layer 2: Verified Facts — Open Hairline Archival Ledger (De-boxified) */}
                       {activeSignal.sections.verifiedFacts && (
                         <section
                           id="sec-verified-facts"
-                          className="scroll-mt-24 ws-folio-note border-t-2 border-t-[var(--ws-rule-editorial)] px-5 py-5 sm:px-6 space-y-3"
+                          className="scroll-mt-24 border-t-[1.5px] border-t-[var(--ws-rule-editorial)] border-b border-b-[var(--ws-border)] bg-[var(--ws-surface-elevated)] px-5 py-5 sm:px-6 space-y-3"
                         >
-                          <h3 className="font-display text-[1.15rem] font-semibold text-[var(--ws-ink)]">
+                          <h3 className="font-display text-[1.18rem] font-semibold text-[var(--ws-ink)]">
                             {t.expanded.sections.verifiedFacts}
                           </h3>
                           <div className="ws-prose">
@@ -338,7 +338,7 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
                         activeSignal.timelineEvents.length > 0) && (
                         <section
                           id="sec-timeline"
-                          className="scroll-mt-24 space-y-4 border-t border-[var(--ws-border-subtle)] pt-7"
+                          className="scroll-mt-24 space-y-4 pt-2"
                         >
                           <h3 className="font-display text-[1.25rem] font-semibold text-[var(--ws-ink)]">
                             {t.expanded.sections.timeline}
@@ -373,7 +373,7 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
                           <h3 className="ws-kicker text-[var(--ws-editorial-accent)]">
                             {t.expanded.sections.whyItMatters}
                           </h3>
-                          <div className="ws-prose text-[15.5px] text-[var(--ws-ink)]">
+                          <div className="ws-prose text-[15.75px] text-[var(--ws-ink)]">
                             <SafeMarkdown
                               content={activeSignal.sections.whyItMatters}
                               className="text-[var(--ws-ink)]"
@@ -385,10 +385,10 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
                         </section>
                       )}
 
-                      {/* Layer 5: Source Perspectives — Multi-Voice Attribution Band */}
+                      {/* Layer 5: Source Perspectives — Open Hairline Attribution Band (De-boxified) */}
                       {activeSignal.sections.sourcePerspectives && (
-                        <section className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-canvas)]/55 px-5 py-4.5 sm:px-6 space-y-3">
-                          <h3 className="font-display text-[1.15rem] font-semibold text-[var(--ws-ink)]">
+                        <section className="border-y border-[var(--ws-border)] py-5 space-y-3">
+                          <h3 className="font-display text-[1.18rem] font-semibold text-[var(--ws-ink)]">
                             {t.expanded.sections.sourcePerspectives}
                           </h3>
                           <div className="ws-prose">
@@ -409,7 +409,7 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
                           id="sec-analysis"
                           className="scroll-mt-24 space-y-3 pt-1"
                         >
-                          <h3 className="font-display text-[1.3rem] font-semibold text-[var(--ws-ink)]">
+                          <h3 className="font-display text-[1.35rem] font-semibold text-[var(--ws-ink)]">
                             {t.expanded.sections.analysis}
                           </h3>
                           <div className="ws-prose">
