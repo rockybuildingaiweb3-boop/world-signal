@@ -1,8 +1,17 @@
 {
   "schema_version": 1,
-  "latest_edition": "2026-11-24",
-  "generated_at": "2026-11-25T09:34:36.931Z",
+  "latest_edition": "2026-11-25",
+  "generated_at": "2026-11-25T16:42:35.600Z",
   "editions": [
+    {
+      "date": "2026-11-25",
+      "title": "WORLD SIGNAL — Daily Intelligence Briefing",
+      "path": "/editions/2026/11/2026-11-25.md",
+      "updated_at": "2026-11-25T08:39:21-08:00",
+      "status": "draft",
+      "language": "zh-CN",
+      "summary": "2026 年 11 月 25 日 08:00 晨间版：301 关税正式提议（14 个伙伴，中国 20%）、10 月 PCE 同比 3.8% 与三季度 GDP 上修至 4.3%、华为 10 项罪名成立、周三盘前 AI 抛售再起；信号总数 53 个。"
+    },
     {
       "date": "2026-11-24",
       "title": "WORLD SIGNAL — Daily Intelligence Briefing",
