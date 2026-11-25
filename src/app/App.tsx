@@ -40,6 +40,7 @@ export const App: React.FC = () => {
   const [archiveOpen, setArchiveOpen] = useState<boolean>(false);
   const [localModalOpen, setLocalModalOpen] = useState<boolean>(false);
   const skipNextUrlSyncRef = useRef(false);
+  const hasHydratedUrlRef = useRef(false);
 
   const archive = useArchive(initialUrl.edition);
   const {
@@ -70,14 +71,20 @@ export const App: React.FC = () => {
     // popstate already changed the address bar; state restoration must not create a new entry.
     if (skipNextUrlSyncRef.current) {
       skipNextUrlSyncRef.current = false;
+      hasHydratedUrlRef.current = true;
       return;
     }
 
-    const editionDate = edition?.isLocalPreview
+    const isLocalPreview = Boolean(edition?.isLocalPreview);
+    const editionDate = isLocalPreview
       ? null
       : edition?.frontmatter.edition_date ??
         activeEntry?.date ??
         null;
+
+    const historyMode: 'push' | 'replace' =
+      !hasHydratedUrlRef.current || isLocalPreview ? 'replace' : 'push';
+    hasHydratedUrlRef.current = true;
 
     syncUrlState(
       {
@@ -85,7 +92,8 @@ export const App: React.FC = () => {
         view: activeView,
         signal: activeView === 'expanded' ? selectedSignalId : null,
       },
-      'push'
+      historyMode,
+      { isLocalPreview }
     );
   }, [
     activeView,
@@ -104,13 +112,14 @@ export const App: React.FC = () => {
       setActiveView(next.view);
       setSelectedSignalId(next.signal);
       setMobileShowDetail(Boolean(next.signal));
-      if (next.edition && next.edition !== activeEntry?.date) {
-        void selectEditionByDate(next.edition);
+      const targetEdition = next.edition ?? index?.latest_edition ?? null;
+      if (targetEdition && targetEdition !== activeEntry?.date) {
+        void selectEditionByDate(targetEdition);
       }
     };
     window.addEventListener('popstate', onPopState);
     return () => window.removeEventListener('popstate', onPopState);
-  }, [activeEntry?.date, selectEditionByDate]);
+  }, [activeEntry?.date, index?.latest_edition, selectEditionByDate]);
 
   const handleSelectView = useCallback((view: ViewId) => {
     setActiveView(view);

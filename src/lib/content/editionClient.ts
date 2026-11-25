@@ -1,4 +1,9 @@
-import type { EditionIndexEntry, EditionsIndex, ParsedEdition } from '../../types/edition';
+import type {
+  EditionIndexEntry,
+  EditionsIndex,
+  ParsedEdition,
+  RejectedIndexEntry,
+} from '../../types/edition';
 import { parseEditionMarkdown } from '../markdown/parseEdition';
 
 const INDEX_URL = '/data/editions-index.json';
@@ -87,12 +92,14 @@ export function getEditionCacheSize(): number {
 
 export async function fetchEditionsIndex(options?: {
   forceRefresh?: boolean;
+  signal?: AbortSignal;
   fetchImpl?: typeof fetch;
 }): Promise<EditionsIndex> {
   const fetchFn = options?.fetchImpl ?? fetch;
   const url = options?.forceRefresh ? `${INDEX_URL}?t=${Date.now()}` : INDEX_URL;
   const response = await fetchFn(url, {
     cache: options?.forceRefresh ? 'reload' : 'no-cache',
+    signal: options?.signal,
   });
 
   if (!response.ok) {
@@ -105,32 +112,93 @@ export async function fetchEditionsIndex(options?: {
   // Reject unsafe paths and metadata that does not describe the same edition date.
   // A malformed index entry must never be able to label one Markdown file as another date.
   const validEditions: EditionIndexEntry[] = [];
+  const rejectedEntries: RejectedIndexEntry[] = [];
   const seenDates = new Set<string>();
   const validStatuses = ['draft', 'reviewed', 'published'] as const;
-  for (const entry of rawEditions) {
-    if (
-      !entry ||
-      typeof entry.path !== 'string' ||
-      typeof entry.date !== 'string' ||
-      typeof entry.title !== 'string' ||
-      typeof entry.updated_at !== 'string' ||
-      typeof entry.status !== 'string' ||
-      !validStatuses.includes(entry.status as (typeof validStatuses)[number]) ||
-      typeof entry.language !== 'string' ||
-      typeof entry.summary !== 'string' ||
-      !Number.isFinite(Date.parse(entry.updated_at)) ||
-      !isValidCalendarDate(entry.date) ||
-      seenDates.has(entry.date)
-    ) {
+
+  for (let i = 0; i < rawEditions.length; i += 1) {
+    const entry = rawEditions[i];
+    const rawDate = typeof entry?.date === 'string' ? entry.date : undefined;
+    const rawPath = typeof entry?.path === 'string' ? entry.path : undefined;
+
+    if (!entry || typeof entry !== 'object') {
+      rejectedEntries.push({ index: i, reason: 'Index entry is not an object.' });
       continue;
     }
+    if (typeof entry.date !== 'string' || !isValidCalendarDate(entry.date)) {
+      rejectedEntries.push({
+        index: i,
+        rawDate,
+        rawPath,
+        reason: `Invalid edition date "${String(entry.date ?? '')}".`,
+      });
+      continue;
+    }
+    if (seenDates.has(entry.date)) {
+      rejectedEntries.push({
+        index: i,
+        rawDate,
+        rawPath,
+        reason: `Duplicate archive entry for date "${entry.date}".`,
+      });
+      continue;
+    }
+    if (
+      typeof entry.title !== 'string' ||
+      typeof entry.updated_at !== 'string' ||
+      !Number.isFinite(Date.parse(entry.updated_at)) ||
+      typeof entry.language !== 'string' ||
+      typeof entry.summary !== 'string'
+    ) {
+      rejectedEntries.push({
+        index: i,
+        rawDate,
+        rawPath,
+        reason: 'Missing required archive metadata or invalid updated_at timestamp.',
+      });
+      continue;
+    }
+    if (
+      typeof entry.status !== 'string' ||
+      !validStatuses.includes(entry.status as (typeof validStatuses)[number])
+    ) {
+      rejectedEntries.push({
+        index: i,
+        rawDate,
+        rawPath,
+        reason: `Unsupported edition status "${String(entry.status ?? '')}".`,
+      });
+      continue;
+    }
+    if (typeof entry.path !== 'string') {
+      rejectedEntries.push({
+        index: i,
+        rawDate,
+        reason: 'Missing edition path.',
+      });
+      continue;
+    }
+
     try {
       const { normalizedPath, pathDate } = validateEditionPath(entry.path);
-      if (pathDate !== entry.date) continue;
+      if (pathDate !== entry.date) {
+        rejectedEntries.push({
+          index: i,
+          rawDate,
+          rawPath,
+          reason: `Declared date "${entry.date}" does not match path date "${pathDate}".`,
+        });
+        continue;
+      }
       seenDates.add(entry.date);
       validEditions.push({ ...entry, path: normalizedPath } as EditionIndexEntry);
-    } catch {
-      // Invalid entries are excluded before any edition fetch is attempted.
+    } catch (err) {
+      rejectedEntries.push({
+        index: i,
+        rawDate,
+        rawPath,
+        reason: err instanceof Error ? err.message : 'Invalid edition archive path.',
+      });
     }
   }
 
@@ -144,6 +212,7 @@ export async function fetchEditionsIndex(options?: {
     latest_edition: latestEdition,
     generated_at: typeof data.generated_at === 'string' ? data.generated_at : '',
     editions: validEditions,
+    rejectedEntries,
   };
 }
 
@@ -152,6 +221,7 @@ export async function fetchAndParseEdition(
   options?: {
     revisionKey?: string;
     forceRefresh?: boolean;
+    signal?: AbortSignal;
     fetchImpl?: typeof fetch;
   }
 ): Promise<ParsedEdition> {
@@ -173,6 +243,7 @@ export async function fetchAndParseEdition(
 
   const response = await fetchFn(requestUrl, {
     cache: options?.forceRefresh ? 'reload' : 'no-cache',
+    signal: options?.signal,
   });
 
   if (!response.ok) {

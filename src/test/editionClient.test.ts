@@ -7,6 +7,8 @@ import {
   fetchEditionsIndex,
   validateEditionPath,
 } from '../lib/content/editionClient';
+import { LatestEditionLoader } from '../lib/content/editionLoader';
+import type { EditionIndexEntry } from '../types/edition';
 import { VALID_SYNTHETIC_EDITION } from './fixtures/syntheticEdition';
 
 describe('validateEditionPath — strict archive path hardening', () => {
@@ -42,7 +44,7 @@ describe('validateEditionPath — strict archive path hardening', () => {
   });
 });
 
-describe('editionClient — revision-aware cache & empty archive handling', () => {
+describe('editionClient — revision-aware cache, index validation & race protection', () => {
   beforeEach(() => {
     clearEditionCache();
   });
@@ -87,7 +89,7 @@ describe('editionClient — revision-aware cache & empty archive handling', () =
     assert.equal(evening.frontmatter.updated_at, '2026-10-01T18:30:00-07:00');
   });
 
-  it('rejects an index entry whose declared date does not match the Markdown path', async () => {
+  it('rejects an index entry whose declared date does not match the Markdown path and records the reason', async () => {
     const mismatchFetch: typeof fetch = async () =>
       new Response(
         JSON.stringify({
@@ -110,6 +112,8 @@ describe('editionClient — revision-aware cache & empty archive handling', () =
     const idx = await fetchEditionsIndex({ fetchImpl: mismatchFetch });
     assert.equal(idx.editions.length, 0);
     assert.equal(idx.latest_edition, null);
+    assert.equal(idx.rejectedEntries?.length, 1);
+    assert.match(idx.rejectedEntries![0].reason, /does not match path date/i);
   });
 
   it('handles empty archive index and filters out malformed index paths', async () => {
@@ -137,5 +141,78 @@ describe('editionClient — revision-aware cache & empty archive handling', () =
     const idx = await fetchEditionsIndex({ fetchImpl: emptyFetch });
     assert.equal(idx.latest_edition, null);
     assert.equal(idx.editions.length, 0);
+    assert.equal(idx.rejectedEntries?.length, 1);
+  });
+
+  it('aborts superseded edition fetches and prevents slower earlier requests from overwriting newer selections', async () => {
+    const abortedSignals: boolean[] = [];
+    let resolveSlow!: (value: Response) => void;
+
+    const slowFirstEntry: EditionIndexEntry = {
+      date: '2026-10-01',
+      title: 'Oct 1',
+      path: '/editions/2026/10/2026-10-01.md',
+      updated_at: '2026-10-01T14:00:00-07:00',
+      status: 'published',
+      language: 'en',
+      summary: 'First',
+    };
+
+    const fastSecondEntry: EditionIndexEntry = {
+      date: '2026-10-02',
+      title: 'Oct 2',
+      path: '/editions/2026/10/2026-10-02.md',
+      updated_at: '2026-10-02T14:00:00-07:00',
+      status: 'published',
+      language: 'en',
+      summary: 'Second',
+    };
+
+    const mockFetch: typeof fetch = (input, init) => {
+      const url = String(input);
+      if (url.includes('2026-10-01')) {
+        return new Promise<Response>((resolve, reject) => {
+          resolveSlow = resolve;
+          init?.signal?.addEventListener('abort', () => {
+            abortedSignals.push(true);
+            reject(new DOMException('Aborted', 'AbortError'));
+          });
+        });
+      }
+      const oct2Body = VALID_SYNTHETIC_EDITION.replace(/2026-10-01/g, '2026-10-02');
+      return Promise.resolve(new Response(oct2Body, { status: 200 }));
+    };
+
+    const loader = new LatestEditionLoader(mockFetch);
+    const appliedDates: string[] = [];
+    let settledCount = 0;
+
+    const firstPromise = loader.load(slowFirstEntry, {
+      onStart: () => {},
+      onSuccess: (entry) => appliedDates.push(entry.date),
+      onError: () => assert.fail('Aborted request should not report an error'),
+      onSettled: () => {
+        settledCount += 1;
+      },
+    });
+
+    const secondPromise = loader.load(fastSecondEntry, {
+      onStart: () => {},
+      onSuccess: (entry) => appliedDates.push(entry.date),
+      onError: (_entry, msg) => assert.fail(`Unexpected error: ${msg}`),
+      onSettled: () => {
+        settledCount += 1;
+      },
+    });
+
+    const [firstOk, secondOk] = await Promise.all([firstPromise, secondPromise]);
+    // Even if the slow promise tried to resolve later, it was already aborted
+    resolveSlow?.(new Response(VALID_SYNTHETIC_EDITION, { status: 200 }));
+
+    assert.equal(firstOk, false);
+    assert.equal(secondOk, true);
+    assert.deepEqual(abortedSignals, [true]);
+    assert.deepEqual(appliedDates, ['2026-10-02']);
+    assert.equal(settledCount, 1);
   });
 });

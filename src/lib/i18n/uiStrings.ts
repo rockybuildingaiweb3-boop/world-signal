@@ -179,6 +179,9 @@ export interface UiDictionary {
     originSignalsLabel: string;
     originRecordsLabel: (qualifying: number, total: number) => string;
     originExclusionReasonLabel: string;
+    unassignedTitle: string;
+    unassignedSubtitle: string;
+    unassignedBadge: string;
     claimLedgerTitle: string;
     claimLedgerSubtitle: string;
     claimFilterStatus: string;
@@ -430,6 +433,10 @@ const EN_DICT: UiDictionary = {
     originSignalsLabel: 'Signals',
     originRecordsLabel: (q, t) => `${q} qualifying / ${t} total`,
     originExclusionReasonLabel: 'Exclusion basis',
+    unassignedTitle: 'Unassigned Source Records (No Reporting Origin Group)',
+    unassignedSubtitle:
+      'These records lack an independence_group identifier. They are excluded from independent-origin counts and listed individually below — they do not share a common reporting organization.',
+    unassignedBadge: 'Unassigned record',
     claimLedgerTitle: 'Inspectable Claim Ledger',
     claimLedgerSubtitle: 'Trace every claim from Signal → Claim → Source Record → Reporting Origin.',
     claimFilterStatus: 'All claim statuses',
@@ -737,6 +744,10 @@ const ZH_DICT: UiDictionary = {
     originSignalsLabel: '覆盖信号',
     originRecordsLabel: (q, t) => `${q} 条计入 / 共 ${t} 条`,
     originExclusionReasonLabel: '排除原因',
+    unassignedTitle: '未分组来源记录（无独立报道源分组）',
+    unassignedSubtitle:
+      '以下记录缺少 independence_group 标识，按规则不计入独立报道源数量，且彼此之间不代表同一新闻机构，以下逐条列出供审计。',
+    unassignedBadge: '未分组记录',
     claimLedgerTitle: '声明核验账本',
     claimLedgerSubtitle: '完整追溯每条声明：信号 → 声明 → 来源记录 → 独立报道源。',
     claimFilterStatus: '全部声明状态',

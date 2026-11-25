@@ -4,10 +4,8 @@ import type {
   EditionsIndex,
   ParsedEdition,
 } from '../types/edition';
-import {
-  fetchAndParseEdition,
-  fetchEditionsIndex,
-} from '../lib/content/editionClient';
+import { fetchEditionsIndex } from '../lib/content/editionClient';
+import { LatestEditionLoader } from '../lib/content/editionLoader';
 import { parseEditionMarkdown } from '../lib/markdown/parseEdition';
 
 export interface UseArchiveResult {
@@ -36,6 +34,11 @@ export function useArchive(initialRequestedDate: string | null): UseArchiveResul
 
   const initialDateRef = useRef<string | null>(initialRequestedDate);
   const requestVersionRef = useRef(0);
+  const indexAbortRef = useRef<AbortController | null>(null);
+  const loaderRef = useRef<LatestEditionLoader | null>(null);
+  if (!loaderRef.current) {
+    loaderRef.current = new LatestEditionLoader();
+  }
 
   const pickTargetEntry = useCallback(
     (idx: EditionsIndex, preferredDate: string | null): EditionIndexEntry | null => {
@@ -53,35 +56,24 @@ export function useArchive(initialRequestedDate: string | null): UseArchiveResul
     []
   );
 
-  const loadEntry = useCallback(
-    async (entry: EditionIndexEntry, requestVersion: number, forceRefresh = false) => {
-      try {
-        const parsed = await fetchAndParseEdition(entry.path, {
-          revisionKey: entry.updated_at,
-          forceRefresh,
-        });
-        if (requestVersion !== requestVersionRef.current) return;
-        setActiveEntry(entry);
-        setEdition(parsed);
-        setError(null);
-      } catch (err) {
-        if (requestVersion === requestVersionRef.current) {
-          setError(err instanceof Error ? err.message : 'Unable to load edition file.');
-        }
-      }
-    },
-    []
-  );
+  const abortActiveRequests = useCallback(() => {
+    indexAbortRef.current?.abort();
+    indexAbortRef.current = null;
+    loaderRef.current?.cancelPending();
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
+    abortActiveRequests();
     const requestVersion = ++requestVersionRef.current;
+    const indexController = new AbortController();
+    indexAbortRef.current = indexController;
 
     async function bootstrap() {
       setIsLoading(true);
       setError(null);
       try {
-        const loadedIndex = await fetchEditionsIndex();
+        const loadedIndex = await fetchEditionsIndex({ signal: indexController.signal });
         if (cancelled || requestVersion !== requestVersionRef.current) return;
         setIndex(loadedIndex);
 
@@ -89,21 +81,35 @@ export function useArchive(initialRequestedDate: string | null): UseArchiveResul
         if (!target) {
           setActiveEntry(null);
           setEdition(null);
+          setIsLoading(false);
           return;
         }
 
-        const parsed = await fetchAndParseEdition(target.path, {
-          revisionKey: target.updated_at,
+        await loaderRef.current!.load(target, {
+          onStart: () => {
+            if (cancelled || requestVersion !== requestVersionRef.current) return;
+            setIsLoading(true);
+            setError(null);
+          },
+          onSuccess: (entry, parsed) => {
+            if (cancelled || requestVersion !== requestVersionRef.current) return;
+            setActiveEntry(entry);
+            setEdition(parsed);
+            setError(null);
+          },
+          onError: (_entry, message) => {
+            if (cancelled || requestVersion !== requestVersionRef.current) return;
+            setError(message);
+          },
+          onSettled: () => {
+            if (cancelled || requestVersion !== requestVersionRef.current) return;
+            setIsLoading(false);
+          },
         });
-        if (cancelled || requestVersion !== requestVersionRef.current) return;
-        setActiveEntry(target);
-        setEdition(parsed);
       } catch (err) {
+        if (err instanceof DOMException && err.name === 'AbortError') return;
         if (!cancelled && requestVersion === requestVersionRef.current) {
           setError(err instanceof Error ? err.message : 'Failed to load WORLD SIGNAL archive.');
-        }
-      } finally {
-        if (!cancelled && requestVersion === requestVersionRef.current) {
           setIsLoading(false);
         }
       }
@@ -112,20 +118,39 @@ export function useArchive(initialRequestedDate: string | null): UseArchiveResul
     void bootstrap();
     return () => {
       cancelled = true;
+      abortActiveRequests();
     };
-  }, [pickTargetEntry]);
+  }, [abortActiveRequests, pickTargetEntry]);
 
   const selectEditionEntry = useCallback(
     async (entry: EditionIndexEntry) => {
+      abortActiveRequests();
       const requestVersion = ++requestVersionRef.current;
-      setIsLoading(true);
-      setIsRefreshing(false);
-      setRefreshFeedback(null);
-      setError(null);
-      await loadEntry(entry, requestVersion);
-      if (requestVersion === requestVersionRef.current) setIsLoading(false);
+      await loaderRef.current!.load(entry, {
+        onStart: () => {
+          if (requestVersion !== requestVersionRef.current) return;
+          setIsLoading(true);
+          setIsRefreshing(false);
+          setRefreshFeedback(null);
+          setError(null);
+        },
+        onSuccess: (loadedEntry, parsed) => {
+          if (requestVersion !== requestVersionRef.current) return;
+          setActiveEntry(loadedEntry);
+          setEdition(parsed);
+          setError(null);
+        },
+        onError: (_loadedEntry, message) => {
+          if (requestVersion !== requestVersionRef.current) return;
+          setError(message);
+        },
+        onSettled: () => {
+          if (requestVersion !== requestVersionRef.current) return;
+          setIsLoading(false);
+        },
+      });
     },
-    [loadEntry]
+    [abortActiveRequests]
   );
 
   const selectEditionByDate = useCallback(
@@ -138,12 +163,19 @@ export function useArchive(initialRequestedDate: string | null): UseArchiveResul
   );
 
   const refreshArchive = useCallback(async () => {
+    abortActiveRequests();
     const requestVersion = ++requestVersionRef.current;
+    const indexController = new AbortController();
+    indexAbortRef.current = indexController;
+
     setIsRefreshing(true);
     setError(null);
     setRefreshFeedback(null);
     try {
-      const freshIndex = await fetchEditionsIndex({ forceRefresh: true });
+      const freshIndex = await fetchEditionsIndex({
+        forceRefresh: true,
+        signal: indexController.signal,
+      });
       if (requestVersion !== requestVersionRef.current) return;
       setIndex(freshIndex);
 
@@ -152,6 +184,7 @@ export function useArchive(initialRequestedDate: string | null): UseArchiveResul
       if (!target) {
         setActiveEntry(null);
         setEdition(null);
+        setIsRefreshing(false);
         return;
       }
 
@@ -160,34 +193,56 @@ export function useArchive(initialRequestedDate: string | null): UseArchiveResul
         activeEntry.path !== target.path ||
         activeEntry.updated_at !== target.updated_at;
 
-      const parsed = await fetchAndParseEdition(target.path, {
-        revisionKey: target.updated_at,
-        forceRefresh: true,
-      });
-      if (requestVersion !== requestVersionRef.current) return;
-
-      setActiveEntry(target);
-      setEdition(parsed);
-      setRefreshFeedback(
-        revisionChanged ? `${target.date} · ${target.updated_at}` : target.updated_at
+      await loaderRef.current!.load(
+        target,
+        {
+          onStart: () => {
+            if (requestVersion !== requestVersionRef.current) return;
+            setIsRefreshing(true);
+          },
+          onSuccess: (loadedEntry, parsed) => {
+            if (requestVersion !== requestVersionRef.current) return;
+            setActiveEntry(loadedEntry);
+            setEdition(parsed);
+            setError(null);
+            setRefreshFeedback(
+              revisionChanged
+                ? `${loadedEntry.date} · ${loadedEntry.updated_at}`
+                : loadedEntry.updated_at
+            );
+          },
+          onError: (_loadedEntry, message) => {
+            if (requestVersion !== requestVersionRef.current) return;
+            setError(message);
+          },
+          onSettled: () => {
+            if (requestVersion !== requestVersionRef.current) return;
+            setIsRefreshing(false);
+          },
+        },
+        { forceRefresh: true }
       );
     } catch (err) {
+      if (err instanceof DOMException && err.name === 'AbortError') return;
       if (requestVersion === requestVersionRef.current) {
         setError(err instanceof Error ? err.message : 'Unable to refresh archive.');
+        setIsRefreshing(false);
       }
-    } finally {
-      if (requestVersion === requestVersionRef.current) setIsRefreshing(false);
     }
-  }, [activeEntry, pickTargetEntry]);
+  }, [abortActiveRequests, activeEntry, pickTargetEntry]);
 
-  const loadLocalMarkdown = useCallback((markdown: string, label: string) => {
-    ++requestVersionRef.current;
-    setIsLoading(false);
-    setIsRefreshing(false);
-    setError(null);
-    setRefreshFeedback(null);
-    setEdition(parseEditionMarkdown(markdown, label, { isLocalPreview: true }));
-  }, []);
+  const loadLocalMarkdown = useCallback(
+    (markdown: string, label: string) => {
+      abortActiveRequests();
+      ++requestVersionRef.current;
+      setIsLoading(false);
+      setIsRefreshing(false);
+      setError(null);
+      setRefreshFeedback(null);
+      setEdition(parseEditionMarkdown(markdown, label, { isLocalPreview: true }));
+    },
+    [abortActiveRequests]
+  );
 
   const exitLocalPreview = useCallback(async () => {
     if (!index) return;

@@ -6,6 +6,7 @@ import type {
   SourceClass,
   SourceIndependenceMetrics,
   SourceRelationship,
+  UnassignedSourceRecord,
 } from '../../types/edition';
 
 export interface SourceWithSignalRef extends SignalSource {
@@ -62,6 +63,10 @@ export function qualifiesAsIndependentOrigin(
 /**
  * Single authoritative source-independence calculation engine used across
  * the Markdown parser, SignalMetaLine, ExpandedView, and AuditView.
+ *
+ * Records without an `independence_group` are NEVER merged into a shared reporting
+ * origin group; they are excluded from independent-origin counts and returned
+ * individually in `unassignedRecords`.
  */
 export function calculateSourceIndependence(
   sources: SourceWithSignalRef[]
@@ -78,11 +83,10 @@ export function calculateSourceIndependence(
     }
   >();
 
-  const allOriginMap = new Map<
+  const assignedOriginMap = new Map<
     string,
     {
       group: string;
-      isUnassignedGroup: boolean;
       qualifyingRecordCount: number;
       excludedRecordCount: number;
       totalRecordCount: number;
@@ -93,6 +97,8 @@ export function calculateSourceIndependence(
       exclusionReasons: Set<IndependenceExclusionReason>;
     }
   >();
+
+  const unassignedRecords: UnassignedSourceRecord[] = [];
 
   let qualifyingRecords = 0;
   let excludedRecords = 0;
@@ -122,17 +128,29 @@ export function calculateSourceIndependence(
     else excludedRecords += 1;
 
     const rawGroup = src.independence_group?.trim() ?? '';
-    const isUnassignedGroup = rawGroup.length === 0;
-    const normalizedGroupKey = isUnassignedGroup
-      ? '__unassigned__'
-      : rawGroup.toLowerCase();
-    const displayGroup = isUnassignedGroup ? 'unassigned' : rawGroup;
 
-    let auditEntry = allOriginMap.get(normalizedGroupKey);
+    // Never collapse unrelated records with missing independence_group into a fake shared origin
+    if (rawGroup.length === 0) {
+      unassignedRecords.push({
+        source_id: src.source_id,
+        signal_id: src.signal_id,
+        outlet: src.outlet,
+        title: src.title,
+        url: src.url,
+        urlSafe: src.urlSafe,
+        source_class: src.source_class,
+        relationship: src.relationship,
+        exclusionReason: reason ?? 'missing_independence_group',
+      });
+      continue;
+    }
+
+    const normalizedGroupKey = rawGroup.toLowerCase();
+
+    let auditEntry = assignedOriginMap.get(normalizedGroupKey);
     if (!auditEntry) {
       auditEntry = {
-        group: displayGroup,
-        isUnassignedGroup,
+        group: rawGroup,
         qualifyingRecordCount: 0,
         excludedRecordCount: 0,
         totalRecordCount: 0,
@@ -142,7 +160,7 @@ export function calculateSourceIndependence(
         relationships: new Set<SourceRelationship>(),
         exclusionReasons: new Set<IndependenceExclusionReason>(),
       };
-      allOriginMap.set(normalizedGroupKey, auditEntry);
+      assignedOriginMap.set(normalizedGroupKey, auditEntry);
     }
 
     auditEntry.totalRecordCount += 1;
@@ -161,7 +179,7 @@ export function calculateSourceIndependence(
       let qualEntry = qualifyingMap.get(normalizedGroupKey);
       if (!qualEntry) {
         qualEntry = {
-          group: displayGroup,
+          group: rawGroup,
           outlets: new Set<string>(),
           recordCount: 0,
           signalIds: new Set<string>(),
@@ -197,10 +215,9 @@ export function calculateSourceIndependence(
       return a.group.localeCompare(b.group);
     });
 
-  const allOriginGroups: OriginGroupAuditRecord[] = Array.from(allOriginMap.values())
+  const allOriginGroups: OriginGroupAuditRecord[] = Array.from(assignedOriginMap.values())
     .map((entry) => ({
       group: entry.group,
-      isUnassignedGroup: entry.isUnassignedGroup,
       qualifiesAny: entry.qualifyingRecordCount > 0,
       qualifyingRecordCount: entry.qualifyingRecordCount,
       excludedRecordCount: entry.excludedRecordCount,
@@ -227,6 +244,7 @@ export function calculateSourceIndependence(
     independentOriginCount: independentGroups.length,
     independentGroups,
     allOriginGroups,
+    unassignedRecords,
     qualifyingRecords,
     excludedRecords,
     tier1Records,

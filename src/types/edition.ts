@@ -88,11 +88,19 @@ export interface EditionIndexEntry {
   summary: string;
 }
 
+export interface RejectedIndexEntry {
+  index: number;
+  rawDate?: string;
+  rawPath?: string;
+  reason: string;
+}
+
 export interface EditionsIndex {
   schema_version: number;
   latest_edition: string | null;
   generated_at: string;
   editions: EditionIndexEntry[];
+  rejectedEntries?: RejectedIndexEntry[];
 }
 
 export interface EditionFrontmatter {
@@ -224,7 +232,6 @@ export interface IndependentOriginGroup {
 
 export interface OriginGroupAuditRecord {
   group: string;
-  isUnassignedGroup: boolean;
   qualifiesAny: boolean;
   qualifyingRecordCount: number;
   excludedRecordCount: number;
@@ -236,11 +243,24 @@ export interface OriginGroupAuditRecord {
   exclusionReasons: IndependenceExclusionReason[];
 }
 
+export interface UnassignedSourceRecord {
+  source_id: string;
+  signal_id?: string;
+  outlet: string;
+  title: string;
+  url: string;
+  urlSafe: boolean;
+  source_class: SourceClass;
+  relationship: SourceRelationship;
+  exclusionReason: IndependenceExclusionReason;
+}
+
 export interface SourceIndependenceMetrics {
   totalRecords: number;
   independentOriginCount: number;
   independentGroups: IndependentOriginGroup[];
   allOriginGroups: OriginGroupAuditRecord[];
+  unassignedRecords: UnassignedSourceRecord[];
   qualifyingRecords: number;
   excludedRecords: number;
   tier1Records: number;

@@ -94,7 +94,7 @@ export const SafeMarkdown: React.FC<SafeMarkdownProps> = ({
   const textSpacing = compact ? 'space-y-2 text-[0.92rem] leading-[1.68]' : 'space-y-3 text-[0.97rem] leading-[1.76]';
 
   return (
-    <div className={`${textSpacing} text-[var(--ws-ink-secondary)] ${className}`}>
+    <div className={`${textSpacing} text-[var(--ws-ink-secondary)] break-words ${className}`}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         skipHtml
@@ -112,17 +112,17 @@ export const SafeMarkdown: React.FC<SafeMarkdownProps> = ({
           ),
           li: ({ children }) => <li className="pl-1">{renderInteractiveChildren(children)}</li>,
           h2: ({ children }) => (
-            <h3 className="font-display text-lg font-semibold text-[var(--ws-ink)] pt-3">
+            <h3 className="font-display text-lg font-semibold text-[var(--ws-ink)] pt-3 break-words">
               {children}
             </h3>
           ),
           h3: ({ children }) => (
-            <h4 className="font-display text-base font-semibold text-[var(--ws-ink)] pt-2">
+            <h4 className="font-display text-base font-semibold text-[var(--ws-ink)] pt-2 break-words">
               {children}
             </h4>
           ),
           h4: ({ children }) => (
-            <h5 className="text-sm font-semibold uppercase tracking-wide text-[var(--ws-ink)] pt-1.5">
+            <h5 className="text-sm font-semibold uppercase tracking-wide text-[var(--ws-ink)] pt-1.5 break-words">
               {children}
             </h5>
           ),
@@ -137,7 +137,7 @@ export const SafeMarkdown: React.FC<SafeMarkdownProps> = ({
             </blockquote>
           ),
           table: ({ children }) => (
-            <div className="my-3 overflow-x-auto rounded-md border border-[var(--ws-border)]">
+            <div className="my-3 max-w-full overflow-x-auto rounded-md border border-[var(--ws-border)]">
               <table className="w-full border-collapse text-left text-sm">{children}</table>
             </div>
           ),
@@ -155,12 +155,12 @@ export const SafeMarkdown: React.FC<SafeMarkdownProps> = ({
             </td>
           ),
           code: ({ children }) => (
-            <code className="rounded bg-[var(--ws-surface-subtle)] px-1.5 py-0.5 font-mono-tabular text-[0.84em] text-[var(--ws-ink)]">
+            <code className="rounded bg-[var(--ws-surface-subtle)] px-1.5 py-0.5 font-mono-tabular text-[0.84em] text-[var(--ws-ink)] break-all">
               {children}
             </code>
           ),
           pre: ({ children }) => (
-            <pre className="my-3 overflow-x-auto rounded-md border border-[var(--ws-border)] bg-[var(--ws-surface-subtle)] p-3 font-mono-tabular text-xs text-[var(--ws-ink)]">
+            <pre className="my-3 max-w-full overflow-x-auto rounded-md border border-[var(--ws-border)] bg-[var(--ws-surface-subtle)] p-3 font-mono-tabular text-xs text-[var(--ws-ink)]">
               {children}
             </pre>
           ),
@@ -177,7 +177,7 @@ export const SafeMarkdown: React.FC<SafeMarkdownProps> = ({
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[var(--ws-world)] underline decoration-[var(--ws-border-strong)] underline-offset-2 hover:decoration-current"
+                className="text-[var(--ws-world)] underline decoration-[var(--ws-border-strong)] underline-offset-2 hover:decoration-current break-words"
               >
                 {children}
               </a>

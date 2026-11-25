@@ -151,7 +151,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                 </>
               )}
             </div>
-            <h1 className="font-display text-2xl sm:text-3xl font-semibold tracking-[-0.02em] text-[var(--ws-ink)] headline-balance">
+            <h1 className="font-display text-2xl sm:text-3xl font-semibold tracking-[-0.02em] text-[var(--ws-ink)] headline-balance break-words">
               {edition.frontmatter.edition_title}
             </h1>
             <p className="text-xs font-mono-tabular text-[var(--ws-ink-muted)]">
@@ -248,7 +248,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
 
             <div className="space-y-3">
               <SignalMetaLine signal={leadEntry.signal} lang={lang} showClaims />
-              <h2 className="font-display text-2xl sm:text-[2rem] font-semibold leading-[1.2] tracking-[-0.02em] text-[var(--ws-ink)] headline-balance">
+              <h2 className="font-display text-2xl sm:text-[2rem] font-semibold leading-[1.2] tracking-[-0.02em] text-[var(--ws-ink)] headline-balance break-words">
                 <button
                   type="button"
                   onClick={() => onOpenSignal(leadEntry.signal.signal_id)}
@@ -362,7 +362,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                     <span>{signal.signal_id}</span>
                   </div>
                   <SignalMetaLine signal={signal} lang={lang} compact />
-                  <h3 className="font-display text-lg font-semibold leading-snug text-[var(--ws-ink)]">
+                  <h3 className="font-display text-lg font-semibold leading-snug text-[var(--ws-ink)] break-words">
                     <button
                       type="button"
                       onClick={() => onOpenSignal(signal.signal_id)}
@@ -482,7 +482,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                       onClick={() => onOpenSignal(sig.signal_id)}
                       className="group w-full text-left space-y-1.5 cursor-pointer"
                     >
-                      <div className="text-sm font-medium leading-snug text-[var(--ws-ink)] group-hover:text-[var(--ws-world)] transition-colors">
+                      <div className="text-sm font-medium leading-snug text-[var(--ws-ink)] group-hover:text-[var(--ws-world)] transition-colors break-words">
                         {sig.headline}
                       </div>
                       <SignalMetaLine signal={sig} lang={lang} compact />

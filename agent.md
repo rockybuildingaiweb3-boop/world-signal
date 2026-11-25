@@ -167,8 +167,8 @@ Do not create a new architecture, source tier, data field, or publishing path ca
 
 ## 13. Current project phase
 
-Current phase: **Markdown-first architecture and editorial contract**.
+Current phase: **Active Markdown-first editorial archive and production React/TypeScript frontend (`src/`)**.
 
-The new frontend has not yet been implemented. Do not scaffold an interface, choose a visual direction, or create sample news unless the owner explicitly starts that phase.
+The static-first frontend is implemented under `src/` and maintained against `docs/FRONTEND_CONTRACT.md`, `docs/CONTENT_SCHEMA.md`, and `docs/SOURCE_POLICY.md`. Editorial content remains strictly decoupled under `content/editions/` and mirrored into `public/` via `scripts/build-public-content.mjs` and GitHub Actions. Never hard-code news editions into frontend code or manually edit generated files under `public/editions/` or `public/data/`.
 
 The previous implementation lives at `legacy/v3-json-renderer/`. It is for historical feature reference only and is not a design constraint.

@@ -1,17 +1,17 @@
 import React, { useMemo, useState } from 'react';
-import { AlertCircle, CheckCircle2, ExternalLink } from 'lucide-react';
+import { AlertCircle, CheckCircle2 } from 'lucide-react';
 import type {
-  ClaimStatus,
   ConfidenceLevel,
   ParsedEdition,
-  ParsedSignal,
-  SignalClaim,
   SignalSource,
   UiLanguage,
 } from '../../types/edition';
 import { getUiStrings } from '../../lib/i18n/uiStrings';
 import { confidenceColorClass } from '../../lib/filtering/filterSignals';
 import { SafeMarkdown } from '../../components/editorial/SafeMarkdown';
+import { AuditOverviewCards } from './AuditOverviewCards';
+import { OriginGroupExplorer } from './OriginGroupExplorer';
+import { AuditClaimLedger, type FlatClaimRow } from './AuditClaimLedger';
 
 interface AuditViewProps {
   edition: ParsedEdition;
@@ -19,7 +19,6 @@ interface AuditViewProps {
   onOpenSignal: (signalId: string) => void;
 }
 
-type OriginFilter = 'all' | 'qualifying' | 'excluded';
 type TrailTab =
   | 'sourceAudit'
   | 'openQuestions'
@@ -27,20 +26,6 @@ type TrailTab =
   | 'methodology'
   | 'diagnostics';
 
-interface FlatClaimRow {
-  signal: ParsedSignal;
-  claim: SignalClaim;
-  linkedSources: SignalSource[];
-  hasIndependentOrigin: boolean;
-}
-
-const CLAIM_STATUSES: readonly ClaimStatus[] = [
-  'confirmed',
-  'reported',
-  'official_claim',
-  'disputed',
-  'unverified',
-];
 const CONFIDENCE_LEVELS: readonly ConfidenceLevel[] = [
   'high',
   'medium',
@@ -55,14 +40,6 @@ export const AuditView: React.FC<AuditViewProps> = ({
 }) => {
   const t = getUiStrings(lang);
   const summary = edition.independenceSummary;
-
-  const [originFilter, setOriginFilter] = useState<OriginFilter>('all');
-  const [claimStatusFilter, setClaimStatusFilter] = useState<ClaimStatus | 'all'>('all');
-  const [claimConfFilter, setClaimConfFilter] = useState<ConfidenceLevel | 'all'>('all');
-  const [claimSignalFilter, setClaimSignalFilter] = useState<string>('all');
-  const [claimSourceCoverage, setClaimSourceCoverage] = useState<
-    'all' | 'with_independent' | 'without_independent'
-  >('all');
   const [activeTrailTab, setActiveTrailTab] = useState<TrailTab>('sourceAudit');
 
   const allClaims: FlatClaimRow[] = useMemo(() => {
@@ -83,41 +60,6 @@ export const AuditView: React.FC<AuditViewProps> = ({
     }
     return rows;
   }, [edition.signals]);
-
-  const filteredOriginGroups = useMemo(() => {
-    return summary.allOriginGroups.filter((g) => {
-      if (originFilter === 'qualifying') return g.qualifiesAny;
-      if (originFilter === 'excluded') return !g.qualifiesAny || g.excludedRecordCount > 0;
-      return true;
-    });
-  }, [originFilter, summary.allOriginGroups]);
-
-  const filteredClaims = useMemo(() => {
-    return allClaims.filter((row) => {
-      if (claimStatusFilter !== 'all' && row.claim.status !== claimStatusFilter) {
-        return false;
-      }
-      if (claimConfFilter !== 'all' && row.claim.confidence !== claimConfFilter) {
-        return false;
-      }
-      if (claimSignalFilter !== 'all' && row.signal.signal_id !== claimSignalFilter) {
-        return false;
-      }
-      if (claimSourceCoverage === 'with_independent' && !row.hasIndependentOrigin) {
-        return false;
-      }
-      if (claimSourceCoverage === 'without_independent' && row.hasIndependentOrigin) {
-        return false;
-      }
-      return true;
-    });
-  }, [
-    allClaims,
-    claimConfFilter,
-    claimSignalFilter,
-    claimSourceCoverage,
-    claimStatusFilter,
-  ]);
 
   const confidenceCounts = useMemo(() => {
     const counts: Record<ConfidenceLevel, number> = {
@@ -154,416 +96,28 @@ export const AuditView: React.FC<AuditViewProps> = ({
         </p>
       </header>
 
-      {/* 1. Derived Source & Evidence Overview (Single Authoritative Engine) */}
-      <section className="space-y-4">
-        <h2 className="font-display text-xl font-semibold text-[var(--ws-ink)]">
-          {t.audit.overviewTitle}
-        </h2>
+      {/* 1. Derived Source & Evidence Overview */}
+      <AuditOverviewCards
+        summary={summary}
+        totalClaims={allClaims.length}
+        lang={lang}
+      />
 
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-          <div className="ws-card p-4 space-y-1">
-            <div className="font-mono-tabular text-2xl font-semibold text-[var(--ws-conf-high)]">
-              {summary.independentOriginCount}
-            </div>
-            <div className="text-xs text-[var(--ws-ink-muted)] leading-snug">
-              {t.audit.overviewCards.independentOrigins}
-            </div>
-          </div>
+      {/* 2. Reporting Origin Explorer & Unassigned Source Records */}
+      <OriginGroupExplorer
+        originGroups={summary.allOriginGroups}
+        unassignedRecords={summary.unassignedRecords}
+        lang={lang}
+        onOpenSignal={onOpenSignal}
+      />
 
-          <div className="ws-card p-4 space-y-1">
-            <div className="font-mono-tabular text-2xl font-semibold text-[var(--ws-ink)]">
-              {summary.qualifyingRecords}
-            </div>
-            <div className="text-xs text-[var(--ws-ink-muted)] leading-snug">
-              {t.audit.overviewCards.qualifyingRecords}
-            </div>
-          </div>
-
-          <div className="ws-card p-4 space-y-1">
-            <div className="font-mono-tabular text-2xl font-semibold text-[var(--ws-ink)]">
-              {summary.totalRecords}
-            </div>
-            <div className="text-xs text-[var(--ws-ink-muted)] leading-snug">
-              {t.audit.overviewCards.totalSourceRecords}
-            </div>
-          </div>
-
-          <div className="ws-card p-4 space-y-1">
-            <div className="font-mono-tabular text-2xl font-semibold text-[var(--ws-ink-secondary)]">
-              {summary.excludedRecords}
-            </div>
-            <div className="text-xs text-[var(--ws-ink-muted)] leading-snug">
-              {t.audit.overviewCards.excludedRecords}
-            </div>
-          </div>
-
-          <div className="ws-card p-4 space-y-1">
-            <div className="font-mono-tabular text-2xl font-semibold text-[var(--ws-ink)]">
-              {summary.primarySourceRecords + summary.researchPaperRecords}
-            </div>
-            <div className="text-xs text-[var(--ws-ink-muted)] leading-snug">
-              {t.audit.overviewCards.primaryAndResearch}
-            </div>
-          </div>
-
-          <div className="ws-card p-4 space-y-1">
-            <div className="font-mono-tabular text-2xl font-semibold text-[var(--ws-ink)]">
-              {allClaims.length}
-            </div>
-            <div className="text-xs text-[var(--ws-ink-muted)] leading-snug">
-              {t.audit.overviewCards.claimsAudited}
-            </div>
-          </div>
-        </div>
-
-        {/* Compact Source Class Composition Line */}
-        <div className="ws-card-subtle px-4 py-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 font-mono-tabular text-xs text-[var(--ws-ink-muted)]">
-          <span className="font-semibold text-[var(--ws-ink)]">
-            {t.audit.sourceBreakdownTitle}:
-          </span>
-          <span>
-            {t.sourceClass.tier_1_newsroom}: {summary.tier1Records}
-          </span>
-          <span aria-hidden="true" className="opacity-40">
-            ·
-          </span>
-          <span>
-            {t.sourceClass.specialist_publication}: {summary.specialistRecords}
-          </span>
-          <span aria-hidden="true" className="opacity-40">
-            ·
-          </span>
-          <span>
-            {t.sourceClass.primary_source}: {summary.primarySourceRecords}
-          </span>
-          <span aria-hidden="true" className="opacity-40">
-            ·
-          </span>
-          <span>
-            {t.sourceClass.research_paper}: {summary.researchPaperRecords}
-          </span>
-          {summary.unknownClassRecords > 0 && (
-            <>
-              <span aria-hidden="true" className="opacity-40">
-                ·
-              </span>
-              <span className="text-[var(--ws-warn)]">
-                {t.sourceClass.unknown}: {summary.unknownClassRecords}
-              </span>
-            </>
-          )}
-          <span aria-hidden="true" className="opacity-40">
-            ·
-          </span>
-          <span>
-            {t.relationship.syndicated}: {summary.syndicatedRecords}
-          </span>
-          <span aria-hidden="true" className="opacity-40">
-            ·
-          </span>
-          <span>
-            {t.expanded.unregisteredCandidate}: {summary.unregisteredRecords}
-          </span>
-        </div>
-      </section>
-
-      {/* 2. Reporting Origin Explorer (Grouped by independence_group) */}
-      <section className="space-y-4 border-t border-[var(--ws-border)] pt-8">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div className="space-y-1">
-            <h2 className="font-display text-xl font-semibold text-[var(--ws-ink)]">
-              {t.audit.originExplorerTitle}
-            </h2>
-            <p className="max-w-2xl text-xs text-[var(--ws-ink-muted)]">
-              {t.audit.originExplorerSubtitle}
-            </p>
-          </div>
-
-          <div className="inline-flex rounded-md border border-[var(--ws-border)] bg-[var(--ws-surface-subtle)] p-0.5 text-xs shrink-0 self-start">
-            {(
-              [
-                ['all', t.audit.originFilterAll],
-                ['qualifying', t.audit.originFilterQualifying],
-                ['excluded', t.audit.originFilterExcluded],
-              ] as const
-            ).map(([key, label]) => (
-              <button
-                key={key}
-                type="button"
-                onClick={() => setOriginFilter(key)}
-                className={`rounded px-3 py-1 font-medium transition-colors cursor-pointer ${
-                  originFilter === key
-                    ? 'bg-[var(--ws-surface)] text-[var(--ws-ink)] shadow-xs'
-                    : 'text-[var(--ws-ink-muted)] hover:text-[var(--ws-ink)]'
-                }`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-          {filteredOriginGroups.map((group) => (
-            <article
-              key={group.group}
-              className="ws-card p-4 space-y-2.5 flex flex-col justify-between"
-            >
-              <div className="space-y-2">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <div className="font-mono-tabular text-sm font-semibold text-[var(--ws-ink)]">
-                      {group.group}
-                    </div>
-                    <div className="font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
-                      {t.audit.originRecordsLabel(
-                        group.qualifyingRecordCount,
-                        group.totalRecordCount
-                      )}
-                    </div>
-                  </div>
-
-                  <span
-                    className={`font-mono-tabular text-[11px] font-semibold ${
-                      group.qualifiesAny
-                        ? 'text-[var(--ws-conf-high)]'
-                        : 'text-[var(--ws-ink-muted)]'
-                    }`}
-                  >
-                    {group.qualifiesAny
-                      ? t.audit.originCountedBadge
-                      : t.audit.originExcludedBadge}
-                  </span>
-                </div>
-
-                <div className="text-xs text-[var(--ws-ink-secondary)]">
-                  <span className="font-medium text-[var(--ws-ink-muted)]">
-                    {t.audit.originOutletsLabel}:{' '}
-                  </span>
-                  {group.outlets.join(', ')}
-                </div>
-
-                <div className="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
-                  <span>
-                    {group.sourceClasses.map((sc) => t.sourceClass[sc]).join(' / ')}
-                  </span>
-                  <span aria-hidden="true" className="opacity-40">
-                    ·
-                  </span>
-                  <span>
-                    {group.relationships.map((rel) => t.relationship[rel]).join(' / ')}
-                  </span>
-                </div>
-
-                {group.exclusionReasons.length > 0 && (
-                  <div className="rounded bg-[var(--ws-surface-subtle)] px-2.5 py-1.5 text-[11.5px] text-[var(--ws-ink-muted)]">
-                    <span className="font-medium text-[var(--ws-ink-secondary)]">
-                      {t.audit.originExclusionReasonLabel}:{' '}
-                    </span>
-                    {group.exclusionReasons
-                      .map((r) => t.exclusionReason[r])
-                      .join('; ')}
-                  </div>
-                )}
-              </div>
-
-              {group.signalIds.length > 0 && (
-                <div className="border-t border-[var(--ws-border)] pt-2 flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono-tabular text-[11px]">
-                  <span className="text-[var(--ws-ink-muted)]">
-                    {t.audit.originSignalsLabel} ({group.signalIds.length}):
-                  </span>
-                  {group.signalIds.map((sid) => (
-                    <button
-                      key={sid}
-                      type="button"
-                      onClick={() => onOpenSignal(sid)}
-                      className="text-[var(--ws-world)] underline decoration-[var(--ws-border-strong)] underline-offset-2 hover:decoration-current cursor-pointer"
-                    >
-                      {sid}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </article>
-          ))}
-        </div>
-      </section>
-
-      {/* 3. Inspectable Filterable Claim Ledger (Signal -> Claim -> Source -> Origin) */}
-      <section className="space-y-4 border-t border-[var(--ws-border)] pt-8">
-        <div className="space-y-1">
-          <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <h2 className="font-display text-xl font-semibold text-[var(--ws-ink)]">
-              {t.audit.claimLedgerTitle}
-            </h2>
-            <span className="font-mono-tabular text-xs text-[var(--ws-ink-muted)]">
-              {filteredClaims.length} / {allClaims.length}
-            </span>
-          </div>
-          <p className="text-xs text-[var(--ws-ink-muted)]">
-            {t.audit.claimLedgerSubtitle}
-          </p>
-        </div>
-
-        {/* Filter Controls */}
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
-          <select
-            aria-label={t.audit.claimFilterStatus}
-            value={claimStatusFilter}
-            onChange={(e) =>
-              setClaimStatusFilter(e.target.value as ClaimStatus | 'all')
-            }
-            className="rounded-md border border-[var(--ws-border)] bg-[var(--ws-surface)] px-3 py-2 text-xs text-[var(--ws-ink)]"
-          >
-            <option value="all">{t.audit.claimFilterStatus}</option>
-            {CLAIM_STATUSES.map((st) => (
-              <option key={st} value={st}>
-                {t.claimStatus[st]}
-              </option>
-            ))}
-          </select>
-
-          <select
-            aria-label={t.audit.claimFilterConfidence}
-            value={claimConfFilter}
-            onChange={(e) =>
-              setClaimConfFilter(e.target.value as ConfidenceLevel | 'all')
-            }
-            className="rounded-md border border-[var(--ws-border)] bg-[var(--ws-surface)] px-3 py-2 text-xs text-[var(--ws-ink)]"
-          >
-            <option value="all">{t.audit.claimFilterConfidence}</option>
-            {CONFIDENCE_LEVELS.map((c) => (
-              <option key={c} value={c}>
-                {t.confidence[c]}
-              </option>
-            ))}
-          </select>
-
-          <select
-            aria-label={t.audit.claimFilterSignal}
-            value={claimSignalFilter}
-            onChange={(e) => setClaimSignalFilter(e.target.value)}
-            className="rounded-md border border-[var(--ws-border)] bg-[var(--ws-surface)] px-3 py-2 text-xs text-[var(--ws-ink)]"
-          >
-            <option value="all">{t.audit.claimFilterSignal}</option>
-            {edition.signals.map((sig) => (
-              <option key={sig.signal_id} value={sig.signal_id}>
-                {sig.signal_id}
-              </option>
-            ))}
-          </select>
-
-          <select
-            aria-label={t.audit.claimFilterSources}
-            value={claimSourceCoverage}
-            onChange={(e) =>
-              setClaimSourceCoverage(
-                e.target.value as 'all' | 'with_independent' | 'without_independent'
-              )
-            }
-            className="rounded-md border border-[var(--ws-border)] bg-[var(--ws-surface)] px-3 py-2 text-xs text-[var(--ws-ink)]"
-          >
-            <option value="all">{t.audit.claimSourcesAll}</option>
-            <option value="with_independent">
-              {t.audit.claimSourcesWithIndependent}
-            </option>
-            <option value="without_independent">
-              {t.audit.claimSourcesNoIndependent}
-            </option>
-          </select>
-        </div>
-
-        {/* Stacked Responsive Claim Evidence Trace List */}
-        <div className="ws-card divide-y divide-[var(--ws-border)] max-h-[620px] overflow-y-auto ws-scroll">
-          {filteredClaims.length === 0 ? (
-            <div className="p-8 text-center text-sm text-[var(--ws-ink-muted)]">
-              {t.audit.noItemsInSection}
-            </div>
-          ) : (
-            filteredClaims.map(({ signal, claim, linkedSources }) => (
-              <div key={claim.claim_id} className="p-4 space-y-2">
-                <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono-tabular text-[11.5px]">
-                  <button
-                    type="button"
-                    onClick={() => onOpenSignal(signal.signal_id)}
-                    className="font-semibold text-[var(--ws-world)] hover:underline cursor-pointer"
-                  >
-                    {signal.signal_id}
-                  </button>
-                  <span aria-hidden="true" className="opacity-40">
-                    →
-                  </span>
-                  <span className="font-semibold text-[var(--ws-ink)]">
-                    {claim.claim_id}
-                  </span>
-                  <span aria-hidden="true" className="opacity-40">
-                    ·
-                  </span>
-                  <span className="text-[var(--ws-ink-muted)]">
-                    {t.claimStatus[claim.status]}
-                  </span>
-                  <span aria-hidden="true" className="opacity-40">
-                    ·
-                  </span>
-                  <span className={confidenceColorClass(claim.confidence)}>
-                    {t.confidence[claim.confidence]}
-                  </span>
-                </div>
-
-                <p className="text-sm leading-relaxed text-[var(--ws-ink-secondary)]">
-                  {claim.statement}
-                </p>
-
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
-                  <span>{t.audit.claimTraceLabel}:</span>
-                  {linkedSources.length === 0 ? (
-                    <span className="text-[var(--ws-error)]">—</span>
-                  ) : (
-                    linkedSources.map((src) => (
-                      <span
-                        key={src.source_id}
-                        className="inline-flex items-center gap-1"
-                      >
-                        <span className="font-semibold text-[var(--ws-ink)]">
-                          {src.source_id}
-                        </span>
-                        {src.url && src.urlSafe ? (
-                          <a
-                            href={src.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-0.5 text-[var(--ws-ink-secondary)] underline decoration-[var(--ws-border-strong)] underline-offset-2 hover:text-[var(--ws-world)]"
-                          >
-                            {src.outlet}
-                            <ExternalLink className="h-2.5 w-2.5" />
-                          </a>
-                        ) : (
-                          <span>{src.outlet}</span>
-                        )}
-                        <span>
-                          [{src.independence_group || 'unassigned'} ·{' '}
-                          <span
-                            className={
-                              src.qualifiesAsIndependent
-                                ? 'text-[var(--ws-conf-high)]'
-                                : 'text-[var(--ws-ink-muted)]'
-                            }
-                          >
-                            {src.qualifiesAsIndependent
-                              ? t.audit.originCountedBadge
-                              : t.audit.originExcludedBadge}
-                          </span>
-                          ]
-                        </span>
-                      </span>
-                    ))
-                  )}
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-      </section>
+      {/* 3. Inspectable Filterable Claim Ledger */}
+      <AuditClaimLedger
+        signals={edition.signals}
+        allClaims={allClaims}
+        lang={lang}
+        onOpenSignal={onOpenSignal}
+      />
 
       {/* 4. Confidence vs. Importance Distribution */}
       <section className="space-y-4 border-t border-[var(--ws-border)] pt-8">
@@ -588,7 +142,9 @@ export const AuditView: React.FC<AuditViewProps> = ({
                 return (
                   <div key={level} className="space-y-1">
                     <div className="flex items-center justify-between text-xs font-mono-tabular">
-                      <span className={`font-medium ${confidenceColorClass(level)}`}>
+                      <span
+                        className={`font-medium ${confidenceColorClass(level)}`}
+                      >
                         {t.confidence[level]}
                       </span>
                       <span className="text-[var(--ws-ink-muted)]">
@@ -639,7 +195,7 @@ export const AuditView: React.FC<AuditViewProps> = ({
         </div>
       </section>
 
-      {/* 5. Editorial Audit Trail (Tabbed for calm scannability) */}
+      {/* 5. Editorial Audit Trail */}
       <section className="space-y-4 border-t border-[var(--ws-border)] pt-8">
         <h2 className="font-display text-xl font-semibold text-[var(--ws-ink)]">
           {t.audit.editorialTrailTitle}
@@ -691,7 +247,7 @@ export const AuditView: React.FC<AuditViewProps> = ({
           })}
         </div>
 
-        <div className="ws-card p-6 sm:p-8">
+        <div className="ws-card p-5 sm:p-8">
           {activeTrailTab === 'sourceAudit' &&
             (edition.auditAndMethodology.sourceAudit ? (
               <div className="max-w-[74ch]">
@@ -761,7 +317,8 @@ export const AuditView: React.FC<AuditViewProps> = ({
                   {edition.validation.errors.length > 0 && (
                     <div className="space-y-2">
                       <h3 className="font-mono-tabular text-xs font-semibold uppercase tracking-wider text-[var(--ws-error)]">
-                        {t.audit.diagnosticsErrors} ({edition.validation.errors.length})
+                        {t.audit.diagnosticsErrors} (
+                        {edition.validation.errors.length})
                       </h3>
                       <ul className="space-y-2">
                         {edition.validation.errors.map((err, idx) => (

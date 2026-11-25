@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Upload, X } from 'lucide-react';
 import type { UiLanguage } from '../../types/edition';
 import { getUiStrings } from '../../lib/i18n/uiStrings';
+import { useAccessibleModal } from '../../hooks/useAccessibleModal';
 
 interface LocalMarkdownModalProps {
   isOpen: boolean;
@@ -21,15 +22,9 @@ export const LocalMarkdownModal: React.FC<LocalMarkdownModalProps> = ({
   const [label, setLabel] = useState('local-preview.md');
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const modalRef = useRef<HTMLFormElement | null>(null);
 
-  useEffect(() => {
-    if (!isOpen) return;
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [isOpen, onClose]);
+  useAccessibleModal(isOpen, onClose, modalRef);
 
   if (!isOpen) return null;
 
@@ -60,20 +55,25 @@ export const LocalMarkdownModal: React.FC<LocalMarkdownModalProps> = ({
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-[2px]"
-      role="dialog"
-      aria-modal="true"
-      aria-label={t.localModal.title}
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
       <form
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="local-md-modal-title"
+        tabIndex={-1}
         onSubmit={handleSubmit}
-        className="w-full max-w-2xl rounded-lg border border-[var(--ws-border)] bg-[var(--ws-surface)] shadow-xl overflow-hidden"
+        className="w-full max-w-2xl rounded-lg border border-[var(--ws-border)] bg-[var(--ws-surface)] shadow-xl overflow-hidden outline-none"
       >
         <div className="flex items-start justify-between gap-4 border-b border-[var(--ws-border)] px-5 py-4">
           <div>
-            <h2 className="font-display text-lg font-semibold text-[var(--ws-ink)]">
+            <h2
+              id="local-md-modal-title"
+              className="font-display text-lg font-semibold text-[var(--ws-ink)]"
+            >
               {t.localModal.title}
             </h2>
             <p className="mt-0.5 text-xs text-[var(--ws-ink-muted)]">

@@ -159,4 +159,51 @@ describe('calculateSourceIndependence — authoritative Source Policy engine', (
     assert.equal(secGroup.qualifiesAny, false);
     assert.deepEqual(secGroup.exclusionReasons, ['primary_source']);
   });
+
+  it('keeps records missing independence_group separate in unassignedRecords instead of merging them into one origin group', () => {
+    const metrics = calculateSourceIndependence([
+      {
+        ...makeSource({
+          source_id: 'S1',
+          outlet: 'Unassigned Outlet Alpha',
+          independence_group: '',
+          count_as_independent: true,
+        }),
+        signal_id: 'SIG-1',
+      },
+      {
+        ...makeSource({
+          source_id: 'S2',
+          outlet: 'Unassigned Outlet Beta',
+          independence_group: '   ',
+          count_as_independent: true,
+        }),
+        signal_id: 'SIG-2',
+      },
+      {
+        ...makeSource({
+          source_id: 'S3',
+          outlet: 'Reuters',
+          independence_group: 'reuters',
+          count_as_independent: true,
+        }),
+        signal_id: 'SIG-1',
+      },
+    ]);
+
+    assert.equal(metrics.independentOriginCount, 1);
+    assert.equal(metrics.allOriginGroups.length, 1);
+    assert.equal(metrics.allOriginGroups[0].group, 'reuters');
+    assert.equal(
+      metrics.allOriginGroups.some((g) => g.group.includes('unassigned')),
+      false
+    );
+    assert.equal(metrics.unassignedRecords.length, 2);
+    assert.equal(metrics.unassignedRecords[0].outlet, 'Unassigned Outlet Alpha');
+    assert.equal(metrics.unassignedRecords[1].outlet, 'Unassigned Outlet Beta');
+    assert.equal(
+      metrics.unassignedRecords[0].exclusionReason,
+      'missing_independence_group'
+    );
+  });
 });
