@@ -128,7 +128,7 @@ describe('parseEditionMarkdown — real published edition integration (2026-11-2
     // Real edition counts
     assert.equal(edition.signals.length, 35);
     assert.equal(edition.executiveBriefing.topSignalRefs.length, 5);
-    assert.equal(edition.executiveBriefing.caveats.length, 1);
+    assert.equal(edition.executiveBriefing.caveats.length, 3);
 
     // Structured synthesis & personal implications
     assert.ok(edition.crossDomainSynthesis.threads.length >= 5);
