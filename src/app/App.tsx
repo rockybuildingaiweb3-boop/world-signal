@@ -10,6 +10,7 @@ import { DEFAULT_FILTERS } from '../lib/filtering/filterSignals';
 import { parseUrlState, syncUrlState } from '../lib/navigation/urlState';
 import { getUiStrings } from '../lib/i18n/uiStrings';
 import { useArchive } from '../hooks/useArchive';
+import { useDailyDelta } from '../hooks/useDailyDelta';
 import { usePreferences } from '../hooks/usePreferences';
 import { TopBar } from '../components/layout/TopBar';
 import { ArchiveDrawer } from '../components/navigation/ArchiveDrawer';
@@ -60,6 +61,11 @@ export const App: React.FC = () => {
   const { theme, setTheme, lang, setLang } = usePreferences(
     edition?.frontmatter.content_language
   );
+  const dailyDelta = useDailyDelta({
+    edition,
+    index,
+    isArchiveLoading: isLoading,
+  });
   const t = getUiStrings(lang);
   const handleCloseArchive = useCallback(() => setArchiveOpen(false), []);
 
@@ -135,6 +141,38 @@ export const App: React.FC = () => {
     setActiveView('expanded');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
+
+  const handleOpenSignalInEdition = useCallback(
+    (editionDate: string, signalId: string) => {
+      const currentDate =
+        edition?.frontmatter.edition_date ?? activeEntry?.date ?? null;
+
+      if (currentDate === editionDate) {
+        setFilters({ ...DEFAULT_FILTERS });
+        setSelectedSignalId(signalId);
+        setMobileShowDetail(true);
+        setActiveView('expanded');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      const targetEntry = index?.editions.find(
+        (entry) => entry.date === editionDate
+      );
+      if (!targetEntry) return;
+
+      // Preserve the requested signal across the edition switch so URL history
+      // pushes a single clean entry (?edition=<previous>&view=expanded&signal=<id>)
+      // once the preceding edition finishes loading.
+      setFilters({ ...DEFAULT_FILTERS });
+      setSelectedSignalId(signalId);
+      setMobileShowDetail(true);
+      setActiveView('expanded');
+      void selectEditionEntry(targetEntry);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    },
+    [activeEntry?.date, edition?.frontmatter.edition_date, index?.editions, selectEditionEntry]
+  );
 
   const handleExploreDomain = useCallback((domain: SignalDomain) => {
     setFilters({ ...DEFAULT_FILTERS, domain });
@@ -232,7 +270,10 @@ export const App: React.FC = () => {
               <BriefingView
                 edition={edition}
                 lang={lang}
+                dailyDelta={dailyDelta.state}
+                onRetryDailyDelta={dailyDelta.retry}
                 onOpenSignal={handleOpenSignal}
+                onOpenSignalInEdition={handleOpenSignalInEdition}
                 onExploreDomain={handleExploreDomain}
                 onSwitchView={handleSelectView}
                 onRefresh={() => void refreshArchive()}

@@ -10,6 +10,10 @@ import type {
   UiLanguage,
   ViewId,
 } from '../../types/edition';
+import type {
+  EditionChangeKind,
+  SignalChangeReason,
+} from '../intelligence/edition-diff/compareEditions';
 
 export interface UiDictionary {
   brandTagline: string;
@@ -70,6 +74,50 @@ export interface UiDictionary {
     summaryCollapse: string;
     limitationsExpand: (count: number) => string;
     limitationsCollapse: string;
+  };
+  dailyDelta: {
+    eyebrow: string;
+    title: string;
+    comparingRange: (previousDate: string, currentDate: string) => string;
+    dateGapNote: (days: number, previousDate: string) => string;
+    schemaTransitionNote: (prevVersion: number, currVersion: number) => string;
+    loadingLabel: (previousDate: string) => string;
+    categories: Record<EditionChangeKind, string>;
+    categoryDescriptions: Record<EditionChangeKind, string>;
+    categoryBadges: Record<EditionChangeKind, string>;
+    reasons: Record<SignalChangeReason, string>;
+    emptyCategory: string;
+    omittedNoticeTitle: string;
+    omittedNoticeBody: (previousDate: string, currentDate: string) => string;
+    omittedItemExplanation: (previousDate: string, currentDate: string) => string;
+    newItemExplanation: (currentDate: string, claims: number, sources: number) => string;
+    unchangedItemExplanation: (previousDate: string) => string;
+    updatedReasonsPrefix: string;
+    evidenceToggleShow: string;
+    evidenceToggleHide: string;
+    evidenceSummaryClaims: (added: number, revised: number, withdrawn: number) => string;
+    evidenceSummarySources: (added: number, revised: number, removed: number) => string;
+    addedClaimsLabel: string;
+    revisedClaimsLabel: string;
+    withdrawnClaimsLabel: string;
+    addedSourcesLabel: string;
+    revisedSourcesLabel: string;
+    removedSourcesLabel: string;
+    routineMetadataNote: string;
+    openCurrentDossier: string;
+    openPreviousDossier: (previousDate: string) => string;
+    showAllCategory: (total: number, categoryLabel: string) => string;
+    showFewerCategory: string;
+    unavailableTitle: string;
+    unavailableLocalPreview: string;
+    unavailableNoPrevious: (currentDate: string | null) => string;
+    unavailableLoadFailed: (previousDate: string | null) => string;
+    unavailableIncomplete: string;
+    retryComparison: string;
+    transitionImportance: (prev: number, curr: number) => string;
+    transitionStatus: (prev: string, curr: string) => string;
+    transitionConfidence: (prev: string, curr: string) => string;
+    headlineChangedNote: (prevHeadline: string) => string;
   };
   expanded: {
     title: string;
@@ -327,6 +375,103 @@ const EN_DICT: UiDictionary = {
     limitationsExpand: (count) =>
       count > 1 ? `Read all ${count} editorial notes` : 'Read full editorial note',
     limitationsCollapse: 'Collapse editorial notes',
+  },
+  dailyDelta: {
+    eyebrow: 'Daily Delta',
+    title: 'Cross-Edition Change Ledger',
+    comparingRange: (prev, curr) => `Comparing ${prev} → ${curr}`,
+    dateGapNote: (days, prev) =>
+      `${days}-day archive gap: compared against the immediately preceding available edition (${prev}).`,
+    schemaTransitionNote: (prevV, currV) =>
+      `Schema v${prevV} → v${currV}: newly introduced structured fields (such as timeline events or typed relationships) may reflect schema migration alongside editorial updates.`,
+    loadingLabel: (prev) => `Loading preceding edition (${prev}) for deterministic comparison…`,
+    categories: {
+      new: 'New',
+      updated: 'Updated',
+      unchanged: 'Unchanged',
+      omitted: 'Omitted',
+    },
+    categoryDescriptions: {
+      new: 'First appearance relative to previous edition',
+      updated: 'Material factual, status, or evidence changes',
+      unchanged: 'Materially unchanged (routine sync ignored)',
+      omitted: 'Absent here; not necessarily resolved',
+    },
+    categoryBadges: {
+      new: 'NEW',
+      updated: 'UPDATED',
+      unchanged: 'UNCHANGED',
+      omitted: 'OMITTED',
+    },
+    reasons: {
+      headline: 'Headline',
+      importance: 'Importance',
+      status: 'Status',
+      confidence: 'Confidence',
+      topic: 'Topic & Tags',
+      event: 'Event Details',
+      claims: 'Claims',
+      sources: 'Sources',
+      relationships: 'Relationships',
+      narrative: 'Narrative',
+    },
+    emptyCategory: 'No signals fall into this category for this edition pair.',
+    omittedNoticeTitle: 'Omission Is Not Resolution',
+    omittedNoticeBody: (prev, curr) =>
+      `These signals appeared in ${prev} but are absent from ${curr}. Absence from an edition does not mean an event concluded, resolved, or was retracted. Selecting a signal opens its dossier in the ${prev} edition.`,
+    omittedItemExplanation: (prev, curr) =>
+      `Present in ${prev}; absent from ${curr}. Omission does not imply resolution.`,
+    newItemExplanation: (curr, claims, sources) =>
+      `First observed in ${curr} with ${claims} structured ${claims === 1 ? 'claim' : 'claims'} and ${sources} source ${sources === 1 ? 'record' : 'records'}.`,
+    unchangedItemExplanation: (prev) =>
+      `Materially unchanged since ${prev}. Routine sync and source access timestamps do not trigger updates.`,
+    updatedReasonsPrefix: 'Changed',
+    evidenceToggleShow: 'Inspect evidence changes',
+    evidenceToggleHide: 'Hide evidence changes',
+    evidenceSummaryClaims: (added, revised, withdrawn) => {
+      const parts: string[] = [];
+      if (added > 0) parts.push(`+${added} added`);
+      if (revised > 0) parts.push(`${revised} revised`);
+      if (withdrawn > 0) parts.push(`${withdrawn} withdrawn`);
+      return `Claims: ${parts.join(', ')}`;
+    },
+    evidenceSummarySources: (added, revised, removed) => {
+      const parts: string[] = [];
+      if (added > 0) parts.push(`+${added} added`);
+      if (revised > 0) parts.push(`${revised} revised`);
+      if (removed > 0) parts.push(`${removed} removed`);
+      return `Sources: ${parts.join(', ')}`;
+    },
+    addedClaimsLabel: 'Added Claims',
+    revisedClaimsLabel: 'Revised Claims',
+    withdrawnClaimsLabel: 'Withdrawn Claims',
+    addedSourcesLabel: 'Added Sources',
+    revisedSourcesLabel: 'Revised Sources',
+    removedSourcesLabel: 'Removed Sources',
+    routineMetadataNote:
+      'Deterministic comparison by stable signal_id. Routine edition sync and source access timestamps are excluded.',
+    openCurrentDossier: 'Open dossier',
+    openPreviousDossier: (prev) => `Open in ${prev} edition`,
+    showAllCategory: (total, label) => `Show all ${total} ${label.toLowerCase()} signals`,
+    showFewerCategory: 'Show fewer',
+    unavailableTitle: 'Comparison Unavailable',
+    unavailableLocalPreview:
+      'Daily Delta compares archived editions only and is disabled during local Markdown preview so no historical counts are fabricated.',
+    unavailableNoPrevious: (curr) =>
+      curr
+        ? `${curr} is the earliest available edition in this archive. No preceding edition exists for cross-edition comparison.`
+        : 'No preceding edition exists in this archive for cross-edition comparison.',
+    unavailableLoadFailed: (prev) =>
+      prev
+        ? `Unable to load the immediately preceding edition (${prev}) to compute Daily Delta.`
+        : 'Unable to load the preceding edition to compute Daily Delta.',
+    unavailableIncomplete:
+      'Historical comparison is currently incomplete or unavailable for this edition.',
+    retryComparison: 'Retry comparison',
+    transitionImportance: (prev, curr) => `Importance ${prev}/5 → ${curr}/5`,
+    transitionStatus: (prev, curr) => `Status: ${prev} → ${curr}`,
+    transitionConfidence: (prev, curr) => `Confidence: ${prev} → ${curr}`,
+    headlineChangedNote: (prevHeadline) => `Previous headline: “${prevHeadline}”`,
   },
   expanded: {
     title: 'Signal Explorer',
@@ -643,6 +788,102 @@ const ZH_DICT: UiDictionary = {
     limitationsExpand: (count) =>
       count > 1 ? `展开全部 ${count} 条局限与更新说明` : '展开完整说明',
     limitationsCollapse: '收起说明',
+  },
+  dailyDelta: {
+    eyebrow: '每日变动监测',
+    title: '跨期变化账本',
+    comparingRange: (prev, curr) => `对比期次：${prev} → ${curr}`,
+    dateGapNote: (days, prev) =>
+      `档案间隔 ${days} 天：与时间上最近一期可用期刊（${prev}）进行对比，不假设为前一日。`,
+    schemaTransitionNote: (prevV, currV) =>
+      `数据结构由 v${prevV} 升级至 v${currV}：新增的结构化时间线事件或显式关联字段可能反映版本迁移，同时保留实质编辑变动。`,
+    loadingLabel: (prev) => `正在加载上一可用期刊（${prev}）以计算确定性跨期变动…`,
+    categories: {
+      new: '新增信号',
+      updated: '实质更新',
+      unchanged: '无实质变化',
+      omitted: '本期未收录',
+    },
+    categoryDescriptions: {
+      new: '相对上一可用期刊首次出现',
+      updated: '事实、状态、置信度或证据发生变动',
+      unchanged: '核心内容无变动（已忽略例行时间戳）',
+      omitted: '上期存在但本期未出现（不代表事件已解决）',
+    },
+    categoryBadges: {
+      new: '新增',
+      updated: '更新',
+      unchanged: '未变',
+      omitted: '未收录',
+    },
+    reasons: {
+      headline: '标题',
+      importance: '重要性',
+      status: '状态',
+      confidence: '置信度',
+      topic: '主题与标签',
+      event: '事件信息',
+      claims: '声明核验',
+      sources: '来源记录',
+      relationships: '关联关系',
+      narrative: '正文与时间线',
+    },
+    emptyCategory: '该对比类别在本期中暂无信号。',
+    omittedNoticeTitle: '未收录不等于事件已解决',
+    omittedNoticeBody: (prev, curr) =>
+      `以下信号曾收录于 ${prev} 期，但未出现在 ${curr} 期中。未收录并不表示事件已经结束、解决或被撤回；点击任意信号将跳转至 ${prev} 期打开其原始档案。`,
+    omittedItemExplanation: (prev, curr) =>
+      `见于 ${prev} 期，未收录于 ${curr} 期；未收录不代表事件已解决或撤回。`,
+    newItemExplanation: (curr, claims, sources) =>
+      `于 ${curr} 期首次出现，附带 ${claims} 条结构化声明与 ${sources} 条来源记录。`,
+    unchangedItemExplanation: (prev) =>
+      `自 ${prev} 期以来无实质编辑变动；例行同步与来源访问时间不计为更新。`,
+    updatedReasonsPrefix: '变动维度',
+    evidenceToggleShow: '展开证据变动明细',
+    evidenceToggleHide: '收起证据变动明细',
+    evidenceSummaryClaims: (added, revised, withdrawn) => {
+      const parts: string[] = [];
+      if (added > 0) parts.push(`新增 ${added}`);
+      if (revised > 0) parts.push(`修订 ${revised}`);
+      if (withdrawn > 0) parts.push(`撤回 ${withdrawn}`);
+      return `声明：${parts.join(' / ')}`;
+    },
+    evidenceSummarySources: (added, revised, removed) => {
+      const parts: string[] = [];
+      if (added > 0) parts.push(`新增 ${added}`);
+      if (revised > 0) parts.push(`修订 ${revised}`);
+      if (removed > 0) parts.push(`移除 ${removed}`);
+      return `来源：${parts.join(' / ')}`;
+    },
+    addedClaimsLabel: '新增声明',
+    revisedClaimsLabel: '修订声明',
+    withdrawnClaimsLabel: '撤回声明',
+    addedSourcesLabel: '新增来源',
+    revisedSourcesLabel: '修订来源',
+    removedSourcesLabel: '移除来源',
+    routineMetadataNote:
+      '基于稳定 signal_id 进行确定性比对；例行期刊同步时间与来源抓取时间戳已排除。',
+    openCurrentDossier: '打开档案',
+    openPreviousDossier: (prev) => `在 ${prev} 期中打开`,
+    showAllCategory: (total, label) => `展开全部 ${total} 个${label}`,
+    showFewerCategory: '收起列表',
+    unavailableTitle: '暂无法生成跨期对比',
+    unavailableLocalPreview:
+      '每日变动监测仅对已归档期刊进行确定性比对；本地 Markdown 预览模式下不生成历史对比，也不虚构零值统计。',
+    unavailableNoPrevious: (curr) =>
+      curr
+        ? `${curr} 为当前档案库中最早一期，暂无更早期刊可供跨期对比。`
+        : '当前档案库中暂无更早期刊可供跨期对比。',
+    unavailableLoadFailed: (prev) =>
+      prev
+        ? `加载上一可用期刊（${prev}）失败，暂无法计算跨期变动。`
+        : '加载上一可用期刊失败，暂无法计算跨期变动。',
+    unavailableIncomplete: '当前期刊缺少完整的历史对比条件，暂无法生成跨期变动。',
+    retryComparison: '重试对比',
+    transitionImportance: (prev, curr) => `重要性 ${prev}/5 → ${curr}/5`,
+    transitionStatus: (prev, curr) => `状态：${prev} → ${curr}`,
+    transitionConfidence: (prev, curr) => `置信度：${prev} → ${curr}`,
+    headlineChangedNote: (prevHeadline) => `上期标题：“${prevHeadline}”`,
   },
   expanded: {
     title: '深度信号浏览器',

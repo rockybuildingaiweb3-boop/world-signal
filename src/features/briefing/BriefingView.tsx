@@ -23,11 +23,16 @@ import {
 import { domainAccentTextClass } from '../../lib/filtering/filterSignals';
 import { SignalMetaLine } from '../../components/editorial/SignalMetaLine';
 import { SafeMarkdown } from '../../components/editorial/SafeMarkdown';
+import type { DailyDeltaState } from '../../lib/intelligence/daily-delta/dailyDeltaHelpers';
+import { DailyDeltaSection } from './DailyDeltaSection';
 
 interface BriefingViewProps {
   edition: ParsedEdition;
   lang: UiLanguage;
+  dailyDelta: DailyDeltaState | null;
+  onRetryDailyDelta: () => void;
   onOpenSignal: (signalId: string) => void;
+  onOpenSignalInEdition: (editionDate: string, signalId: string) => void;
   onExploreDomain: (domain: SignalDomain) => void;
   onSwitchView: (view: ViewId) => void;
   onRefresh: () => void;
@@ -54,7 +59,10 @@ function formatEditorialIndex(rank: number): string {
 export const BriefingView: React.FC<BriefingViewProps> = ({
   edition,
   lang,
+  dailyDelta,
+  onRetryDailyDelta,
   onOpenSignal,
+  onOpenSignalInEdition,
   onExploreDomain,
   onSwitchView,
   onRefresh,
@@ -282,7 +290,15 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
         </div>
       </section>
 
-      {/* 2. Front-Page Hero: Lead Development + Executive Summary & Editorial Limitations */}
+      {/* 2. Daily Delta Cross-Edition Intelligence Module */}
+      <DailyDeltaSection
+        state={dailyDelta}
+        lang={lang}
+        onOpenSignalInEdition={onOpenSignalInEdition}
+        onRetry={onRetryDailyDelta}
+      />
+
+      {/* 3. Front-Page Hero: Lead Development + Executive Summary & Editorial Limitations */}
       <section className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-0 lg:items-start">
         {/* Primary Editorial Column: Lead Development */}
         {leadEntry && (
