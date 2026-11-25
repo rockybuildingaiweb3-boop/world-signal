@@ -44,7 +44,7 @@ Advance WORLD SIGNAL from a daily briefing reader into a longitudinal global int
 - Do not call an LLM, model API, GitHub API, or private service from the browser.
 - Read /data/editions-index.json and the Markdown path supplied by each index entry.
 - Reuse the pure intelligence engines; do not reimplement comparison logic inside React components.
-- Keep schema-v1 editions readable. Missing schema-v2 metadata in historical editions must be displayed as unavailable, never guessed.
+- Keep schema-v1 editions readable. Missing schema-v2 metadata in historical editions must be displayed as unavailable, never guessed. Schema-v2 continuity dates may be explicit `null` when the archive lookback is incomplete; respect `history_complete` and never fabricate a first-seen or last-update date.
 - A missing signal in a later edition is omitted, not resolved or retracted.
 - Signal identity is signal_id, not headline text.
 - A new source does not automatically mean independent corroboration. Continue using the single source-independence engine.
