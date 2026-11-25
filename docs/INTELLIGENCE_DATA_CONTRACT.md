@@ -21,13 +21,16 @@ The canonical source remains the daily Markdown edition in `content/editions/`. 
 
 ```yaml
 continuity:
-  first_seen_edition: "YYYY-MM-DD"
-  last_material_update: "YYYY-MM-DD"
+  first_seen_edition: null
+  last_material_update: null
+  history_complete: false
   lifecycle: "developing"
 ```
 
-- `first_seen_edition` is the earliest WORLD SIGNAL edition in which this signal ID appears. It is not the event start date.
-- `last_material_update` is the latest edition with a material factual, evidence, status, or analytical change. A routine sync does not move it.
+- `first_seen_edition` is the earliest WORLD SIGNAL edition in the complete available archive containing this ID, not the event start date. It is a date or explicit YAML `null` when the archive lookback is incomplete.
+- `last_material_update` is the latest edition with a verified material factual, evidence, status, or analytical change. It is a date or explicit `null` when not known; do not substitute today's date or the first-seen date merely to satisfy the field.
+- `history_complete` is required and boolean. Set it to `true` only after checking every available canonical edition for the ID. If the available lookback is incomplete, set it to `false` and disclose the limitation in Audit & Methodology.
+- When `history_complete` is `true`, both dates must be known. When false, either date may be null.
 - `lifecycle` is one of `new`, `developing`, `ongoing`, `monitoring`, `resolved`, `archived`.
 - Do not mark a story resolved merely because it is absent from a later edition.
 

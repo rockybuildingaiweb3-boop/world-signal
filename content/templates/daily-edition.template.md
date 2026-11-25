@@ -50,8 +50,9 @@ tags:
   - "tag-one"
 related_signal_ids: []
 continuity:
-  first_seen_edition: "YYYY-MM-DD"
-  last_material_update: "YYYY-MM-DD"
+  first_seen_edition: null
+  last_material_update: null
+  history_complete: false
   lifecycle: "developing"
 update:
   change_type: "initial"
@@ -154,8 +155,9 @@ tags:
   - "reasoning"
 related_signal_ids: []
 continuity:
-  first_seen_edition: "YYYY-MM-DD"
-  last_material_update: "YYYY-MM-DD"
+  first_seen_edition: null
+  last_material_update: null
+  history_complete: false
   lifecycle: "developing"
 update:
   change_type: "initial"
@@ -258,8 +260,9 @@ tags:
   - "inflation"
 related_signal_ids: []
 continuity:
-  first_seen_edition: "YYYY-MM-DD"
-  last_material_update: "YYYY-MM-DD"
+  first_seen_edition: null
+  last_material_update: null
+  history_complete: false
   lifecycle: "developing"
 update:
   change_type: "initial"

@@ -637,30 +637,63 @@ function parseSignalBlock(
   }
   let continuity: SignalContinuity | undefined;
   if (continuityRaw) {
-    const firstSeen = asString(continuityRaw.first_seen_edition);
-    const lastMaterialUpdate = asString(continuityRaw.last_material_update);
+    const firstSeen =
+      continuityRaw.first_seen_edition === null
+        ? null
+        : asString(continuityRaw.first_seen_edition);
+    const lastMaterialUpdate =
+      continuityRaw.last_material_update === null
+        ? null
+        : asString(continuityRaw.last_material_update);
     const rawLifecycle = asString(continuityRaw.lifecycle) as SignalLifecycle;
-    if (!isValidCalendarDate(firstSeen) || !isValidCalendarDate(lastMaterialUpdate)) {
+    const historyCompleteRaw = continuityRaw.history_complete;
+    const historyComplete =
+      typeof historyCompleteRaw === 'boolean' ? historyCompleteRaw : false;
+    const validFirstSeen = firstSeen === null || isValidCalendarDate(firstSeen);
+    const validLastUpdate =
+      lastMaterialUpdate === null || isValidCalendarDate(lastMaterialUpdate);
+    const issueSeverity = schemaVersion >= 2 ? 'error' : 'warning';
+
+    if (!validFirstSeen || !validLastUpdate) {
       issues.push({
-        severity: 'warning',
+        severity: issueSeverity,
         code: 'INVALID_SIGNAL_CONTINUITY_DATE',
         signalId,
-        message: `Signal "${signalId}" continuity dates must be valid YYYY-MM-DD calendar dates.`,
+        message: `Signal "${signalId}" continuity dates must be valid YYYY-MM-DD dates or explicit null values.`,
+      });
+    }
+    if (schemaVersion >= 2 && typeof historyCompleteRaw !== 'boolean') {
+      issues.push({
+        severity: 'error',
+        code: 'MISSING_V2_HISTORY_COMPLETENESS',
+        signalId,
+        message: `Schema-v2 signal "${signalId}" must declare continuity.history_complete as a boolean.`,
+      });
+    }
+    if (historyComplete && (!firstSeen || !lastMaterialUpdate)) {
+      issues.push({
+        severity: issueSeverity,
+        code: 'INCOMPLETE_HISTORY_WITH_COMPLETE_FLAG',
+        signalId,
+        message: `Signal "${signalId}" cannot mark history complete while first_seen_edition or last_material_update is unknown.`,
       });
     }
     if (!VALID_SIGNAL_LIFECYCLES.includes(rawLifecycle)) {
       issues.push({
-        severity: 'warning',
+        severity: issueSeverity,
         code: 'INVALID_SIGNAL_LIFECYCLE',
         signalId,
         message: `Signal "${signalId}" has unknown lifecycle "${rawLifecycle}".`,
       });
     }
-    if (isValidCalendarDate(firstSeen) && isValidCalendarDate(lastMaterialUpdate) &&
-        VALID_SIGNAL_LIFECYCLES.includes(rawLifecycle)) {
+    if (validFirstSeen && validLastUpdate &&
+        (typeof historyCompleteRaw === 'boolean' || schemaVersion < 2) &&
+        VALID_SIGNAL_LIFECYCLES.includes(rawLifecycle) &&
+        !(historyComplete && (!firstSeen || !lastMaterialUpdate))) {
       continuity = {
         first_seen_edition: firstSeen,
         last_material_update: lastMaterialUpdate,
+        history_complete: historyComplete,
         lifecycle: rawLifecycle,
       };
     }

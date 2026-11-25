@@ -59,6 +59,7 @@ describe('cross-edition intelligence projections', () => {
       'continuity:',
       '  first_seen_edition: "2026-10-01"',
       '  last_material_update: "2026-10-01"',
+      '  history_complete: true',
       '  lifecycle: "developing"',
       'update:',
       '  change_type: "initial"',

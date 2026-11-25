@@ -101,8 +101,9 @@ Every signal in a new or updated `schema_version: 2` edition must include these 
 
 ~~~yaml
 continuity:
-  first_seen_edition: "YYYY-MM-DD"
-  last_material_update: "YYYY-MM-DD"
+  first_seen_edition: null
+  last_material_update: null
+  history_complete: false
   lifecycle: "developing"
 update:
   change_type: "material_update"
@@ -120,8 +121,10 @@ relationships: []
 
 Use the exact rules in `docs/INTELLIGENCE_DATA_CONTRACT.md`:
 
-- `first_seen_edition` is the first WORLD SIGNAL edition containing the signal ID, not the real-world event start date. Do not invent missing historical dates.
-- `last_material_update` changes only when facts, evidence, status, or analysis materially change. A routine sync is not a material update.
+- `first_seen_edition` is the earliest WORLD SIGNAL edition containing the signal ID in the complete available archive, not the real-world event start date. Use explicit YAML `null` when the historical lookback is incomplete; never invent or substitute today's date.
+- `last_material_update` is the latest edition with a verified material factual, evidence, status, or analytical change. Use `null` if it cannot be established from the available history. A routine sync is not a material update.
+- `history_complete` must be `true` only after checking every available canonical edition for this signal ID. If only a subset of the archive or same-day revisions was checked, set it to `false`.
+- When `history_complete` is `true`, both continuity dates must be known. When it is `false`, either date may be `null`; disclose the lookback limitation in Audit & Methodology.
 - `lifecycle` must be one of `new`, `developing`, `ongoing`, `monitoring`, `resolved`, or `archived`. Use `resolved` only when evidence supports closure.
 - `change_type` must be one of `initial`, `material_update`, `status_change`, `new_evidence`, `correction`, or `no_material_change`. Do not call a headline rewrite a material update.
 - `previous_edition` means the prior dated edition in which this signal was recorded, when known. It does not mean an unverified timestamp.

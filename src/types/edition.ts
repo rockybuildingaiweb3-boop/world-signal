@@ -140,9 +140,11 @@ export interface SignalSource {
 
 export interface SignalContinuity {
   /** First WORLD SIGNAL edition in which this signal ID was recorded (not the event start date). */
-  first_seen_edition: string;
-  /** Most recent edition containing a material factual, evidence, status or analytical change. */
-  last_material_update: string;
+  first_seen_edition: string | null;
+  /** Most recent known edition with a material factual, evidence, status or analytical change. */
+  last_material_update: string | null;
+  /** True only when every available canonical edition was checked for this signal ID. */
+  history_complete: boolean;
   lifecycle: SignalLifecycle;
 }
 
