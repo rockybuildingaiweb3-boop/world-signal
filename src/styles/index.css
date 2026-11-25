@@ -1,158 +1,161 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:where(.dark, .dark *));
+@theme {
+  --font-display: "Newsreader", "Source Serif 4", "Noto Serif SC", "Songti SC", "STSong", Georgia, serif;
+  --font-serif: "Newsreader", "Source Serif 4", "Noto Serif SC", "Songti SC", Georgia, serif;
+  --font-sans: "Inter", "Noto Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
 
 /* ==========================================================================
-   WORLD SIGNAL — Signature Archival Broadsheet & Monograph Design System
-   Light: Archival Alabaster (#F8F6F1) + Crisp Paper (#FFFFFF) + Deep Ink
-   Dark:  Obsidian Slate (#0D1014) + Graphite Sheet (#14181F) + Alabaster Ink
-   Signature Editorial Punctuation: Archival Vermilion (#B43A24 / #E56B52)
+   WORLD SIGNAL — Phase 04 High-Fidelity Editorial Publication Design System
+   Archival Warm Broadsheet Paper (Light) · Nocturnal Ink Observatory (Dark)
    ========================================================================== */
 
 :root {
   color-scheme: light;
 
-  /* 60% Canvas & Surface Layers */
-  --ws-canvas: #f8f6f1;
-  --ws-surface: #ffffff;
-  --ws-surface-subtle: #f1ede4;
-  --ws-surface-elevated: #fcfbf8;
-  --ws-surface-hover: #ebe5d9;
+  /* Surfaces & Warm Archival Paper Palette */
+  --ws-canvas: #F8F6F1;
+  --ws-surface: #FFFFFF;
+  --ws-surface-subtle: #F2EFE7;
+  --ws-surface-elevated: #FCFBF8;
+  --ws-surface-hover: #EAE5DA;
 
-  /* Typography & Ink Hierarchy (WCAG AA+ verified) */
-  --ws-ink: #121417;
-  --ws-ink-secondary: #2e343c;
-  --ws-ink-muted: #59606b;
-  --ws-ink-faint: #757d88;
+  /* Ink & Typographic Contrast (WCAG AA/AAA) */
+  --ws-ink: #12151B;
+  --ws-ink-secondary: #2B333E;
+  --ws-ink-muted: #525C6B;
+  --ws-ink-faint: #758090;
 
-  /* Architectural Rules & Borders */
-  --ws-border: #dfd9cc;
-  --ws-border-strong: #c2b9a7;
-  --ws-border-subtle: #ebe6db;
-  --ws-rule-editorial: #121417;
+  /* Hairlines & Broadsheet Editorial Rules */
+  --ws-border: #DFD9CD;
+  --ws-border-subtle: #ECE7DD;
+  --ws-border-strong: #B9B0A0;
+  --ws-rule-editorial: #161A22;
 
-  /* Signature Editorial Punctuation (Lead marker & Masthead folio) */
-  --ws-editorial-accent: #b43a24;
-  --ws-editorial-accent-soft: #faeae6;
+  /* Signature Editorial Accent — Classic Archival Vermilion */
+  --ws-editorial-accent: #9E301B;
+  --ws-editorial-accent-soft: #F9EAE6;
 
-  /* Domain Semantic Signatures */
-  --ws-world: #1e4b7a;
-  --ws-world-soft: #eaf1f8;
-  --ws-world-border: #bdd0e6;
+  /* Domain Accents — Restrained, High-Contrast Print Tints */
+  --ws-world: #1B4B72;
+  --ws-world-soft: #EBF1F6;
+  --ws-ai: #4B387A;
+  --ws-ai-soft: #F1EEF8;
+  --ws-economy: #145946;
+  --ws-economy-soft: #E8F3EF;
 
-  --ws-ai: #54398e;
-  --ws-ai-soft: #f0ecf8;
-  --ws-ai-border: #cfc2e8;
+  /* Verification Confidence Semantics */
+  --ws-conf-high: #145946;
+  --ws-conf-medium: #8E5209;
+  --ws-conf-low: #A63322;
+  --ws-conf-unverified: #5A6472;
 
-  --ws-economy: #18634b;
-  --ws-economy-soft: #e9f5f0;
-  --ws-economy-border: #b8dacb;
+  /* System Semantics */
+  --ws-warn: #8E5209;
+  --ws-warn-soft: #FAF2E6;
+  --ws-error: #A63322;
+  --ws-error-soft: #FAEBE8;
 
-  /* Verification Confidence Tokens (Strictly separated from Importance) */
-  --ws-conf-high: #18634b;
-  --ws-conf-medium: #9a5d12;
-  --ws-conf-low: #b43a24;
-  --ws-conf-unverified: #5f6670;
-
-  /* Diagnostic & Caution Surfaces */
-  --ws-warn: #9a5d12;
-  --ws-warn-soft: #faf3e4;
-  --ws-warn-border: #e5cca0;
-  --ws-error: #a62626;
-  --ws-error-soft: #fbecec;
-  --ws-error-border: #e7b9b9;
-
-  /* Typography Stacks (CJK fallbacks included in mono so Chinese numerals always render) */
-  --font-display: "Fraunces", "Noto Serif SC", "Songti SC", "STSong", Georgia, serif;
-  --font-sans: "Plus Jakarta Sans", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: "IBM Plex Mono", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", ui-monospace, SFMono-Regular, Menlo, monospace;
-
-  /* Radius & Tactile Elevation */
+  /* Focus, Radius & Elevation */
+  --ws-focus-ring: #1B4B72;
   --ws-radius-sm: 3px;
   --ws-radius-md: 5px;
-  --ws-shadow-sm: 0 1px 2px rgba(18, 20, 23, 0.045);
-  --ws-shadow-md: 0 6px 20px -4px rgba(18, 20, 23, 0.08);
-  --ws-shadow-lg: 0 18px 42px -12px rgba(18, 20, 23, 0.16);
+  --ws-shadow-sm: 0 1px 2px rgba(18, 21, 27, 0.045);
+  --ws-shadow-drawer: -12px 0 36px rgba(18, 21, 27, 0.14);
 }
 
 .dark {
   color-scheme: dark;
 
-  --ws-canvas: #0d1014;
-  --ws-surface: #14181f;
-  --ws-surface-subtle: #1b212b;
-  --ws-surface-elevated: #171c24;
-  --ws-surface-hover: #222a36;
+  /* Surfaces & Nocturnal Ink Observatory */
+  --ws-canvas: #0D1015;
+  --ws-surface: #141820;
+  --ws-surface-subtle: #1A202B;
+  --ws-surface-elevated: #171C25;
+  --ws-surface-hover: #222937;
 
-  --ws-ink: #ece9e2;
-  --ws-ink-secondary: #c5cbd3;
-  --ws-ink-muted: #919aa6;
-  --ws-ink-faint: #737c89;
+  /* Ink & Typographic Contrast (WCAG AA/AAA) */
+  --ws-ink: #F2F0EA;
+  --ws-ink-secondary: #D4CFC4;
+  --ws-ink-muted: #9AA3B0;
+  --ws-ink-faint: #757F8E;
 
-  --ws-border: #262e3a;
-  --ws-border-strong: #394455;
-  --ws-border-subtle: #1d232d;
-  --ws-rule-editorial: #ece9e2;
+  /* Hairlines & Broadsheet Editorial Rules */
+  --ws-border: #262E3C;
+  --ws-border-subtle: #1D2430;
+  --ws-border-strong: #3E485B;
+  --ws-rule-editorial: #E6E1D6;
 
-  --ws-editorial-accent: #e56b52;
-  --ws-editorial-accent-soft: #2a1916;
+  /* Signature Editorial Accent — Luminous Vermilion */
+  --ws-editorial-accent: #E27A64;
+  --ws-editorial-accent-soft: #2A1916;
 
-  --ws-world: #73aef0;
-  --ws-world-soft: #152336;
-  --ws-world-border: #264161;
+  /* Domain Accents — Calibrated for Dark Paper Legibility */
+  --ws-world: #79B6E4;
+  --ws-world-soft: #132333;
+  --ws-ai: #B59DF2;
+  --ws-ai-soft: #1F1A30;
+  --ws-economy: #65C8A8;
+  --ws-economy-soft: #112721;
 
-  --ws-ai: #b79ff8;
-  --ws-ai-soft: #201a34;
-  --ws-ai-border: #3d3063;
+  /* Verification Confidence Semantics */
+  --ws-conf-high: #65C8A8;
+  --ws-conf-medium: #E8B15A;
+  --ws-conf-low: #EC8474;
+  --ws-conf-unverified: #9AA3B0;
 
-  --ws-economy: #5cc99f;
-  --ws-economy-soft: #122821;
-  --ws-economy-border: #224b3e;
+  /* System Semantics */
+  --ws-warn: #E8B15A;
+  --ws-warn-soft: #282012;
+  --ws-error: #EC8474;
+  --ws-error-soft: #2B1715;
 
-  --ws-conf-high: #5cc99f;
-  --ws-conf-medium: #e5af58;
-  --ws-conf-low: #e56b52;
-  --ws-conf-unverified: #9aa2ad;
+  /* Focus, Radius & Elevation */
+  --ws-focus-ring: #79B6E4;
+  --ws-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.32);
+  --ws-shadow-drawer: -12px 0 40px rgba(0, 0, 0, 0.56);
+}
 
-  --ws-warn: #e5af58;
-  --ws-warn-soft: #261f12;
-  --ws-warn-border: #4a3a1d;
-  --ws-error: #f07676;
-  --ws-error-soft: #2c1618;
-  --ws-error-border: #592629;
+@layer base {
+  html {
+    background-color: var(--ws-canvas);
+    color: var(--ws-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
 
-  --ws-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
-  --ws-shadow-md: 0 8px 24px -4px rgba(0, 0, 0, 0.5);
-  --ws-shadow-lg: 0 22px 48px -10px rgba(0, 0, 0, 0.68);
+  body {
+    margin: 0;
+    background-color: var(--ws-canvas);
+    color: var(--ws-ink);
+    min-height: 100vh;
+    overflow-x: clip;
+  }
+
+  /* High-visibility accessible focus rings */
+  :where(a, button, input, select, textarea, summary, [tabindex]:not([tabindex="-1"])):focus-visible {
+    outline: 2px solid var(--ws-focus-ring);
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
 }
 
 /* ==========================================================================
-   Base Document & Typography
+   Typography & Editorial Composition Utilities
    ========================================================================== */
-
-html {
-  background-color: var(--ws-canvas);
-  color: var(--ws-ink);
-  font-family: var(--font-sans);
-  font-size: 16px;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-  scroll-behavior: smooth;
-  overflow-x: clip;
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  background-color: var(--ws-canvas);
-  color: var(--ws-ink);
-  overflow-x: clip;
-  line-height: 1.65;
-}
 
 .font-display {
   font-family: var(--font-display);
+  font-optical-sizing: auto;
+}
+
+.font-serif-editorial {
+  font-family: var(--font-serif);
   font-optical-sizing: auto;
 }
 
@@ -161,149 +164,110 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
 .headline-balance {
   text-wrap: balance;
 }
 
-/* ==========================================================================
-   Editorial Kicker & Bilingual CJK Optical Adjustments
-   ========================================================================== */
+/* Prevent Chromium's text-wrap: balance from splitting 2-character CJK words across lines */
+[data-lang="zh-CN"] .headline-balance {
+  text-wrap: normal;
+  line-break: strict;
+}
 
+/* Editorial Eyebrow / Kicker — clean sans-serif uppercase for Latin, crisp weight for CJK */
 .ws-kicker {
   font-family: var(--font-sans);
-  font-variant-numeric: tabular-nums;
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.11em;
   text-transform: uppercase;
   line-height: 1.3;
 }
 
-/* CJK Optical Calibration: relaxed leading, tighter tracking, balanced display rhythm */
-[data-lang="zh-CN"] {
-  line-height: 1.74;
+/* Calibrated CJK Typography Rhythm */
+[data-lang="zh-CN"] .font-display {
+  letter-spacing: -0.005em;
+  line-height: 1.24;
 }
 
 [data-lang="zh-CN"] .ws-kicker {
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   text-transform: none;
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 0.75rem;
 }
 
-[data-lang="zh-CN"] .font-display {
-  letter-spacing: -0.005em;
-}
-
-[data-lang="zh-CN"] .ws-headline-cover {
-  line-height: 1.24;
-  letter-spacing: -0.01em;
-}
-
-[data-lang="zh-CN"] .ws-headline-dossier {
-  line-height: 1.28;
-  letter-spacing: -0.01em;
-}
-
-[data-lang="zh-CN"] .ws-prose {
-  line-height: 1.82;
-}
-
-.ws-headline-cover {
-  line-height: 1.1;
-  letter-spacing: -0.03em;
-}
-
-.ws-headline-dossier {
-  line-height: 1.16;
-  letter-spacing: -0.025em;
-}
-
-.ws-prose {
-  line-height: 1.74;
-}
-
-/* ==========================================================================
-   Signature Publication Primitives (Zero Left-Border Callout Clichés)
-   ========================================================================== */
-
-/* Double-rule broadsheet masthead frame */
+/* Signature Broadsheet Masthead Double-Rule */
 .ws-masthead-rule {
-  border-top: 2.5px solid var(--ws-rule-editorial);
-  border-bottom: 1px solid var(--ws-border-strong);
   position: relative;
+  border-top: 2.5px solid var(--ws-rule-editorial);
 }
 
-.ws-masthead-rule::before {
+.ws-masthead-rule::after {
   content: "";
-  position: absolute;
-  top: 2px;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background-color: var(--ws-border-strong);
-  pointer-events: none;
+  display: block;
+  margin-top: 3px;
+  border-top: 1px solid var(--ws-border-strong);
 }
 
-/* Crisp primary editorial section divider */
+/* Section Structural Rule */
 .ws-section-rule {
   border-top: 1.5px solid var(--ws-rule-editorial);
 }
 
-/* Elevated archival broadsheet sheet */
+/* Clean Editorial Card Surface (reserved for focused drawers/modals/floating controls) */
+.ws-card {
+  background-color: var(--ws-surface);
+  border: 1px solid var(--ws-border);
+  border-radius: var(--ws-radius-md);
+}
+
+/* Open Broadsheet Sheet — top-anchored editorial rule without heavy boxy framing */
 .ws-editorial-sheet {
   background-color: var(--ws-surface);
   border-top: 2px solid var(--ws-rule-editorial);
   border-bottom: 1px solid var(--ws-border);
 }
 
-/* Archival dossier folio note — calm hairline frame, no left accent bar */
-.ws-folio-note {
-  background-color: var(--ws-surface-subtle);
-  border: 1px solid var(--ws-border);
-  border-radius: var(--ws-radius-sm);
-}
-
-/* Editorial caution / limitations sheet — restrained amber hairline frame */
-.ws-caution-panel {
-  background-color: var(--ws-warn-soft);
-  border: 1px solid var(--ws-warn-border);
-  border-radius: var(--ws-radius-sm);
-}
-
-/* Editorial significance band — top & bottom hairlines, open canvas feel */
-.ws-significance-band {
-  border-top: 1px solid var(--ws-border-strong);
-  border-bottom: 1px solid var(--ws-border-strong);
+/* Quiet Editorial Folio Column — open tinted paper without heavy border/shadow chrome */
+.ws-folio-panel {
   background-color: var(--ws-surface-elevated);
+  border-top: 2px solid var(--ws-rule-editorial);
+  border-bottom: 1px solid var(--ws-border);
 }
 
-/* Standard subtle surface card */
-.ws-card {
+/* Editorial Plate Frame — crisp museum-print framing for architectural SVG plates */
+.ws-plate-frame {
   background-color: var(--ws-surface);
   border: 1px solid var(--ws-border);
-  border-radius: var(--ws-radius-sm);
-  box-shadow: var(--ws-shadow-sm);
+  border-top: 1.5px solid var(--ws-border-strong);
 }
 
-/* Quiet recessed editorial panel */
-.ws-editorial-panel {
-  background-color: var(--ws-surface-subtle);
-  border: 1px solid var(--ws-border);
-  border-radius: var(--ws-radius-sm);
+/* Prose Reading Rhythm (Optimized for both English and Simplified Chinese) */
+.ws-prose {
+  font-size: 0.96875rem; /* 15.5px */
+  line-height: 1.76;
+  color: var(--ws-ink-secondary);
 }
 
-/* Top reading progress hairline */
-.ws-progress-bar {
-  transform-origin: left center;
-  transition: transform 90ms linear;
+[data-lang="zh-CN"] .ws-prose {
+  font-size: 0.96875rem;
+  line-height: 1.84;
+  letter-spacing: 0.01em;
 }
 
-/* Restrained compositor-only view entrance (180ms, disabled under prefers-reduced-motion) */
-@keyframes wsViewEnter {
+.ws-prose p + p {
+  margin-top: 0.95rem;
+}
+
+/* Subtle Editorial View Entrance */
+@keyframes ws-view-enter {
   from {
     opacity: 0;
-    transform: translateY(4px);
+    transform: translateY(3px);
   }
   to {
     opacity: 1;
@@ -312,55 +276,30 @@ body {
 }
 
 .ws-view-enter {
-  animation: wsViewEnter 180ms cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-/* Optical dark-mode legibility compensation for long-form prose */
-.dark .ws-prose {
-  letter-spacing: 0.004em;
-}
-
-/* ==========================================================================
-   Accessibility, Focus & Motion Discipline
-   ========================================================================== */
-
-:focus-visible {
-  outline: 2px solid var(--ws-world);
-  outline-offset: 2px;
-  border-radius: 2px;
-}
-
-/* SVG keyboard focus indicator */
-svg [role="button"]:focus-visible,
-svg a:focus-visible {
-  outline: 2px solid var(--ws-world);
-  outline-offset: 2px;
+  animation: ws-view-enter 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+  .ws-view-enter {
+    animation: none;
   }
 }
 
-/* Restrained editorial scrollbar */
+/* Subtle Scrollbars for Sticky Desktop Index Rails */
 .ws-scroll::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
-
 .ws-scroll::-webkit-scrollbar-track {
   background: transparent;
 }
-
 .ws-scroll::-webkit-scrollbar-thumb {
   background: var(--ws-border-strong);
-  border-radius: 9999px;
+  border-radius: 3px;
+}
+.ws-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--ws-ink-faint);
 }
