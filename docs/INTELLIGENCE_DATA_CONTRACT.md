@@ -12,7 +12,7 @@ The canonical source remains the daily Markdown edition in `content/editions/`. 
 - Schema v2 is additive. It retains every v1 field and requires the structured metadata blocks defined below on every signal.
 - The parser accepts v1 and v2. Missing v2 fields in historical v1 editions are normal, not errors; missing required fields in a v2 signal are validation errors.
 - New or materially updated editions should use `schema_version: 2` and populate all v2 metadata fields for every signal.
-- Do not bulk-rewrite historical editions merely to fill new fields. Backfill only when the historical record supports the value; otherwise leave it unknown or use the earliest verified archive date.
+- Do not bulk-rewrite historical editions merely to fill new fields. Backfill only when the historical record supports the value. In a schema-v2 edition, represent an unknown continuity date as explicit null and set history_complete to false; never invent a date.
 - No client-side model/API calls. Comparison and indexing must be deterministic.
 
 ## Signal metadata extensions

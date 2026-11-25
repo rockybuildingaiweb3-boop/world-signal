@@ -133,7 +133,7 @@ Use the exact rules in `docs/INTELLIGENCE_DATA_CONTRACT.md`:
 - `relationships` must identify an explicit relationship type, confidence, rationale, and supporting claim IDs. A temporal coincidence is not causation. Use `potential_link` for an unproven hypothesis and `causal_link` only when the mechanism is supported by evidence.
 - Keep `related_signal_ids` for backward compatibility, but treat it only as a coarse contextual link.
 
-For historical schema-v1 editions, do not bulk-invent or fabricate metadata. Backfill only when the archive supports it; otherwise state that continuity is incomplete or leave a field unavailable.
+For historical schema-v1 editions, do not bulk-invent or fabricate metadata. For schema-v2 migration, use explicit null for any continuity date that cannot be verified and set history_complete to false; explain the limited historical lookback in Audit & Methodology. Never substitute a guessed date.
 
 ## 7. Required Markdown structure
 

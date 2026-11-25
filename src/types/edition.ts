@@ -139,7 +139,7 @@ export interface SignalSource {
 }
 
 export interface SignalContinuity {
-  /** First WORLD SIGNAL edition in which this signal ID was recorded (not the event start date). */
+  /** Earliest verified archive appearance; null when unavailable. This is not the real-world event start date. */
   first_seen_edition: string | null;
   /** Most recent known edition with a material factual, evidence, status or analytical change. */
   last_material_update: string | null;
