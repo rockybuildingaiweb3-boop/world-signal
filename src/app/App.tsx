@@ -46,6 +46,7 @@ export const App: React.FC = () => {
     archive.edition?.frontmatter.content_language
   );
   const t = getUiStrings(lang);
+  const handleCloseArchive = useCallback(() => setArchiveOpen(false), []);
 
   // Keep URL query state cleanly synced for shareable edition, view, and signal deep links
   useEffect(() => {
@@ -74,6 +75,7 @@ export const App: React.FC = () => {
     );
   }, [
     activeView,
+    archive.isLoading,
     archive.activeEntry?.date,
     archive.edition?.frontmatter.edition_date,
     archive.edition?.isLocalPreview,
@@ -276,7 +278,7 @@ export const App: React.FC = () => {
 
       <ArchiveDrawer
         isOpen={archiveOpen}
-        onClose={() => setArchiveOpen(false)}
+        onClose={handleCloseArchive}
         editions={archive.index?.editions ?? []}
         latestDate={archive.index?.latest_edition ?? null}
         selectedDate={archive.activeEntry?.date ?? null}
