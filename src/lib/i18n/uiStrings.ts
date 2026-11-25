@@ -66,6 +66,10 @@ export interface UiDictionary {
     openExpandedDesc: string;
     openSynthesisDesc: string;
     openAuditDesc: string;
+    summaryExpand: string;
+    summaryCollapse: string;
+    limitationsExpand: (count: number) => string;
+    limitationsCollapse: string;
   };
   expanded: {
     title: string;
@@ -318,6 +322,11 @@ const EN_DICT: UiDictionary = {
     openExpandedDesc: 'Inspect full timelines, claims, source perspectives, and scenarios across all signals.',
     openSynthesisDesc: 'Review cross-domain causal threads, horizon impacts, personal implications, and the watchlist.',
     openAuditDesc: 'Inspect deduplicated reporting origins, claim-to-source provenance, corrections, and open questions.',
+    summaryExpand: 'Read full summary',
+    summaryCollapse: 'Show less',
+    limitationsExpand: (count) =>
+      count > 1 ? `Read all ${count} editorial notes` : 'Read full editorial note',
+    limitationsCollapse: 'Collapse editorial notes',
   },
   expanded: {
     title: 'Signal Explorer',
@@ -629,6 +638,11 @@ const ZH_DICT: UiDictionary = {
     openExpandedDesc: '逐条查看全部信号的时间线、声明核验、来源视角与情景推演。',
     openSynthesisDesc: '浏览有证据支持的跨领域因果链、时间维度影响、个人启示与观察清单。',
     openAuditDesc: '核查去重后的独立报道源、声明到来源的完整证据链、更正记录与未解问题。',
+    summaryExpand: '展开完整提要',
+    summaryCollapse: '收起完整提要',
+    limitationsExpand: (count) =>
+      count > 1 ? `展开全部 ${count} 条局限与更新说明` : '展开完整说明',
+    limitationsCollapse: '收起说明',
   },
   expanded: {
     title: '深度信号浏览器',

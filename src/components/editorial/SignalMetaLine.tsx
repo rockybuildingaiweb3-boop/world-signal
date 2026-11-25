@@ -11,6 +11,7 @@ interface SignalMetaLineProps {
   lang: UiLanguage;
   showClaims?: boolean;
   compact?: boolean;
+  hideDomain?: boolean;
 }
 
 /**
@@ -22,41 +23,48 @@ export const SignalMetaLine: React.FC<SignalMetaLineProps> = ({
   lang,
   showClaims = false,
   compact = false,
+  hideDomain = false,
 }) => {
   const t = getUiStrings(lang);
 
   return (
     <div
-      className={`flex flex-wrap items-center gap-x-2 gap-y-1 font-mono-tabular ${
+      className={`flex flex-wrap items-center gap-x-2 gap-y-0.5 font-mono-tabular leading-snug ${
         compact ? 'text-[11px]' : 'text-[12px]'
       } text-[var(--ws-ink-muted)]`}
     >
-      <span className={`font-semibold tracking-tight ${domainAccentTextClass(signal.domain)}`}>
-        {t.domains[signal.domain]}
-      </span>
-      <span aria-hidden="true" className="opacity-45">
-        ·
-      </span>
+      {!hideDomain && (
+        <>
+          <span
+            className={`font-semibold tracking-tight ${domainAccentTextClass(signal.domain)}`}
+          >
+            {t.domains[signal.domain]}
+          </span>
+          <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
+            ·
+          </span>
+        </>
+      )}
       <span className="font-semibold text-[var(--ws-ink)]">
         {t.metaLine.importance(signal.importance)}
       </span>
-      <span aria-hidden="true" className="opacity-45">
+      <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
         ·
       </span>
       <span className={`font-medium ${confidenceColorClass(signal.confidence.overall)}`}>
         {t.metaLine.confidence(t.confidence[signal.confidence.overall])}
       </span>
-      <span aria-hidden="true" className="opacity-45">
+      <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
         ·
       </span>
       <span>{t.signalStatus[signal.status]}</span>
-      <span aria-hidden="true" className="opacity-45">
+      <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
         ·
       </span>
       <span>{t.metaLine.origins(signal.independentOriginCount)}</span>
       {showClaims && (
         <>
-          <span aria-hidden="true" className="opacity-45">
+          <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
             ·
           </span>
           <span>{t.metaLine.claims(signal.claims.length)}</span>

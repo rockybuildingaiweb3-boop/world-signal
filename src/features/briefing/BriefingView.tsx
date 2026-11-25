@@ -36,6 +36,21 @@ interface BriefingViewProps {
 
 const DOMAINS: readonly SignalDomain[] = ['world', 'ai', 'economy'];
 
+function domainAccentRuleClass(domain: SignalDomain): string {
+  switch (domain) {
+    case 'world':
+      return 'bg-[var(--ws-world)]';
+    case 'ai':
+      return 'bg-[var(--ws-ai)]';
+    case 'economy':
+      return 'bg-[var(--ws-economy)]';
+  }
+}
+
+function formatEditorialIndex(rank: number): string {
+  return String(rank).padStart(2, '0');
+}
+
 export const BriefingView: React.FC<BriefingViewProps> = ({
   edition,
   lang,
@@ -47,10 +62,25 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
 }) => {
   const t = getUiStrings(lang);
   const [summaryExpanded, setSummaryExpanded] = React.useState(false);
+  const [limitationsExpanded, setLimitationsExpanded] = React.useState(false);
+
+  // Reset progressive disclosures when switching editions
+  React.useEffect(() => {
+    setSummaryExpanded(false);
+    setLimitationsExpanded(false);
+  }, [edition.frontmatter.edition_date, edition.frontmatter.updated_at]);
 
   const summarySource =
     edition.executiveBriefing.summaryText || edition.frontmatter.summary;
-  const isLongSummary = summarySource.length > 320;
+  const isLongSummary = summarySource.length > 300;
+
+  const caveatsCombinedLength = React.useMemo(
+    () =>
+      edition.executiveBriefing.caveats.reduce((sum, item) => sum + item.length, 0),
+    [edition.executiveBriefing.caveats]
+  );
+  const isLongCaveats =
+    caveatsCombinedLength > 260 || edition.executiveBriefing.caveats.length > 1;
 
   const signalById = React.useMemo(() => {
     const map = new Map<string, ParsedSignal>();
@@ -83,6 +113,9 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
 
   const leadEntry = orderedTopEntries[0] ?? null;
   const secondaryTopEntries = orderedTopEntries.slice(1);
+  const featuredSecondary = secondaryTopEntries.slice(0, 2);
+  const remainingSecondary = secondaryTopEntries.slice(2);
+
   const topIdSet = React.useMemo(
     () => new Set(orderedTopEntries.map((e) => e.signal.signal_id)),
     [orderedTopEntries]
@@ -123,67 +156,41 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
     edition.validation.errors.length + edition.validation.warnings.length;
 
   return (
-    <div className="space-y-12 pb-16">
-      {/* 1. Editorial Masthead Strip */}
-      <section className="border-b border-[var(--ws-border)] pb-6 pt-2">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div className="space-y-2">
-            <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono-tabular text-[12px] text-[var(--ws-ink-muted)]">
-              <span className="font-semibold text-[var(--ws-ink)]">
-                {formatEditionDate(edition.frontmatter.edition_date, lang)}
-              </span>
-              <span aria-hidden="true" className="opacity-45">
-                ·
-              </span>
-              <span>{syncLabel}</span>
-              <span aria-hidden="true" className="opacity-45">
-                ·
-              </span>
-              <span>{statusLabel}</span>
-              {edition.isLocalPreview && (
-                <>
-                  <span aria-hidden="true" className="opacity-45">
-                    ·
-                  </span>
-                  <span className="font-semibold text-[var(--ws-warn)]">
-                    {t.archive.localPreviewActive}
-                  </span>
-                </>
-              )}
-            </div>
-            <h1 className="font-display text-2xl sm:text-3xl font-semibold tracking-[-0.02em] text-[var(--ws-ink)] headline-balance break-words">
-              {edition.frontmatter.edition_title}
-            </h1>
-            <p className="text-xs font-mono-tabular text-[var(--ws-ink-muted)]">
-              {t.masthead.updatedLabel}:{' '}
-              <span className="text-[var(--ws-ink-secondary)]">
-                {formatPublicationTimestamp(edition.frontmatter.updated_at, lang)}
-              </span>
-              {edition.frontmatter.coverage_window_start && (
-                <>
-                  {' '}
-                  <span aria-hidden="true" className="mx-1.5 opacity-45">
-                    |
-                  </span>{' '}
-                  {t.masthead.coverageWindowLabel}:{' '}
-                  <span className="text-[var(--ws-ink-secondary)]">
-                    {formatCoverageWindow(
-                      edition.frontmatter.coverage_window_start,
-                      edition.frontmatter.coverage_window_end,
-                      lang
-                    )}
-                  </span>
-                </>
-              )}
-            </p>
+    <div className="space-y-12 sm:space-y-14 pb-20">
+      {/* 1. Editorial Broadsheet Masthead */}
+      <section className="ws-masthead-rule py-4 sm:py-5 space-y-3.5">
+        {/* Top Dateline & Edition Scope Folio */}
+        <div className="flex flex-col gap-2.5 lg:flex-row lg:items-center lg:justify-between border-b border-[var(--ws-border-subtle)] pb-3">
+          <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono-tabular text-[12px] text-[var(--ws-ink-muted)]">
+            <span className="font-semibold text-[var(--ws-ink)]">
+              {formatEditionDate(edition.frontmatter.edition_date, lang)}
+            </span>
+            <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
+              ·
+            </span>
+            <span>{syncLabel}</span>
+            <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
+              ·
+            </span>
+            <span>{statusLabel}</span>
+            {edition.isLocalPreview && (
+              <>
+                <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
+                  ·
+                </span>
+                <span className="font-semibold text-[var(--ws-warn)]">
+                  {t.archive.localPreviewActive}
+                </span>
+              </>
+            )}
           </div>
 
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-mono-tabular text-[var(--ws-ink-muted)]">
-            <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+          <div className="flex flex-wrap items-center gap-x-3.5 gap-y-2 text-[11.5px] font-mono-tabular text-[var(--ws-ink-muted)]">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
               <span className="font-semibold text-[var(--ws-ink)]">
                 {t.masthead.signalsCount(edition.signals.length)}
               </span>
-              <span aria-hidden="true" className="opacity-40">
+              <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
                 ·
               </span>
               <span>
@@ -191,11 +198,11 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                   edition.independenceSummary.independentOriginCount
                 )}
               </span>
-              <span aria-hidden="true" className="opacity-40">
+              <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
                 ·
               </span>
               <span>{t.masthead.claimsCount(totalClaims)}</span>
-              <span aria-hidden="true" className="opacity-40">
+              <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
                 ·
               </span>
               <span>
@@ -203,63 +210,114 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
               </span>
             </div>
 
-            {!edition.isLocalPreview && (
-              <button
-                type="button"
-                onClick={onRefresh}
-                disabled={isRefreshing}
-                className="inline-flex items-center gap-1.5 rounded border border-[var(--ws-border)] bg-[var(--ws-surface)] px-2.5 py-1 text-[11.5px] font-medium text-[var(--ws-ink)] hover:border-[var(--ws-border-strong)] disabled:opacity-50 cursor-pointer"
-              >
-                <RefreshCw className={`h-3 w-3 ${isRefreshing ? 'animate-spin' : ''}`} />
-                {isRefreshing ? t.archive.refreshing : t.archive.refreshEdition}
-              </button>
-            )}
-
             {diagnosticCount > 0 && (
               <button
                 type="button"
                 onClick={() => onSwitchView('audit')}
-                className="inline-flex items-center gap-1 text-[11.5px] text-[var(--ws-warn)] underline decoration-dotted underline-offset-2 hover:opacity-80 cursor-pointer"
+                className="inline-flex items-center gap-1 text-[11.5px] text-[var(--ws-warn)] underline decoration-dotted underline-offset-2 hover:opacity-80 transition-opacity cursor-pointer"
               >
-                <AlertCircle className="h-3 w-3" />
-                {t.masthead.diagnosticsLink(
-                  edition.validation.errors.length,
-                  edition.validation.warnings.length
-                )}
+                <AlertCircle className="h-3 w-3 shrink-0" />
+                <span>
+                  {t.masthead.diagnosticsLink(
+                    edition.validation.errors.length,
+                    edition.validation.warnings.length
+                  )}
+                </span>
               </button>
             )}
           </div>
         </div>
+
+        {/* Publication Edition Heading & Operational Timestamps */}
+        <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+          <div className="space-y-1.5 min-w-0">
+            <h1 className="font-display text-xl sm:text-[1.5rem] font-semibold leading-tight tracking-[-0.015em] text-[var(--ws-ink)] headline-balance">
+              {edition.frontmatter.edition_title}
+            </h1>
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11.5px] font-mono-tabular text-[var(--ws-ink-muted)]">
+              <span className="sm:whitespace-nowrap">
+                {t.masthead.updatedLabel}:{' '}
+                <span className="text-[var(--ws-ink-secondary)]">
+                  {formatPublicationTimestamp(edition.frontmatter.updated_at, lang)}
+                </span>
+              </span>
+              {edition.frontmatter.coverage_window_start && (
+                <>
+                  <span
+                    aria-hidden="true"
+                    className="hidden sm:inline text-[var(--ws-ink-faint)]"
+                  >
+                    |
+                  </span>
+                  <span className="sm:whitespace-nowrap">
+                    {t.masthead.coverageWindowLabel}:{' '}
+                    <span className="text-[var(--ws-ink-secondary)]">
+                      {formatCoverageWindow(
+                        edition.frontmatter.coverage_window_start,
+                        edition.frontmatter.coverage_window_end,
+                        lang
+                      )}
+                    </span>
+                  </span>
+                </>
+              )}
+            </div>
+          </div>
+
+          {!edition.isLocalPreview && (
+            <button
+              type="button"
+              onClick={onRefresh}
+              disabled={isRefreshing}
+              className="inline-flex self-start md:self-auto min-h-[34px] items-center gap-1.5 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-3 py-1.5 text-[11.5px] font-mono-tabular font-medium text-[var(--ws-ink-secondary)] hover:text-[var(--ws-ink)] hover:border-[var(--ws-border-strong)] hover:bg-[var(--ws-surface-hover)] disabled:opacity-50 transition-colors duration-150 cursor-pointer shrink-0"
+            >
+              <RefreshCw
+                className={`h-3 w-3 shrink-0 ${isRefreshing ? 'animate-spin' : ''}`}
+              />
+              <span>
+                {isRefreshing ? t.archive.refreshing : t.archive.refreshEdition}
+              </span>
+            </button>
+          )}
+        </div>
       </section>
 
-      {/* 2. Lead Development + Executive Summary & Limitations */}
-      <section className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-start">
-        {/* Primary Column: Lead Development */}
+      {/* 2. Front-Page Hero: Lead Development + Executive Summary & Editorial Limitations */}
+      <section className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-0 lg:items-start">
+        {/* Primary Editorial Column: Lead Development */}
         {leadEntry && (
-          <article className="lg:col-span-7 ws-card p-6 sm:p-8 space-y-5">
-            <div className="flex items-center justify-between gap-3">
-              <span className="font-mono-tabular text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--ws-ink-muted)]">
-                {t.briefing.leadKicker}
-              </span>
-              <span className="font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+          <article className="lg:col-span-7 lg:border-r lg:border-[var(--ws-border)] lg:pr-10 space-y-5">
+            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+              <div className="flex items-center gap-2.5 shrink-0">
+                <span
+                  aria-hidden="true"
+                  className={`inline-block h-[2px] w-5 ${domainAccentRuleClass(
+                    leadEntry.signal.domain
+                  )}`}
+                />
+                <span className="font-mono-tabular text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ws-ink-muted)] whitespace-nowrap">
+                  {t.briefing.leadKicker}
+                </span>
+              </div>
+              <span className="font-mono-tabular text-[11px] text-[var(--ws-ink-faint)] whitespace-nowrap">
                 {leadEntry.signal.signal_id}
               </span>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-3.5">
               <SignalMetaLine signal={leadEntry.signal} lang={lang} showClaims />
-              <h2 className="font-display text-2xl sm:text-[2rem] font-semibold leading-[1.2] tracking-[-0.02em] text-[var(--ws-ink)] headline-balance break-words">
+              <h2 className="font-display text-[1.75rem] sm:text-[2.2rem] lg:text-[2.45rem] font-semibold leading-[1.2] tracking-[-0.025em] text-[var(--ws-ink)] headline-balance">
                 <button
                   type="button"
                   onClick={() => onOpenSignal(leadEntry.signal.signal_id)}
-                  className="text-left hover:underline decoration-[var(--ws-border-strong)] underline-offset-4 cursor-pointer"
+                  className="text-left hover:underline decoration-[var(--ws-border-strong)] decoration-[1.5px] underline-offset-[6px] cursor-pointer"
                 >
                   {leadEntry.signal.headline}
                 </button>
               </h2>
             </div>
 
-            <div className="border-t border-[var(--ws-border)] pt-4">
+            <div className="max-w-[64ch] border-t border-[var(--ws-border-subtle)] pt-5 text-[15px] sm:text-[15.5px]">
               <SafeMarkdown
                 content={leadEntry.editorialSummary}
                 onSelectSignal={onOpenSignal}
@@ -267,31 +325,40 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
             </div>
 
             {leadEntry.signal.confidence.rationale && (
-              <p className="text-xs leading-relaxed text-[var(--ws-ink-muted)]">
-                <span className="font-semibold text-[var(--ws-ink-secondary)]">
-                  {t.expanded.confidenceRationaleTitle}:{' '}
-                </span>
-                {leadEntry.signal.confidence.rationale}
-              </p>
+              <div className="max-w-[64ch] border-t border-[var(--ws-border-subtle)] pt-4">
+                <p className="text-[12.5px] leading-relaxed text-[var(--ws-ink-muted)]">
+                  <span className="font-semibold text-[var(--ws-ink-secondary)]">
+                    {t.expanded.confidenceRationaleTitle}:{' '}
+                  </span>
+                  {leadEntry.signal.confidence.rationale}
+                </p>
+              </div>
             )}
 
             <div className="pt-1">
               <button
                 type="button"
                 onClick={() => onOpenSignal(leadEntry.signal.signal_id)}
-                className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--ws-ink)] hover:text-[var(--ws-world)] transition-colors cursor-pointer"
+                className="group inline-flex min-h-[38px] items-center gap-2 text-[13.5px] font-semibold text-[var(--ws-ink)] hover:text-[var(--ws-world)] transition-colors duration-150 cursor-pointer"
               >
-                <span>{t.briefing.readDossier}</span>
-                <ArrowRight className="h-4 w-4" />
+                <span className="border-b border-[var(--ws-rule-editorial)] pb-0.5 group-hover:border-[var(--ws-world)] transition-colors duration-150">
+                  {t.briefing.readDossier}
+                </span>
+                <ArrowRight className="h-4 w-4 transition-transform duration-150 group-hover:translate-x-0.5" />
               </button>
             </div>
           </article>
         )}
 
-        {/* Secondary Column: Executive Summary & Editorial Limitations */}
-        <aside className={`${leadEntry ? 'lg:col-span-5' : 'lg:col-span-12'} space-y-5`}>
-          <div className="ws-card-subtle p-6 space-y-3">
-            <h2 className="font-mono-tabular text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--ws-ink-muted)]">
+        {/* Complementary Column: Executive Summary & Editorial Limitations */}
+        <aside
+          className={`${
+            leadEntry ? 'lg:col-span-5 lg:pl-10' : 'lg:col-span-12'
+          } space-y-6`}
+        >
+          {/* Executive Summary */}
+          <div className="space-y-3 border-t border-[var(--ws-border)] pt-6 lg:border-t-0 lg:pt-0">
+            <h2 className="font-mono-tabular text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ws-ink-muted)]">
               {t.briefing.executiveSummaryTitle}
             </h2>
             <div className={!summaryExpanded && isLongSummary ? 'line-clamp-6' : ''}>
@@ -305,25 +372,24 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
               <button
                 type="button"
                 onClick={() => setSummaryExpanded((prev) => !prev)}
-                className="font-mono-tabular text-xs font-medium text-[var(--ws-world)] hover:underline underline-offset-2 cursor-pointer"
+                className="font-mono-tabular text-[11.5px] font-medium text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
               >
-                {summaryExpanded
-                  ? lang === 'zh-CN'
-                    ? '收起完整提要'
-                    : 'Show less'
-                  : lang === 'zh-CN'
-                    ? '展开完整提要'
-                    : 'Read full summary'}
+                {summaryExpanded ? t.briefing.summaryCollapse : t.briefing.summaryExpand}
               </button>
             )}
           </div>
 
+          {/* Editorial Limitations — Calm Archival Callout */}
           {edition.executiveBriefing.caveats.length > 0 && (
-            <div className="rounded-md border border-[var(--ws-warn-border)] bg-[var(--ws-warn-soft)] p-5 space-y-2.5">
-              <h3 className="font-mono-tabular text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--ws-warn)]">
+            <div className="ws-caution-panel p-5 space-y-2.5">
+              <h3 className="font-mono-tabular text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--ws-warn)]">
                 {t.briefing.editorialLimitationsTitle}
               </h3>
-              <div className="space-y-2">
+              <div
+                className={`space-y-2.5 ${
+                  !limitationsExpanded && isLongCaveats ? 'line-clamp-5' : ''
+                }`}
+              >
                 {edition.executiveBriefing.caveats.map((caveat, idx) => (
                   <SafeMarkdown
                     key={idx}
@@ -333,94 +399,226 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                   />
                 ))}
               </div>
+              {isLongCaveats && (
+                <button
+                  type="button"
+                  onClick={() => setLimitationsExpanded((prev) => !prev)}
+                  className="pt-0.5 font-mono-tabular text-[11.5px] font-medium text-[var(--ws-warn)] hover:underline underline-offset-4 cursor-pointer"
+                >
+                  {limitationsExpanded
+                    ? t.briefing.limitationsCollapse
+                    : t.briefing.limitationsExpand(
+                        edition.executiveBriefing.caveats.length
+                      )}
+                </button>
+              )}
             </div>
           )}
         </aside>
       </section>
 
-      {/* 3. Editorially Selected Top Signals (Remaining items in exact edition order) */}
+      {/* 3. Editorially Selected Top Signals (Hierarchical Broadsheet Grid, Exact Edition Order) */}
       {secondaryTopEntries.length > 0 && (
-        <section className="space-y-5">
-          <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[var(--ws-border)] pb-3">
-            <h2 className="font-display text-xl font-semibold text-[var(--ws-ink)]">
+        <section className="ws-section-rule pt-7 space-y-7">
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <h2 className="font-display text-[1.35rem] sm:text-2xl font-semibold tracking-[-0.015em] text-[var(--ws-ink)]">
               {t.briefing.topSignalsTitle}
             </h2>
-            <span className="font-mono-tabular text-xs text-[var(--ws-ink-muted)]">
+            <span className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
               {t.briefing.topSignalsNote}
             </span>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            {secondaryTopEntries.map(({ signal, editorialSummary }, idx) => (
-              <article
-                key={signal.signal_id}
-                className="ws-card p-5 sm:p-6 flex flex-col justify-between gap-4 hover:border-[var(--ws-border-strong)] transition-colors"
-              >
-                <div className="space-y-2.5">
-                  <div className="flex items-center justify-between gap-2 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
-                    <span>0{idx + 2}</span>
-                    <span>{signal.signal_id}</span>
+          {/* Tier 2 Featured Secondary Dispatches (Signals 02 & 03) */}
+          <div
+            className={`grid grid-cols-1 gap-8 ${
+              featuredSecondary.length > 1
+                ? 'lg:grid-cols-12 lg:gap-0'
+                : ''
+            }`}
+          >
+            {featuredSecondary.map(({ signal, editorialSummary }, idx) => {
+              const isFirstSecondary = idx === 0;
+              const colClass =
+                featuredSecondary.length === 1
+                  ? ''
+                  : isFirstSecondary
+                  ? 'lg:col-span-7 lg:border-r lg:border-[var(--ws-border)] lg:pr-9'
+                  : 'lg:col-span-5 lg:pl-9 border-t border-[var(--ws-border)] pt-7 lg:border-t-0 lg:pt-0';
+
+              return (
+                <article
+                  key={signal.signal_id}
+                  className={`${colClass} flex flex-col justify-between gap-4`}
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2 font-mono-tabular text-[11px] font-semibold text-[var(--ws-ink-muted)]">
+                        <span
+                          aria-hidden="true"
+                          className={`inline-block h-[2px] w-3.5 ${domainAccentRuleClass(
+                            signal.domain
+                          )}`}
+                        />
+                        <span>{formatEditorialIndex(idx + 2)}</span>
+                      </div>
+                      <span className="font-mono-tabular text-[11px] text-[var(--ws-ink-faint)]">
+                        {signal.signal_id}
+                      </span>
+                    </div>
+
+                    <SignalMetaLine signal={signal} lang={lang} compact />
+
+                    <h3
+                      className={`font-display font-semibold text-[var(--ws-ink)] headline-balance ${
+                        isFirstSecondary
+                          ? 'text-[1.3rem] sm:text-[1.45rem] leading-[1.26] tracking-[-0.018em]'
+                          : 'text-[1.15rem] sm:text-[1.275rem] leading-[1.3] tracking-[-0.015em]'
+                      }`}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => onOpenSignal(signal.signal_id)}
+                        className="text-left hover:underline decoration-[var(--ws-border-strong)] underline-offset-4 cursor-pointer"
+                      >
+                        {signal.headline}
+                      </button>
+                    </h3>
+
+                    <div className="max-w-[60ch]">
+                      <SafeMarkdown
+                        content={editorialSummary}
+                        compact
+                        onSelectSignal={onOpenSignal}
+                      />
+                    </div>
                   </div>
-                  <SignalMetaLine signal={signal} lang={lang} compact />
-                  <h3 className="font-display text-lg font-semibold leading-snug text-[var(--ws-ink)] break-words">
+
+                  <div className="flex items-center justify-between border-t border-[var(--ws-border-subtle)] pt-3 text-xs">
+                    <span className="font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                      {t.metaLine.claims(signal.claims.length)}
+                    </span>
                     <button
                       type="button"
                       onClick={() => onOpenSignal(signal.signal_id)}
-                      className="text-left hover:underline decoration-[var(--ws-border-strong)] underline-offset-4 cursor-pointer"
+                      className="group inline-flex items-center gap-1.5 font-semibold text-[var(--ws-ink)] hover:text-[var(--ws-world)] transition-colors duration-150 cursor-pointer"
                     >
-                      {signal.headline}
+                      <span>{t.briefing.readDossier}</span>
+                      <ArrowRight className="h-3.5 w-3.5 transition-transform duration-150 group-hover:translate-x-0.5" />
                     </button>
-                  </h3>
-                  <SafeMarkdown
-                    content={editorialSummary}
-                    compact
-                    onSelectSignal={onOpenSignal}
-                  />
-                </div>
-
-                <div className="pt-1 border-t border-[var(--ws-border)] flex items-center justify-between text-xs">
-                  <span className="font-mono-tabular text-[var(--ws-ink-muted)]">
-                    {t.metaLine.claims(signal.claims.length)}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => onOpenSignal(signal.signal_id)}
-                    className="inline-flex items-center gap-1.5 font-semibold text-[var(--ws-ink)] hover:text-[var(--ws-world)] cursor-pointer"
-                  >
-                    {t.briefing.readDossier}
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </button>
-                </div>
-              </article>
-            ))}
+                  </div>
+                </article>
+              );
+            })}
           </div>
+
+          {/* Tier 3 Additional Top Signals (Signals 04+) */}
+          {remainingSecondary.length > 0 && (
+            <div className="border-t border-[var(--ws-border)] pt-7 grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-0">
+              {remainingSecondary.map(({ signal, editorialSummary }, idx) => {
+                const isLeftCol = idx % 2 === 0;
+                const isSecondRowOrLater = idx >= 2;
+                return (
+                  <article
+                    key={signal.signal_id}
+                    className={`flex flex-col justify-between gap-4 ${
+                      isLeftCol
+                        ? 'md:border-r md:border-[var(--ws-border)] md:pr-8'
+                        : 'md:pl-8 border-t border-[var(--ws-border-subtle)] pt-6 md:border-t-0 md:pt-0'
+                    } ${
+                      isSecondRowOrLater
+                        ? 'md:border-t md:border-[var(--ws-border)] md:pt-7 md:mt-7'
+                        : ''
+                    }`}
+                  >
+                    <div className="space-y-2.5">
+                      <div className="flex items-center justify-between gap-2 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                        <div className="flex items-center gap-2 font-semibold">
+                          <span
+                            aria-hidden="true"
+                            className={`inline-block h-[2px] w-3 ${domainAccentRuleClass(
+                              signal.domain
+                            )}`}
+                          />
+                          <span>{formatEditorialIndex(idx + 4)}</span>
+                        </div>
+                        <span className="text-[var(--ws-ink-faint)]">
+                          {signal.signal_id}
+                        </span>
+                      </div>
+
+                      <SignalMetaLine signal={signal} lang={lang} compact />
+
+                      <h3 className="font-display text-[1.1rem] sm:text-[1.1875rem] font-semibold leading-[1.32] tracking-[-0.012em] text-[var(--ws-ink)] headline-balance">
+                        <button
+                          type="button"
+                          onClick={() => onOpenSignal(signal.signal_id)}
+                          className="text-left hover:underline decoration-[var(--ws-border-strong)] underline-offset-4 cursor-pointer"
+                        >
+                          {signal.headline}
+                        </button>
+                      </h3>
+
+                      <SafeMarkdown
+                        content={editorialSummary}
+                        compact
+                        onSelectSignal={onOpenSignal}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between border-t border-[var(--ws-border-subtle)] pt-3 text-xs">
+                      <span className="font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                        {t.metaLine.claims(signal.claims.length)}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => onOpenSignal(signal.signal_id)}
+                        className="group inline-flex items-center gap-1.5 font-semibold text-[var(--ws-ink)] hover:text-[var(--ws-world)] transition-colors duration-150 cursor-pointer"
+                      >
+                        <span>{t.briefing.readDossier}</span>
+                        <ArrowRight className="h-3.5 w-3.5 transition-transform duration-150 group-hover:translate-x-0.5" />
+                      </button>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          )}
         </section>
       )}
 
-      {/* 4. Three-Domain Overview */}
-      <section className="space-y-5">
-        <div className="border-b border-[var(--ws-border)] pb-3">
-          <h2 className="font-display text-xl font-semibold text-[var(--ws-ink)]">
-            {t.briefing.domainsOverviewTitle}
-          </h2>
-        </div>
+      {/* 4. Three-Domain Overview (Architectural Editorial Strip) */}
+      <section className="ws-section-rule pt-7 space-y-6">
+        <h2 className="font-display text-[1.35rem] sm:text-2xl font-semibold tracking-[-0.015em] text-[var(--ws-ink)]">
+          {t.briefing.domainsOverviewTitle}
+        </h2>
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          {domainSummaries.map((item) => (
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-0 border-b border-[var(--ws-border)] pb-7">
+          {domainSummaries.map((item, idx) => (
             <div
               key={item.domain}
-              className="ws-card p-5 flex flex-col justify-between gap-4"
+              className={`flex flex-col justify-between gap-4 ${
+                idx === 0
+                  ? 'md:pr-7'
+                  : idx === 1
+                  ? 'md:border-l md:border-[var(--ws-border)] md:px-7 border-t border-[var(--ws-border-subtle)] pt-6 md:border-t-0 md:pt-0'
+                  : 'md:border-l md:border-[var(--ws-border)] md:pl-7 border-t border-[var(--ws-border-subtle)] pt-6 md:border-t-0 md:pt-0'
+              }`}
             >
-              <div className="space-y-2.5">
-                <div className="flex items-baseline justify-between gap-2">
+              <div className="space-y-3">
+                <div
+                  aria-hidden="true"
+                  className={`h-[2px] w-8 ${domainAccentRuleClass(item.domain)}`}
+                />
+                <div className="flex items-baseline justify-between gap-3">
                   <h3
-                    className={`font-display text-lg font-semibold ${domainAccentTextClass(
+                    className={`font-display text-[1.15rem] font-semibold tracking-[-0.01em] ${domainAccentTextClass(
                       item.domain
                     )}`}
                   >
                     {t.domains[item.domain]}
                   </h3>
-                  <span className="font-mono-tabular text-xs font-semibold text-[var(--ws-ink)]">
+                  <span className="font-mono-tabular text-[13px] font-semibold text-[var(--ws-ink)] shrink-0">
                     {t.masthead.signalsCount(item.total)}
                   </span>
                 </div>
@@ -428,134 +626,170 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                   {t.masthead.independentOriginsCount(item.independentOrigins)}
                 </div>
                 {item.intro && (
-                  <p className="text-xs leading-relaxed text-[var(--ws-ink-secondary)]">
+                  <p className="text-[13px] leading-[1.65] text-[var(--ws-ink-secondary)]">
                     {item.intro}
                   </p>
                 )}
               </div>
 
-              <button
-                type="button"
-                onClick={() => onExploreDomain(item.domain)}
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--ws-ink)] hover:text-[var(--ws-world)] pt-2 border-t border-[var(--ws-border)] cursor-pointer"
-              >
-                <span>{t.briefing.exploreDomain}</span>
-                <ArrowRight className="h-3.5 w-3.5" />
-              </button>
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={() => onExploreDomain(item.domain)}
+                  className="group inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-[var(--ws-ink)] hover:text-[var(--ws-world)] transition-colors duration-150 cursor-pointer"
+                >
+                  <span>{t.briefing.exploreDomain}</span>
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform duration-150 group-hover:translate-x-0.5" />
+                </button>
+              </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* 5. Compact Secondary Index of Additional Signals (No Full Dossier Repetition) */}
-      <section className="space-y-5">
-        <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[var(--ws-border)] pb-3">
-          <h2 className="font-display text-xl font-semibold text-[var(--ws-ink)]">
+      {/* 5. Compact Secondary Index of Additional Signals (Balanced Multi-Column Domain Ledgers) */}
+      <section className="space-y-8">
+        <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[var(--ws-border)] pb-3.5">
+          <h2 className="font-display text-[1.35rem] sm:text-2xl font-semibold tracking-[-0.015em] text-[var(--ws-ink)]">
             {t.briefing.additionalSignalsTitle}
           </h2>
-          <span className="text-xs text-[var(--ws-ink-muted)]">
+          <span className="text-[12px] text-[var(--ws-ink-muted)]">
             {t.briefing.additionalSignalsSubtitle}
           </span>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          {domainSummaries.map((group) => (
-            <div key={group.domain} className="space-y-3">
-              <div className="flex items-center justify-between border-b border-[var(--ws-border)] pb-2">
-                <h3
-                  className={`font-mono-tabular text-xs font-semibold uppercase tracking-wider ${domainAccentTextClass(
-                    group.domain
-                  )}`}
-                >
-                  {t.domains[group.domain]}
-                </h3>
-                <span className="font-mono-tabular text-xs text-[var(--ws-ink-muted)]">
-                  {group.additionalSignals.length}
-                </span>
-              </div>
+        <div className="space-y-9">
+          {domainSummaries.map(
+            (group) =>
+              group.additionalSignals.length > 0 && (
+                <div key={group.domain} className="space-y-3">
+                  <div className="flex items-center justify-between border-b border-[var(--ws-border-strong)] pb-2">
+                    <div className="flex items-center gap-2.5">
+                      <span
+                        aria-hidden="true"
+                        className={`inline-block h-[2px] w-4 ${domainAccentRuleClass(
+                          group.domain
+                        )}`}
+                      />
+                      <h3
+                        className={`font-mono-tabular text-[11.5px] font-semibold uppercase tracking-[0.12em] ${domainAccentTextClass(
+                          group.domain
+                        )}`}
+                      >
+                        {t.domains[group.domain]}
+                      </h3>
+                    </div>
+                    <span className="font-mono-tabular text-[11.5px] font-medium text-[var(--ws-ink-muted)]">
+                      {t.masthead.signalsCount(group.additionalSignals.length)}
+                    </span>
+                  </div>
 
-              <ul className="divide-y divide-[var(--ws-border)]">
-                {group.additionalSignals.map((sig) => (
-                  <li key={sig.signal_id} className="py-3 first:pt-1">
-                    <button
-                      type="button"
-                      onClick={() => onOpenSignal(sig.signal_id)}
-                      className="group w-full text-left space-y-1.5 cursor-pointer"
-                    >
-                      <div className="text-sm font-medium leading-snug text-[var(--ws-ink)] group-hover:text-[var(--ws-world)] transition-colors break-words">
-                        {sig.headline}
-                      </div>
-                      <SignalMetaLine signal={sig} lang={lang} compact />
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+                  <ul className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-8">
+                    {group.additionalSignals.map((sig) => (
+                      <li
+                        key={sig.signal_id}
+                        className="border-b border-[var(--ws-border-subtle)] py-3.5"
+                      >
+                        <button
+                          type="button"
+                          onClick={() => onOpenSignal(sig.signal_id)}
+                          className="group w-full text-left space-y-1.5 cursor-pointer"
+                        >
+                          <div className="text-[14px] font-medium leading-[1.42] text-[var(--ws-ink)] group-hover:text-[var(--ws-world)] transition-colors duration-150 break-words">
+                            {sig.headline}
+                          </div>
+                          <SignalMetaLine
+                            signal={sig}
+                            lang={lang}
+                            compact
+                            hideDomain
+                          />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )
+          )}
         </div>
       </section>
 
-      {/* 6. Editorial Reading Path */}
-      <section className="space-y-4 border-t border-[var(--ws-border)] pt-8">
-        <div>
+      {/* 6. Editorial Reading Path (Restrained Publication Section Index) */}
+      <section className="ws-section-rule pt-8 space-y-5">
+        <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
           <h2 className="font-display text-lg font-semibold text-[var(--ws-ink)]">
             {t.briefing.readingPathTitle}
           </h2>
-          <p className="mt-1 text-xs text-[var(--ws-ink-muted)]">
+          <p className="text-[12px] text-[var(--ws-ink-muted)]">
             {t.briefing.readingPathSubtitle}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 border-y border-[var(--ws-border)] divide-y md:divide-y-0 md:divide-x divide-[var(--ws-border)]">
           <button
             type="button"
             onClick={() => onSwitchView('expanded')}
-            className="ws-card p-5 text-left space-y-2 hover:border-[var(--ws-border-strong)] transition-colors cursor-pointer group"
+            className="group flex flex-col justify-between gap-2.5 py-5 md:pr-6 text-left hover:bg-[var(--ws-surface-hover)]/60 md:px-4 md:first:pl-0 transition-colors duration-150 cursor-pointer"
           >
-            <div className="flex items-center justify-between">
-              <BookOpen className="h-4 w-4 text-[var(--ws-ink-muted)]" />
-              <ArrowRight className="h-4 w-4 text-[var(--ws-ink-muted)] group-hover:text-[var(--ws-ink)] transition-colors" />
+            <div className="flex items-center justify-between text-[var(--ws-ink-muted)]">
+              <span className="inline-flex items-center gap-2 font-mono-tabular text-[11px] uppercase tracking-[0.12em]">
+                <BookOpen className="h-3.5 w-3.5" />
+                <span>01</span>
+              </span>
+              <ArrowRight className="h-3.5 w-3.5 transition-transform duration-150 group-hover:translate-x-0.5 group-hover:text-[var(--ws-ink)]" />
             </div>
-            <div className="font-display text-base font-semibold text-[var(--ws-ink)]">
-              {t.nav.expanded}
+            <div className="space-y-1">
+              <div className="font-display text-[1.05rem] font-semibold text-[var(--ws-ink)] group-hover:text-[var(--ws-world)] transition-colors duration-150">
+                {t.nav.expanded}
+              </div>
+              <p className="text-[12.5px] leading-relaxed text-[var(--ws-ink-muted)]">
+                {t.briefing.openExpandedDesc}
+              </p>
             </div>
-            <p className="text-xs leading-relaxed text-[var(--ws-ink-muted)]">
-              {t.briefing.openExpandedDesc}
-            </p>
           </button>
 
           <button
             type="button"
             onClick={() => onSwitchView('synthesis')}
-            className="ws-card p-5 text-left space-y-2 hover:border-[var(--ws-border-strong)] transition-colors cursor-pointer group"
+            className="group flex flex-col justify-between gap-2.5 py-5 md:px-6 text-left hover:bg-[var(--ws-surface-hover)]/60 transition-colors duration-150 cursor-pointer"
           >
-            <div className="flex items-center justify-between">
-              <Compass className="h-4 w-4 text-[var(--ws-ink-muted)]" />
-              <ArrowRight className="h-4 w-4 text-[var(--ws-ink-muted)] group-hover:text-[var(--ws-ink)] transition-colors" />
+            <div className="flex items-center justify-between text-[var(--ws-ink-muted)]">
+              <span className="inline-flex items-center gap-2 font-mono-tabular text-[11px] uppercase tracking-[0.12em]">
+                <Compass className="h-3.5 w-3.5" />
+                <span>02</span>
+              </span>
+              <ArrowRight className="h-3.5 w-3.5 transition-transform duration-150 group-hover:translate-x-0.5 group-hover:text-[var(--ws-ink)]" />
             </div>
-            <div className="font-display text-base font-semibold text-[var(--ws-ink)]">
-              {t.nav.synthesis}
+            <div className="space-y-1">
+              <div className="font-display text-[1.05rem] font-semibold text-[var(--ws-ink)] group-hover:text-[var(--ws-world)] transition-colors duration-150">
+                {t.nav.synthesis}
+              </div>
+              <p className="text-[12.5px] leading-relaxed text-[var(--ws-ink-muted)]">
+                {t.briefing.openSynthesisDesc}
+              </p>
             </div>
-            <p className="text-xs leading-relaxed text-[var(--ws-ink-muted)]">
-              {t.briefing.openSynthesisDesc}
-            </p>
           </button>
 
           <button
             type="button"
             onClick={() => onSwitchView('audit')}
-            className="ws-card p-5 text-left space-y-2 hover:border-[var(--ws-border-strong)] transition-colors cursor-pointer group"
+            className="group flex flex-col justify-between gap-2.5 py-5 md:pl-6 text-left hover:bg-[var(--ws-surface-hover)]/60 md:px-4 md:last:pr-0 transition-colors duration-150 cursor-pointer"
           >
-            <div className="flex items-center justify-between">
-              <ShieldCheck className="h-4 w-4 text-[var(--ws-ink-muted)]" />
-              <ArrowRight className="h-4 w-4 text-[var(--ws-ink-muted)] group-hover:text-[var(--ws-ink)] transition-colors" />
+            <div className="flex items-center justify-between text-[var(--ws-ink-muted)]">
+              <span className="inline-flex items-center gap-2 font-mono-tabular text-[11px] uppercase tracking-[0.12em]">
+                <ShieldCheck className="h-3.5 w-3.5" />
+                <span>03</span>
+              </span>
+              <ArrowRight className="h-3.5 w-3.5 transition-transform duration-150 group-hover:translate-x-0.5 group-hover:text-[var(--ws-ink)]" />
             </div>
-            <div className="font-display text-base font-semibold text-[var(--ws-ink)]">
-              {t.nav.audit}
+            <div className="space-y-1">
+              <div className="font-display text-[1.05rem] font-semibold text-[var(--ws-ink)] group-hover:text-[var(--ws-world)] transition-colors duration-150">
+                {t.nav.audit}
+              </div>
+              <p className="text-[12.5px] leading-relaxed text-[var(--ws-ink-muted)]">
+                {t.briefing.openAuditDesc}
+              </p>
             </div>
-            <p className="text-xs leading-relaxed text-[var(--ws-ink-muted)]">
-              {t.briefing.openAuditDesc}
-            </p>
           </button>
         </div>
       </section>

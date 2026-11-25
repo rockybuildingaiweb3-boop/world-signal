@@ -3,96 +3,115 @@
 
 @layer base {
   :root {
-    /* Typography — Latin + CJK Editorial Pairing */
-    --font-display: "Fraunces", "Noto Serif SC", "Songti SC", Georgia, serif;
+    /* Typography — Editorial Latin + CJK Pairing */
+    --font-display: "Fraunces", "Noto Serif SC", "Songti SC", "STSong", Georgia, serif;
     --font-sans: "Plus Jakarta Sans", "Noto Sans SC", "PingFang SC", system-ui, -apple-system, sans-serif;
     --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
-    /* Archival Paper & Ink Palette (Light Mode) */
-    --ws-canvas: #f8f7f3;
-    --ws-surface: #ffffff;
-    --ws-surface-subtle: #f1efe8;
-    --ws-surface-elevated: #faf9f6;
-    --ws-border: #e4e0d7;
-    --ws-border-strong: #cbc4b6;
+    /* Layout & Typographic Measure Tokens */
+    --ws-container-max: 1320px;
+    --ws-measure-prose: 68ch;
+    --ws-transition-fast: 160ms cubic-bezier(0.2, 0, 0, 1);
 
-    --ws-ink: #151412;
-    --ws-ink-secondary: #3c3a35;
-    --ws-ink-muted: #656159;
+    /* Archival Paper & Graphite Ink Palette (Light Theme) */
+    --ws-canvas: #f7f5f0;
+    --ws-surface: #fdfcf9;
+    --ws-surface-subtle: #efece5;
+    --ws-surface-elevated: #f9f7f2;
+    --ws-surface-hover: #f3f0e8;
 
-    /* Restrained Domain Accents */
-    --ws-world: #1d4ed8;
-    --ws-world-soft: #eff6ff;
-    --ws-ai: #6d28d9;
-    --ws-ai-soft: #f5f3ff;
-    --ws-economy: #15803d;
-    --ws-economy-soft: #f0fdf4;
+    /* Fine Hairline Border Hierarchy */
+    --ws-border: #e2ddd3;
+    --ws-border-subtle: #ece8e0;
+    --ws-border-strong: #c6beb0;
+    --ws-rule-editorial: #1c1a17;
+
+    /* Ink Hierarchy (WCAG AA+ on #F7F5F0 and #FDFCF9) */
+    --ws-ink: #141311;
+    --ws-ink-secondary: #36332e;
+    --ws-ink-muted: #615c53;
+    --ws-ink-faint: #847e73;
+
+    /* Restrained Institutional Domain Accents */
+    --ws-world: #1e40af;
+    --ws-world-soft: #eef3fb;
+    --ws-ai: #5b21b6;
+    --ws-ai-soft: #f3effb;
+    --ws-economy: #166534;
+    --ws-economy-soft: #eef7f1;
 
     /* Semantic Verification & Confidence States (Never hue-only) */
     --ws-conf-high: #166534;
-    --ws-conf-high-soft: #ecfdf5;
-    --ws-conf-medium: #92400e;
-    --ws-conf-medium-soft: #fffbeb;
+    --ws-conf-high-soft: #eef7f1;
+    --ws-conf-medium: #8a4b08;
+    --ws-conf-medium-soft: #f8f3e8;
     --ws-conf-low: #9a3412;
-    --ws-conf-low-soft: #fff7ed;
+    --ws-conf-low-soft: #faf0ea;
     --ws-conf-unverified: #991b1b;
-    --ws-conf-unverified-soft: #fef2f2;
+    --ws-conf-unverified-soft: #fbeeee;
 
-    /* Semantic Alert & Diagnostic Surfaces */
-    --ws-warn: #92400e;
-    --ws-warn-soft: #fefce8;
-    --ws-warn-border: #eab30840;
+    /* Calm Editorial Caution & Diagnostic Surfaces */
+    --ws-warn: #854d0e;
+    --ws-warn-soft: #f5f0e4;
+    --ws-warn-border: #dcd1b9;
     --ws-error: #991b1b;
-    --ws-error-soft: #fef2f2;
-    --ws-error-border: #dc262638;
+    --ws-error-soft: #faf0f0;
+    --ws-error-border: #dfbebd;
 
-    /* Interactive & Elevation */
-    --ws-focus: #1d4ed8;
-    --ws-shadow-sm: 0 1px 2px rgba(21, 20, 18, 0.05);
-    --ws-shadow-md: 0 6px 20px rgba(21, 20, 18, 0.08);
-    --ws-radius-sm: 0.375rem;
-    --ws-radius-md: 0.625rem;
-    --ws-radius-lg: 0.875rem;
+    /* Interactive, Focus & Restraint Elevation */
+    --ws-focus: #1e40af;
+    --ws-shadow-sm: 0 1px 2px rgba(20, 19, 17, 0.035);
+    --ws-shadow-md: 0 6px 20px rgba(20, 19, 17, 0.07);
+    --ws-radius-sm: 0.25rem;
+    --ws-radius-md: 0.375rem;
+    --ws-radius-lg: 0.5rem;
   }
 
   .dark {
+    /* Deep Obsidian-Charcoal & Warm Parchment Ink (Dark Theme) */
     --ws-canvas: #111110;
-    --ws-surface: #171715;
+    --ws-surface: #181715;
     --ws-surface-subtle: #201f1c;
-    --ws-surface-elevated: #1c1b19;
-    --ws-border: #2c2a26;
-    --ws-border-strong: #423f39;
+    --ws-surface-elevated: #1c1b18;
+    --ws-surface-hover: #252420;
 
-    --ws-ink: #f0efe9;
-    --ws-ink-secondary: #cbc8c0;
-    --ws-ink-muted: #98948b;
+    --ws-border: #2c2a25;
+    --ws-border-subtle: #23211d;
+    --ws-border-strong: #46423a;
+    --ws-rule-editorial: #d8d3c9;
+
+    /* Optical-Compensated Warm Off-White Ink */
+    --ws-ink: #efece6;
+    --ws-ink-secondary: #cbc6bc;
+    --ws-ink-muted: #989388;
+    --ws-ink-faint: #736e64;
 
     --ws-world: #93c5fd;
-    --ws-world-soft: #17255466;
+    --ws-world-soft: #17255452;
     --ws-ai: #c4b5fd;
-    --ws-ai-soft: #2e106566;
+    --ws-ai-soft: #2e106552;
     --ws-economy: #86efac;
-    --ws-economy-soft: #052e1666;
+    --ws-economy-soft: #052e1652;
 
     --ws-conf-high: #86efac;
-    --ws-conf-high-soft: #052e1666;
-    --ws-conf-medium: #fcd34d;
-    --ws-conf-medium-soft: #451a0366;
-    --ws-conf-low: #fdba74;
-    --ws-conf-low-soft: #43140766;
-    --ws-conf-unverified: #fca5a5;
-    --ws-conf-unverified-soft: #450a0a66;
+    --ws-conf-high-soft: #052e1652;
+    --ws-conf-medium: #e9c46a;
+    --ws-conf-medium-soft: #3a29104d;
+    --ws-conf-low: #f4a261;
+    --ws-conf-low-soft: #3d1d0c4d;
+    --ws-conf-unverified: #f59b9b;
+    --ws-conf-unverified-soft: #3f10104d;
 
-    --ws-warn: #fcd34d;
-    --ws-warn-soft: #42200666;
-    --ws-warn-border: #f59e0b44;
-    --ws-error: #fca5a5;
-    --ws-error-soft: #450a0a66;
-    --ws-error-border: #ef444444;
+    --ws-warn: #e2b866;
+    --ws-warn-soft: #211d15;
+    --ws-warn-border: #433927;
+    --ws-error: #f59b9b;
+    --ws-error-soft: #2b1414;
+    --ws-error-border: #5a2727;
 
     --ws-focus: #93c5fd;
-    --ws-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
-    --ws-shadow-md: 0 8px 28px rgba(0, 0, 0, 0.48);
+    --ws-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.28);
+    --ws-shadow-md: 0 8px 28px rgba(0, 0, 0, 0.45);
   }
 
   html {
@@ -102,17 +121,20 @@
     scroll-behavior: smooth;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   body {
     background-color: var(--ws-canvas);
     color: var(--ws-ink);
     overflow-x: clip;
+    font-feature-settings: "kern" 1, "liga" 1;
   }
 
   :where(button, a, select, input, textarea, [tabindex]):focus-visible {
     outline: 2px solid var(--ws-focus);
     outline-offset: 2px;
+    border-radius: var(--ws-radius-sm);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -130,8 +152,10 @@
   }
 }
 
+/* Typographic Utility Primitives */
 .font-display {
   font-family: var(--font-display);
+  font-optical-sizing: auto;
 }
 
 .font-mono-tabular {
@@ -144,7 +168,18 @@
 }
 
 .headline-balance {
-  text-wrap: balance;
+  text-wrap: pretty;
+  overflow-wrap: break-word;
+}
+
+/* Editorial Rule & Surface Primitives */
+.ws-masthead-rule {
+  border-top: 2px solid var(--ws-rule-editorial);
+  border-bottom: 1px solid var(--ws-border-strong);
+}
+
+.ws-section-rule {
+  border-top: 1px solid var(--ws-border-strong);
 }
 
 .ws-card {
@@ -160,6 +195,19 @@
   border-radius: var(--ws-radius-md);
 }
 
+.ws-editorial-panel {
+  background-color: var(--ws-surface);
+  border: 1px solid var(--ws-border);
+  border-radius: var(--ws-radius-sm);
+}
+
+.ws-caution-panel {
+  background-color: var(--ws-warn-soft);
+  border: 1px solid var(--ws-warn-border);
+  border-radius: var(--ws-radius-sm);
+}
+
+/* Subtle Scrollbar */
 .ws-scroll::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -170,10 +218,10 @@
 }
 
 .ws-scroll::-webkit-scrollbar-thumb {
-  background-color: rgba(101, 97, 89, 0.28);
+  background-color: rgba(97, 92, 83, 0.28);
   border-radius: 3px;
 }
 
 .dark .ws-scroll::-webkit-scrollbar-thumb {
-  background-color: rgba(152, 148, 139, 0.3);
+  background-color: rgba(152, 147, 136, 0.3);
 }
