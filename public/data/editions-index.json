@@ -1,8 +1,17 @@
 {
   "schema_version": 1,
-  "latest_edition": "2026-11-25",
-  "generated_at": "2026-11-26T08:29:18.711Z",
+  "latest_edition": "2026-11-26",
+  "generated_at": "2026-11-26T16:26:04.521Z",
   "editions": [
+    {
+      "date": "2026-11-26",
+      "title": "WORLD SIGNAL — Daily Intelligence Briefing",
+      "path": "/editions/2026/11/2026-11-26.md",
+      "updated_at": "2026-11-26T08:24:32-08:00",
+      "status": "draft",
+      "language": "zh-CN",
+      "summary": "2026 年 11 月 26 日 08:00 晨间版：伊朗革命卫队称两艘油轮在霍尔木兹海峡触雷爆炸、胡塞声称袭击吉达与吉赞港、加沙夜间空袭致 8–9 人死亡、金正恩视察核设施要求扩大战术核部署、俄罗斯通过创纪录国防预算、开罗油罐车爆炸致 31 人死亡、OpenAI 发布九篇数学论文声称矩阵乘法指数为 9/4；新增 4 个信号，信号总数 64 个。"
+    },
     {
       "date": "2026-11-25",
       "title": "WORLD SIGNAL — Daily Intelligence Briefing",
