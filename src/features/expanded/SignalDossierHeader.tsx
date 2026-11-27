@@ -19,6 +19,7 @@ import {
   formatEventDateRange,
 } from '../../lib/dates/formatDates';
 import { SignalMetaLine } from '../../components/editorial/SignalMetaLine';
+import { StoryVisual } from '../../components/editorial/StoryVisual';
 
 interface SignalDossierHeaderProps {
   signal: ParsedSignal;
@@ -61,15 +62,15 @@ export const SignalDossierHeader: React.FC<SignalDossierHeaderProps> = ({
   const t = getUiStrings(lang);
 
   return (
-    <header className="space-y-5 border-b border-[var(--ws-border-strong)] pb-6">
+    <header className="space-y-6 border-b border-[var(--ws-border-strong)] pb-7">
       {/* Top Domain Rule & Quiet Accession Line */}
       <div className="space-y-3">
         <div
           aria-hidden="true"
-          className={`h-[3px] w-14 ${domainTopBarClass(signal.domain)}`}
+          className={`h-[3px] w-16 ${domainTopBarClass(signal.domain)}`}
         />
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 font-mono-tabular text-[11.5px]">
+        <div className="flex flex-wrap items-center justify-between gap-2.5">
+          <div className="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 font-mono-tabular text-[12px]">
             <span className={`ws-kicker ${domainAccentTextClass(signal.domain)}`}>
               {t.domains[signal.domain]}
             </span>
@@ -85,9 +86,9 @@ export const SignalDossierHeader: React.FC<SignalDossierHeaderProps> = ({
                 type="button"
                 data-testid="dossier-storyline-btn"
                 onClick={onOpenStoryline}
-                className="inline-flex min-h-[30px] items-center gap-1.5 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-canvas)]/70 px-2.5 py-1 text-xs font-medium text-[var(--ws-ink-secondary)] hover:border-[var(--ws-border-strong)] hover:text-[var(--ws-ink)] transition-colors cursor-pointer shrink-0"
+                className="inline-flex min-h-[32px] items-center gap-1.5 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-canvas)]/70 px-3 py-1 text-xs font-medium text-[var(--ws-ink-secondary)] hover:border-[var(--ws-border-strong)] hover:text-[var(--ws-ink)] transition-colors cursor-pointer shrink-0"
               >
-                <GitBranch className="h-3 w-3 text-[var(--ws-world)]" />
+                <GitBranch className="h-3.5 w-3.5 text-[var(--ws-world)]" />
                 <span>{t.storyline.triggerButton}</span>
               </button>
             )}
@@ -97,16 +98,16 @@ export const SignalDossierHeader: React.FC<SignalDossierHeaderProps> = ({
               data-testid="dossier-follow-btn"
               onClick={onToggleFollow}
               aria-pressed={isFollowed}
-              className={`inline-flex min-h-[30px] items-center gap-1.5 rounded-[var(--ws-radius-sm)] border px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer shrink-0 ${
+              className={`inline-flex min-h-[32px] items-center gap-1.5 rounded-[var(--ws-radius-sm)] border px-3 py-1 text-xs font-medium transition-colors cursor-pointer shrink-0 ${
                 isFollowed
                   ? 'border-[var(--ws-world)] bg-[var(--ws-surface-elevated)] text-[var(--ws-world)]'
                   : 'border-[var(--ws-border)] bg-[var(--ws-canvas)]/70 text-[var(--ws-ink-muted)] hover:border-[var(--ws-border-strong)] hover:text-[var(--ws-ink)]'
               }`}
             >
               {isFollowed ? (
-                <Eye className="h-3 w-3" />
+                <Eye className="h-3.5 w-3.5" />
               ) : (
-                <EyeOff className="h-3 w-3" />
+                <EyeOff className="h-3.5 w-3.5" />
               )}
               <span>
                 {isFollowed ? t.readerDesk.followingAction : t.readerDesk.followAction}
@@ -118,16 +119,16 @@ export const SignalDossierHeader: React.FC<SignalDossierHeaderProps> = ({
               data-testid="dossier-save-btn"
               onClick={onToggleSave}
               aria-pressed={isSaved}
-              className={`inline-flex min-h-[30px] items-center gap-1.5 rounded-[var(--ws-radius-sm)] border px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer shrink-0 ${
+              className={`inline-flex min-h-[32px] items-center gap-1.5 rounded-[var(--ws-radius-sm)] border px-3 py-1 text-xs font-medium transition-colors cursor-pointer shrink-0 ${
                 isSaved
                   ? 'border-[var(--ws-editorial-accent)] bg-[var(--ws-surface-elevated)] text-[var(--ws-editorial-accent)]'
                   : 'border-[var(--ws-border)] bg-[var(--ws-canvas)]/70 text-[var(--ws-ink-muted)] hover:border-[var(--ws-border-strong)] hover:text-[var(--ws-ink)]'
               }`}
             >
               {isSaved ? (
-                <BookmarkCheck className="h-3 w-3" />
+                <BookmarkCheck className="h-3.5 w-3.5" />
               ) : (
-                <Bookmark className="h-3 w-3" />
+                <Bookmark className="h-3.5 w-3.5" />
               )}
               <span>
                 {isSaved ? t.readerDesk.savedAction : t.readerDesk.saveAction}
@@ -138,16 +139,16 @@ export const SignalDossierHeader: React.FC<SignalDossierHeaderProps> = ({
               <button
                 type="button"
                 onClick={onCopyLink}
-                className="inline-flex min-h-[30px] items-center gap-1.5 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-canvas)]/70 px-2.5 py-1 text-xs font-medium text-[var(--ws-ink-muted)] hover:border-[var(--ws-border-strong)] hover:text-[var(--ws-ink)] transition-colors cursor-pointer shrink-0"
+                className="inline-flex min-h-[32px] items-center gap-1.5 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-canvas)]/70 px-3 py-1 text-xs font-medium text-[var(--ws-ink-muted)] hover:border-[var(--ws-border-strong)] hover:text-[var(--ws-ink)] transition-colors cursor-pointer shrink-0"
               >
                 {copied ? (
                   <>
-                    <Check className="h-3 w-3 text-[var(--ws-economy)]" />
+                    <Check className="h-3.5 w-3.5 text-[var(--ws-economy)]" />
                     <span>{t.expanded.copiedLink}</span>
                   </>
                 ) : (
                   <>
-                    <Link2 className="h-3 w-3" />
+                    <Link2 className="h-3.5 w-3.5" />
                     <span>{t.expanded.copySignalLink}</span>
                   </>
                 )}
@@ -157,21 +158,33 @@ export const SignalDossierHeader: React.FC<SignalDossierHeaderProps> = ({
         </div>
       </div>
 
-      {/* Monumental Magazine Dossier Headline */}
-      <div className="space-y-3">
-        <h2 className="font-display ws-headline-dossier text-[1.75rem] sm:text-[2.25rem] lg:text-[2.5rem] font-semibold text-[var(--ws-ink)] headline-balance break-words">
+      {/* Monumental Investigative Magazine Headline */}
+      <div className="space-y-3.5">
+        <h2 className="font-display ws-headline-dossier text-[1.95rem] sm:text-[2.45rem] lg:text-[2.75rem] font-semibold text-[var(--ws-ink)] headline-balance break-words">
           {signal.headline}
         </h2>
         <SignalMetaLine signal={signal} lang={lang} showClaims />
       </div>
 
-      {/* Hairline Provenance Strip (2x2 on compact/1024px to prevent timestamp splits, 4-col on xl+) */}
+      {/* Art-Directed Investigative Dossier Cover Plate */}
+      {signal.importance >= 4 && (
+        <div className="pt-1">
+          <StoryVisual
+            signal={signal}
+            lang={lang}
+            mode="editorial_illustration"
+            variant="dossier"
+          />
+        </div>
+      )}
+
+      {/* Hairline Provenance Strip (Explicitly Separating Real-World Event Date vs Edition Revision Time) */}
       <dl className="grid grid-cols-2 gap-x-6 gap-y-4 border-y border-[var(--ws-border)] py-4 xl:grid-cols-4 text-xs">
         <div className="min-w-0">
           <dt className="ws-kicker text-[var(--ws-ink-faint)]">
             {t.expanded.eventDateLabel}
           </dt>
-          <dd className="mt-1 font-mono-tabular text-[12.5px] font-semibold text-[var(--ws-ink)] whitespace-nowrap">
+          <dd className="mt-1 font-mono-tabular text-[13px] font-semibold text-[var(--ws-ink)] whitespace-nowrap">
             {formatEventDateRange(
               signal.event.start_date,
               signal.event.end_date,
@@ -184,7 +197,7 @@ export const SignalDossierHeader: React.FC<SignalDossierHeaderProps> = ({
           <dt className="ws-kicker text-[var(--ws-ink-faint)]">
             {t.expanded.updatedLabel}
           </dt>
-          <dd className="mt-1 font-mono-tabular text-[12.5px] font-medium text-[var(--ws-ink)] whitespace-nowrap">
+          <dd className="mt-1 font-mono-tabular text-[13px] font-medium text-[var(--ws-ink)] whitespace-nowrap">
             {formatCompactTimestamp(signal.updated_at, lang)}
           </dd>
         </div>
@@ -193,7 +206,7 @@ export const SignalDossierHeader: React.FC<SignalDossierHeaderProps> = ({
           <dt className="ws-kicker text-[var(--ws-ink-faint)]">
             {t.expanded.topicLabel}
           </dt>
-          <dd className="mt-1 text-[13px] font-medium text-[var(--ws-ink)] break-words">
+          <dd className="mt-1 text-[13.5px] font-medium text-[var(--ws-ink)] break-words">
             {signal.topic}
           </dd>
         </div>
@@ -202,7 +215,7 @@ export const SignalDossierHeader: React.FC<SignalDossierHeaderProps> = ({
           <dt className="ws-kicker text-[var(--ws-ink-faint)]">
             {t.expanded.geographyLabel}
           </dt>
-          <dd className="mt-1 text-[13px] font-medium text-[var(--ws-ink)] break-words">
+          <dd className="mt-1 text-[13.5px] font-medium text-[var(--ws-ink)] break-words">
             {signal.event.geography.length > 0
               ? signal.event.geography.join(' · ')
               : '—'}
@@ -210,8 +223,8 @@ export const SignalDossierHeader: React.FC<SignalDossierHeaderProps> = ({
         </div>
       </dl>
 
-      {/* Calibrated Importance Scale & Schema-v2 Storyline Continuity */}
-      <div className="flex flex-wrap items-center justify-between gap-x-5 gap-y-2 text-[11.5px] font-mono-tabular text-[var(--ws-ink-muted)]">
+      {/* Calibrated Importance Scale & Schema-v2 Storyline Revision Tracking */}
+      <div className="flex flex-wrap items-center justify-between gap-x-5 gap-y-2 text-[12px] font-mono-tabular text-[var(--ws-ink-muted)]">
         <div className="inline-flex items-center gap-2.5">
           <span className="ws-kicker text-[var(--ws-ink-faint)]">
             {t.expanded.importanceLabel}
@@ -272,7 +285,7 @@ export const SignalDossierHeader: React.FC<SignalDossierHeaderProps> = ({
 
       {/* Hairline-Framed Confidence Rationale */}
       {signal.confidence.rationale && (
-        <div className="ws-folio-note px-4 py-3 text-[13px] leading-[1.68] text-[var(--ws-ink-secondary)]">
+        <div className="ws-folio-note px-4 py-3.5 text-[13.5px] leading-[1.7] text-[var(--ws-ink-secondary)]">
           <span
             className={`font-semibold ${confidenceColorClass(
               signal.confidence.overall

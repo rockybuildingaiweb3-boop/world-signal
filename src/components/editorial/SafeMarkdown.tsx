@@ -82,11 +82,21 @@ export const SafeMarkdown: React.FC<SafeMarkdownProps> = ({
       if (typeof child === 'string') {
         return decorateText(child);
       }
-      if (React.isValidElement<{ children?: React.ReactNode }>(child) && child.props.children) {
-        return React.cloneElement(child, {
-          ...child.props,
-          children: renderInteractiveChildren(child.props.children),
-        });
+      if (React.isValidElement<{ children?: React.ReactNode }>(child)) {
+        if (
+          child.type === 'button' ||
+          child.type === 'a' ||
+          child.type === 'code' ||
+          child.type === 'pre'
+        ) {
+          return child;
+        }
+        if (child.props.children) {
+          return React.cloneElement(child, {
+            ...child.props,
+            children: renderInteractiveChildren(child.props.children),
+          });
+        }
       }
       return child;
     });

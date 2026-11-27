@@ -419,7 +419,7 @@ export const App: React.FC = () => {
         lang={lang}
       />
 
-      <main className="mx-auto w-full max-w-[1320px] flex-1 px-4 pt-5 sm:px-6 sm:pt-8">
+      <main className="mx-auto w-full max-w-[1480px] flex-1 px-4 pt-5 sm:px-6 lg:px-8 sm:pt-8">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-24 gap-3 text-sm text-[var(--ws-ink-muted)]">
             <RefreshCw className="h-5 w-5 animate-spin" />
@@ -528,8 +528,8 @@ export const App: React.FC = () => {
       </main>
 
       {/* Minimal Editorial Publication Colophon Footer */}
-      <footer className="border-t border-[var(--ws-border-strong)] bg-[var(--ws-surface)]/55 py-6 mt-auto">
-        <div className="mx-auto max-w-[1320px] px-4 sm:px-6 flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
+      <footer className="border-t border-[var(--ws-border-strong)] bg-[var(--ws-surface)]/55 py-7 mt-12">
+        <div className="mx-auto max-w-[1480px] px-4 sm:px-6 lg:px-8 flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between font-mono-tabular text-[12px] text-[var(--ws-ink-muted)]">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
             <span className="font-display text-[13px] font-semibold tracking-[0.03em] text-[var(--ws-ink)]">
               WORLD SIGNAL

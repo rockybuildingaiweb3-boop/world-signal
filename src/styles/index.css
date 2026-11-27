@@ -1,127 +1,122 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-display: "Newsreader", "Source Serif 4", "Noto Serif SC", "Songti SC", "STSong", Georgia, serif;
-  --font-serif: "Newsreader", "Source Serif 4", "Noto Serif SC", "Songti SC", Georgia, serif;
-  --font-sans: "Inter", "Noto Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-display: "Fraunces", "Noto Serif SC", "Songti SC", "STSong", Georgia, serif;
+  --font-serif-body: "Fraunces", "Noto Serif SC", "Songti SC", Georgia, serif;
+  --font-sans: "Plus Jakarta Sans", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
-/* ==========================================================================
-   WORLD SIGNAL — Phase 04 High-Fidelity Editorial Publication Design System
-   Archival Warm Broadsheet Paper (Light) · Nocturnal Ink Observatory (Dark)
-   ========================================================================== */
-
 :root {
-  color-scheme: light;
+  /* Editorial Broadsheet & Magazine Light Palette */
+  --ws-canvas: #f8f5ef;
+  --ws-surface: #ffffff;
+  --ws-surface-subtle: #f2ede3;
+  --ws-surface-hover: #ebe4d7;
+  --ws-ink: #13161c;
+  --ws-ink-secondary: #373c46;
+  --ws-ink-muted: #5e6470;
+  --ws-ink-faint: #848a96;
+  --ws-border: #dfd8ca;
+  --ws-border-strong: #c2b8a5;
+  --ws-border-subtle: #ebe5d8;
+  --ws-rule-editorial: #13161c;
 
-  /* Surfaces & Warm Archival Paper Palette */
-  --ws-canvas: #F8F6F1;
-  --ws-surface: #FFFFFF;
-  --ws-surface-subtle: #F2EFE7;
-  --ws-surface-elevated: #FCFBF8;
-  --ws-surface-hover: #EAE5DA;
+  /* Editorial Ink-Plate Contrast Surface (Magazine Cover / Feature Bands) */
+  --ws-plate: #12161f;
+  --ws-plate-elevated: #1a202e;
+  --ws-plate-ink: #f7f4ed;
+  --ws-plate-secondary: #c9d0dc;
+  --ws-plate-muted: #8f99aa;
+  --ws-plate-border: #2a3346;
 
-  /* Ink & Typographic Contrast (WCAG AA/AAA) */
-  --ws-ink: #12151B;
-  --ws-ink-secondary: #2B333E;
-  --ws-ink-muted: #525C6B;
-  --ws-ink-faint: #6E7887;
+  /* Authoritative Editorial Accents (Economist / FT / Monocle Discipline) */
+  --ws-editorial-accent: #b42818;
+  --ws-editorial-accent-soft: #faeae7;
 
-  /* Hairlines & Broadsheet Editorial Rules */
-  --ws-border: #DFD9CD;
-  --ws-border-subtle: #ECE7DD;
-  --ws-border-strong: #B9B0A0;
-  --ws-rule-editorial: #161A22;
+  /* Semantic Domain Ink Colors (Distinct Personalities, High Contrast) */
+  --ws-world: #1a4475;
+  --ws-world-soft: #eaf1f9;
+  --ws-ai: #4f328c;
+  --ws-ai-soft: #f1ecfb;
+  --ws-economy: #145a47;
+  --ws-economy-soft: #e6f4ef;
 
-  /* Signature Editorial Accent — Classic Archival Vermilion */
-  --ws-editorial-accent: #9E301B;
-  --ws-editorial-accent-soft: #F9EAE6;
+  /* Status & Evidence Semantics */
+  --ws-good: #166534;
+  --ws-good-soft: #e9f6ee;
+  --ws-warn: #9a5508;
+  --ws-warn-soft: #fdf4e4;
+  --ws-warn-border: #e5c690;
+  --ws-error: #a51c1c;
+  --ws-error-soft: #fceceb;
+  --ws-error-border: #e7b5b3;
 
-  /* Domain Accents — Restrained, High-Contrast Print Tints */
-  --ws-world: #1B4B72;
-  --ws-world-soft: #EBF1F6;
-  --ws-ai: #4B387A;
-  --ws-ai-soft: #F1EEF8;
-  --ws-economy: #145946;
-  --ws-economy-soft: #E8F3EF;
+  /* Confidence Level Semantics */
+  --ws-conf-high: #166534;
+  --ws-conf-medium: #1a4475;
+  --ws-conf-low: #9a5508;
+  --ws-conf-unverified: #6e7480;
 
-  /* Verification Confidence Semantics */
-  --ws-conf-high: #145946;
-  --ws-conf-medium: #8E5209;
-  --ws-conf-low: #A63322;
-  --ws-conf-unverified: #5A6472;
+  /* Elevated Surface & Shadow Tokens */
+  --ws-surface-elevated: #faf7f0;
+  --ws-shadow-lg: 0 22px 54px rgba(15, 18, 25, 0.16);
 
-  /* System Semantics */
-  --ws-warn: #8E5209;
-  --ws-warn-soft: #FAF3E8;
-  --ws-warn-border: #DFC8A6;
-  --ws-error: #A63322;
-  --ws-error-soft: #FAEBE8;
-  --ws-error-border: #DFB5AD;
-
-  /* Focus, Radius & Elevation */
-  --ws-focus-ring: #1B4B72;
-  --ws-radius-sm: 3px;
-  --ws-radius-md: 5px;
-  --ws-shadow-sm: 0 1px 2px rgba(18, 21, 27, 0.04);
-  --ws-shadow-lg: 0 14px 36px rgba(18, 21, 27, 0.14);
-  --ws-shadow-drawer: -12px 0 36px rgba(18, 21, 27, 0.14);
+  /* Editorial Surface Geometry */
+  --ws-radius-sm: 2px;
+  --ws-radius-md: 4px;
+  --ws-radius-lg: 6px;
 }
 
 .dark {
-  color-scheme: dark;
+  /* Nocturnal Editorial Ink Palette (Art-Directed Dark Mode, Never Raw Inversion) */
+  --ws-canvas: #0c0f14;
+  --ws-surface: #131822;
+  --ws-surface-subtle: #19202d;
+  --ws-surface-hover: #212a3a;
+  --ws-surface-elevated: #1c2433;
+  --ws-ink: #f2eee6;
+  --ws-ink-secondary: #c9cfd9;
+  --ws-ink-muted: #939cab;
+  --ws-ink-faint: #677080;
+  --ws-border: #262f40;
+  --ws-border-strong: #3a465d;
+  --ws-border-subtle: #1c2433;
+  --ws-rule-editorial: #f2eee6;
 
-  /* Surfaces & Nocturnal Ink Observatory */
-  --ws-canvas: #0D1015;
-  --ws-surface: #141820;
-  --ws-surface-subtle: #1A202B;
-  --ws-surface-elevated: #171C25;
-  --ws-surface-hover: #222937;
+  --ws-plate: #080b10;
+  --ws-plate-elevated: #111621;
+  --ws-plate-ink: #f5f2eb;
+  --ws-plate-secondary: #c6cdd9;
+  --ws-plate-muted: #8b95a7;
+  --ws-plate-border: #252e40;
 
-  /* Ink & Typographic Contrast (WCAG AA/AAA) */
-  --ws-ink: #F2F0EA;
-  --ws-ink-secondary: #D4CFC4;
-  --ws-ink-muted: #9CA6B4;
-  --ws-ink-faint: #7E8898;
+  --ws-editorial-accent: #e56454;
+  --ws-editorial-accent-soft: #2e1917;
 
-  /* Hairlines & Broadsheet Editorial Rules */
-  --ws-border: #273040;
-  --ws-border-subtle: #1E2532;
-  --ws-border-strong: #414C60;
-  --ws-rule-editorial: #E6E1D6;
+  --ws-world: #79b1ef;
+  --ws-world-soft: #152538;
+  --ws-ai: #b499f5;
+  --ws-ai-soft: #211936;
+  --ws-economy: #5cc9a3;
+  --ws-economy-soft: #122922;
 
-  /* Signature Editorial Accent — Luminous Vermilion */
-  --ws-editorial-accent: #E27A64;
-  --ws-editorial-accent-soft: #2A1916;
+  --ws-good: #62d18c;
+  --ws-good-soft: #12281b;
+  --ws-warn: #eab04d;
+  --ws-warn-soft: #2c2111;
+  --ws-warn-border: #63491d;
+  --ws-error: #f27b7b;
+  --ws-error-soft: #311717;
+  --ws-error-border: #6e2d2d;
 
-  /* Domain Accents — Calibrated for Dark Paper Legibility */
-  --ws-world: #79B6E4;
-  --ws-world-soft: #132333;
-  --ws-ai: #B59DF2;
-  --ws-ai-soft: #1F1A30;
-  --ws-economy: #65C8A8;
-  --ws-economy-soft: #112721;
+  --ws-conf-high: #62d18c;
+  --ws-conf-medium: #79b1ef;
+  --ws-conf-low: #eab04d;
+  --ws-conf-unverified: #939cab;
 
-  /* Verification Confidence Semantics */
-  --ws-conf-high: #65C8A8;
-  --ws-conf-medium: #E8B15A;
-  --ws-conf-low: #EC8474;
-  --ws-conf-unverified: #9CA6B4;
-
-  /* System Semantics */
-  --ws-warn: #E8B15A;
-  --ws-warn-soft: #241D11;
-  --ws-warn-border: #524022;
-  --ws-error: #EC8474;
-  --ws-error-soft: #2A1614;
-  --ws-error-border: #61302B;
-
-  /* Focus, Radius & Elevation */
-  --ws-focus-ring: #79B6E4;
-  --ws-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
-  --ws-shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.56);
-  --ws-shadow-drawer: -12px 0 40px rgba(0, 0, 0, 0.56);
+  --ws-shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.52);
 }
 
 @layer base {
@@ -129,40 +124,41 @@
     background-color: var(--ws-canvas);
     color: var(--ws-ink);
     font-family: var(--font-sans);
+    scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    scroll-behavior: smooth;
+    font-feature-settings: "kern" 1, "liga" 1;
   }
 
   body {
-    margin: 0;
     background-color: var(--ws-canvas);
     color: var(--ws-ink);
+    margin: 0;
     min-height: 100vh;
     overflow-x: clip;
   }
 
-  /* High-visibility accessible focus rings */
-  :where(a, button, input, select, textarea, summary, [tabindex]:not([tabindex="-1"])):focus-visible {
-    outline: 2px solid var(--ws-focus-ring);
+  /* Accessible keyboard focus ring across light and dark modes */
+  :focus-visible {
+    outline: 2px solid var(--ws-world);
     outline-offset: 2px;
-    border-radius: 3px;
   }
 }
 
 /* ==========================================================================
-   Typography & Editorial Composition Utilities
+   EDITORIAL TYPOGRAPHY SYSTEM (EN + ZH PARITY)
    ========================================================================== */
 
 .font-display {
   font-family: var(--font-display);
   font-optical-sizing: auto;
-  font-feature-settings: "kern" 1, "liga" 1;
+  font-variation-settings: "SOFT" 25, "WONK" 0;
+  text-wrap: balance;
 }
 
-.font-serif-editorial {
-  font-family: var(--font-serif);
+.font-serif-body {
+  font-family: var(--font-serif-body);
   font-optical-sizing: auto;
 }
 
@@ -171,173 +167,330 @@
   font-variant-numeric: tabular-nums;
 }
 
-.tabular-nums {
+.ws-tabular {
   font-variant-numeric: tabular-nums;
 }
 
-.headline-balance {
+/* Fluid Lead Cover Headline: 48–62px desktop, 38–46px tablet, 30–38px mobile */
+.ws-headline-cover {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-size: clamp(1.95rem, 3.2vw + 0.7rem, 3.55rem);
+  line-height: 1.08;
+  letter-spacing: -0.028em;
   text-wrap: balance;
 }
 
-/* Prevent Chromium's text-wrap: balance from splitting 2-character CJK words across lines (e.g. 崩/溃, 影/响) */
-[data-lang="zh-CN"] .headline-balance {
-  text-wrap: auto;
-  word-break: normal;
-  overflow-wrap: break-word;
-  line-break: strict;
-}
-
-/* Cover & Dossier Display Headline Tracking & Leading */
-.ws-headline-cover {
-  line-height: 1.12;
-  letter-spacing: -0.025em;
-}
-
 [data-lang="zh-CN"] .ws-headline-cover {
+  font-size: clamp(1.85rem, 2.7vw + 0.7rem, 3.1rem);
   line-height: 1.24;
-  letter-spacing: -0.008em;
+  letter-spacing: -0.015em;
+  text-wrap: pretty;
 }
 
-.ws-headline-dossier {
-  line-height: 1.16;
+/* Secondary Feature Headline: 26–34px desktop */
+.ws-headline-feature {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-size: clamp(1.4rem, 1.4vw + 0.85rem, 2.05rem);
+  line-height: 1.18;
   letter-spacing: -0.022em;
+  text-wrap: balance;
 }
 
-[data-lang="zh-CN"] .ws-headline-dossier {
+[data-lang="zh-CN"] .ws-headline-feature {
+  font-size: clamp(1.32rem, 1.15vw + 0.85rem, 1.82rem);
+  line-height: 1.32;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+/* Supporting Story Headline: 19–23px */
+.ws-headline-story {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-size: clamp(1.125rem, 0.5vw + 0.98rem, 1.375rem);
   line-height: 1.26;
+  letter-spacing: -0.016em;
+}
+
+[data-lang="zh-CN"] .ws-headline-story {
+  line-height: 1.38;
   letter-spacing: -0.008em;
 }
 
-/* Editorial Eyebrow / Kicker — crisp sans-serif (12px floor for comfortable CJK & Latin legibility) */
+/* Editorial Deck / Subhead: 17–20px */
+.ws-deck {
+  font-size: clamp(1rem, 0.35vw + 0.92rem, 1.1875rem);
+  line-height: 1.65;
+  color: var(--ws-ink-secondary);
+}
+
+[data-lang="zh-CN"] .ws-deck {
+  line-height: 1.78;
+}
+
+/* Editorial Section Kicker (refined, legible, never tiny micro-noise) */
 .ws-kicker {
   font-family: var(--font-sans);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   line-height: 1.3;
 }
 
-[data-lang="zh-CN"] .font-display {
-  letter-spacing: -0.006em;
-  line-height: 1.26;
-}
-
 [data-lang="zh-CN"] .ws-kicker {
-  letter-spacing: 0.05em;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
   text-transform: none;
-  font-size: 0.75rem;
 }
 
-/* Signature Broadsheet Masthead Double-Rule */
-.ws-masthead-rule {
-  position: relative;
-  border-top: 2.5px solid var(--ws-rule-editorial);
+/* Broadsheet Hairline Rules */
+.ws-rule-double {
+  border-top: 2px solid var(--ws-ink);
+  border-bottom: 1px solid var(--ws-border-strong);
+  height: 5px;
 }
 
-.ws-masthead-rule::after {
-  content: "";
-  display: block;
-  margin-top: 3px;
-  border-top: 1px solid var(--ws-border-strong);
+.ws-rule-section {
+  border-top: 1.5px solid var(--ws-ink);
 }
 
-/* Section Structural Rule */
-.ws-section-rule {
-  border-top: 1.5px solid var(--ws-rule-editorial);
+.ws-rule-editorial {
+  border-top: 1px solid var(--ws-border);
 }
 
-/* Clean Editorial Card Surface (reserved for drawers/modals/floating controls) */
+/* Quiet Editorial Surface & Framing */
 .ws-card {
   background-color: var(--ws-surface);
   border: 1px solid var(--ws-border);
   border-radius: var(--ws-radius-md);
 }
 
-/* Open Broadsheet Sheet — top-anchored editorial rule without heavy boxy framing */
-.ws-editorial-sheet {
-  background-color: var(--ws-surface);
-  border-top: 2px solid var(--ws-rule-editorial);
+.ws-plate {
+  background-color: var(--ws-plate);
+  color: var(--ws-plate-ink);
+  border-radius: var(--ws-radius-sm);
+}
+
+.ws-folio-panel {
+  background-color: var(--ws-surface-subtle);
+  border-top: 2px solid var(--ws-ink);
   border-bottom: 1px solid var(--ws-border);
 }
 
-/* Open Broadsheet Ledger — hairline top & bottom rules for tables, deltas, and index bands */
-.ws-broadsheet-ledger {
-  background-color: var(--ws-surface);
-  border-top: 2px solid var(--ws-rule-editorial);
+.ws-caution-panel {
+  background-color: var(--ws-warn-soft);
+  border: 1px solid color-mix(in srgb, var(--ws-warn) 28%, var(--ws-border));
+  border-radius: var(--ws-radius-sm);
+}
+
+.ws-section-rule {
+  border-top: 2px solid var(--ws-ink);
+}
+
+.ws-masthead-rule {
+  border-top: 2px solid var(--ws-ink);
   border-bottom: 1px solid var(--ws-border-strong);
 }
 
-/* Quiet Editorial Folio Column — open tinted paper without heavy border/shadow chrome */
-.ws-folio-panel {
-  background-color: var(--ws-surface-elevated);
-  border-top: 2px solid var(--ws-rule-editorial);
-  border-bottom: 1px solid var(--ws-border);
+.ws-editorial-panel {
+  background-color: var(--ws-surface);
+  border: 1px solid var(--ws-border);
+  border-radius: var(--ws-radius-sm);
 }
 
-/* Hairline Archival Editorial Note (Confidence Rationale, Schema Context) — zero left-bar cliché */
+.ws-editorial-sheet {
+  background-color: var(--ws-surface);
+  border-top: 2px solid var(--ws-ink);
+  border-bottom: 1px solid var(--ws-border);
+  border-left: 1px solid var(--ws-border-subtle);
+  border-right: 1px solid var(--ws-border-subtle);
+}
+
+.ws-broadsheet-ledger {
+  background-color: var(--ws-surface);
+  border-top: 2px solid var(--ws-ink);
+  border-bottom: 1px solid var(--ws-border-strong);
+  border-left: 1px solid var(--ws-border);
+  border-right: 1px solid var(--ws-border);
+}
+
 .ws-folio-note {
   background-color: var(--ws-surface-subtle);
   border-top: 1px solid var(--ws-border);
   border-bottom: 1px solid var(--ws-border);
 }
 
-/* Quiet Editorial Panel (Unavailable States, Explanatory Notices) */
-.ws-editorial-panel {
-  background-color: var(--ws-surface-elevated);
-  border-top: 1px solid var(--ws-border-strong);
-  border-bottom: 1px solid var(--ws-border);
-}
-
-/* Restrained Amber Caution Band (Uncertainties, Omitted Safeguards, Caveats) */
-.ws-caution-panel {
-  background-color: var(--ws-warn-soft);
-  border-top: 1.5px solid var(--ws-warn-border);
-  border-bottom: 1px solid var(--ws-warn-border);
-}
-
-/* Elevated Significance Band (Why It Matters) — crisp top/bottom editorial hairlines */
 .ws-significance-band {
-  background-color: var(--ws-surface-elevated);
-  border-top: 1.5px solid var(--ws-editorial-accent);
+  border-top: 2px solid var(--ws-editorial-accent);
   border-bottom: 1px solid var(--ws-border);
+  background-color: color-mix(
+    in srgb,
+    var(--ws-editorial-accent-soft) 42%,
+    var(--ws-surface)
+  );
 }
 
-/* Editorial Plate Frame — crisp museum-print framing for architectural SVG plates */
-.ws-plate-frame {
-  background-color: var(--ws-surface);
-  border-top: 1.5px solid var(--ws-rule-editorial);
-  border-bottom: 1px solid var(--ws-border-strong);
+.ws-headline-dossier {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.024em;
+  text-wrap: balance;
 }
 
-/* Smooth Reading Progress Bar */
-.ws-progress-bar {
-  transform-origin: left center;
-  transition: transform 90ms linear;
+[data-lang="zh-CN"] .ws-headline-dossier {
+  line-height: 1.28;
+  letter-spacing: -0.012em;
+  text-wrap: pretty;
 }
 
-/* Prose Reading Rhythm (Optimized for both English and Simplified Chinese) */
+.headline-balance {
+  text-wrap: balance;
+}
+
+[data-lang="zh-CN"] .headline-balance {
+  text-wrap: pretty;
+}
+
+/* Editorial Print Illustration Plate Treatment */
+.ws-art-frame {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--ws-surface-subtle);
+  border: 1px solid var(--ws-border);
+}
+
+.dark .ws-art-frame img {
+  filter: brightness(0.9) contrast(1.04);
+}
+
+/* Long-form Reading Prose (65–75ch comfortable editorial rhythm) */
 .ws-prose {
-  font-size: 0.96875rem; /* 15.5px */
-  line-height: 1.76;
   color: var(--ws-ink-secondary);
+  font-size: 1.03125rem;
+  line-height: 1.78;
+  max-width: 70ch;
 }
 
 [data-lang="zh-CN"] .ws-prose {
+  font-size: 1.03125rem;
+  line-height: 1.88;
+}
+
+.ws-prose p {
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+
+.ws-prose p:last-child {
+  margin-bottom: 0;
+}
+
+.ws-prose ul,
+.ws-prose ol {
+  margin-top: 0.45em;
+  margin-bottom: 1em;
+  padding-left: 1.35em;
+}
+
+.ws-prose ul {
+  list-style-type: disc;
+}
+
+.ws-prose ol {
+  list-style-type: decimal;
+}
+
+.ws-prose li {
+  margin-bottom: 0.42em;
+}
+
+.ws-prose li::marker {
+  color: var(--ws-ink-muted);
+}
+
+.ws-prose strong {
+  color: var(--ws-ink);
+  font-weight: 600;
+}
+
+.ws-prose code {
+  font-family: var(--font-mono);
+  font-size: 0.87em;
+  padding: 0.1em 0.35em;
+  border-radius: 2px;
+  background-color: var(--ws-surface-subtle);
+  color: var(--ws-ink);
+}
+
+.ws-prose blockquote {
+  margin: 1.1em 0;
+  padding: 0.25rem 0 0.25rem 1.15rem;
+  border-left: 2px solid var(--ws-editorial-accent);
+  color: var(--ws-ink);
+  font-family: var(--font-serif-body);
+  font-size: 1.06em;
+  line-height: 1.72;
+}
+
+.ws-prose a {
+  color: var(--ws-world);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.ws-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+}
+
+.ws-prose th,
+.ws-prose td {
+  border-bottom: 1px solid var(--ws-border);
+  padding: 0.55rem 0.65rem;
+  text-align: left;
+}
+
+.ws-prose th {
+  font-weight: 600;
+  color: var(--ws-ink);
+  background-color: var(--ws-surface-subtle);
+}
+
+/* Compact prose variant for executive briefs & secondary decks */
+.ws-prose-compact {
   font-size: 0.96875rem;
-  line-height: 1.85;
-  letter-spacing: 0.01em;
+  line-height: 1.74;
+  max-width: 68ch;
 }
 
-.ws-prose p + p {
-  margin-top: 0.95rem;
+[data-lang="zh-CN"] .ws-prose-compact {
+  line-height: 1.84;
 }
 
-/* Subtle Editorial View Entrance */
-@keyframes ws-view-enter {
+/* Inverted plate prose */
+.ws-prose-plate {
+  color: var(--ws-plate-secondary);
+}
+
+.ws-prose-plate strong {
+  color: var(--ws-plate-ink);
+}
+
+/* Subtle Publication Motion (Respects prefers-reduced-motion) */
+@keyframes wsEditorialReveal {
   from {
     opacity: 0;
-    transform: translateY(3px);
+    transform: translateY(4px);
   }
   to {
     opacity: 1;
@@ -346,33 +499,38 @@
 }
 
 .ws-view-enter {
-  animation: ws-view-enter 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: wsEditorialReveal 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
   .ws-view-enter {
     animation: none;
   }
-  .ws-progress-bar {
-    transition: none;
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
   }
 }
 
-/* Subtle Scrollbars for Sticky Desktop Index Rails */
-.ws-scroll::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+/* Subtle editorial scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
-.ws-scroll::-webkit-scrollbar-track {
+
+::-webkit-scrollbar-track {
   background: transparent;
 }
-.ws-scroll::-webkit-scrollbar-thumb {
+
+::-webkit-scrollbar-thumb {
   background: var(--ws-border-strong);
-  border-radius: 3px;
+  border-radius: 2px;
 }
-.ws-scroll::-webkit-scrollbar-thumb:hover {
-  background: var(--ws-ink-faint);
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ws-ink-muted);
 }

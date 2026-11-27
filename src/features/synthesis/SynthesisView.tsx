@@ -188,15 +188,21 @@ export const SynthesisView: React.FC<SynthesisViewProps> = ({
             {unestablishedThreads.map((thread, idx) => (
               <div
                 key={`unestablished-${idx}`}
-                className="rounded-[var(--ws-radius-sm)] border border-dashed border-[var(--ws-border-strong)] bg-[var(--ws-surface-subtle)]/75 p-5 sm:p-6 space-y-2.5"
+                className="ws-caution-panel border-dashed p-5 sm:p-7 space-y-3"
               >
-                <div className="ws-kicker text-[var(--ws-ink-muted)]">
-                  {t.synthesis.unestablishedLabel}
+                <div className="flex items-center gap-2.5">
+                  <span
+                    aria-hidden="true"
+                    className="inline-block h-2 w-2 rounded-full bg-[var(--ws-warn)] shrink-0"
+                  />
+                  <span className="ws-kicker text-[var(--ws-warn)]">
+                    {t.synthesis.unestablishedLabel}
+                  </span>
                 </div>
-                <h3 className="font-display text-[1.12rem] font-semibold text-[var(--ws-ink)]">
+                <h3 className="font-display text-[1.22rem] font-semibold text-[var(--ws-ink)]">
                   {thread.title}
                 </h3>
-                <div className="max-w-[74ch] ws-prose">
+                <div className="max-w-[70ch] ws-prose">
                   <SafeMarkdown
                     content={thread.content}
                     compact

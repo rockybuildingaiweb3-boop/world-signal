@@ -311,7 +311,7 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
               />
 
               {/* 3-Zone Monograph Reading Canvas on xl+: Long-Form Editorial Column + Sticky Editorial Margin Rail */}
-              <div className="xl:grid xl:grid-cols-[minmax(0,66ch)_210px] xl:gap-10 xl:items-start">
+              <div className="xl:grid xl:grid-cols-[minmax(0,68ch)_232px] xl:justify-between xl:gap-12 xl:items-start">
                 <div className="min-w-0 max-w-[68ch] space-y-10">
                   {/* PART I · FACTUAL RECORD & CHRONOLOGY */}
                   {(activeSignal.sections.whatHappened ||
