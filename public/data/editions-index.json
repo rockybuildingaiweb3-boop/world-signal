@@ -1,8 +1,17 @@
 {
   "schema_version": 1,
-  "latest_edition": "2026-11-26",
-  "generated_at": "2026-11-27T15:56:13.711Z",
+  "latest_edition": "2026-11-27",
+  "generated_at": "2026-11-27T17:00:47.337Z",
   "editions": [
+    {
+      "date": "2026-11-27",
+      "title": "WORLD SIGNAL — Daily Intelligence Briefing",
+      "path": "/editions/2026/11/2026-11-27.md",
+      "updated_at": "2026-11-27T08:55:00-08:00",
+      "status": "draft",
+      "language": "zh-CN",
+      "summary": "2026 年 11 月 27 日 08:00 晨间版：信号总数 85 个（世界事件 48 个、AI 前沿 19 个、经济展望 18 个）。中国国务院承诺稳市，'国家队'将发挥更大作用，中国股市周五大涨；土耳其完成《麦加联合防务协定》批准；新西兰大选陷入僵局，机会党成为造王者；法国与西班牙 11 月通胀初值远低于预期；新增 4 个信号，更新 16 个信号；更正亚太股市周五收盘价（美联社）与布伦特周四涨幅（+2.1%）。"
+    },
     {
       "date": "2026-11-26",
       "title": "WORLD SIGNAL — Daily Intelligence Briefing",
