@@ -114,6 +114,19 @@ Rules:
 - Never infer a relationship simply because two events occur near each other in time.
 - Target IDs may refer to signals in other editions; do not require the target to exist in the same daily file.
 
+### 5. Visual media metadata (optional additive v2 extension)
+
+```yaml
+media_assets: []
+```
+
+- `media_assets` is an **optional, additive v2 extension** governed by `docs/MEDIA_ASSET_POLICY.md` and `docs/CONTENT_SCHEMA.md`. It does **not** introduce schema v3.
+- Older schema-v1 and earlier schema-v2 editions may omit `media_assets`; parsers default missing values to `[]`.
+- `media_id` is scoped uniquely inside its parent signal and is **not** a new signal identity system.
+- All media metadata must remain deterministic and provenance-aware (`asset_url`, `source_page_url`, `creator`, `credit_line`, `rights`, and `verification`).
+- Visual media metadata must **never** alter `claim_id` records, `sources` ledgers, `independentOriginCount`, corroboration counts, or confidence assessments.
+- The frontend must render only fully verified assets with `public_web_display_allowed: true`, distinguish `direct_event_documentation` from `contextual`, `illustrative`, and `data_visualization`, and honor `crop_allowed: false`.
+
 ## Cross-edition interpretation rules
 
 - A signal ID is the durable identity of an ongoing story. Reuse it; do not create a new ID for each update.

@@ -236,20 +236,27 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
   // Deterministic Anti-Repetition Visual Allocation Across All Briefing Slots
   const visualAllocation = useMemo(() => {
     const usedAssetIds = new Set<string>();
+    const usedMediaUrls = new Set<string>();
 
     const lead: VisualSelectionResult | null = leadSignal
       ? selectVisualStrategyForSignal(leadSignal, { context: 'hero' })
       : null;
     if (lead?.asset) usedAssetIds.add(lead.asset.id);
+    if (lead?.selectedMedia) usedMediaUrls.add(lead.selectedMedia.asset_url);
 
     const secondaryExclude = Array.from(usedAssetIds);
+    const secondaryMediaExclude = Array.from(usedMediaUrls);
     const secondary: VisualSelectionResult | null = secondaryFeature
       ? selectVisualStrategyForSignal(secondaryFeature, {
           context: 'secondary',
           excludeAssetIds: secondaryExclude,
+          excludeMediaUrls: secondaryMediaExclude,
         })
       : null;
     if (secondary?.asset) usedAssetIds.add(secondary.asset.id);
+    if (secondary?.selectedMedia) {
+      usedMediaUrls.add(secondary.selectedMedia.asset_url);
+    }
 
     // Pick a distinct featured signal for World desk if leadSignal is already World #1
     const worldCandidates = domainTopSignals.world;
@@ -258,42 +265,61 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
       worldCandidates[0] ??
       null;
     const worldDeskExclude = Array.from(usedAssetIds);
+    const worldDeskMediaExclude = Array.from(usedMediaUrls);
     const worldDeskSelection = worldDeskSignal
       ? selectVisualStrategyForSignal(worldDeskSignal, {
           context: 'desk',
           excludeAssetIds: worldDeskExclude,
+          excludeMediaUrls: worldDeskMediaExclude,
         })
       : null;
     if (worldDeskSelection?.asset) usedAssetIds.add(worldDeskSelection.asset.id);
+    if (worldDeskSelection?.selectedMedia) {
+      usedMediaUrls.add(worldDeskSelection.selectedMedia.asset_url);
+    }
 
     const aiDeskSignal = domainTopSignals.ai[0] ?? null;
     const aiDeskExclude = Array.from(usedAssetIds);
+    const aiDeskMediaExclude = Array.from(usedMediaUrls);
     const aiDeskSelection = aiDeskSignal
       ? selectVisualStrategyForSignal(aiDeskSignal, {
           context: 'desk',
           excludeAssetIds: aiDeskExclude,
+          excludeMediaUrls: aiDeskMediaExclude,
         })
       : null;
     if (aiDeskSelection?.asset) usedAssetIds.add(aiDeskSelection.asset.id);
+    if (aiDeskSelection?.selectedMedia) {
+      usedMediaUrls.add(aiDeskSelection.selectedMedia.asset_url);
+    }
 
     const econDeskSignal = domainTopSignals.economy[0] ?? null;
     const econDeskExclude = Array.from(usedAssetIds);
+    const econDeskMediaExclude = Array.from(usedMediaUrls);
     const econDeskSelection = econDeskSignal
       ? selectVisualStrategyForSignal(econDeskSignal, {
           context: 'desk',
           excludeAssetIds: econDeskExclude,
+          excludeMediaUrls: econDeskMediaExclude,
         })
       : null;
     if (econDeskSelection?.asset) usedAssetIds.add(econDeskSelection.asset.id);
+    if (econDeskSelection?.selectedMedia) {
+      usedMediaUrls.add(econDeskSelection.selectedMedia.asset_url);
+    }
 
     return {
       secondaryExclude,
+      secondaryMediaExclude,
       worldDeskSignal,
       worldDeskExclude,
+      worldDeskMediaExclude,
       aiDeskSignal,
       aiDeskExclude,
+      aiDeskMediaExclude,
       econDeskSignal,
       econDeskExclude,
+      econDeskMediaExclude,
     };
   }, [domainTopSignals, leadSignal, secondaryFeature]);
 
@@ -789,6 +815,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                   lang={lang}
                   context="secondary"
                   excludeAssetIds={visualAllocation.secondaryExclude}
+                  excludeMediaUrls={visualAllocation.secondaryMediaExclude}
                   variant="feature"
                   plateNumber="02"
                 />
@@ -1043,6 +1070,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                     lang={lang}
                     context="desk"
                     excludeAssetIds={visualAllocation.worldDeskExclude}
+                    excludeMediaUrls={visualAllocation.worldDeskMediaExclude}
                     variant="plate"
                     plateNumber="I"
                   />
@@ -1148,6 +1176,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                         lang={lang}
                         context="desk"
                         excludeAssetIds={visualAllocation.aiDeskExclude}
+                        excludeMediaUrls={visualAllocation.aiDeskMediaExclude}
                         variant="feature"
                         plateNumber="II"
                       />
@@ -1263,6 +1292,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                       lang={lang}
                       context="desk"
                       excludeAssetIds={visualAllocation.econDeskExclude}
+                      excludeMediaUrls={visualAllocation.econDeskMediaExclude}
                       variant="plate"
                       plateNumber="III"
                     />

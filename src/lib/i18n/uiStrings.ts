@@ -3,6 +3,8 @@ import type {
   ConfidenceLevel,
   EditionStatus,
   IndependenceExclusionReason,
+  MediaAssetType,
+  MediaSignalRelationship,
   SignalDomain,
   SignalLifecycle,
   SignalRelationshipType,
@@ -182,6 +184,7 @@ export interface UiDictionary {
       scenarios: string;
       personalRelevance: string;
       whatToWatch: string;
+      media: string;
       claims: string;
       sources: string;
       related: string;
@@ -615,6 +618,22 @@ export interface UiDictionary {
     daySpanLabel: (days: number) => string;
     compareAction: string;
   };
+  media: {
+    sectionTitle: string;
+    sectionSubtitle: string;
+    relationships: Record<MediaSignalRelationship, string>;
+    relationshipDisclosures: Record<MediaSignalRelationship, string>;
+    mediaTypes: Record<MediaAssetType, string>;
+    sourcePageLink: string;
+    licenseLink: string;
+    creatorLabel: string;
+    depictedLabel: string;
+    uncroppedNote: string;
+    unavailableFallbackTitle: string;
+    unavailableFallbackBody: string;
+    nonEvidenceNote: string;
+    supportingCount: (count: number) => string;
+  };
 }
 
 const EN_DICT: UiDictionary = {
@@ -857,6 +876,7 @@ const EN_DICT: UiDictionary = {
       scenarios: 'Scenarios',
       personalRelevance: 'Personal Relevance',
       whatToWatch: 'What to Watch',
+      media: 'Editorial Media',
       claims: 'Claim Ledger',
       sources: 'Source Ledger',
       related: 'Related Signals',
@@ -1392,6 +1412,43 @@ const EN_DICT: UiDictionary = {
     daySpanLabel: (days) => `${days}-day span`,
     compareAction: 'Compare',
   },
+  media: {
+    sectionTitle: 'Supporting Editorial Media',
+    sectionSubtitle:
+      'Rights-verified visual context attached to this signal. Visual media provides context only and is excluded from independent reporting-origin and claim-corroboration counts.',
+    relationships: {
+      direct_event_documentation: 'Direct Event Documentation',
+      contextual: 'Contextual Image',
+      illustrative: 'Editorial Illustration',
+      data_visualization: 'Data Visualization',
+    },
+    relationshipDisclosures: {
+      direct_event_documentation: 'Verified documentation of the reported event',
+      contextual: 'Contextual reference — does not directly document the reported event',
+      illustrative: 'Illustrative visual — conceptual, not documentary photography',
+      data_visualization: 'Structured chart, map, or analytical diagram',
+    },
+    mediaTypes: {
+      photograph: 'Photograph',
+      illustration: 'Illustration',
+      chart: 'Chart',
+      map: 'Map',
+      diagram: 'Diagram',
+      document_scan: 'Document Scan',
+      screenshot: 'Screenshot',
+    },
+    sourcePageLink: 'Original media page',
+    licenseLink: 'License',
+    creatorLabel: 'Creator',
+    depictedLabel: 'Depicted',
+    uncroppedNote: 'Displayed uncropped per rights terms',
+    unavailableFallbackTitle: 'External media unavailable',
+    unavailableFallbackBody:
+      'This remote image could not be loaded. Original attribution and provenance links remain available below.',
+    nonEvidenceNote: 'Visual context only · Excluded from reporting-origin counts',
+    supportingCount: (count) =>
+      count === 1 ? '1 supporting asset' : `${count} supporting assets`,
+  },
 };
 
 const ZH_DICT: UiDictionary = {
@@ -1630,6 +1687,7 @@ const ZH_DICT: UiDictionary = {
       scenarios: '情景推演',
       personalRelevance: '个人相关性',
       whatToWatch: '后续观察点',
+      media: '编务影像与图资',
       claims: '声明核验账本',
       sources: '来源记录账本',
       related: '关联信号',
@@ -2155,6 +2213,42 @@ const ZH_DICT: UiDictionary = {
     openCurrentVersion: (date) => `新版 (${date})`,
     daySpanLabel: (days) => `间隔 ${days} 天`,
     compareAction: '开始对比',
+  },
+  media: {
+    sectionTitle: '补充编务影像与图资',
+    sectionSubtitle:
+      '经版权与内容核验的配图与图资。视觉媒体仅用于语境辅助，不计入独立报道来源或声明核验统计。',
+    relationships: {
+      direct_event_documentation: '事件现场纪实',
+      contextual: '背景语境配图',
+      illustrative: '编务示意插图',
+      data_visualization: '数据可视化',
+    },
+    relationshipDisclosures: {
+      direct_event_documentation: '经核验的本次事件现场影像记录',
+      contextual: '背景参考配图——非本次事件现场直接拍摄',
+      illustrative: '示意性视觉——概念插图，非现场纪实摄影',
+      data_visualization: '结构化数据图表、地图或示意图',
+    },
+    mediaTypes: {
+      photograph: '摄影照片',
+      illustration: '插画',
+      chart: '图表',
+      map: '地图',
+      diagram: '结构图',
+      document_scan: '文献扫描件',
+      screenshot: '界面截图',
+    },
+    sourcePageLink: '原始来源页面',
+    licenseLink: '许可协议',
+    creatorLabel: '作者',
+    depictedLabel: '描绘信息',
+    uncroppedNote: '依授权条款完整无裁切呈现',
+    unavailableFallbackTitle: '外部视觉资源暂无法加载',
+    unavailableFallbackBody:
+      '远程图像加载失败，以下保留原始署名与出处核查链接。',
+    nonEvidenceNote: '仅作视觉语境参考 · 不计入独立报道来源',
+    supportingCount: (count) => `共 ${count} 项补充图资`,
   },
 };
 

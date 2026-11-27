@@ -16,19 +16,19 @@ WORLD SIGNAL is a static-first global intelligence publication. Its canonical ed
 
 ~~~mermaid
 flowchart LR
-  M[Muse] --> C[Canonical Markdown]
+  M[Muse research: text + verified media] --> C[Canonical Markdown]
   C --> G[GitHub history]
-  G --> W[GitHub Actions]
+  G --> W[Publishing validation & workflow]
   W --> P[Public Markdown]
   W --> I[Edition index]
   P --> F[React frontend]
   I --> F
-  F --> V[Parser and validation]
-  V --> X[Intelligence projections]
-  X --> U[Four reader views]
+  F --> V[Parser, rights & schema validation]
+  V --> X[Intelligence projections & visual media selector]
+  X --> U[Four reader views + editorial media rendering]
 ~~~
 
-The browser uses same-origin static requests. It does not enumerate GitHub directories, scrape news sites, or call a model to interpret an edition.
+The browser uses same-origin static requests for archive data and loads only validated HTTPS external visual media assets declared in canonical Markdown. It does not enumerate GitHub directories, scrape news sites, maintain a separate canonical image database, or call backend or model APIs to interpret an edition.
 
 ## Canonical archive
 
@@ -43,13 +43,13 @@ The publishing script mirrors canonical editions to:
 - `public/editions/YYYY/MM/YYYY-MM-DD.md`
 - `public/data/editions-index.json`
 
-The mirror is generated output. The index contains archive metadata and paths, not the full story content. The frontend loads the index and fetches selected Markdown editions on demand. Never edit generated `public/` content manually.
+The mirror is generated output. The publishing validator checks frontmatter, required headings, schema-v2 blocks, and (when present) `media_assets` rights and verification metadata without downloading or scraping external image files. The index contains archive metadata and paths, not the full story content. The frontend loads the index and fetches selected Markdown editions on demand. Never edit generated `public/` content manually.
 
 ## Content model
 
 An edition contains edition-level YAML frontmatter, an executive briefing, three domain sections, cross-domain synthesis, personal implications, a watchlist, and audit notes.
 
-Each signal is an H2 section with a stable ID, one YAML metadata fence, claim records, source records, and human-readable Markdown narrative. Schema v1 remains readable. Schema v2 adds continuity, update classification, structured timeline events, and explicit typed relationships. See `INTELLIGENCE_DATA_CONTRACT.md`.
+Each signal is an H2 section with a stable ID, one YAML metadata fence, claim records, source records, optional approved `media_assets` records, and human-readable Markdown narrative. Schema v1 remains readable. Schema v2 adds continuity, update classification, structured timeline events, explicit typed relationships, and optional visual media metadata. See `INTELLIGENCE_DATA_CONTRACT.md` and `MEDIA_ASSET_POLICY.md`.
 
 ## Intelligence layer
 

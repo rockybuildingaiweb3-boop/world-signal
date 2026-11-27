@@ -50,3 +50,12 @@ Never invent URLs, titles, publication dates, quotations, or access confirmation
 ## Registry changes
 
 Only the repository owner may approve changes to `config/source-registry.yml`. A research agent may flag a candidate in the edition's audit notes, but must not treat an unapproved outlet as Tier 1.
+
+## News-reporting source approval vs. image reuse rights
+
+Approval of a newsroom or institution in `config/source-registry.yml` applies strictly to **factual text reporting and citation**. It does **not** grant permission to copy, host, or display photographs, charts, videos, or graphics published by that outlet.
+
+- A Reuters, Associated Press, Financial Times, or BBC article may qualify as an approved Tier 1 textual source while its accompanying photograph remains separately licensed and restricted from public web display.
+- Official government or intergovernmental websites may host third-party or contractor photographs that are not in the public domain.
+- Every visual asset requires independent item-level rights and provenance verification under `docs/MEDIA_ASSET_POLICY.md`.
+- Visual media assets (`media_assets`) are tracked separately from `sources` and never contribute to `independentOriginCount`, corroboration counts, or confidence ratings.

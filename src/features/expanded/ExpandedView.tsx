@@ -16,6 +16,8 @@ import {
 import { SafeMarkdown } from '../../components/editorial/SafeMarkdown';
 import { TimelineTrack } from '../../components/editorial/TimelineTrack';
 import { ScenariosGrid } from '../../components/editorial/ScenariosGrid';
+import { SignalMediaGallery } from '../../components/editorial/SignalMediaGallery';
+import { selectApprovedSignalMedia } from '../../lib/editorial/editorialAssetRegistry';
 import { SignalFilterSidebar } from './SignalFilterSidebar';
 import { SignalDossierHeader } from './SignalDossierHeader';
 import { SignalEvidenceLedgers } from './SignalEvidenceLedgers';
@@ -152,6 +154,11 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
     }
   };
 
+  const supportingMediaAssets = useMemo(() => {
+    if (!activeSignal) return [];
+    return selectApprovedSignalMedia(activeSignal).supporting;
+  }, [activeSignal]);
+
   const jumpSections = useMemo(() => {
     if (!activeSignal) return [];
     const list: Array<{ id: string; label: string }> = [];
@@ -176,6 +183,8 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
       });
     if (activeSignal.sections.scenarios)
       list.push({ id: 'sec-scenarios', label: t.expanded.sections.scenarios });
+    if (supportingMediaAssets.length > 0)
+      list.push({ id: 'sec-media', label: t.expanded.sections.media });
     list.push({ id: 'sec-claims', label: t.expanded.sections.claims });
     list.push({ id: 'sec-sources', label: t.expanded.sections.sources });
     if (
@@ -188,7 +197,7 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
       });
     }
     return list;
-  }, [activeSignal, t.expanded.sections]);
+  }, [activeSignal, supportingMediaAssets.length, t.expanded.sections]);
 
   const currentSignalIndex = useMemo(() => {
     if (!activeSignal) return -1;
@@ -736,6 +745,14 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
                     </section>
                   )}
                 </div>
+              )}
+
+              {supportingMediaAssets.length > 0 && (
+                <SignalMediaGallery
+                  assets={supportingMediaAssets}
+                  lang={lang}
+                  domain={activeSignal.domain}
+                />
               )}
 
               <SignalEvidenceLedgers

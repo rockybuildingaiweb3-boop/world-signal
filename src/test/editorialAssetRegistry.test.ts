@@ -42,6 +42,7 @@ function makeSignal(overrides: Partial<ParsedSignal> = {}): ParsedSignal {
       },
     ],
     relationships: [],
+    mediaAssets: [],
     claims: [
       {
         claim_id: 'C1',

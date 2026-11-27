@@ -140,6 +140,9 @@ export const GlobalSearchOverlay: React.FC<GlobalSearchOverlayProps> = ({
   const [expandedSignalIds, setExpandedSignalIds] = useState<Set<string>>(
     () => new Set()
   );
+  const [failedThumbUrls, setFailedThumbUrls] = useState<ReadonlySet<string>>(
+    () => new Set()
+  );
   const [activeIndex, setActiveIndex] = useState<number>(0);
 
   useAccessibleModal(isOpen, onClose, dialogRef);
@@ -802,25 +805,66 @@ export const GlobalSearchOverlay: React.FC<GlobalSearchOverlayProps> = ({
                       </span>
                     </div>
 
-                    {/* Headline */}
-                    <h3 className="font-display text-[1.06rem] sm:text-[1.14rem] font-semibold leading-[1.32] text-[var(--ws-ink)]">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleOpenOccurrence(item.latestEditionDate, item.signalId)
-                        }
-                        className="text-left hover:text-[var(--ws-world)] hover:underline decoration-[var(--ws-border-strong)] underline-offset-4 cursor-pointer"
-                      >
-                        {item.latestHeadline}
-                      </button>
-                    </h3>
+                    {/* Headline, Excerpt & Optional Approved Hero Thumbnail */}
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="min-w-0 flex-1 space-y-1.5">
+                        <h3 className="font-display text-[1.06rem] sm:text-[1.14rem] font-semibold leading-[1.32] text-[var(--ws-ink)]">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleOpenOccurrence(
+                                item.latestEditionDate,
+                                item.signalId
+                              )
+                            }
+                            className="text-left hover:text-[var(--ws-world)] hover:underline decoration-[var(--ws-border-strong)] underline-offset-4 cursor-pointer"
+                          >
+                            {item.latestHeadline}
+                          </button>
+                        </h3>
 
-                    {/* Matching Excerpt */}
-                    {item.excerpt && (
-                      <p className="text-[12.5px] leading-relaxed text-[var(--ws-ink-secondary)] line-clamp-2">
-                        {item.excerpt}
-                      </p>
-                    )}
+                        {item.excerpt && (
+                          <p className="text-[12.5px] leading-relaxed text-[var(--ws-ink-secondary)] line-clamp-2">
+                            {item.excerpt}
+                          </p>
+                        )}
+                      </div>
+
+                      {item.heroMedia &&
+                        !failedThumbUrls.has(item.heroMedia.assetUrl) && (
+                          <div
+                            data-testid={`search-thumb-${item.signalId}`}
+                            className={`hidden sm:flex w-24 shrink-0 aspect-[4/3] overflow-hidden border border-[var(--ws-border)] bg-[var(--ws-surface-subtle)] ${
+                              item.heroMedia.cropAllowed
+                                ? ''
+                                : 'items-center justify-center p-1'
+                            }`}
+                          >
+                            <img
+                              src={item.heroMedia.assetUrl}
+                              alt={item.heroMedia.altText}
+                              loading="lazy"
+                              decoding="async"
+                              referrerPolicy="no-referrer"
+                              onError={() => {
+                                const brokenUrl = item.heroMedia?.assetUrl;
+                                if (!brokenUrl) return;
+                                setFailedThumbUrls((prev) => {
+                                  if (prev.has(brokenUrl)) return prev;
+                                  const next = new Set(prev);
+                                  next.add(brokenUrl);
+                                  return next;
+                                });
+                              }}
+                              className={
+                                item.heroMedia.cropAllowed
+                                  ? 'h-full w-full object-cover object-center'
+                                  : 'h-full w-full object-contain'
+                              }
+                            />
+                          </div>
+                        )}
+                    </div>
 
                     {/* Matched Fields & Longitudinal Appearance Summary */}
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">

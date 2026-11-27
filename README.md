@@ -58,12 +58,12 @@ The active application is implemented under `src/` using React 19, TypeScript, V
 
 Four primary views:
 
-- **Briefing** — executive summary, lead developments, priority signals, and domain overview.
-- **Expanded & Timelines** — signal explorer, detailed narratives, claims, sources, and timelines.
+- **Briefing** — executive summary, lead developments, priority signals, approved editorial media, and domain overview.
+- **Expanded & Timelines** — signal explorer, detailed narratives, verified media gallery, claims, sources, and timelines.
 - **Synthesis & Personal** — cross-domain analysis, scenarios, personal implications, and watchlist.
 - **Audit & Methodology** — source origins, evidence trace, confidence, validation, and editorial audit.
 
-The deterministic intelligence layer under `src/lib/intelligence/` provides edition comparison, storyline indexing, and explicit relationship graphs. The next UI phase integrates Daily Delta, Storyline Tracker, Evidence Panel, and Cross-Edition Search without replacing the existing frontend.
+The deterministic intelligence layer under `src/lib/intelligence/` provides edition comparison, storyline indexing, cross-edition search, Reader Desk catch-up, and explicit relationship graphs. The Editorial Media Intelligence layer (`docs/MEDIA_ASSET_POLICY.md`, optional schema-v2 `media_assets`, publisher validation, `StoryVisual`, and `SignalMediaGallery`) supports rights-verified visual journalism while keeping media records strictly separate from textual source independence.
 
 ## Data and archive boundaries
 
@@ -97,6 +97,7 @@ world-signal/
 │   ├── INTELLIGENCE_DATA_CONTRACT.md
 │   ├── EDITORIAL_STANDARDS.md
 │   ├── SOURCE_POLICY.md
+│   ├── MEDIA_ASSET_POLICY.md
 │   ├── FRONTEND_CONTRACT.md
 │   └── OPERATIONS.md
 ├── public/
@@ -149,6 +150,7 @@ bun run build
 | [Intelligence Data Contract](docs/INTELLIGENCE_DATA_CONTRACT.md) | Schema-v2 continuity, updates, timeline and relationships |
 | [Editorial Standards](docs/EDITORIAL_STANDARDS.md) | Story selection and analysis rules |
 | [Source Policy](docs/SOURCE_POLICY.md) | Source quality and independence |
+| [Media Asset Policy](docs/MEDIA_ASSET_POLICY.md) | Visual media rights verification, attribution, and integrity rules |
 | [Frontend Contract](docs/FRONTEND_CONTRACT.md) | Static content and frontend behavior |
 | [Operations](docs/OPERATIONS.md) | Daily updates and publication |
 

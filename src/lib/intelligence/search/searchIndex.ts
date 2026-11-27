@@ -8,6 +8,7 @@ import type {
   SignalStatus,
 } from '../../../types/edition';
 import { compareSignalSnapshots, type SignalChangeReason } from '../edition-diff/compareEditions';
+import { isApprovedMediaAsset } from '../../editorial/editorialAssetRegistry';
 
 export interface SearchClaimIndexItem {
   claimId: string;
@@ -129,6 +130,11 @@ export interface GroupedSearchResult {
   bestScore: number;
   matchedFields: SearchMatchField[];
   excerpt: string;
+  heroMedia?: {
+    assetUrl: string;
+    altText: string;
+    cropAllowed: boolean;
+  };
   occurrences: SearchOccurrenceMatch[];
 }
 
@@ -637,6 +643,10 @@ export function executeGlobalSearch(params: {
       }
     }
 
+    const approvedHeroMedia = (latestEntry.doc.signalRef.mediaAssets ?? []).find(
+      (asset) => asset.placement === 'hero' && isApprovedMediaAsset(asset)
+    );
+
     results.push({
       signalId,
       latestHeadline: latestEntry.doc.headline,
@@ -652,6 +662,15 @@ export function executeGlobalSearch(params: {
       bestScore: Math.max(0, bestScore),
       matchedFields: allFields,
       excerpt: bestExcerpt,
+      ...(approvedHeroMedia
+        ? {
+            heroMedia: {
+              assetUrl: approvedHeroMedia.asset_url,
+              altText: approvedHeroMedia.alt_text,
+              cropAllowed: approvedHeroMedia.rights.crop_allowed,
+            },
+          }
+        : {}),
       occurrences: occurrencesNewestFirst,
     });
   }

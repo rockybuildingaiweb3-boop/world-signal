@@ -70,6 +70,16 @@ const VALID_SIGNAL_RELATIONSHIPS = new Set([
   'technological_dependency', 'causal_link', 'potential_link'
 ]);
 const VALID_CONFIDENCE = new Set(['high', 'medium', 'low', 'unverified']);
+const VALID_MEDIA_TYPES = new Set([
+  'photograph', 'illustration', 'chart', 'map', 'diagram', 'document_scan', 'screenshot'
+]);
+const VALID_MEDIA_PLACEMENTS = new Set(['hero', 'supporting']);
+const VALID_MEDIA_RELATIONSHIPS = new Set([
+  'direct_event_documentation', 'contextual', 'illustrative', 'data_visualization'
+]);
+const VALID_MEDIA_RIGHTS_BASES = new Set([
+  'public_domain', 'cc0', 'cc_by', 'cc_by_sa', 'explicit_permission', 'editorial_license'
+]);
 
 function readSchemaVersion(frontmatter, filePath) {
   const raw = readScalar(frontmatter, 'schema_version', filePath);
@@ -89,16 +99,121 @@ function isCalendarDate(value) {
     date.getUTCDate() === day;
 }
 
-function isDateOrDateTime(value) {
-  if (isCalendarDate(value)) return true;
+function isIsoTimestamp(value) {
   return typeof value === 'string' &&
     /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?(?:Z|[+-]\d{2}:\d{2})$/.test(value) &&
     isCalendarDate(value.slice(0, 10)) &&
     Number.isFinite(Date.parse(value));
 }
 
+function isDateOrDateTime(value) {
+  if (isCalendarDate(value)) return true;
+  return isIsoTimestamp(value);
+}
+
+function isHttpsUrl(value) {
+  if (typeof value !== 'string' || !value.trim()) return false;
+  try {
+    const parsed = new URL(value.trim());
+    return parsed.protocol === 'https:' && Boolean(parsed.hostname);
+  } catch {
+    return false;
+  }
+}
+
 function isRecord(value) {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
+export function validateMediaAssets(mediaAssets, signalId) {
+  if (mediaAssets === undefined) return;
+  if (!Array.isArray(mediaAssets)) {
+    throw new Error(signalId + ': media_assets must be an array when present.');
+  }
+
+  const seenMediaIds = new Set();
+  for (const [index, asset] of mediaAssets.entries()) {
+    if (!isRecord(asset)) {
+      throw new Error(signalId + ' [media_assets[' + index + ']]: media asset must be a YAML object.');
+    }
+
+    const mediaId = typeof asset.media_id === 'string' ? asset.media_id.trim() : '';
+    const refLabel = signalId + ' (' + (mediaId || 'media_assets[' + index + ']') + ')';
+
+    if (!mediaId) {
+      throw new Error(refLabel + ': media_id must be a non-empty string.');
+    }
+    if (seenMediaIds.has(mediaId)) {
+      throw new Error(refLabel + ': duplicate media_id "' + mediaId + '" within signal.');
+    }
+    seenMediaIds.add(mediaId);
+
+    if (!VALID_MEDIA_TYPES.has(asset.media_type)) {
+      throw new Error(refLabel + ': unsupported media_type "' + String(asset.media_type) + '".');
+    }
+    if (!VALID_MEDIA_PLACEMENTS.has(asset.placement)) {
+      throw new Error(refLabel + ': unsupported placement "' + String(asset.placement) + '".');
+    }
+    if (!VALID_MEDIA_RELATIONSHIPS.has(asset.relationship_to_signal)) {
+      throw new Error(refLabel + ': unsupported relationship_to_signal "' + String(asset.relationship_to_signal) + '".');
+    }
+    if (!isHttpsUrl(asset.asset_url)) {
+      throw new Error(refLabel + ': asset_url must be a valid HTTPS URL.');
+    }
+    if (!isHttpsUrl(asset.source_page_url)) {
+      throw new Error(refLabel + ': source_page_url must be a valid HTTPS URL.');
+    }
+    for (const textField of ['caption', 'alt_text', 'creator', 'credit_line']) {
+      if (typeof asset[textField] !== 'string' || !asset[textField].trim()) {
+        throw new Error(refLabel + ': ' + textField + ' must be a non-empty string.');
+      }
+    }
+    if (asset.depicted_at !== undefined && asset.depicted_at !== null && !isDateOrDateTime(asset.depicted_at)) {
+      throw new Error(refLabel + ': depicted_at must be a valid YYYY-MM-DD date or ISO timestamp.');
+    }
+
+    const rights = asset.rights;
+    if (!isRecord(rights)) {
+      throw new Error(refLabel + ': rights object is required.');
+    }
+    if (!VALID_MEDIA_RIGHTS_BASES.has(rights.basis)) {
+      throw new Error(refLabel + ': unsupported rights.basis "' + String(rights.basis) + '".');
+    }
+    if (typeof rights.license_name !== 'string' || !rights.license_name.trim()) {
+      throw new Error(refLabel + ': rights.license_name must be a non-empty string.');
+    }
+    if (rights.basis === 'public_domain') {
+      if (rights.license_url !== undefined && rights.license_url !== null && rights.license_url !== '' && !isHttpsUrl(rights.license_url)) {
+        throw new Error(refLabel + ': rights.license_url must be a valid HTTPS URL when provided.');
+      }
+    } else if (!isHttpsUrl(rights.license_url)) {
+      throw new Error(refLabel + ': rights.license_url must be a valid HTTPS URL for rights basis "' + rights.basis + '".');
+    }
+    if (rights.public_web_display_allowed !== true) {
+      throw new Error(refLabel + ': rights.public_web_display_allowed must be true.');
+    }
+    if (typeof rights.crop_allowed !== 'boolean') {
+      throw new Error(refLabel + ': rights.crop_allowed must be a boolean.');
+    }
+    if (!isIsoTimestamp(rights.verified_at)) {
+      throw new Error(refLabel + ': rights.verified_at must be a valid ISO 8601 timestamp.');
+    }
+
+    const verification = asset.verification;
+    if (!isRecord(verification)) {
+      throw new Error(refLabel + ': verification object is required.');
+    }
+    for (const flag of [
+      'source_page_checked',
+      'direct_asset_checked',
+      'visual_content_checked',
+      'caption_context_checked'
+    ]) {
+      if (verification[flag] !== true) {
+        throw new Error(refLabel + ': verification.' + flag + ' must be true.');
+      }
+    }
+  }
 }
 
 function requireStringArray(value, label, signalId) {
@@ -192,6 +307,8 @@ function parseSignalMetadataBlock(signalBlock, signalId, filePath) {
     }
     requireStringArray(relationship.supporting_claim_ids, 'relationships[' + index + '].supporting_claim_ids', signalId);
   }
+
+  validateMediaAssets(metadata.media_assets, signalId);
 }
 
 function validateSchemaV2Signals(markdown, filePath) {
@@ -251,7 +368,7 @@ function assertNoSchemaDowngrade(relativePath, currentSchemaVersion, filePath) {
   }
 }
 
-function validateEdition(filePath, relativePath, markdown) {
+export function validateEdition(filePath, relativePath, markdown) {
   const frontmatter = parseFrontmatter(markdown, filePath);
   const schemaVersion = readSchemaVersion(frontmatter, filePath);
   assertNoSchemaDowngrade(relativePath, schemaVersion, filePath);
@@ -362,7 +479,13 @@ async function main() {
   process.stdout.write('Published ' + editions.length + ' edition(s); rebuilt public/data/editions-index.json\n');
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+const isDirectRun =
+  process.argv[1] &&
+  path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+
+if (isDirectRun) {
+  main().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  });
+}

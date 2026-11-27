@@ -119,6 +119,63 @@ Continuity dates may be explicit YAML `null` when the historical lookback is inc
 
 The exact field definitions, allowed values, and migration rules are in [Intelligence Data Contract](INTELLIGENCE_DATA_CONTRACT.md). The publishing script validates every v2 signal and rejects same-day schema downgrades. Historical v1 editions remain unchanged unless a deliberate, evidence-supported migration is performed.
 
+### Optional visual media metadata (`media_assets`)
+
+Schema v2 supports an **optional, backward-compatible** `media_assets` array on each signal. Do **not** bump `schema_version` to 3 for this extension:
+
+- Historical `schema_version: 1` editions without `media_assets` remain valid.
+- Existing `schema_version: 2` editions without `media_assets` remain valid.
+- Missing `media_assets` parses as `[]`; newly authored signals in updated templates include `media_assets: []` when no approved image exists.
+- `media_assets` is a **separate visual-media ledger**, not a replacement for `sources` or `claims`, and never affects independent-origin counting or confidence.
+
+Canonical record structure (schema illustration only — never copy placeholder URLs into real editions):
+
+~~~yaml
+media_assets:
+  - media_id: "WORLD-YYYYMMDD-example-M01"
+    media_type: "photograph"
+    placement: "hero"
+    relationship_to_signal: "direct_event_documentation"
+    asset_url: "https://example.org/media/original-image.jpg"
+    source_page_url: "https://example.org/media/image-record"
+    title: "Exact media title"
+    caption: "A concise factual description."
+    alt_text: "A concise description of visible contents."
+    creator: "Creator or photographer"
+    credit_line: "Photo: Creator / Organization, CC BY 4.0"
+    depicted_at: "YYYY-MM-DD"
+    depicted_location: "Verified location"
+    rights:
+      basis: "cc_by"
+      license_name: "CC BY 4.0"
+      license_url: "https://creativecommons.org/licenses/by/4.0/"
+      rights_holder: "Verified rights holder"
+      verified_at: "YYYY-MM-DDTHH:mm:ssZ"
+      public_web_display_allowed: true
+      crop_allowed: true
+    verification:
+      source_page_checked: true
+      direct_asset_checked: true
+      visual_content_checked: true
+      caption_context_checked: true
+~~~
+
+Field rules and validation expectations (see also [Media Asset Policy](MEDIA_ASSET_POLICY.md)):
+
+- `media_id`: stable identifier unique within the signal (e.g., `SIGNAL_ID-M01`). Duplicate IDs fail validation.
+- `media_type`: one of `photograph`, `illustration`, `chart`, `map`, `diagram`, `document_scan`, `screenshot`.
+- `placement`: `hero` or `supporting`.
+- `relationship_to_signal`: `direct_event_documentation`, `contextual`, `illustrative`, or `data_visualization`.
+- `asset_url` and `source_page_url`: direct, valid `https://` URLs. Never use search thumbnails, `http://`, `javascript:`, `data:`, or expiring authenticated URLs.
+- `caption`, `alt_text`, `creator`, and `credit_line`: plain text, non-empty. Never embed HTML or put license legalese inside `alt_text`.
+- `depicted_at` and `depicted_location`: optional; include only when documented by the source media record.
+- `rights.basis`: one of `public_domain`, `cc0`, `cc_by`, `cc_by_sa`, `explicit_permission`, `editorial_license`.
+- `rights.license_url`: valid `https://` URL to the license deed or official public-domain/rights-policy record (required for all rights bases).
+- `rights.public_web_display_allowed`: must be `true` for publishable displayable assets.
+- `rights.crop_allowed`: explicit boolean (`false` instructs the frontend to render uncropped).
+- `rights.verified_at`: valid ISO 8601 timestamp with UTC/offset.
+- `verification`: all four flags (`source_page_checked`, `direct_asset_checked`, `visual_content_checked`, `caption_context_checked`) must be `true`.
+
 Claim statuses: confirmed, reported, official_claim, disputed, unverified.
 
 Source classes: tier_1_newsroom, specialist_publication, primary_source, research_paper.

@@ -293,6 +293,7 @@ function hydrateBaselineAndCurrentForCompactDiff(
       related_signal_ids: sig.related_signal_ids,
       timelineEvents: sig.timelineEvents,
       relationships: sig.relationships,
+      mediaAssets: [],
       claims: sig.claims,
       sources: sig.sources.map((s) => ({
         ...s,

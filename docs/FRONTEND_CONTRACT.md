@@ -80,3 +80,16 @@ Pure deterministic projections live under `src/lib/intelligence/`:
 - New views must preserve source edition, signal ID, claim IDs, source URLs, relationship rationale, and confidence.
 
 An omitted signal is not resolved. A changed `updated_at` or `accessed_at` timestamp alone is not a material editorial change. See `docs/INTELLIGENCE_DATA_CONTRACT.md`.
+
+## Editorial visual media rendering
+
+When a signal declares optional `media_assets` metadata (see `docs/MEDIA_ASSET_POLICY.md` and `docs/CONTENT_SCHEMA.md`):
+
+- **HTTPS-only URLs**: Accept only valid `https://` URLs for `asset_url`, `source_page_url`, and `license_url`. Reject `http://`, `javascript:`, `data:`, and malformed URLs.
+- **Approved media only**: Render an external media item only when `rights.public_web_display_allowed === true`, all four `verification` booleans are `true`, required attribution/rights fields are valid, and URL checks pass. Unapproved or malformed assets must never render and must emit structured validation diagnostics.
+- **Visible attribution & provenance**: Display concise factual `caption`, `credit_line`, `creator`, explicit `relationship_to_signal` label (distinguishing `direct_event_documentation` from `contextual`, `illustrative`, and `data_visualization`), and keyboard-accessible links to `source_page_url` and `license_url` (`target="_blank" rel="noopener noreferrer"`). Render plain text only—never inject raw HTML.
+- **Accessible alt text**: Pass `alt_text` verbatim to `<img alt={...} />`; never stuff licensing boilerplate into `alt`.
+- **Crop permission**: When `rights.crop_allowed === false`, render the image uncropped (`object-fit: contain`) inside a framed plate rather than applying destructive `object-fit: cover` cropping.
+- **Loading & layout stability**: Use explicit aspect-ratio containers to prevent layout shift; hero media may use `loading="eager"`, while supporting gallery media must use `loading="lazy"`.
+- **Safe remote error fallback**: Handle broken or blocked remote image URLs gracefully via `onError`, falling back cleanly to local original editorial illustration or a typographic cover plate without crashing or fabricating documentary evidence.
+- **Not factual evidence**: Media assets must never alter `sources`, `claims`, `independentOriginCount`, corroboration counts, or signal confidence.

@@ -10,12 +10,17 @@ import type {
   EditionFrontmatter,
   EditionStatus,
   HorizonImpact,
+  MediaAssetType,
+  MediaPlacement,
+  MediaRightsBasis,
+  MediaSignalRelationship,
   ParsedEdition,
   ParsedSignal,
   PersonalSection,
   ScenarioItem,
   SignalClaim,
   SignalDomain,
+  SignalMediaAsset,
   SignalNarrativeSections,
   SignalSource,
   SignalContinuity,
@@ -95,6 +100,16 @@ const VALID_SIGNAL_RELATIONSHIPS: readonly SignalRelationshipType[] = [
   'same_event', 'contextual', 'policy_response', 'market_transmission',
   'technological_dependency', 'causal_link', 'potential_link',
 ];
+const VALID_MEDIA_TYPES: readonly MediaAssetType[] = [
+  'photograph', 'illustration', 'chart', 'map', 'diagram', 'document_scan', 'screenshot',
+];
+const VALID_MEDIA_PLACEMENTS: readonly MediaPlacement[] = ['hero', 'supporting'];
+const VALID_MEDIA_RELATIONSHIPS: readonly MediaSignalRelationship[] = [
+  'direct_event_documentation', 'contextual', 'illustrative', 'data_visualization',
+];
+const VALID_MEDIA_RIGHTS_BASES: readonly MediaRightsBasis[] = [
+  'public_domain', 'cc0', 'cc_by', 'cc_by_sa', 'explicit_permission', 'editorial_license',
+];
 
 function isValidCalendarDate(value: string): boolean {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
@@ -105,13 +120,17 @@ function isValidCalendarDate(value: string): boolean {
     date.getUTCDate() === day;
 }
 
-function isValidDateOrDateTime(value: string): boolean {
-  if (isValidCalendarDate(value)) return true;
+function isValidIsoTimestamp(value: string): boolean {
   const isoDateTime =
     /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?(?:Z|[+-]\d{2}:\d{2})$/;
   return isoDateTime.test(value) &&
     isValidCalendarDate(value.slice(0, 10)) &&
     Number.isFinite(Date.parse(value));
+}
+
+function isValidDateOrDateTime(value: string): boolean {
+  if (isValidCalendarDate(value)) return true;
+  return isValidIsoTimestamp(value);
 }
 
 const SIGNAL_ID_REGEX = /^(WORLD|AI|ECON)-\d{8}-[a-z0-9-]+$/;
@@ -124,6 +143,16 @@ export function isSafeHttpUrl(rawUrl: string): boolean {
   try {
     const parsed = new URL(rawUrl.trim());
     return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
+export function isSafeHttpsUrl(rawUrl: string): boolean {
+  if (!rawUrl || typeof rawUrl !== 'string') return false;
+  try {
+    const parsed = new URL(rawUrl.trim());
+    return parsed.protocol === 'https:' && Boolean(parsed.hostname);
   } catch {
     return false;
   }
@@ -863,6 +892,321 @@ function parseSignalBlock(
     }];
   });
 
+  // Optional additive schema-v2 visual media metadata (strictly isolated from sources & independence)
+  const mediaAssets: SignalMediaAsset[] = [];
+  if (meta.media_assets !== undefined) {
+    if (!Array.isArray(meta.media_assets)) {
+      issues.push({
+        severity: 'error',
+        code: 'INVALID_MEDIA_ASSETS_TYPE',
+        signalId,
+        message: `Signal "${signalId}" media_assets must be an array when present.`,
+      });
+    } else {
+      const seenMediaIds = new Set<string>();
+      meta.media_assets.forEach((item, idx) => {
+        const raw =
+          item && typeof item === 'object' && !Array.isArray(item)
+            ? (item as Record<string, unknown>)
+            : null;
+        if (!raw) {
+          issues.push({
+            severity: 'error',
+            code: 'INVALID_MEDIA_ASSET_OBJECT',
+            signalId,
+            message: `Media asset #${idx + 1} in "${signalId}" must be a structured YAML object.`,
+          });
+          return;
+        }
+
+        const mediaId = asString(raw.media_id);
+        const label = mediaId || `#${idx + 1}`;
+        let hasError = false;
+
+        if (!mediaId) {
+          hasError = true;
+          issues.push({
+            severity: 'error',
+            code: 'MISSING_MEDIA_ID',
+            signalId,
+            message: `Media asset #${idx + 1} in "${signalId}" is missing a non-empty media_id.`,
+          });
+        } else if (seenMediaIds.has(mediaId)) {
+          hasError = true;
+          issues.push({
+            severity: 'error',
+            code: 'DUPLICATE_MEDIA_ID',
+            signalId,
+            message: `Duplicate media_id "${mediaId}" in signal "${signalId}".`,
+          });
+        } else {
+          seenMediaIds.add(mediaId);
+        }
+
+        const rawMediaType = asString(raw.media_type) as MediaAssetType;
+        if (!VALID_MEDIA_TYPES.includes(rawMediaType)) {
+          hasError = true;
+          issues.push({
+            severity: 'error',
+            code: 'INVALID_MEDIA_TYPE',
+            signalId,
+            message: `Media asset "${label}" in "${signalId}" has unsupported media_type "${rawMediaType || '(empty)'}".`,
+          });
+        }
+
+        const rawPlacement = asString(raw.placement) as MediaPlacement;
+        if (!VALID_MEDIA_PLACEMENTS.includes(rawPlacement)) {
+          hasError = true;
+          issues.push({
+            severity: 'error',
+            code: 'INVALID_MEDIA_PLACEMENT',
+            signalId,
+            message: `Media asset "${label}" in "${signalId}" has unsupported placement "${rawPlacement || '(empty)'}".`,
+          });
+        }
+
+        const rawRel = asString(raw.relationship_to_signal) as MediaSignalRelationship;
+        if (!VALID_MEDIA_RELATIONSHIPS.includes(rawRel)) {
+          hasError = true;
+          issues.push({
+            severity: 'error',
+            code: 'INVALID_MEDIA_RELATIONSHIP',
+            signalId,
+            message: `Media asset "${label}" in "${signalId}" has unsupported relationship_to_signal "${rawRel || '(empty)'}".`,
+          });
+        }
+
+        const assetUrl = asString(raw.asset_url);
+        if (!isSafeHttpsUrl(assetUrl)) {
+          hasError = true;
+          issues.push({
+            severity: 'error',
+            code: 'INVALID_MEDIA_ASSET_URL',
+            signalId,
+            message: `Media asset "${label}" in "${signalId}" requires a valid HTTPS asset_url.`,
+          });
+        }
+
+        const sourcePageUrl = asString(raw.source_page_url);
+        if (!isSafeHttpsUrl(sourcePageUrl)) {
+          hasError = true;
+          issues.push({
+            severity: 'error',
+            code: 'INVALID_MEDIA_SOURCE_PAGE_URL',
+            signalId,
+            message: `Media asset "${label}" in "${signalId}" requires a valid HTTPS source_page_url.`,
+          });
+        }
+
+        const title = asString(raw.title);
+        const caption = asString(raw.caption);
+        const altText = asString(raw.alt_text);
+        const creator = asString(raw.creator);
+        const creditLine = asString(raw.credit_line);
+
+        if (!caption || !altText) {
+          hasError = true;
+          issues.push({
+            severity: 'error',
+            code: 'MISSING_MEDIA_TEXT',
+            signalId,
+            message: `Media asset "${label}" in "${signalId}" requires non-empty plain-text caption and alt_text.`,
+          });
+        }
+
+        if (!creator || !creditLine) {
+          hasError = true;
+          issues.push({
+            severity: 'error',
+            code: 'MISSING_MEDIA_ATTRIBUTION',
+            signalId,
+            message: `Media asset "${label}" in "${signalId}" requires non-empty creator and credit_line.`,
+          });
+        }
+
+        const rawDepictedAt = asString(raw.depicted_at);
+        let depictedAt: string | undefined;
+        if (rawDepictedAt) {
+          if (isValidDateOrDateTime(rawDepictedAt)) {
+            depictedAt = rawDepictedAt;
+          } else {
+            issues.push({
+              severity: 'warning',
+              code: 'INVALID_MEDIA_DEPICTED_AT',
+              signalId,
+              message: `Media asset "${label}" in "${signalId}" has invalid depicted_at "${rawDepictedAt}".`,
+            });
+          }
+        }
+
+        const depictedLocation = asString(raw.depicted_location) || undefined;
+
+        const rightsRaw =
+          raw.rights && typeof raw.rights === 'object' && !Array.isArray(raw.rights)
+            ? (raw.rights as Record<string, unknown>)
+            : null;
+        if (!rightsRaw) {
+          hasError = true;
+          issues.push({
+            severity: 'error',
+            code: 'MISSING_MEDIA_RIGHTS',
+            signalId,
+            message: `Media asset "${label}" in "${signalId}" is missing its rights object.`,
+          });
+        }
+
+        const rawBasis = asString(rightsRaw?.basis) as MediaRightsBasis;
+        const licenseName = asString(rightsRaw?.license_name);
+        const licenseUrl = asString(rightsRaw?.license_url);
+        const rightsHolder = asString(rightsRaw?.rights_holder);
+        const verifiedAt = asString(rightsRaw?.verified_at);
+        const publicWebDisplayAllowed = rightsRaw?.public_web_display_allowed;
+        const cropAllowed = rightsRaw?.crop_allowed;
+
+        if (rightsRaw) {
+          if (!VALID_MEDIA_RIGHTS_BASES.includes(rawBasis)) {
+            hasError = true;
+            issues.push({
+              severity: 'error',
+              code: 'INVALID_MEDIA_RIGHTS_BASIS',
+              signalId,
+              message: `Media asset "${label}" in "${signalId}" has unsupported rights.basis "${rawBasis || '(empty)'}".`,
+            });
+          }
+
+          if (!licenseName) {
+            hasError = true;
+            issues.push({
+              severity: 'error',
+              code: 'MISSING_MEDIA_LICENSE_NAME',
+              signalId,
+              message: `Media asset "${label}" in "${signalId}" requires a non-empty rights.license_name.`,
+            });
+          }
+
+          if (rawBasis === 'public_domain') {
+            if (licenseUrl && !isSafeHttpsUrl(licenseUrl)) {
+              hasError = true;
+              issues.push({
+                severity: 'error',
+                code: 'INVALID_MEDIA_LICENSE_URL',
+                signalId,
+                message: `Media asset "${label}" in "${signalId}" has a non-HTTPS rights.license_url.`,
+              });
+            } else if (!licenseUrl) {
+              issues.push({
+                severity: 'warning',
+                code: 'MISSING_PUBLIC_DOMAIN_POLICY_URL',
+                signalId,
+                message: `Public-domain media asset "${label}" in "${signalId}" should include a rights-policy HTTPS license_url documenting jurisdiction.`,
+              });
+            }
+          } else if (!isSafeHttpsUrl(licenseUrl)) {
+            hasError = true;
+            issues.push({
+              severity: 'error',
+              code: 'MISSING_MEDIA_LICENSE_URL',
+              signalId,
+              message: `Media asset "${label}" in "${signalId}" requires a valid HTTPS rights.license_url for basis "${rawBasis || '(unknown)'}".`,
+            });
+          }
+
+          if (!isValidIsoTimestamp(verifiedAt)) {
+            hasError = true;
+            issues.push({
+              severity: 'error',
+              code: 'INVALID_MEDIA_VERIFIED_AT',
+              signalId,
+              message: `Media asset "${label}" in "${signalId}" requires a valid ISO 8601 rights.verified_at timestamp.`,
+            });
+          }
+
+          if (publicWebDisplayAllowed !== true) {
+            hasError = true;
+            issues.push({
+              severity: 'error',
+              code: 'MEDIA_DISPLAY_NOT_ALLOWED',
+              signalId,
+              message: `Media asset "${label}" in "${signalId}" does not have rights.public_web_display_allowed set to true.`,
+            });
+          }
+
+          if (typeof cropAllowed !== 'boolean') {
+            hasError = true;
+            issues.push({
+              severity: 'error',
+              code: 'INVALID_MEDIA_CROP_ALLOWED',
+              signalId,
+              message: `Media asset "${label}" in "${signalId}" must declare rights.crop_allowed as a boolean.`,
+            });
+          }
+        }
+
+        const verificationRaw =
+          raw.verification &&
+          typeof raw.verification === 'object' &&
+          !Array.isArray(raw.verification)
+            ? (raw.verification as Record<string, unknown>)
+            : null;
+
+        const sourcePageChecked = verificationRaw?.source_page_checked === true;
+        const directAssetChecked = verificationRaw?.direct_asset_checked === true;
+        const visualContentChecked = verificationRaw?.visual_content_checked === true;
+        const captionContextChecked = verificationRaw?.caption_context_checked === true;
+
+        if (
+          !verificationRaw ||
+          !sourcePageChecked ||
+          !directAssetChecked ||
+          !visualContentChecked ||
+          !captionContextChecked
+        ) {
+          hasError = true;
+          issues.push({
+            severity: 'error',
+            code: 'UNVERIFIED_MEDIA_ASSET',
+            signalId,
+            message: `Media asset "${label}" in "${signalId}" must confirm all four verification flags (source_page_checked, direct_asset_checked, visual_content_checked, caption_context_checked).`,
+          });
+        }
+
+        if (!hasError) {
+          mediaAssets.push({
+            media_id: mediaId,
+            media_type: rawMediaType,
+            placement: rawPlacement,
+            relationship_to_signal: rawRel,
+            asset_url: assetUrl,
+            source_page_url: sourcePageUrl,
+            title: title || caption,
+            caption,
+            alt_text: altText,
+            creator,
+            credit_line: creditLine,
+            depicted_at: depictedAt,
+            depicted_location: depictedLocation,
+            rights: {
+              basis: rawBasis,
+              license_name: licenseName,
+              license_url: licenseUrl,
+              rights_holder: rightsHolder || creator,
+              verified_at: verifiedAt,
+              public_web_display_allowed: true,
+              crop_allowed: cropAllowed as boolean,
+            },
+            verification: {
+              source_page_checked: true,
+              direct_asset_checked: true,
+              visual_content_checked: true,
+              caption_context_checked: true,
+            },
+            isApprovedForDisplay: true,
+          });
+        }
+      });
+    }
+  }
+
   const sourcesRaw = Array.isArray(meta.sources) ? meta.sources : [];
   const sources: SignalSource[] = sourcesRaw.map((item, idx) => {
     const s = (item && typeof item === 'object' ? item : {}) as Record<string, unknown>;
@@ -1114,6 +1458,7 @@ function parseSignalBlock(
     update,
     timelineEvents,
     relationships,
+    mediaAssets,
     claims,
     sources,
     independence,

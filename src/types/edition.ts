@@ -78,6 +78,68 @@ export type IndependenceExclusionReason =
   | 'secondary_analysis'
   | 'unknown_relationship';
 
+export type MediaAssetType =
+  | 'photograph'
+  | 'illustration'
+  | 'chart'
+  | 'map'
+  | 'diagram'
+  | 'document_scan'
+  | 'screenshot';
+
+export type MediaPlacement = 'hero' | 'supporting';
+
+export type MediaSignalRelationship =
+  | 'direct_event_documentation'
+  | 'contextual'
+  | 'illustrative'
+  | 'data_visualization';
+
+export type MediaRightsBasis =
+  | 'public_domain'
+  | 'cc0'
+  | 'cc_by'
+  | 'cc_by_sa'
+  | 'explicit_permission'
+  | 'editorial_license';
+
+export interface MediaRights {
+  basis: MediaRightsBasis;
+  license_name: string;
+  license_url: string;
+  rights_holder: string;
+  verified_at: string;
+  public_web_display_allowed: boolean;
+  crop_allowed: boolean;
+}
+
+export interface MediaVerification {
+  source_page_checked: boolean;
+  direct_asset_checked: boolean;
+  visual_content_checked: boolean;
+  caption_context_checked: boolean;
+}
+
+export interface SignalMediaAsset {
+  media_id: string;
+  media_type: MediaAssetType;
+  placement: MediaPlacement;
+  relationship_to_signal: MediaSignalRelationship;
+  asset_url: string;
+  source_page_url: string;
+  title: string;
+  caption: string;
+  alt_text: string;
+  creator: string;
+  credit_line: string;
+  depicted_at?: string;
+  depicted_location?: string;
+  rights: MediaRights;
+  verification: MediaVerification;
+  /** True only when all HTTPS URL, rights, attribution, and 4-part verification checks pass. */
+  isApprovedForDisplay: boolean;
+}
+
 export interface EditionIndexEntry {
   date: string;
   title: string;
@@ -298,6 +360,8 @@ export interface ParsedSignal {
   update?: SignalUpdate;
   timelineEvents: SignalTimelineEvent[];
   relationships: SignalRelationship[];
+  /** Optional additive schema-v2 visual media ledger. Never alters sources or independence counts. */
+  mediaAssets: SignalMediaAsset[];
   claims: SignalClaim[];
   sources: SignalSource[];
   independence: SourceIndependenceMetrics;

@@ -1,9 +1,12 @@
 import React, { useMemo, useState } from 'react';
+import { ExternalLink } from 'lucide-react';
 import type { ParsedSignal, SignalDomain, UiLanguage } from '../../types/edition';
 import { getUiStrings } from '../../lib/i18n/uiStrings';
 import {
   extractGroundedSignalStats,
+  resolveBrokenMediaFallback,
   selectVisualStrategyForSignal,
+  type EditorialAsset,
   type StoryVisualMode,
   type VerifiedDocumentaryMedia,
   type VisualSlotContext,
@@ -16,10 +19,20 @@ interface StoryVisualProps {
   mode?: StoryVisualMode;
   context?: VisualSlotContext;
   excludeAssetIds?: ReadonlySet<string> | readonly string[];
+  excludeMediaUrls?: ReadonlySet<string> | readonly string[];
   verifiedMedia?: VerifiedDocumentaryMedia | null;
   variant?: 'hero' | 'feature' | 'dossier' | 'plate';
   tone?: 'light' | 'dark';
   plateNumber?: string;
+}
+
+function isSafeHttpsLink(url: string | undefined): boolean {
+  if (!url) return false;
+  try {
+    return new URL(url.trim()).protocol === 'https:';
+  } catch {
+    return false;
+  }
 }
 
 function getDomainAccentVar(domain: SignalDomain): string {
@@ -39,13 +52,25 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
   mode,
   context = 'secondary',
   excludeAssetIds,
+  excludeMediaUrls,
   verifiedMedia = null,
   variant = 'hero',
   tone = 'light',
   plateNumber = '01',
 }) => {
   const t = getUiStrings(lang);
-  const [imageError, setImageError] = useState(false);
+  const [failedUrls, setFailedUrls] = useState<ReadonlySet<string>>(
+    () => new Set()
+  );
+
+  const markUrlFailed = (url: string) => {
+    setFailedUrls((prev) => {
+      if (prev.has(url)) return prev;
+      const next = new Set(prev);
+      next.add(url);
+      return next;
+    });
+  };
 
   const stats = useMemo(() => extractGroundedSignalStats(signal), [signal]);
   const selection = useMemo(
@@ -53,21 +78,47 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
       selectVisualStrategyForSignal(signal, {
         context,
         excludeAssetIds,
+        excludeMediaUrls,
         preferredMode: mode,
         verifiedMedia,
       }),
-    [context, excludeAssetIds, mode, signal, verifiedMedia]
+    [context, excludeAssetIds, excludeMediaUrls, mode, signal, verifiedMedia]
   );
 
   const accent = getDomainAccentVar(signal.domain);
   const isDarkPlate = tone === 'dark';
 
-  const effectiveMode: StoryVisualMode =
-    (selection.mode === 'editorial_illustration' ||
-      selection.mode === 'verified_documentary') &&
-    imageError
-      ? 'typographic_cover'
-      : selection.mode;
+  const mediaUrlBroken = Boolean(
+    selection.selectedMedia && failedUrls.has(selection.selectedMedia.asset_url)
+  );
+  const legacyVerifiedBroken = Boolean(
+    verifiedMedia?.src && failedUrls.has(verifiedMedia.src)
+  );
+
+  let effectiveMode: StoryVisualMode = selection.mode;
+  let effectiveAsset: EditorialAsset | null = selection.asset;
+  let usedBrokenMediaFallback = false;
+
+  if (selection.mode === 'verified_media' && mediaUrlBroken) {
+    const fallback = resolveBrokenMediaFallback(selection);
+    effectiveMode = fallback.mode;
+    effectiveAsset = fallback.asset;
+    usedBrokenMediaFallback = true;
+  } else if (selection.mode === 'verified_documentary' && legacyVerifiedBroken) {
+    effectiveMode = 'typographic_cover';
+    effectiveAsset = null;
+    usedBrokenMediaFallback = true;
+  }
+
+  if (effectiveMode === 'editorial_illustration') {
+    const localUrl = effectiveAsset
+      ? EDITORIAL_ASSET_URLS[effectiveAsset.id]
+      : null;
+    if (!localUrl || failedUrls.has(localUrl)) {
+      effectiveMode = 'typographic_cover';
+      effectiveAsset = null;
+    }
+  }
 
   const claimTotal = stats.claimsCount;
   const confirmedPct =
@@ -103,6 +154,7 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
       <figure
         data-visual-mode="typographic_cover"
         data-subject-category={selection.subjectCategory}
+        data-media-fallback={usedBrokenMediaFallback ? 'true' : undefined}
         className={`relative overflow-hidden border ${
           isDarkPlate
             ? 'border-[var(--ws-plate-border)] bg-[var(--ws-plate-elevated)] text-[var(--ws-plate-ink)]'
@@ -442,7 +494,192 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
     );
   }
 
-  // MODE 2: Verified Documentary Media (Only rendered when real verified media is explicitly supplied)
+  // MODE 1A: Verified Editorial Media Asset from Signal Schema v2 (`media_assets`)
+  if (effectiveMode === 'verified_media' && selection.selectedMedia) {
+    const media = selection.selectedMedia;
+    const cropAllowed = media.rights.crop_allowed;
+    const hasLicenseLink = isSafeHttpsLink(media.rights.license_url);
+    const relationshipLabel = t.media.relationships[media.relationship_to_signal];
+    const mediaTypeLabel = t.media.mediaTypes[media.media_type];
+    const showDisclosure =
+      media.relationship_to_signal !== 'direct_event_documentation';
+    const depictedMeta = [media.depicted_location, media.depicted_at]
+      .filter(Boolean)
+      .join(' · ');
+
+    return (
+      <figure
+        data-visual-mode="verified_media"
+        data-media-id={media.media_id}
+        data-media-relationship={media.relationship_to_signal}
+        data-media-type={media.media_type}
+        data-crop-allowed={String(cropAllowed)}
+        className="space-y-2.5"
+      >
+        {cropAllowed ? (
+          <div
+            className={`ws-art-frame ${aspectClass} w-full ${
+              isDarkPlate ? 'border-[var(--ws-plate-border)] bg-[#0f131b]' : ''
+            }`}
+          >
+            <img
+              src={media.asset_url}
+              alt={media.alt_text}
+              referrerPolicy="no-referrer"
+              decoding="async"
+              onError={() => markUrlFailed(media.asset_url)}
+              loading={
+                variant === 'hero' || variant === 'plate' || variant === 'dossier'
+                  ? 'eager'
+                  : 'lazy'
+              }
+              className="h-full w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-[1.014]"
+            />
+          </div>
+        ) : (
+          <div
+            className={`relative overflow-hidden border ${aspectClass} w-full flex items-center justify-center p-2.5 sm:p-3 ${
+              isDarkPlate
+                ? 'border-[var(--ws-plate-border)] bg-[#0f131b]'
+                : 'border-[var(--ws-border)] bg-[var(--ws-surface-subtle)]'
+            }`}
+          >
+            <img
+              src={media.asset_url}
+              alt={media.alt_text}
+              referrerPolicy="no-referrer"
+              decoding="async"
+              onError={() => markUrlFailed(media.asset_url)}
+              loading={
+                variant === 'hero' || variant === 'plate' || variant === 'dossier'
+                  ? 'eager'
+                  : 'lazy'
+              }
+              className="h-full w-full object-contain"
+            />
+          </div>
+        )}
+
+        <figcaption
+          className={`space-y-1.5 text-[12px] leading-snug ${
+            isDarkPlate
+              ? 'text-[var(--ws-plate-secondary)]'
+              : 'text-[var(--ws-ink-secondary)]'
+          }`}
+        >
+          <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 font-mono-tabular text-[11px]">
+            <span className="inline-flex items-center gap-2 font-semibold">
+              <span
+                className="h-1.5 w-3.5 shrink-0"
+                style={{ backgroundColor: accent }}
+                aria-hidden="true"
+              />
+              <span
+                className={
+                  isDarkPlate
+                    ? 'text-[var(--ws-plate-ink)]'
+                    : 'text-[var(--ws-ink)]'
+                }
+              >
+                {relationshipLabel}
+              </span>
+              <span
+                aria-hidden="true"
+                className={
+                  isDarkPlate
+                    ? 'text-[var(--ws-plate-muted)]'
+                    : 'text-[var(--ws-ink-faint)]'
+                }
+              >
+                ·
+              </span>
+              <span
+                className={`font-normal ${
+                  isDarkPlate
+                    ? 'text-[var(--ws-plate-muted)]'
+                    : 'text-[var(--ws-ink-muted)]'
+                }`}
+              >
+                {mediaTypeLabel}
+              </span>
+            </span>
+            {!cropAllowed && (
+              <span
+                className={
+                  isDarkPlate
+                    ? 'text-[var(--ws-plate-muted)]'
+                    : 'text-[var(--ws-ink-muted)]'
+                }
+              >
+                {t.media.uncroppedNote}
+              </span>
+            )}
+          </div>
+
+          <p className="leading-[1.55] break-words">{media.caption}</p>
+
+          {showDisclosure && (
+            <p
+              className={`text-[11px] leading-snug ${
+                isDarkPlate
+                  ? 'text-[var(--ws-plate-muted)]'
+                  : 'text-[var(--ws-ink-muted)]'
+              }`}
+            >
+              {t.media.relationshipDisclosures[media.relationship_to_signal]}
+            </p>
+          )}
+
+          <div
+            className={`flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t pt-1.5 font-mono-tabular text-[11px] ${
+              isDarkPlate
+                ? 'border-[var(--ws-plate-border)] text-[var(--ws-plate-muted)]'
+                : 'border-[var(--ws-border-subtle)] text-[var(--ws-ink-muted)]'
+            }`}
+          >
+            <span className="break-words">
+              {media.credit_line}
+              {depictedMeta ? ` · ${depictedMeta}` : ''}
+            </span>
+            <span className="inline-flex flex-wrap items-center gap-x-3 gap-y-0.5 shrink-0">
+              <a
+                href={media.source_page_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`inline-flex items-center gap-1 hover:underline underline-offset-4 ${
+                  isDarkPlate
+                    ? 'text-[#9ec5f8]'
+                    : 'text-[var(--ws-world)]'
+                }`}
+              >
+                <span>{t.media.sourcePageLink}</span>
+                <ExternalLink className="h-3 w-3 shrink-0" aria-hidden="true" />
+              </a>
+              {hasLicenseLink ? (
+                <a
+                  href={media.rights.license_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`inline-flex items-center gap-1 hover:underline underline-offset-4 ${
+                    isDarkPlate
+                      ? 'text-[var(--ws-plate-secondary)]'
+                      : 'text-[var(--ws-ink-secondary)]'
+                  }`}
+                >
+                  <span>{media.rights.license_name}</span>
+                  <ExternalLink className="h-3 w-3 shrink-0" aria-hidden="true" />
+                </a>
+              ) : (
+                <span>{media.rights.license_name}</span>
+              )}
+            </span>
+          </div>
+        </figcaption>
+      </figure>
+    );
+  }
+
+  // MODE 2: Legacy Verified Documentary Media Prop (Backward Compatibility)
   if (effectiveMode === 'verified_documentary' && verifiedMedia) {
     return (
       <figure
@@ -458,7 +695,7 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
             src={verifiedMedia.src}
             alt={verifiedMedia.alt}
             referrerPolicy="no-referrer"
-            onError={() => setImageError(true)}
+            onError={() => markUrlFailed(verifiedMedia.src)}
             loading={variant === 'hero' || variant === 'plate' ? 'eager' : 'lazy'}
             className="h-full w-full object-cover object-center"
           />
@@ -479,8 +716,8 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
     );
   }
 
-  // MODE 1: Subject-Specific Original Editorial Print Illustration
-  const asset = selection.asset;
+  // MODE 1B: Subject-Specific Original Editorial Print Illustration
+  const asset = effectiveAsset;
   const assetSrc = asset ? EDITORIAL_ASSET_URLS[asset.id] : null;
 
   if (!asset || !assetSrc) {
@@ -492,6 +729,7 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
       data-visual-mode="editorial_illustration"
       data-asset-id={asset.id}
       data-subject-category={selection.subjectCategory}
+      data-media-fallback={usedBrokenMediaFallback ? 'true' : undefined}
       className="space-y-2.5"
     >
       <div
@@ -503,7 +741,7 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
           src={assetSrc}
           alt={lang === 'zh-CN' ? asset.altZh : asset.altEn}
           referrerPolicy="no-referrer"
-          onError={() => setImageError(true)}
+          onError={() => markUrlFailed(assetSrc)}
           loading={variant === 'hero' || variant === 'plate' ? 'eager' : 'lazy'}
           className="h-full w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-[1.018]"
         />

@@ -14,7 +14,9 @@ You may read:
 - `AGENTS.md`
 - `docs/EDITORIAL_STANDARDS.md`
 - `docs/SOURCE_POLICY.md`
+- `docs/MEDIA_ASSET_POLICY.md`
 - `docs/CONTENT_SCHEMA.md`
+- `docs/INTELLIGENCE_DATA_CONTRACT.md`
 - `docs/OPERATIONS.md`
 - `config/source-registry.yml`
 - `content/templates/daily-edition.template.md`
@@ -31,14 +33,14 @@ The intended cadence is morning, midday, evening, and overnight. Every run updat
 1. Before researching or writing, inspect the existing target file's `schema_version`.
 2. If the existing target edition is `schema_version: 2`, the next revision MUST remain schema v2. Never replace it with schema v1.
 3. The latest repository instructions (`MUSE.md`, `docs/INTELLIGENCE_DATA_CONTRACT.md`, and `docs/CONTENT_SCHEMA.md`) take precedence over any older saved run prompt, memory, or cached v1 template.
-4. Preserve all four v2 blocks on every retained signal: `continuity`, `update`, `timeline_events`, and `relationships`. Preserve their existing verified values and update only what new evidence justifies.
-5. Do not remove fields, reset arrays, rewrite all signals as `initial`, or replace known continuity dates with null during an ordinary overnight sync.
-6. If the run cannot preserve or validate the v2 metadata, STOP before committing. Do not downgrade the canonical file. Report the exact blocking signal and field.
-7. Before pushing, verify edition-level schema version, signal count, unique signal IDs, and all four metadata blocks for every signal. Also verify claims and source ledgers have not been unintentionally dropped.
+4. Preserve all four required v2 blocks on every retained signal (`continuity`, `update`, `timeline_events`, and `relationships`) as well as any previously verified `media_assets`. Preserve their existing verified values and update only what new evidence or verified media rights justify.
+5. Do not remove fields, reset arrays, drop verified `media_assets`, rewrite all signals as `initial`, or replace known continuity dates with null during an ordinary overnight sync.
+6. If the run cannot preserve or validate the v2 metadata (including any present `media_assets`), STOP before committing. Do not downgrade the canonical file. Report the exact blocking signal and field.
+7. Before pushing, verify edition-level schema version, signal count, unique signal IDs, all four required metadata blocks for every signal, and rights/verification completeness for any `media_assets`. Also verify claims and source ledgers have not been unintentionally dropped.
 
 - Read the current day's edition before researching.
 - Treat the edition's existing schema version as a hard compatibility floor. A v2 edition must never be rewritten as v1.
-- Preserve every existing signal's v2 metadata, claims, sources, verified timeline events, and declared relationships unless an evidence-based correction is explicitly documented.
+- Preserve every existing signal's v2 metadata, verified `media_assets`, claims, sources, verified timeline events, and declared relationships unless an evidence-based correction or rights revocation is explicitly documented.
 - Preserve relevant earlier findings.
 - Add new developments and update changed facts, confidence, and analysis.
 - Replace the complete file with the latest cumulative edition.
@@ -80,6 +82,21 @@ For important claims, seek two genuinely independent Tier 1 reporting origins wh
 Every source record needs publisher, exact title, canonical URL, publication time when available, access time, source class, registry ID where applicable, independence group, relationship, and supported claims.
 
 Never invent a URL or claim to have accessed an article when only a search snippet was available. Disclose paywall or access limitations.
+
+### 4.1 Visual media research & rights rules
+
+Follow `docs/MEDIA_ASSET_POLICY.md` whenever researching visual media for important signals (such as the Briefing lead story, major secondary signals, or key investigative dossiers).
+
+- Research visual media only from verifiable sources (e.g., Wikimedia Commons, NASA Images, institutional media libraries, European Commission Audiovisual Service, Creative Commons repositories, or directly licensed providers) and verify rights at the **individual item level**.
+- An approved newsroom in `config/source-registry.yml` is approved for factual text reporting only; do **not** assume permission to republish its photographs or graphics.
+- Add an item to `media_assets` **only** when:
+  - `asset_url` and `source_page_url` are verified direct HTTPS URLs (never search thumbnails, news-article screenshots, or expiring signed URLs).
+  - `rights.basis` is one of `public_domain`, `cc0`, `cc_by`, `cc_by_sa`, `explicit_permission`, or `editorial_license`, with `public_web_display_allowed: true`, an explicit boolean `crop_allowed`, a real ISO `verified_at` timestamp, and a valid `license_url` (or rights-policy URL for public-domain works).
+  - All four `verification` booleans (`source_page_checked`, `direct_asset_checked`, `visual_content_checked`, `caption_context_checked`) are genuinely confirmed `true`.
+  - `relationship_to_signal` accurately distinguishes `direct_event_documentation` from `contextual`, `illustrative`, and `data_visualization`.
+- When no fully verified, rights-cleared visual asset exists, set `media_assets: []` (or omit it on legacy updates). Never fabricate image URLs, captions, verification timestamps, or AI-generated documentary depictions of real events.
+- Preserve existing verified `media_assets` across same-day and cross-edition updates unless a rights issue or factual error requires removal (document removals in Audit & Methodology).
+- Never count a `media_assets` record as an independent newsroom origin, corroborating source, or claim verification.
 
 ## 5. Evidence and confidence
 
@@ -181,6 +198,8 @@ Before upload, verify:
 - The edition is cumulative and has no duplicate signals.
 - If the previous revision was schema v2, the current revision remains schema v2.
 - Every schema-v2 signal contains continuity, update, timeline_events, and relationships.
+- Any present `media_assets` entries pass every rights, HTTPS URL, attribution, uniqueness, and four-part verification rule in `docs/MEDIA_ASSET_POLICY.md`, and existing verified `media_assets` were preserved across updates.
+- No `media_assets` entry is counted as an independent reporting origin or substituted for claim-level textual evidence.
 - No claim ID is repurposed for a materially different proposition.
 - No claim/source ledger is unintentionally truncated or silently discarded.
 - All required top-level headings are present.

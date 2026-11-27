@@ -66,6 +66,7 @@ update:
     removed_source_urls: []
 timeline_events: []
 relationships: []
+media_assets: []
 claims:
   - claim_id: "WORLD-YYYYMMDD-short-slug-C01"
     statement: "One testable factual claim."
@@ -171,6 +172,7 @@ update:
     removed_source_urls: []
 timeline_events: []
 relationships: []
+media_assets: []
 claims:
   - claim_id: "AI-YYYYMMDD-short-slug-C01"
     statement: "A specific technical claim with a defined scope."
@@ -276,6 +278,7 @@ update:
     removed_source_urls: []
 timeline_events: []
 relationships: []
+media_assets: []
 claims:
   - claim_id: "ECON-YYYYMMDD-short-slug-C01"
     statement: "A specific economic fact including period and unit."
@@ -380,3 +383,36 @@ sources:
 ## Methodology notes
 
 记录本期置信度、重要性、数据口径或分析方法方面的特殊说明。
+
+<!--
+TEMPLATE REFERENCE ONLY — Approved `media_assets` YAML Entry Example (Schema v2 Additive Extension)
+Do NOT copy placeholder URLs into real editions. Populate only after verifying item-level rights and all four verification flags per docs/MEDIA_ASSET_POLICY.md.
+
+media_assets:
+  - media_id: "WORLD-YYYYMMDD-short-slug-M01"
+    media_type: "photograph" # photograph | illustration | chart | map | diagram | document_scan | screenshot
+    placement: "hero" # hero | supporting
+    relationship_to_signal: "direct_event_documentation" # direct_event_documentation | contextual | illustrative | data_visualization
+    asset_url: "https://example.org/media/original-image.jpg"
+    source_page_url: "https://example.org/media/image-record"
+    title: "Exact media title"
+    caption: "A concise factual description grounded in the verified media record."
+    alt_text: "A concise description of visible contents without license text."
+    creator: "Creator or photographer"
+    credit_line: "Photo: Creator / Organization, CC BY 4.0"
+    depicted_at: "YYYY-MM-DD"
+    depicted_location: "Verified location"
+    rights:
+      basis: "cc_by" # public_domain | cc0 | cc_by | cc_by_sa | explicit_permission | editorial_license
+      license_name: "CC BY 4.0"
+      license_url: "https://creativecommons.org/licenses/by/4.0/"
+      rights_holder: "Verified rights holder"
+      verified_at: "YYYY-MM-DDTHH:mm:ssZ"
+      public_web_display_allowed: true
+      crop_allowed: true
+    verification:
+      source_page_checked: true
+      direct_asset_checked: true
+      visual_content_checked: true
+      caption_context_checked: true
+-->

@@ -1,4 +1,8 @@
-import type { ParsedSignal, SignalDomain } from '../../types/edition';
+import type {
+  ParsedSignal,
+  SignalDomain,
+  SignalMediaAsset,
+} from '../../types/edition';
 
 export type EditorialAssetId =
   | 'conflict_maritime_plate'
@@ -23,6 +27,7 @@ export type EditorialSubjectCategory =
   | 'monetary_markets';
 
 export type StoryVisualMode =
+  | 'verified_media'
   | 'editorial_illustration'
   | 'verified_documentary'
   | 'grounded_visual'
@@ -66,6 +71,7 @@ export interface SubjectClassificationResult {
 export interface VisualSelectionOptions {
   context?: VisualSlotContext;
   excludeAssetIds?: ReadonlySet<string> | readonly string[];
+  excludeMediaUrls?: ReadonlySet<string> | readonly string[];
   preferredMode?: StoryVisualMode;
   verifiedMedia?: VerifiedDocumentaryMedia | null;
 }
@@ -73,6 +79,8 @@ export interface VisualSelectionOptions {
 export interface VisualSelectionResult {
   mode: StoryVisualMode;
   asset: EditorialAsset | null;
+  selectedMedia: SignalMediaAsset | null;
+  fallbackAsset: EditorialAsset | null;
   subjectCategory: EditorialSubjectCategory;
   matchStrength: VisualMatchStrength;
   subjectLabelEn: string;
@@ -546,6 +554,144 @@ function toExclusionSet(
   return exclude instanceof Set ? new Set(exclude) : new Set(exclude);
 }
 
+function isHttpsUrlString(url: string | undefined): boolean {
+  if (!url || typeof url !== 'string') return false;
+  try {
+    const parsed = new URL(url.trim());
+    return parsed.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Defensive runtime gate ensuring only fully verified, rights-cleared HTTPS media assets
+ * are ever rendered publicly, even if constructed outside parseEdition().
+ */
+export function isApprovedMediaAsset(asset: SignalMediaAsset | null | undefined): boolean {
+  if (!asset) return false;
+  if (asset.isApprovedForDisplay !== true) return false;
+  if (!asset.rights || asset.rights.public_web_display_allowed !== true) return false;
+  if (!isHttpsUrlString(asset.asset_url) || !isHttpsUrlString(asset.source_page_url)) {
+    return false;
+  }
+  if (
+    asset.rights.basis !== 'public_domain' &&
+    !isHttpsUrlString(asset.rights.license_url)
+  ) {
+    return false;
+  }
+  if (
+    asset.rights.basis === 'public_domain' &&
+    asset.rights.license_url.trim().length > 0 &&
+    !isHttpsUrlString(asset.rights.license_url)
+  ) {
+    return false;
+  }
+  if (
+    !asset.verification ||
+    asset.verification.source_page_checked !== true ||
+    asset.verification.direct_asset_checked !== true ||
+    asset.verification.visual_content_checked !== true ||
+    asset.verification.caption_context_checked !== true
+  ) {
+    return false;
+  }
+  if (
+    !asset.caption.trim() ||
+    !asset.alt_text.trim() ||
+    !asset.creator.trim() ||
+    !asset.credit_line.trim() ||
+    !asset.rights.license_name.trim() ||
+    !asset.rights.rights_holder.trim()
+  ) {
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Selects the primary approved visual asset (hero placement first, then supporting)
+ * and the remaining supporting gallery assets without duplicating the primary item.
+ */
+export function selectApprovedSignalMedia(
+  signal: ParsedSignal,
+  options: { excludeMediaUrls?: ReadonlySet<string> | readonly string[] } = {}
+): { primary: SignalMediaAsset | null; supporting: SignalMediaAsset[] } {
+  const excludedUrls = toExclusionSet(options.excludeMediaUrls);
+  const approved = (signal.mediaAssets ?? []).filter((item) =>
+    isApprovedMediaAsset(item)
+  );
+
+  if (approved.length === 0) {
+    return { primary: null, supporting: [] };
+  }
+
+  const primary =
+    approved.find(
+      (item) =>
+        item.placement === 'hero' && !excludedUrls.has(item.asset_url)
+    ) ??
+    approved.find(
+      (item) =>
+        item.placement === 'supporting' && !excludedUrls.has(item.asset_url)
+    ) ??
+    null;
+
+  const supporting = approved.filter(
+    (item) => !primary || item.media_id !== primary.media_id
+  );
+
+  return { primary, supporting };
+}
+
+/**
+ * Resolves the graceful local fallback when a verified remote media asset fails to load.
+ */
+export function resolveBrokenMediaFallback(
+  selection: Pick<VisualSelectionResult, 'fallbackAsset'>
+): { mode: 'editorial_illustration' | 'typographic_cover'; asset: EditorialAsset | null } {
+  if (selection.fallbackAsset) {
+    return {
+      mode: 'editorial_illustration',
+      asset: selection.fallbackAsset,
+    };
+  }
+  return {
+    mode: 'typographic_cover',
+    asset: null,
+  };
+}
+
+function selectLocalFallbackAsset(
+  signal: ParsedSignal,
+  classification: SubjectClassificationResult,
+  primaryAsset: EditorialAsset,
+  context: VisualSlotContext,
+  excluded: Set<string>
+): EditorialAsset | null {
+  if (context === 'dossier') {
+    return classification.matchStrength === 'strong' && !excluded.has(primaryAsset.id)
+      ? primaryAsset
+      : null;
+  }
+
+  if (!excluded.has(primaryAsset.id)) {
+    return primaryAsset;
+  }
+
+  if (context === 'hero' || context === 'desk') {
+    const alternates = DOMAIN_FALLBACK_ORDER[signal.domain];
+    for (const altId of alternates) {
+      if (!excluded.has(altId)) {
+        return EDITORIAL_ASSET_REGISTRY[altId];
+      }
+    }
+  }
+
+  return null;
+}
+
 export function selectVisualStrategyForSignal(
   signal: ParsedSignal,
   options: VisualSelectionOptions = {}
@@ -553,6 +699,7 @@ export function selectVisualStrategyForSignal(
   const {
     context = 'secondary',
     excludeAssetIds,
+    excludeMediaUrls,
     preferredMode,
     verifiedMedia = null,
   } = options;
@@ -561,24 +708,21 @@ export function selectVisualStrategyForSignal(
   const classification = classifySignalSubject(signal);
   const primaryAssetId = CATEGORY_TO_ASSET_ID[classification.category];
   const primaryAsset = EDITORIAL_ASSET_REGISTRY[primaryAssetId];
-
-  // Mode 2: Verified documentary media (only when explicitly verified and supplied)
-  if (verifiedMedia && verifiedMedia.src) {
-    return {
-      mode: 'verified_documentary',
-      asset: primaryAsset,
-      subjectCategory: classification.category,
-      matchStrength: 'strong',
-      subjectLabelEn: primaryAsset.subjectLabelEn,
-      subjectLabelZh: primaryAsset.subjectLabelZh,
-    };
-  }
+  const fallbackAsset = selectLocalFallbackAsset(
+    signal,
+    classification,
+    primaryAsset,
+    context,
+    excluded
+  );
 
   // Explicit mode override for grounded data visuals or intentional typographic covers
   if (preferredMode === 'grounded_visual') {
     return {
       mode: 'grounded_visual',
       asset: null,
+      selectedMedia: null,
+      fallbackAsset: null,
       subjectCategory: classification.category,
       matchStrength: classification.matchStrength,
       subjectLabelEn: primaryAsset.subjectLabelEn,
@@ -590,6 +734,8 @@ export function selectVisualStrategyForSignal(
     return {
       mode: 'typographic_cover',
       asset: null,
+      selectedMedia: null,
+      fallbackAsset: null,
       subjectCategory: classification.category,
       matchStrength: classification.matchStrength,
       subjectLabelEn: primaryAsset.subjectLabelEn,
@@ -597,9 +743,39 @@ export function selectVisualStrategyForSignal(
     };
   }
 
-  // Dossier rule: Only show editorial illustration when subject match is strong
-  // and not excluded; otherwise use an intentional typographic monograph plate
-  // so consecutive dossiers never feel like recycled stock art.
+  // Precedence 1 & 2: Approved signal media_assets (placement: 'hero' first, then 'supporting')
+  const { primary: selectedSignalMedia } = selectApprovedSignalMedia(signal, {
+    excludeMediaUrls,
+  });
+  if (selectedSignalMedia) {
+    return {
+      mode: 'verified_media',
+      asset: null,
+      selectedMedia: selectedSignalMedia,
+      fallbackAsset,
+      subjectCategory: classification.category,
+      matchStrength: 'strong',
+      subjectLabelEn: primaryAsset.subjectLabelEn,
+      subjectLabelZh: primaryAsset.subjectLabelZh,
+    };
+  }
+
+  // Backward-compatible explicit verifiedMedia prop override
+  if (verifiedMedia && verifiedMedia.src) {
+    return {
+      mode: 'verified_documentary',
+      asset: primaryAsset,
+      selectedMedia: null,
+      fallbackAsset: primaryAsset,
+      subjectCategory: classification.category,
+      matchStrength: 'strong',
+      subjectLabelEn: primaryAsset.subjectLabelEn,
+      subjectLabelZh: primaryAsset.subjectLabelZh,
+    };
+  }
+
+  // Precedence 3 (Dossier): Local editorial illustration only on strong non-excluded match;
+  // otherwise intentional typographic cover plate.
   if (context === 'dossier') {
     if (
       classification.matchStrength === 'strong' &&
@@ -608,6 +784,8 @@ export function selectVisualStrategyForSignal(
       return {
         mode: 'editorial_illustration',
         asset: primaryAsset,
+        selectedMedia: null,
+        fallbackAsset: null,
         subjectCategory: classification.category,
         matchStrength: classification.matchStrength,
         subjectLabelEn: primaryAsset.subjectLabelEn,
@@ -618,6 +796,8 @@ export function selectVisualStrategyForSignal(
     return {
       mode: 'typographic_cover',
       asset: null,
+      selectedMedia: null,
+      fallbackAsset: null,
       subjectCategory: classification.category,
       matchStrength: classification.matchStrength,
       subjectLabelEn: primaryAsset.subjectLabelEn,
@@ -625,11 +805,13 @@ export function selectVisualStrategyForSignal(
     };
   }
 
-  // Primary subject match available and unused
+  // Precedence 3 (Briefing): Primary local subject match available and unused
   if (!excluded.has(primaryAsset.id)) {
     return {
       mode: 'editorial_illustration',
       asset: primaryAsset,
+      selectedMedia: null,
+      fallbackAsset: null,
       subjectCategory: classification.category,
       matchStrength: classification.matchStrength,
       subjectLabelEn: primaryAsset.subjectLabelEn,
@@ -646,6 +828,8 @@ export function selectVisualStrategyForSignal(
         return {
           mode: 'editorial_illustration',
           asset: altAsset,
+          selectedMedia: null,
+          fallbackAsset: null,
           subjectCategory: classification.category,
           matchStrength: 'moderate',
           subjectLabelEn: primaryAsset.subjectLabelEn,
@@ -655,8 +839,7 @@ export function selectVisualStrategyForSignal(
     }
   }
 
-  // Secondary anti-repetition: switch cleanly to grounded evidence visual when
-  // the signal has structured claims/timeline, otherwise typographic cover.
+  // Precedence 4: Grounded evidence visual (when claims/timeline exist) or typographic cover
   if (
     context === 'secondary' &&
     (signal.claims.length > 0 || signal.timelineEvents.length > 0)
@@ -664,6 +847,8 @@ export function selectVisualStrategyForSignal(
     return {
       mode: 'grounded_visual',
       asset: null,
+      selectedMedia: null,
+      fallbackAsset: null,
       subjectCategory: classification.category,
       matchStrength: classification.matchStrength,
       subjectLabelEn: primaryAsset.subjectLabelEn,
@@ -674,6 +859,8 @@ export function selectVisualStrategyForSignal(
   return {
     mode: 'typographic_cover',
     asset: null,
+    selectedMedia: null,
+    fallbackAsset: null,
     subjectCategory: classification.category,
     matchStrength: classification.matchStrength,
     subjectLabelEn: primaryAsset.subjectLabelEn,
