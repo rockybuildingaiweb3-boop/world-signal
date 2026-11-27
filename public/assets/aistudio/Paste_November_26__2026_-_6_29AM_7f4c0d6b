@@ -1,0 +1,1398 @@
+# WORLD SIGNAL
+# PHASE 05 — LONGITUDINAL INTELLIGENCE, DISCOVERY & PERSONAL RESEARCH WORKSPACE
+
+## PROJECT
+
+Repository:
+https://github.com/rockybuildingaiweb3-boop/world-signal
+
+Latest observed remote activity:
+`1ffe09ab750048a3ab79a32c86bb5fafa8b98535`
+
+Recent frontend implementation includes:
+- Daily Delta.
+- Interactive Relationship Explorer.
+- Structured Signal Timeline.
+- Searchable Archive.
+- Searchable Claim Ledger.
+- Evidence and Provenance Explorer.
+- Storyline indexing engine.
+- Deterministic edition comparison engine.
+- Bilingual editorial interface.
+
+Technology:
+React 19, TypeScript, Vite, Tailwind CSS 4, Bun.
+
+Primary canonical content:
+Markdown editions.
+
+---
+
+# PART 00 — MISSION
+
+WORLD SIGNAL is evolving from a daily global news briefing into a longitudinal intelligence publication.
+
+The existing frontend already supports reading daily editions, inspecting evidence, analyzing relationships, and viewing edition-level changes.
+
+The next step is to make the information genuinely discoverable, traceable over time, and personally useful.
+
+This phase focuses on five major capabilities:
+
+1. Global Intelligence Search.
+2. Longitudinal Storyline Tracker.
+3. Personal Intelligence Desk.
+4. Since Your Last Visit.
+5. Arbitrary Edition Comparison.
+
+Also assess the architecture required for a future Evidence Export feature.
+
+This is a functionality and product-experience phase.
+
+Do not spend this phase primarily on another visual redesign.
+
+The priority is meaningful functionality, reliable data handling, intuitive interactions, and polished integration with the existing editorial design system.
+
+A feature is not complete simply because a button exists.
+
+Every interactive element must perform its advertised action.
+
+---
+
+# PART 01 — REPOSITORY RECONNAISSANCE AND WORKSPACE SAFETY
+
+Before implementation:
+
+1. Inspect `git status`.
+2. Inspect the actual current branch.
+3. Identify staged, unstaged, and untracked files.
+4. Preserve all existing local work.
+5. Fetch and inspect the latest remote repository state.
+6. Determine whether the current workspace includes unpushed changes beyond remote main.
+7. Reconcile the actual source code with `AI_STUDIO_BRIEF.md`.
+
+Never discard local modifications.
+
+Never run destructive reset or checkout commands.
+
+Never overwrite existing work simply because it is not present on remote main.
+
+Do not push.
+
+Do not merge.
+
+Continue in the current workspace and preserve the complete existing implementation.
+
+## Mandatory documentation
+
+Read:
+
+- `README.md`
+- `AGENTS.md`, if present.
+- `AI_STUDIO_BRIEF.md`
+- `docs/ARCHITECTURE.md`
+- `docs/CONTENT_SCHEMA.md`
+- `docs/INTELLIGENCE_DATA_CONTRACT.md`
+- `docs/FRONTEND_CONTRACT.md`
+- `docs/SOURCE_POLICY.md`
+- `docs/FRONTEND_ART_DIRECTION.md`
+- `MUSE.md`
+
+## Inspect existing components and engines
+
+Especially:
+
+- `src/app/App.tsx`
+- `src/components/layout/TopBar.tsx`
+- `src/components/navigation/ArchiveDrawer.tsx`
+- `src/features/briefing/BriefingView.tsx`
+- `src/features/briefing/DailyDeltaSection.tsx`
+- `src/features/expanded/ExpandedView.tsx`
+- `src/features/expanded/SignalDossierHeader.tsx`
+- `src/features/expanded/SignalEvidenceLedgers.tsx`
+- `src/features/synthesis/SynthesisView.tsx`
+- `src/features/synthesis/WatchlistSection.tsx`
+- `src/features/synthesis/RelationshipExplorerMatrix.tsx`
+- `src/features/audit/AuditView.tsx`
+- `src/lib/intelligence/edition-diff/compareEditions.ts`
+- `src/lib/intelligence/daily-delta/dailyDeltaHelpers.ts`
+- `src/lib/intelligence/storylines/buildStorylineIndex.ts`
+- `src/lib/intelligence/relationships/buildRelationshipGraph.ts`
+- `src/lib/content/editionClient.ts`
+- `src/lib/content/editionLoader.ts`
+- `src/hooks/useArchive.ts`
+- `src/hooks/usePreferences.ts`
+- `src/lib/navigation/urlState.ts`
+- `src/lib/i18n/uiStrings.ts`
+
+The current implementation already includes several of these functions.
+
+Do not recreate them.
+
+First produce a functional gap analysis identifying exactly what exists, what is partial, and what is missing.
+
+Then proceed with implementation.
+
+---
+
+# PART 02 — NON-NEGOTIABLE PRODUCT AND DATA PRINCIPLES
+
+These rules apply to every new function.
+
+## 2.1 Canonical content remains Markdown
+
+Markdown editions remain the sole editorial source of truth.
+
+Do not create another canonical news database.
+
+Derived search indexes and rebuildable local caches are acceptable only when they are generated deterministically from canonical Markdown editions.
+
+Never hard-code production news.
+
+Never create fake historical stories.
+
+## 2.2 Stable signal identity
+
+The permanent identity of an event is `signal_id`.
+
+Do not use headline text as the primary identity.
+
+A headline can change while the underlying signal remains the same.
+
+Search, follow, save, history, and comparison must use stable signal IDs.
+
+## 2.3 Evidence integrity
+
+Preserve:
+
+- Claim IDs.
+- Source IDs.
+- Canonical source URLs.
+- Source independence groups.
+- Confidence.
+- Importance.
+- Signal status.
+- Timeline events.
+- Typed relationships.
+- Relationship rationale.
+- Edition dates.
+
+Never infer causality.
+
+Never infer that an omitted signal is resolved.
+
+Never infer historical information that is not present in the available edition snapshots.
+
+Importance and confidence remain separate dimensions.
+
+## 2.4 No unnecessary backend
+
+The current architecture is a static Markdown-first publication.
+
+Do not introduce:
+
+- A new server.
+- A database service.
+- A user authentication system.
+- An LLM API.
+- A browser-side GitHub API dependency.
+- A third-party vector database.
+- An unnecessary external search service.
+
+Reader personalization should work locally in the browser.
+
+No user account is required for the first implementation.
+
+## 2.5 Performance
+
+Do not eagerly download and parse every historical edition during initial application startup.
+
+Historical data must be loaded on demand or incrementally.
+
+Use cancellation, caching, explicit loading states, and partial-result reporting.
+
+---
+
+# PART 03 — FEATURE A: GLOBAL INTELLIGENCE SEARCH
+
+This is a priority-zero feature.
+
+The current Archive search is edition-level search.
+
+It is not full historical signal search.
+
+Build a real global search experience across available Markdown editions.
+
+## 3.1 Entry point
+
+Implement a global search entry point in the existing publication shell.
+
+Preferred interaction:
+
+- A clear Search control in the desktop header.
+- Keyboard shortcut `Ctrl + K` on Windows/Linux.
+- Keyboard shortcut `Cmd + K` on macOS.
+- A fully accessible search overlay or command-palette-style panel.
+- A practical mobile search entry point.
+
+Do not add an unnecessary fifth primary navigation view.
+
+Do not make the search overlay resemble a generic developer command console.
+
+It must visually belong to WORLD SIGNAL.
+
+The overlay must support:
+
+- Keyboard focus.
+- Escape to close.
+- Focus restoration.
+- Arrow-key navigation where appropriate.
+- Enter to open a selected result.
+- Screen-reader labels.
+- Visible focus indicators.
+
+## 3.2 Searchable fields
+
+Search across every available indexed edition.
+
+At minimum, support:
+
+### Signal-level fields
+
+- Signal ID.
+- Headline.
+- Topic.
+- Tags.
+- Domain.
+- Event geography.
+- Signal status.
+- Event dates.
+
+### Claim-level fields
+
+- Claim ID.
+- Claim statement.
+- Claim status.
+- Claim confidence.
+
+### Source-level fields
+
+- Source ID.
+- Publisher/outlet.
+- Source title.
+- Independence group.
+
+### Edition-level fields
+
+- Edition date.
+- Edition title.
+- Edition status.
+
+Do not search only the latest edition.
+
+## 3.3 Search query behavior
+
+Support:
+
+- Exact phrase matching.
+- Partial matching.
+- Signal ID matching.
+- Case-insensitive English matching.
+- Chinese substring matching.
+- Mixed Chinese/English queries.
+- Whitespace normalization.
+- Reasonable multi-term matching.
+
+Do not assume Chinese text can be handled with English whitespace tokenization.
+
+Avoid adding an external search library unless a real benchmark demonstrates the need.
+
+Start with a deterministic local search engine.
+
+## 3.4 Advanced filters
+
+Implement a refined filter system:
+
+- Domain.
+- Date range.
+- Importance 1–5.
+- Confidence.
+- Signal status.
+- Topic.
+- Tags.
+- Claim status.
+- Publisher/source.
+
+Allow filters to be combined.
+
+Provide a clear active-filter summary.
+
+Provide a one-action reset.
+
+The interface must remain usable on mobile.
+
+Do not show every advanced filter permanently in the initial view.
+
+Use progressive disclosure.
+
+## 3.5 Search result design
+
+Results must be informative, not merely a list of headlines.
+
+Each result should show:
+
+- Current or historical headline.
+- Domain.
+- Signal ID.
+- Latest available edition date.
+- Importance.
+- Confidence.
+- Topic.
+- A relevant matching excerpt.
+- Why the result matched, when practical.
+
+Group multiple historical appearances by stable `signal_id`.
+
+A result group should show:
+
+- Latest known appearance.
+- Number of available editions in which the signal appears.
+- Historical editions with matches.
+- Material updates if detectable.
+
+Allow users to expand the history.
+
+Clicking a historical occurrence must open the exact edition and signal in Expanded.
+
+Reuse existing URL state conventions.
+
+Do not navigate to the latest edition when the user selected a historical occurrence.
+
+## 3.6 Ranking and sorting
+
+Support:
+
+1. Relevance.
+2. Latest appearance.
+3. Importance.
+4. Confidence, separately from importance.
+
+Use deterministic ranking.
+
+Do not present an arbitrary score as AI relevance or intelligence confidence.
+
+Explain sorting behavior where necessary.
+
+## 3.7 Incremental archive indexing
+
+This is an important engineering requirement.
+
+The current archive loader and edition cache must be reused.
+
+Design a deterministic search document model derived from parsed editions.
+
+Possible structure:
+
+`SearchDocument`
+- signalId
+- editionDate
+- headline
+- domain
+- topic
+- tags
+- eventGeography
+- importance
+- confidence
+- status
+- claims
+- sources
+- searchableText
+
+This is an implementation model, not a second canonical editorial database.
+
+Index editions incrementally.
+
+Suggested workflow:
+
+1. Load the archive index.
+2. Search already loaded editions immediately.
+3. Load historical editions in controlled batches.
+4. Update the results as more editions are indexed.
+5. Report how many editions have been searched.
+6. Allow cancellation.
+7. Show explicit partial-result status.
+8. Cache derived indexes by edition path and `updated_at`.
+9. Invalidate cached data when an edition revision changes.
+
+A derived local cache may use IndexedDB if measurements justify it.
+
+Do not store an enormous duplicated Markdown archive in LocalStorage.
+
+Do not download all historical Markdown on initial application load.
+
+If the index grows substantially, assess whether a Web Worker is justified.
+
+Do not introduce a worker simply for architectural decoration.
+
+## 3.8 Search states
+
+Implement:
+
+- Initial.
+- Typing/debounced.
+- Searching.
+- Partial results.
+- Complete results.
+- No results.
+- Cancelled.
+- Network failure.
+- Malformed edition.
+- Incomplete archive.
+
+Never display a zero-result state while historical indexing is still in progress without indicating that the results are incomplete.
+
+## 3.9 Search URL state
+
+Support shareable search URLs where appropriate.
+
+Preserve existing:
+
+- Edition.
+- View.
+- Signal.
+
+Extend URL state carefully for search query and meaningful filters.
+
+Do not break existing deep links or browser back/forward behavior.
+
+---
+
+# PART 04 — FEATURE B: LONGITUDINAL STORYLINE TRACKER
+
+This is another priority-zero feature.
+
+A daily edition shows what is happening now.
+
+A storyline tracker explains how the recorded story has evolved.
+
+The existing `buildStorylineIndex.ts` is the deterministic foundation.
+
+Complete its integration into the frontend.
+
+## 4.1 Entry points
+
+A Storyline History action should be available from:
+
+- Expanded dossier header.
+- Search result history expansion.
+- Followed signal details.
+
+Do not create a new primary navigation tab.
+
+The tracker should feel like a natural part of the dossier.
+
+## 4.2 Historical loading
+
+When a user opens a storyline:
+
+1. Identify the stable signal ID.
+2. Read available edition entries from the existing archive index.
+3. Determine which historical editions are needed.
+4. Load them on demand.
+5. Parse them with the existing Markdown parser.
+6. Reuse cached ParsedEdition instances.
+7. Build the storyline using `buildStorylineIndex`.
+8. Filter the result to the requested signal.
+9. Display loading, incomplete-history, and failure states.
+
+Do not eagerly parse the entire archive just to render one article.
+
+Handle cancellation when the selected signal changes.
+
+## 4.3 Storyline timeline
+
+Show a chronological record of available edition snapshots.
+
+Support:
+
+### First Seen
+
+The first occurrence in the available history.
+
+### Material Update
+
+A meaningful editorial change to the existing signal.
+
+### Unchanged
+
+The signal remains materially unchanged in that edition.
+
+### Reappeared
+
+The signal appears again after being absent from one or more available editions.
+
+These definitions must follow the existing deterministic engine.
+
+Do not invent another classification system inside React.
+
+## 4.4 Storyline overview
+
+Display:
+
+- Signal ID.
+- Current headline.
+- Domain.
+- First available appearance.
+- Last available appearance.
+- Last material update.
+- Appearance count.
+- Current lifecycle status.
+- Historical coverage completeness.
+
+Do not show fabricated dates.
+
+If history is incomplete, explicitly label its coverage.
+
+If only three daily editions are available, do not imply that the tracker represents the complete historical life of an event.
+
+## 4.5 Revision inspection
+
+When a user selects a historical snapshot, provide a meaningful change summary.
+
+Include, when available:
+
+- Headline changes.
+- Importance changes.
+- Status changes.
+- Confidence changes.
+- Topic changes.
+- Event metadata changes.
+- Relationship changes.
+- Added claims.
+- Revised claims.
+- Withdrawn claims.
+- Added sources.
+- Revised sources.
+- Removed sources.
+- Narrative changes.
+
+Reuse `compareSignalSnapshots()` and the existing edition-diff engine.
+
+Do not duplicate comparison logic.
+
+Provide navigation to the selected historical dossier.
+
+## 4.6 Distinguish two kinds of timeline
+
+Do not confuse:
+
+**Event Timeline**
+- Describes developments in the real-world event.
+- Uses structured timeline events and factual chronology.
+
+**Storyline Revision Timeline**
+- Describes how WORLD SIGNAL recorded and revised the signal across available archived editions.
+
+These must have different labels and visual presentations.
+
+## 4.7 Same-day revision limitation
+
+The current publishing model updates one canonical Markdown file per date.
+
+The public archive index exposes one dated edition path.
+
+Git history may contain intermediate same-day commits, but the frontend must not fetch GitHub commit history or pretend it can reconstruct those snapshots from the public Markdown archive.
+
+For this phase:
+
+- Storyline means history across retained edition snapshots.
+- Do not claim it shows every intraday Muse run.
+- Document this limitation.
+- Do not change the publishing model in this phase.
+
+---
+
+# PART 05 — FEATURE C: MY INTELLIGENCE DESK
+
+Build a local-first personal workspace.
+
+The current editorial Watchlist is not a personal reader watchlist.
+
+Do not confuse the two.
+
+## 5.1 Entry point
+
+Add a subtle Reader Desk entry point in the existing navigation shell.
+
+Possible implementation:
+
+- A small bookmark/follow icon.
+- A compact drawer.
+- A dedicated accessible panel.
+
+Keep the four main views unchanged.
+
+Do not create an unnecessary fifth primary tab.
+
+The entry point should be discoverable on desktop and mobile.
+
+## 5.2 Save for Later
+
+Allow readers to save a signal to a personal reading list.
+
+Requirements:
+
+- Save action on signal dossier.
+- Save action on search results.
+- Unsave action.
+- Saved list.
+- Saved date.
+- Navigation to the saved historical signal.
+- Empty state.
+
+## 5.3 Follow Signal
+
+Allow readers to follow a stable signal ID.
+
+Following is different from saving.
+
+Saving means: I want to read this later.
+
+Following means: I want to monitor future changes to this signal.
+
+Display:
+
+- Followed signals.
+- Current known headline.
+- Last known edition.
+- Latest appearance.
+- Material update status.
+- Last material update.
+- Available historical versions.
+
+Detect actual changes using the existing comparison engine.
+
+Never use headline text as a substitute for signal identity.
+
+## 5.4 Optional topic following
+
+Assess whether topic/tag following can be integrated without introducing ambiguity.
+
+If implemented:
+
+- Use existing normalized topic/tag fields.
+- Do not create keyword subscriptions based on fabricated categories.
+- Allow removal and editing.
+- Avoid duplicate matches.
+
+Treat topic following as a lower priority than stable signal following.
+
+## 5.5 Local persistence
+
+Use versioned browser persistence.
+
+Suggested logical state:
+
+`ReaderState`
+- version
+- savedSignalIds
+- followedSignalIds
+- followedTopics
+- lastReviewedEditionDate
+- lastReviewedAt
+- reviewedSnapshotMetadata
+
+Use an appropriate storage abstraction.
+
+LocalStorage is acceptable for small reader preferences and IDs.
+
+Use IndexedDB for larger snapshots or cached search data if justified.
+
+Requirements:
+
+- Runtime validation.
+- Versioned schema.
+- Safe migration.
+- Corrupt-state recovery.
+- Storage-unavailable handling.
+- Quota error handling.
+- Clear local reader data.
+- No account or authentication requirement.
+- No personal data transmission.
+
+Display a small explanation:
+
+"Your Reader Desk is stored on this device."
+
+Provide an appropriate way to clear the stored personal state.
+
+Do not silently lose saved information.
+
+---
+
+# PART 06 — FEATURE D: SINCE YOUR LAST VISIT
+
+This feature turns passive publication updates into a useful return experience.
+
+Build two related catch-up views.
+
+## 6.1 General Catch-up
+
+Show meaningful changes since the reader last reviewed the publication.
+
+Potential groups:
+
+- New signals.
+- Materially updated signals.
+- Reappeared signals.
+- Important claim changes.
+- Important source changes.
+
+Use the existing deterministic edition comparison engine.
+
+Do not simply compare timestamps and call it a content diff.
+
+## 6.2 Personal Catch-up
+
+Show changes affecting followed signals.
+
+Examples:
+
+- A followed signal materially changed.
+- A followed signal received new claims.
+- A source record changed.
+- Confidence changed.
+- Importance changed.
+- A previously absent signal reappeared.
+
+Use stable signal IDs and real available snapshots.
+
+## 6.3 Reviewed checkpoint
+
+Provide an explicit:
+
+`Mark as reviewed`
+
+action.
+
+Do not mark the entire publication as read automatically on page load.
+
+Store a reviewed checkpoint.
+
+On first use, provide a simple initialization state.
+
+## 6.4 Preserve a compact local snapshot
+
+An important limitation:
+
+The same-day edition file may be overwritten by later Muse runs.
+
+The public archive does not necessarily preserve the previous content revision.
+
+If the implementation needs to compare the content the user actually reviewed with the current content, evaluate saving a compact, versioned local snapshot of the reviewed edition.
+
+Requirements:
+
+- Store only the minimum fields needed for deterministic comparison.
+- Reuse existing comparison semantics.
+- Avoid copying unnecessary full Markdown content.
+- Use IndexedDB if the snapshot is too large for LocalStorage.
+- Validate and version stored data.
+- Handle storage quota and corruption.
+- Never transmit reader snapshots externally.
+
+If a valid previous snapshot is unavailable, say that detailed comparison is unavailable.
+
+Do not invent differences.
+
+## 6.5 Digest composition
+
+The catch-up experience should be concise but useful.
+
+The initial summary should answer:
+
+- What is new?
+- What changed?
+- Which followed events need attention?
+- What should the reader inspect next?
+
+Every result should be linked to its exact edition and signal.
+
+Do not add unsupported editorial importance scores.
+
+---
+
+# PART 07 — FEATURE E: ARBITRARY EDITION COMPARISON
+
+The current Daily Delta compares the selected edition to the preceding available edition.
+
+Add a separate capability to compare any two available edition snapshots.
+
+## 7.1 User interaction
+
+Provide two date selectors:
+
+- From Edition.
+- To Edition.
+
+Use actual available archive entries only.
+
+Validate the selected dates.
+
+Prevent selecting the same edition twice.
+
+Do not invent missing archive dates.
+
+## 7.2 Comparison engine
+
+Reuse:
+
+`compareEditions(previous, current)`
+
+Do not reimplement the diff engine in React.
+
+The two selected ParsedEdition objects must be loaded through the existing edition loader and cache.
+
+Use cancellation and error handling.
+
+## 7.3 Comparison interface
+
+Show:
+
+### Overview
+
+- Previous edition.
+- Current edition.
+- New signals.
+- Materially updated signals.
+- Unchanged signals.
+- Omitted signals.
+
+### Detailed comparison
+
+Allow filtering by:
+
+- New.
+- Updated.
+- Unchanged.
+- Omitted.
+
+### Signal-level detail
+
+Display:
+
+- Headline changes.
+- Claim changes.
+- Source changes.
+- Confidence changes.
+- Importance changes.
+- Status changes.
+- Relationship changes.
+- Narrative changes.
+
+Use the existing reason codes.
+
+### Navigation
+
+Allow opening:
+
+- Previous version of a signal.
+- Current version of a signal.
+
+Preserve exact edition and signal IDs in URL state.
+
+## 7.4 Critical omission rule
+
+An omitted signal is not necessarily resolved, closed, or retracted.
+
+Keep the warning visible.
+
+A missing signal in the selected later edition must remain an omission classification unless explicit editorial lifecycle metadata establishes otherwise.
+
+---
+
+# PART 08 — OPTIONAL FUTURE FEATURE: EVIDENCE EXPORT
+
+Do not let this feature delay the five core capabilities.
+
+Assess the architecture for a future downloadable evidence package.
+
+Potential Markdown export:
+
+- Signal overview.
+- Editorial summary.
+- Verified facts.
+- Claims.
+- Claim statuses.
+- Supporting sources.
+- Source independence groups.
+- Event timeline.
+- Storyline snapshots.
+- Confidence rationale.
+- Important limitations.
+- Edition references.
+
+Potential CSV export:
+
+- Claims.
+- Sources.
+- Claim-to-source mapping.
+- Edition comparison records.
+
+The export must preserve exact canonical source URLs and identifiers.
+
+Never export illustrative data as real evidence.
+
+For this phase, report a concrete implementation plan rather than building a PDF engine.
+
+---
+
+# PART 09 — USER EXPERIENCE AND NAVIGATION INTEGRATION
+
+The new capabilities must integrate naturally into the existing four-view architecture.
+
+Do not overload the primary navigation.
+
+Suggested structure:
+
+- Briefing: Daily front page, Daily Delta, catch-up summary.
+- Expanded: Signal dossier, Storyline History, evidence inspection.
+- Synthesis: Cross-domain relationship analysis and editorial Watchlist.
+- Audit: Claim and source verification.
+- Global Search: Accessible from the publication shell.
+- My Intelligence Desk: A compact reader workspace accessible from the shell.
+
+Do not duplicate the existing editorial Watchlist.
+
+Do not move all existing features into a new dashboard.
+
+Make feature entry points discoverable without cluttering the interface.
+
+Use existing design tokens and visual components.
+
+Every new feature must have:
+
+- Loading state.
+- Empty state.
+- Error state.
+- Partial-history state.
+- Offline/cache-aware behavior where appropriate.
+- Responsive design.
+- English localization.
+- Chinese localization.
+- Keyboard accessibility.
+
+---
+
+# PART 10 — URL STATE AND DEEP LINKS
+
+Review `src/lib/navigation/urlState.ts`.
+
+Extend it carefully.
+
+Preserve existing URL parameters:
+
+- edition
+- view
+- signal
+
+Consider shareable state for:
+
+- Search query.
+- Search filters.
+- Edition comparison dates.
+- Storyline target.
+
+Do not expose local personal data in shareable URLs.
+
+Do not put saved signal IDs or private reading state into a public URL.
+
+Test browser history, direct deep links, back, and forward behavior.
+
+---
+
+# PART 11 — ENGINEERING ARCHITECTURE
+
+Keep logic separate from presentation.
+
+Suggested modules, subject to repository inspection:
+
+`src/lib/intelligence/search/`
+- Search document builder.
+- Query normalization.
+- Deterministic matching.
+- Filter application.
+- Ranking.
+- Grouping by stable signal ID.
+
+`src/lib/intelligence/storylines/`
+- Existing storyline index engine.
+- Any necessary tested extensions.
+
+`src/lib/intelligence/reader-state/`
+- Reader state model.
+- Schema validation.
+- Local persistence.
+- Migration.
+- Followed signal evaluation.
+- Reviewed checkpoint.
+
+`src/lib/intelligence/catch-up/`
+- Reviewed snapshot comparison.
+- Catch-up projection.
+- Partial-history states.
+
+`src/lib/intelligence/edition-diff/`
+- Reuse existing comparison engine.
+
+Do not blindly create every folder exactly as written.
+
+Follow the existing project architecture.
+
+Pure deterministic logic belongs in `src/lib/intelligence/`.
+
+React components should focus on rendering and interaction.
+
+Hooks should coordinate asynchronous loading and application state.
+
+Do not implement complex search ranking directly inside a React component.
+
+---
+
+# PART 12 — REQUIRED TESTS
+
+Add meaningful unit and integration tests.
+
+## Search tests
+
+- Exact Signal ID search.
+- Partial headline match.
+- Chinese substring match.
+- Mixed Chinese/English query.
+- Claim statement search.
+- Source outlet search.
+- Domain filter.
+- Date range filter.
+- Importance filter.
+- Confidence filter.
+- Stable sorting.
+- Duplicate signal grouping across editions.
+- Partial results.
+- Failed historical edition.
+- Cancelled indexing.
+- Cache invalidation after updated_at changes.
+
+## Storyline tests
+
+- First appearance.
+- Material update.
+- Unchanged snapshot.
+- Reappearance after a gap.
+- Added claim.
+- Revised claim.
+- Withdrawn claim.
+- Added source.
+- Removed source.
+- Schema-v1 history.
+- Incomplete history.
+- Empty history.
+- Missing historical edition.
+- No fabricated resolution.
+
+## Reader Desk tests
+
+- Save signal.
+- Unsave signal.
+- Follow signal.
+- Unfollow signal.
+- Stable ID behavior after headline changes.
+- Missing signal in latest edition.
+- Reappearing signal.
+- Corrupt local storage.
+- Unsupported storage.
+- Schema migration.
+- Duplicate IDs.
+- Clear reader data.
+
+## Catch-up tests
+
+- First-use initialization.
+- New signals since checkpoint.
+- Material updates since checkpoint.
+- Followed signal change.
+- Missing snapshot.
+- Same-day updated edition with a valid local prior snapshot.
+- Missing baseline and explicit unavailable state.
+
+## Edition comparison tests
+
+- Arbitrary date pair.
+- Invalid dates.
+- Same date selection.
+- Older-to-newer ordering.
+- Historical signal navigation.
+- Omitted-not-resolved behavior.
+- Claim/source changes.
+
+Do not rely solely on visual tests.
+
+Data correctness is essential.
+
+---
+
+# PART 13 — BILINGUAL DESIGN AND RESPONSIVE BEHAVIOR
+
+Every new feature must be properly localized.
+
+English and Chinese must both support:
+
+- Search.
+- Filters.
+- Result counts.
+- Loading states.
+- Storyline labels.
+- Change reasons.
+- Follow and save actions.
+- Catch-up summaries.
+- Comparison categories.
+- Error states.
+- Accessibility labels.
+
+Do not hard-code translated strings inside components.
+
+Use the existing `uiStrings.ts` system.
+
+Test:
+
+- 1440 × 900.
+- 1280 × 800.
+- 768 × 1024.
+- 390 × 844.
+- 360 × 800.
+
+The search overlay, Reader Desk, Storyline History, and Comparison interface must work on mobile.
+
+Do not make mobile a compressed desktop version.
+
+---
+
+# PART 14 — PERFORMANCE AND PRIVACY
+
+Performance requirements:
+
+- No full-archive eager parsing on initial load.
+- No duplicate Markdown fetches when valid cached data exists.
+- Use AbortController for cancellable historical searches.
+- Debounce search input reasonably.
+- Avoid repeated expensive parsing.
+- Use stable memoization for derived projections.
+- Keep the initial page experience fast.
+
+Privacy requirements:
+
+- No account requirement.
+- No remote transmission of Reader Desk state.
+- No external analytics introduced.
+- No LLM requests.
+- No browser-side GitHub API.
+- No unauthorized notifications.
+- Clearly explain that saved and followed items are stored locally.
+
+Do not add push notifications in this phase.
+
+A polished in-app change digest is sufficient.
+
+---
+
+# PART 15 — IMPLEMENTATION ORDER
+
+Implement the work in deliberate stages.
+
+## Stage A — Global Search
+
+Deliver:
+
+- Search entry point.
+- Keyboard shortcut.
+- Search overlay.
+- Cross-edition search logic.
+- Advanced filters.
+- Result grouping.
+- Historical navigation.
+- Incremental indexing.
+- Partial results.
+- Search tests.
+
+## Stage B — Storyline Tracker
+
+Deliver:
+
+- Historical edition loading.
+- Storyline projection.
+- Revision timeline.
+- Revision detail.
+- Incomplete-history indicators.
+- Dossier integration.
+- Storyline tests.
+
+## Stage C — Personal Reader Desk
+
+Deliver:
+
+- Save for Later.
+- Follow Signal.
+- Local persistence.
+- Saved list.
+- Followed list.
+- Change status.
+- Clear local data.
+- Reader state tests.
+
+## Stage D — Catch-up and Comparison
+
+Deliver:
+
+- Last-reviewed checkpoint.
+- Compact reviewed snapshot.
+- General Catch-up.
+- Personal Catch-up.
+- Arbitrary Edition Comparison.
+- Historical navigation.
+- Comprehensive comparison tests.
+
+After every stage:
+
+1. Report files changed.
+2. Run relevant tests.
+3. Verify English and Chinese UI.
+4. Inspect responsive rendering.
+5. Report remaining limitations.
+
+Do not proceed by creating nonfunctional placeholders for future stages.
+
+---
+
+# PART 16 — DOCUMENTATION
+
+Update `AI_STUDIO_BRIEF.md`.
+
+Clearly distinguish:
+
+- Implemented.
+- Partially implemented.
+- Pending.
+
+Do not leave Storyline Tracker described as pending after its UI is complete.
+
+Do not describe edition-level Archive Search as full cross-edition signal search.
+
+Document:
+
+- Search indexing strategy.
+- Cache invalidation.
+- Storyline history semantics.
+- Local Reader Desk storage.
+- Catch-up checkpoints.
+- Historical data limitations.
+- Same-day revision limitation.
+
+Do not modify canonical Markdown editions, Muse research rules, publishing scripts, or editorial policies.
+
+---
+
+# PART 17 — VALIDATION AND ACCEPTANCE CRITERIA
+
+Run:
+
+`bun run typecheck`
+
+`bun run lint`
+
+`bun run test`
+
+`bun run build`
+
+Test the actual browser interface.
+
+Required walkthroughs:
+
+1. Search for a known historical Signal ID.
+2. Search using a Chinese keyword.
+3. Filter by domain and date.
+4. Open a historical result.
+5. Open a storyline and inspect its revisions.
+6. Follow a signal.
+7. Save another signal.
+8. Reload the application and verify persistence.
+9. Return to the Reader Desk.
+10. Inspect followed signal changes.
+11. Mark an edition as reviewed.
+12. Open Since Your Last Visit.
+13. Compare two non-adjacent available editions.
+14. Open the previous and current signal versions.
+15. Test missing historical data.
+16. Test an incomplete storyline.
+17. Test a malformed cached reader state.
+
+Do not claim a feature is complete unless the full user journey works.
+
+Do not claim tests passed unless they were run.
+
+Do not claim browser QA unless the actual interface was inspected.
+
+---
+
+# PART 18 — FINAL DELIVERY REPORT
+
+Provide:
+
+1. Exact repository and branch.
+2. Initial workspace status.
+3. Existing functionality reused.
+4. New functionality implemented.
+5. Search architecture.
+6. Storyline history implementation.
+7. Reader Desk persistence model.
+8. Catch-up behavior.
+9. Edition comparison behavior.
+10. Changed files.
+11. Test results.
+12. Browser QA results.
+13. Screenshots of major new workflows.
+14. Remaining limitations.
+15. Documentation updates.
+16. Final working-tree status.
+17. Commit SHA if a commit was created.
+
+Do not push to GitHub.
+
+Do not merge.
+
+Preserve uncommitted work.
+
+---
+
+# FINAL PRODUCT STANDARD
+
+WORLD SIGNAL should not merely show readers more news.
+
+It should help them:
+
+- Discover important information across the archive.
+- Understand how events evolve.
+- Trace the evidence behind claims.
+- Follow issues that matter to them.
+- Recognize meaningful changes.
+- Compare historical editorial snapshots.
+- Build a personal, continuous research workflow.
+
+The publication should become more useful with every new edition.
+
+**The goal is to transform WORLD SIGNAL from a daily content destination into a longitudinal, searchable, evidence-driven intelligence workspace.**
+
+Build reliable capabilities first.
+
+Make every interaction meaningful.
+
+Preserve the credibility of the underlying information.
+
+Deliver fully working product features, not interface mockups.
