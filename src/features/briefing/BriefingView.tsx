@@ -30,12 +30,15 @@ import {
 } from '../../components/editorial/EditorialSignalArtwork';
 import { buildDomainEditionProfiles } from '../../lib/intelligence/visual-metrics/editorialVisualHelpers';
 import type { DailyDeltaState } from '../../lib/intelligence/daily-delta/dailyDeltaHelpers';
+import type { CatchUpState } from '../../lib/intelligence/catch-up/catchUpEngine';
 import { DailyDeltaSection } from './DailyDeltaSection';
+import { CatchUpBanner } from './CatchUpBanner';
 
 interface BriefingViewProps {
   edition: ParsedEdition;
   lang: UiLanguage;
   dailyDelta: DailyDeltaState | null;
+  catchUp: CatchUpState | null;
   onRetryDailyDelta: () => void;
   onOpenSignal: (signalId: string) => void;
   onOpenSignalInEdition: (editionDate: string, signalId: string) => void;
@@ -43,6 +46,9 @@ interface BriefingViewProps {
   onSwitchView: (view: ViewId) => void;
   onRefresh: () => void;
   isRefreshing: boolean;
+  onMarkAsReviewed: (edition: ParsedEdition) => void;
+  onOpenCatchUpDesk: () => void;
+  onOpenComparison?: () => void;
 }
 
 function domainAccentRuleClass(domain: SignalDomain): string {
@@ -64,6 +70,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
   edition,
   lang,
   dailyDelta,
+  catchUp,
   onRetryDailyDelta,
   onOpenSignal,
   onOpenSignalInEdition,
@@ -71,6 +78,9 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
   onSwitchView,
   onRefresh,
   isRefreshing,
+  onMarkAsReviewed,
+  onOpenCatchUpDesk,
+  onOpenComparison,
 }) => {
   const t = getUiStrings(lang);
   const [summaryExpanded, setSummaryExpanded] = React.useState(false);
@@ -276,6 +286,15 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
         </div>
       </section>
 
+      {/* Since Your Last Visit — Restrained Editorial Catch-Up Strip */}
+      <CatchUpBanner
+        catchUp={catchUp}
+        edition={edition}
+        lang={lang}
+        onMarkAsReviewed={onMarkAsReviewed}
+        onOpenCatchUpDesk={onOpenCatchUpDesk}
+      />
+
       {/* 2. Front-Page Cover Story Spread: Commanding Lead Story (7) + Open Edition Desk Folio (5) */}
       <section className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-0 lg:items-start">
         {leadEntry && (
@@ -480,6 +499,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
         lang={lang}
         onOpenSignalInEdition={onOpenSignalInEdition}
         onRetry={onRetryDailyDelta}
+        onOpenComparison={onOpenComparison}
       />
 
       {/* 4. Editorially Selected Secondary Dispatches (Varied Broadsheet Weights, Exact Edition Order) */}

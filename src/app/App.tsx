@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 import type {
   EditionIndexEntry,
@@ -7,11 +7,19 @@ import type {
   ViewId,
 } from '../types/edition';
 import { DEFAULT_FILTERS } from '../lib/filtering/filterSignals';
-import { parseUrlState, syncUrlState } from '../lib/navigation/urlState';
+import {
+  parseUrlState,
+  syncUrlState,
+  type ShareableSearchUrlState,
+} from '../lib/navigation/urlState';
 import { getUiStrings } from '../lib/i18n/uiStrings';
 import { useArchive } from '../hooks/useArchive';
 import { useDailyDelta } from '../hooks/useDailyDelta';
 import { usePreferences } from '../hooks/usePreferences';
+import { useGlobalSearch } from '../hooks/useGlobalSearch';
+import { useStoryline } from '../hooks/useStoryline';
+import { useReaderDesk } from '../hooks/useReaderDesk';
+import { useEditionComparison } from '../hooks/useEditionComparison';
 import { TopBar } from '../components/layout/TopBar';
 import { ArchiveDrawer } from '../components/navigation/ArchiveDrawer';
 import { ArchiveEmptyState } from '../components/common/ArchiveEmptyState';
@@ -20,9 +28,16 @@ import { BriefingView } from '../features/briefing/BriefingView';
 import { ExpandedView } from '../features/expanded/ExpandedView';
 import { SynthesisView } from '../features/synthesis/SynthesisView';
 import { AuditView } from '../features/audit/AuditView';
+import { GlobalSearchOverlay } from '../features/search/GlobalSearchOverlay';
+import { StorylineDrawer } from '../features/storyline/StorylineDrawer';
+import {
+  ReaderDeskDrawer,
+  type ReaderDeskTab,
+} from '../features/reader-desk/ReaderDeskDrawer';
+import { EditionComparisonModal } from '../features/comparison/EditionComparisonModal';
 
 export const App: React.FC = () => {
-  const initialUrl = React.useMemo(
+  const initialUrl = useMemo(
     () =>
       typeof window !== 'undefined'
         ? parseUrlState(window.location.search)
@@ -40,6 +55,27 @@ export const App: React.FC = () => {
   const [filters, setFilters] = useState<SignalFilters>({ ...DEFAULT_FILTERS });
   const [archiveOpen, setArchiveOpen] = useState<boolean>(false);
   const [localModalOpen, setLocalModalOpen] = useState<boolean>(false);
+
+  // Phase 05 interactive overlay states (initialized from shareable URL params when present)
+  const [searchOpen, setSearchOpen] = useState<boolean>(
+    Boolean(initialUrl.search)
+  );
+  const [storylineSignalId, setStorylineSignalId] = useState<string | null>(
+    initialUrl.storyline ?? null
+  );
+  const [deskOpen, setDeskOpen] = useState<boolean>(false);
+  const [deskTab, setDeskTab] = useState<ReaderDeskTab>('catchUp');
+  const [compareOpen, setCompareOpen] = useState<boolean>(
+    Boolean(initialUrl.compareFrom && initialUrl.compareTo)
+  );
+  const [initialCompareDates, setInitialCompareDates] = useState<{
+    from: string | null;
+    to: string | null;
+  }>({
+    from: initialUrl.compareFrom ?? null,
+    to: initialUrl.compareTo ?? null,
+  });
+
   const skipNextUrlSyncRef = useRef(false);
   const hasHydratedUrlRef = useRef(false);
 
@@ -58,27 +94,121 @@ export const App: React.FC = () => {
     loadLocalMarkdown,
     exitLocalPreview,
   } = archive;
+
   const { theme, setTheme, lang, setLang } = usePreferences(
     edition?.frontmatter.content_language
   );
+
   const dailyDelta = useDailyDelta({
     edition,
     index,
     isArchiveLoading: isLoading,
   });
+
+  const activeEditionDate =
+    edition?.frontmatter.edition_date ?? activeEntry?.date ?? null;
+
+  // Phase 05 Hooks (strictly lazy — no eager full-archive fetching on initial load)
+  const globalSearch = useGlobalSearch({
+    isOpen: searchOpen,
+    index,
+    activeEdition: edition,
+    initialQuery: initialUrl.search?.q ?? '',
+    initialFilters: {
+      domain: initialUrl.search?.domain ?? 'all',
+      dateFrom: initialUrl.search?.from ?? '',
+      dateTo: initialUrl.search?.to ?? '',
+    },
+  });
+
+  const storyline = useStoryline({
+    signalId: storylineSignalId,
+    index,
+    activeEdition: edition,
+  });
+
+  const readerDesk = useReaderDesk({
+    index,
+    currentEdition: edition,
+    isDeskOpen: deskOpen,
+  });
+
+  const editionComparison = useEditionComparison({
+    isOpen: compareOpen,
+    index,
+    activeEditionDate,
+    initialFromDate: initialCompareDates.from,
+    initialToDate: initialCompareDates.to,
+  });
+
   const t = getUiStrings(lang);
   const handleCloseArchive = useCallback(() => setArchiveOpen(false), []);
+  const handleCloseSearch = useCallback(() => setSearchOpen(false), []);
+  const handleCloseStoryline = useCallback(() => setStorylineSignalId(null), []);
+  const handleCloseDesk = useCallback(() => setDeskOpen(false), []);
+  const handleCloseComparison = useCallback(() => {
+    setCompareOpen(false);
+    setInitialCompareDates({ from: null, to: null });
+  }, []);
 
   useEffect(() => {
     document.documentElement.lang = lang;
   }, [lang]);
 
-  // Keep URL query state cleanly synced for shareable edition, view, and signal deep links
+  // Global Ctrl+K / Cmd+K shortcut for Global Archive Search
   useEffect(() => {
-    // Do not erase an incoming deep link while the initial archive request is pending.
+    const onGlobalKeyDown = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        setArchiveOpen(false);
+        setDeskOpen(false);
+        setStorylineSignalId(null);
+        setCompareOpen(false);
+        setLocalModalOpen(false);
+        setSearchOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', onGlobalKeyDown);
+    return () => window.removeEventListener('keydown', onGlobalKeyDown);
+  }, []);
+
+  // Build shareable search URL state only when search overlay is open (never private reader state)
+  const shareableSearchParam = useMemo<ShareableSearchUrlState | undefined>(() => {
+    if (!searchOpen) return undefined;
+    const next: ShareableSearchUrlState = {};
+    const q = globalSearch.debouncedQuery.trim();
+    if (q) next.q = q;
+    if (globalSearch.filters.domain !== 'all') {
+      next.domain = globalSearch.filters.domain;
+    }
+    if (globalSearch.filters.dateFrom) {
+      next.from = globalSearch.filters.dateFrom;
+    }
+    if (globalSearch.filters.dateTo) {
+      next.to = globalSearch.filters.dateTo;
+    }
+    return Object.keys(next).length > 0 ? next : undefined;
+  }, [
+    globalSearch.debouncedQuery,
+    globalSearch.filters.dateFrom,
+    globalSearch.filters.dateTo,
+    globalSearch.filters.domain,
+    searchOpen,
+  ]);
+
+  const shareableCompareFrom =
+    compareOpen && !editionComparison.validationError
+      ? editionComparison.normalizedFromDate
+      : null;
+  const shareableCompareTo =
+    compareOpen && !editionComparison.validationError
+      ? editionComparison.normalizedToDate
+      : null;
+
+  // Keep URL query state cleanly synced for shareable edition, view, signal, search, storyline, and comparison links
+  useEffect(() => {
     if (isLoading) return;
 
-    // popstate already changed the address bar; state restoration must not create a new entry.
     if (skipNextUrlSyncRef.current) {
       skipNextUrlSyncRef.current = false;
       hasHydratedUrlRef.current = true;
@@ -88,12 +218,16 @@ export const App: React.FC = () => {
     const isLocalPreview = Boolean(edition?.isLocalPreview);
     const editionDate = isLocalPreview
       ? null
-      : edition?.frontmatter.edition_date ??
-        activeEntry?.date ??
-        null;
+      : edition?.frontmatter.edition_date ?? activeEntry?.date ?? null;
 
+    // Use replace for search typing & overlay filters so browser Back remains crisp
+    const isOverlayParamUpdate = Boolean(
+      shareableSearchParam || storylineSignalId || shareableCompareFrom
+    );
     const historyMode: 'push' | 'replace' =
-      !hasHydratedUrlRef.current || isLocalPreview ? 'replace' : 'push';
+      !hasHydratedUrlRef.current || isLocalPreview || isOverlayParamUpdate
+        ? 'replace'
+        : 'push';
     hasHydratedUrlRef.current = true;
 
     syncUrlState(
@@ -101,6 +235,10 @@ export const App: React.FC = () => {
         edition: editionDate,
         view: activeView,
         signal: activeView === 'expanded' ? selectedSignalId : null,
+        search: shareableSearchParam,
+        storyline: storylineSignalId,
+        compareFrom: shareableCompareFrom,
+        compareTo: shareableCompareTo,
       },
       historyMode,
       { isLocalPreview }
@@ -112,9 +250,13 @@ export const App: React.FC = () => {
     edition?.frontmatter.edition_date,
     edition?.isLocalPreview,
     selectedSignalId,
+    shareableSearchParam,
+    storylineSignalId,
+    shareableCompareFrom,
+    shareableCompareTo,
   ]);
 
-  // Support browser back/forward navigation without writing a duplicate history entry.
+  // Support browser back/forward navigation without writing a duplicate history entry
   useEffect(() => {
     const onPopState = () => {
       skipNextUrlSyncRef.current = true;
@@ -122,6 +264,25 @@ export const App: React.FC = () => {
       setActiveView(next.view);
       setSelectedSignalId(next.signal);
       setMobileShowDetail(Boolean(next.signal));
+      setStorylineSignalId(next.storyline ?? null);
+      if (next.search) {
+        setSearchOpen(true);
+        globalSearch.setQuery(next.search.q ?? '');
+        globalSearch.setFilters({
+          ...globalSearch.filters,
+          domain: next.search.domain ?? 'all',
+          dateFrom: next.search.from ?? '',
+          dateTo: next.search.to ?? '',
+        });
+      } else {
+        setSearchOpen(false);
+      }
+      if (next.compareFrom && next.compareTo) {
+        setInitialCompareDates({ from: next.compareFrom, to: next.compareTo });
+        setCompareOpen(true);
+      } else {
+        setCompareOpen(false);
+      }
       const targetEdition = next.edition ?? index?.latest_edition ?? null;
       if (targetEdition && targetEdition !== activeEntry?.date) {
         void selectEditionByDate(targetEdition);
@@ -129,6 +290,7 @@ export const App: React.FC = () => {
     };
     window.addEventListener('popstate', onPopState);
     return () => window.removeEventListener('popstate', onPopState);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeEntry?.date, index?.latest_edition, selectEditionByDate]);
 
   const handleSelectView = useCallback((view: ViewId) => {
@@ -165,9 +327,6 @@ export const App: React.FC = () => {
       );
       if (!targetEntry) return;
 
-      // Preserve the requested signal across the edition switch so URL history
-      // pushes a single clean entry (?edition=<previous>&view=expanded&signal=<id>)
-      // once the preceding edition finishes loading.
       setFilters({ ...DEFAULT_FILTERS });
       setSelectedSignalId(signalId);
       setMobileShowDetail(true);
@@ -175,11 +334,24 @@ export const App: React.FC = () => {
       void selectEditionEntry(targetEntry);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     },
-    [activeEntry?.date, edition?.frontmatter.edition_date, index?.editions, selectEditionEntry]
+    [
+      activeEntry?.date,
+      edition?.frontmatter.edition_date,
+      index?.editions,
+      selectEditionEntry,
+    ]
   );
 
   const handleExploreDomain = useCallback((domain: SignalDomain) => {
     setFilters({ ...DEFAULT_FILTERS, domain });
+    setSelectedSignalId(null);
+    setMobileShowDetail(false);
+    setActiveView('expanded');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  const handleFilterByTopic = useCallback((topic: string) => {
+    setFilters({ ...DEFAULT_FILTERS, topic });
     setSelectedSignalId(null);
     setMobileShowDetail(false);
     setActiveView('expanded');
@@ -209,10 +381,21 @@ export const App: React.FC = () => {
     [loadLocalMarkdown]
   );
 
-  const activeEditionDate =
-    edition?.frontmatter.edition_date ??
-    activeEntry?.date ??
-    null;
+  const handleOpenReaderDesk = useCallback((tab: ReaderDeskTab = 'catchUp') => {
+    setDeskTab(tab);
+    setDeskOpen(true);
+  }, []);
+
+  const handleOpenComparison = useCallback(() => {
+    setCompareOpen(true);
+  }, []);
+
+  const handleOpenStoryline = useCallback((signalId: string) => {
+    setStorylineSignalId(signalId);
+  }, []);
+
+  const deskBadgeCount = readerDesk.savedCount + readerDesk.followedCount;
+  const hasCatchUpChanges = readerDesk.catchUp?.status === 'changes_available';
 
   return (
     <div
@@ -225,6 +408,14 @@ export const App: React.FC = () => {
         activeEditionDate={activeEditionDate}
         isLocalPreview={Boolean(edition?.isLocalPreview)}
         onOpenArchive={() => setArchiveOpen(true)}
+        onOpenSearch={() => setSearchOpen(true)}
+        onOpenReaderDesk={() =>
+          handleOpenReaderDesk(
+            hasCatchUpChanges || deskBadgeCount === 0 ? 'catchUp' : 'followed'
+          )
+        }
+        deskBadgeCount={deskBadgeCount}
+        hasCatchUpChanges={hasCatchUpChanges}
         lang={lang}
       />
 
@@ -281,6 +472,7 @@ export const App: React.FC = () => {
                 edition={edition}
                 lang={lang}
                 dailyDelta={dailyDelta.state}
+                catchUp={readerDesk.catchUp}
                 onRetryDailyDelta={dailyDelta.retry}
                 onOpenSignal={handleOpenSignal}
                 onOpenSignalInEdition={handleOpenSignalInEdition}
@@ -288,6 +480,13 @@ export const App: React.FC = () => {
                 onSwitchView={handleSelectView}
                 onRefresh={() => void refreshArchive()}
                 isRefreshing={isRefreshing}
+                onMarkAsReviewed={readerDesk.markAsReviewed}
+                onOpenCatchUpDesk={() => handleOpenReaderDesk('catchUp')}
+                onOpenComparison={
+                  (index?.editions.length ?? 0) > 1
+                    ? handleOpenComparison
+                    : undefined
+                }
               />
             )}
 
@@ -301,6 +500,11 @@ export const App: React.FC = () => {
                 onSelectSignal={setSelectedSignalId}
                 mobileShowDetail={mobileShowDetail}
                 onChangeMobileShowDetail={setMobileShowDetail}
+                onOpenStoryline={handleOpenStoryline}
+                isSaved={readerDesk.isSaved}
+                isFollowed={readerDesk.isFollowed}
+                onToggleSave={readerDesk.toggleSave}
+                onToggleFollow={readerDesk.toggleFollow}
               />
             )}
 
@@ -335,6 +539,20 @@ export const App: React.FC = () => {
           </div>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
             <span>America/Los_Angeles</span>
+            <button
+              type="button"
+              onClick={() => setSearchOpen(true)}
+              className="hover:text-[var(--ws-ink)] underline decoration-[var(--ws-border-strong)] underline-offset-4 cursor-pointer"
+            >
+              {t.globalSearch.triggerLabel}
+            </button>
+            <button
+              type="button"
+              onClick={() => handleOpenReaderDesk('catchUp')}
+              className="hover:text-[var(--ws-ink)] underline decoration-[var(--ws-border-strong)] underline-offset-4 cursor-pointer"
+            >
+              {t.readerDesk.triggerLabel}
+            </button>
             <button
               type="button"
               onClick={() => setArchiveOpen(true)}
@@ -374,6 +592,114 @@ export const App: React.FC = () => {
         isLocalPreview={Boolean(edition?.isLocalPreview)}
         onExitLocalPreview={() => void exitLocalPreview()}
         onOpenLocalModal={() => setLocalModalOpen(true)}
+        onOpenComparison={handleOpenComparison}
+      />
+
+      <GlobalSearchOverlay
+        isOpen={searchOpen}
+        onClose={handleCloseSearch}
+        lang={lang}
+        editions={index?.editions ?? []}
+        query={globalSearch.query}
+        onChangeQuery={globalSearch.setQuery}
+        filters={globalSearch.filters}
+        onChangeFilters={globalSearch.setFilters}
+        onResetFilters={globalSearch.resetFilters}
+        sortBy={globalSearch.sortBy}
+        onChangeSortBy={globalSearch.setSortBy}
+        status={globalSearch.status}
+        indexedCount={globalSearch.indexedCount}
+        totalEditions={globalSearch.totalEditions}
+        failedDates={globalSearch.failedDates}
+        malformedCount={globalSearch.malformedCount}
+        results={globalSearch.results}
+        totalOccurrences={globalSearch.totalOccurrences}
+        facets={globalSearch.facets}
+        onCancelIndexing={globalSearch.cancelIndexing}
+        onResumeIndexing={globalSearch.resumeIndexing}
+        onOpenSignalInEdition={handleOpenSignalInEdition}
+        onOpenStoryline={handleOpenStoryline}
+        isSaved={readerDesk.isSaved}
+        isFollowed={readerDesk.isFollowed}
+        onToggleSave={readerDesk.toggleSave}
+        onToggleFollow={readerDesk.toggleFollow}
+      />
+
+      <StorylineDrawer
+        signalId={storylineSignalId}
+        onClose={handleCloseStoryline}
+        lang={lang}
+        projection={storyline.projection}
+        isLoading={storyline.isLoading}
+        loadedCount={storyline.loadedCount}
+        totalCount={storyline.totalCount}
+        failedDates={storyline.failedDates}
+        error={storyline.error}
+        onCancel={storyline.cancel}
+        onRetry={storyline.retry}
+        onOpenSignalInEdition={handleOpenSignalInEdition}
+        isSaved={readerDesk.isSaved}
+        isFollowed={readerDesk.isFollowed}
+        onToggleSave={readerDesk.toggleSave}
+        onToggleFollow={readerDesk.toggleFollow}
+      />
+
+      <ReaderDeskDrawer
+        isOpen={deskOpen}
+        onClose={handleCloseDesk}
+        activeTab={deskTab}
+        onChangeTab={setDeskTab}
+        lang={lang}
+        currentEdition={edition}
+        readerState={readerDesk.readerState}
+        storageWarning={readerDesk.storageWarning}
+        onDismissStorageWarning={readerDesk.dismissStorageWarning}
+        followedStatuses={readerDesk.followedStatuses}
+        isLoadingFollowedHistory={readerDesk.isLoadingFollowedHistory}
+        catchUp={readerDesk.catchUp}
+        onMarkAsReviewed={readerDesk.markAsReviewed}
+        onUnsaveSignal={(signalId) =>
+          readerDesk.toggleSave({
+            signalId,
+            editionDate: activeEditionDate ?? '',
+            headline: signalId,
+            domain: 'world',
+          })
+        }
+        onUnfollowSignal={(signalId) =>
+          readerDesk.toggleFollow({
+            signalId,
+            editionDate: activeEditionDate ?? '',
+            headline: signalId,
+            domain: 'world',
+          })
+        }
+        onAddTopic={readerDesk.addTopic}
+        onRemoveTopic={readerDesk.removeTopic}
+        onClearAllData={readerDesk.clearAllData}
+        onOpenSignalInEdition={handleOpenSignalInEdition}
+        onOpenStoryline={handleOpenStoryline}
+        onFilterByTopic={handleFilterByTopic}
+      />
+
+      <EditionComparisonModal
+        isOpen={compareOpen}
+        onClose={handleCloseComparison}
+        lang={lang}
+        editions={index?.editions ?? []}
+        fromDate={editionComparison.fromDate}
+        toDate={editionComparison.toDate}
+        onChangeFromDate={editionComparison.setFromDate}
+        onChangeToDate={editionComparison.setToDate}
+        onSwapDates={editionComparison.swapDates}
+        validationError={editionComparison.validationError}
+        wasReversedInput={editionComparison.wasReversedInput}
+        result={editionComparison.result}
+        isLoading={editionComparison.isLoading}
+        fetchError={editionComparison.fetchError}
+        onRetry={editionComparison.retry}
+        onOpenSignalInEdition={handleOpenSignalInEdition}
+        onOpenStoryline={handleOpenStoryline}
       />
 
       <LocalMarkdownModal

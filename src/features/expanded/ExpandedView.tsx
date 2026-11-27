@@ -20,6 +20,8 @@ import { SignalFilterSidebar } from './SignalFilterSidebar';
 import { SignalDossierHeader } from './SignalDossierHeader';
 import { SignalEvidenceLedgers } from './SignalEvidenceLedgers';
 
+import type { SignalBookmarkInput } from '../../hooks/useReaderDesk';
+
 interface ExpandedViewProps {
   edition: ParsedEdition;
   lang: UiLanguage;
@@ -29,6 +31,11 @@ interface ExpandedViewProps {
   onSelectSignal: (signalId: string) => void;
   mobileShowDetail: boolean;
   onChangeMobileShowDetail: (show: boolean) => void;
+  onOpenStoryline: (signalId: string) => void;
+  isSaved: (signalId: string) => boolean;
+  isFollowed: (signalId: string) => boolean;
+  onToggleSave: (input: SignalBookmarkInput) => void;
+  onToggleFollow: (input: SignalBookmarkInput) => void;
 }
 
 export const ExpandedView: React.FC<ExpandedViewProps> = ({
@@ -40,6 +47,11 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
   onSelectSignal,
   mobileShowDetail,
   onChangeMobileShowDetail,
+  onOpenStoryline,
+  isSaved,
+  isFollowed,
+  onToggleSave,
+  onToggleFollow,
 }) => {
   const t = getUiStrings(lang);
   const [highlightedSourceId, setHighlightedSourceId] = useState<string | null>(
@@ -276,6 +288,25 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
                 isLocalPreview={edition.isLocalPreview}
                 copied={copiedId === activeSignal.signal_id}
                 onCopyLink={() => void handleCopyLink(activeSignal.signal_id)}
+                onOpenStoryline={() => onOpenStoryline(activeSignal.signal_id)}
+                isSaved={isSaved(activeSignal.signal_id)}
+                isFollowed={isFollowed(activeSignal.signal_id)}
+                onToggleSave={() =>
+                  onToggleSave({
+                    signalId: activeSignal.signal_id,
+                    editionDate: edition.frontmatter.edition_date,
+                    headline: activeSignal.headline,
+                    domain: activeSignal.domain,
+                  })
+                }
+                onToggleFollow={() =>
+                  onToggleFollow({
+                    signalId: activeSignal.signal_id,
+                    editionDate: edition.frontmatter.edition_date,
+                    headline: activeSignal.headline,
+                    domain: activeSignal.domain,
+                  })
+                }
                 jumpSections={jumpSections}
               />
 

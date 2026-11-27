@@ -396,6 +396,225 @@ export interface UiDictionary {
     origins: (n: number) => string;
     claims: (n: number) => string;
   };
+  globalSearch: {
+    triggerLabel: string;
+    shortcutHint: string;
+    dialogTitle: string;
+    dialogSubtitle: string;
+    inputPlaceholder: string;
+    clearQuery: string;
+    close: string;
+    sortLabel: string;
+    sortOptions: {
+      relevance: string;
+      latest: string;
+      importance: string;
+      confidence: string;
+    };
+    sortExplainer: {
+      relevance: string;
+      latest: string;
+      importance: string;
+      confidence: string;
+    };
+    filtersToggle: string;
+    activeFiltersCount: (count: number) => string;
+    resetFilters: string;
+    dateFromLabel: string;
+    dateToLabel: string;
+    claimStatusLabel: string;
+    allClaimStatuses: string;
+    publisherLabel: string;
+    publisherPlaceholder: string;
+    indexingStatus: (indexed: number, total: number) => string;
+    indexedCompleteStatus: (total: number) => string;
+    partialResultsBanner: (indexed: number, total: number) => string;
+    cancelSearch: string;
+    resumeIndexing: string;
+    cancelledBanner: (indexed: number, total: number) => string;
+    failedEditionsBanner: (count: number, dates: string) => string;
+    malformedEditionsNote: (count: number) => string;
+    initialPromptTitle: string;
+    initialPromptBody: string;
+    searchingEmptyNote: (indexed: number, total: number) => string;
+    noResultsTitle: string;
+    noResultsBody: string;
+    resultsSummary: (signals: number, occurrences: number) => string;
+    matchedInPrefix: string;
+    matchFields: {
+      signal_id: string;
+      headline: string;
+      topic: string;
+      tags: string;
+      geography: string;
+      claim_id: string;
+      claim_statement: string;
+      source_outlet: string;
+      source_title: string;
+      source_group: string;
+      edition: string;
+      event_date: string;
+      narrative: string;
+    };
+    appearancesCount: (count: number) => string;
+    materialUpdatesCount: (count: number) => string;
+    expandHistory: string;
+    collapseHistory: string;
+    openEditionSignal: (date: string) => string;
+    openStoryline: string;
+    materialUpdateTag: string;
+    keyboardHint: string;
+  };
+  storyline: {
+    triggerButton: string;
+    dialogTitle: string;
+    dialogSubtitle: string;
+    close: string;
+    loadingHistory: (loaded: number, total: number) => string;
+    cancelLoading: string;
+    retryLoading: string;
+    errorTitle: string;
+    emptyTitle: string;
+    emptyBody: string;
+    firstSeenLabel: string;
+    lastSeenLabel: string;
+    lastMaterialUpdateLabel: string;
+    appearancesLabel: string;
+    lifecycleLabel: string;
+    coverageLabel: string;
+    coverageComplete: (count: number) => string;
+    coverageIncomplete: (loaded: number, total: number) => string;
+    coverageLimitedNote: (count: number) => string;
+    failedEditionsWarning: (dates: string) => string;
+    sameDayLimitationTitle: string;
+    sameDayLimitationBody: string;
+    absentNotResolvedTitle: string;
+    absentNotResolvedBody: (lastSeen: string, latestDate: string) => string;
+    revisionTimelineTitle: string;
+    revisionTimelineNote: string;
+    eventTimelineDistinctionNote: string;
+    revisionKinds: {
+      first_seen: string;
+      material_update: string;
+      unchanged: string;
+      reappeared: string;
+    };
+    reappearedAfterGap: (days: number) => string;
+    inspectRevisionTitle: (date: string) => string;
+    openHistoricalDossier: (date: string) => string;
+    noMaterialDiffNote: string;
+    firstObservedNote: string;
+    schemaV1Note: string;
+    narrativeChangedNote: string;
+    topicChangedNote: (prev: string, curr: string) => string;
+    eventMetaChangedNote: string;
+    relationshipsChangedNote: (prevCount: number, currCount: number) => string;
+  };
+  readerDesk: {
+    triggerLabel: string;
+    dialogTitle: string;
+    dialogSubtitle: string;
+    close: string;
+    localStorageNotice: string;
+    storageWarningPrefix: string;
+    storageWarnings: {
+      storage_unavailable: string;
+      corrupt_state_recovered: string;
+      migrated_legacy_state: string;
+      quota_exceeded: string;
+    };
+    tabs: {
+      catchUp: string;
+      followed: string;
+      saved: string;
+      topics: string;
+    };
+    saveAction: string;
+    savedAction: string;
+    unsaveAction: string;
+    followAction: string;
+    followingAction: string;
+    unfollowAction: string;
+    savedEmptyTitle: string;
+    savedEmptyBody: string;
+    savedOnLabel: (date: string) => string;
+    openSavedSignal: (date: string) => string;
+    followedEmptyTitle: string;
+    followedEmptyBody: string;
+    followedLoading: string;
+    followedLastKnownEdition: string;
+    followedLatestAppearance: string;
+    followedLastMaterialUpdate: string;
+    followedVersionsCount: (count: number) => string;
+    followedAbsentLatestNote: string;
+    followedMissingArchiveNote: string;
+    topicsEmptyTitle: string;
+    topicsEmptyBody: string;
+    topicsAddLabel: string;
+    topicsAddButton: string;
+    topicsRemoveAction: string;
+    topicsCurrentMatches: (count: number) => string;
+    clearDataButton: string;
+    clearDataConfirm: string;
+    clearDataCancel: string;
+    clearDataWarning: string;
+  };
+  catchUp: {
+    eyebrow: string;
+    title: string;
+    firstVisitTitle: string;
+    firstVisitBody: (editionDate: string, count: number) => string;
+    markAsReviewed: string;
+    reviewedCheckpointLabel: (date: string) => string;
+    upToDateTitle: string;
+    upToDateBody: (date: string) => string;
+    baselineUnavailableTitle: string;
+    baselineUnavailableSnapshot: (date: string) => string;
+    baselineUnavailableArchived: (date: string) => string;
+    changesHeadline: (fromDate: string, toDate: string) => string;
+    sameDayRevisionBadge: string;
+    usedLocalSnapshotNote: string;
+    generalCatchUpTitle: string;
+    personalCatchUpTitle: string;
+    personalCatchUpEmpty: string;
+    groupNew: string;
+    groupUpdated: string;
+    groupReappeared: string;
+    groupClaimChanges: string;
+    groupSourceChanges: string;
+    groupOmitted: string;
+    openFullDigest: string;
+    inspectNextHint: string;
+    followedAlertKinds: {
+      new: string;
+      updated: string;
+      reappeared: string;
+      omitted: string;
+    };
+  };
+  editionCompare: {
+    triggerButton: string;
+    dialogTitle: string;
+    dialogSubtitle: string;
+    close: string;
+    fromEditionLabel: string;
+    toEditionLabel: string;
+    swapOrder: string;
+    reorderedNote: (fromDate: string, toDate: string) => string;
+    validationErrors: {
+      insufficient_archive: string;
+      missing_date: string;
+      invalid_date_not_in_archive: string;
+      same_edition_selected: string;
+    };
+    loadingPair: (fromDate: string, toDate: string) => string;
+    loadErrorTitle: string;
+    retry: string;
+    openPreviousVersion: (date: string) => string;
+    openCurrentVersion: (date: string) => string;
+    daySpanLabel: (days: number) => string;
+    compareAction: string;
+  };
 }
 
 const EN_DICT: UiDictionary = {
@@ -929,6 +1148,250 @@ const EN_DICT: UiDictionary = {
     origins: (n) => `${n} independent ${n === 1 ? 'origin' : 'origins'}`,
     claims: (n) => `${n} ${n === 1 ? 'claim' : 'claims'}`,
   },
+  globalSearch: {
+    triggerLabel: 'Search',
+    shortcutHint: '⌘K',
+    dialogTitle: 'Global Intelligence Search',
+    dialogSubtitle: 'Deterministic full-archive search across canonical Markdown editions',
+    inputPlaceholder: 'Search signal IDs, headlines, claims, outlets, topics, or Chinese keywords…',
+    clearQuery: 'Clear query',
+    close: 'Close search',
+    sortLabel: 'Sort by',
+    sortOptions: {
+      relevance: 'Relevance',
+      latest: 'Latest appearance',
+      importance: 'Importance',
+      confidence: 'Confidence',
+    },
+    sortExplainer: {
+      relevance: 'Deterministic field-match priority (Signal ID > Headline > Claims > Sources > Narrative)',
+      latest: 'Most recent matching edition date first',
+      importance: 'Editorial importance 5 to 1 (independent of verification confidence)',
+      confidence: 'Verification confidence High to Unverified (independent of importance)',
+    },
+    filtersToggle: 'Advanced filters',
+    activeFiltersCount: (count) => `${count} active`,
+    resetFilters: 'Reset filters',
+    dateFromLabel: 'From edition',
+    dateToLabel: 'To edition',
+    claimStatusLabel: 'Claim status',
+    allClaimStatuses: 'All claim statuses',
+    publisherLabel: 'Publisher / outlet',
+    publisherPlaceholder: 'e.g. Reuters, FT, Bloomberg',
+    indexingStatus: (indexed, total) => `Searching ${indexed} of ${total} archived editions…`,
+    indexedCompleteStatus: (total) => `Searched all ${total} archived ${total === 1 ? 'edition' : 'editions'}`,
+    partialResultsBanner: (indexed, total) =>
+      `Partial results: ${indexed} of ${total} editions indexed so far. Historical editions are loading incrementally.`,
+    cancelSearch: 'Stop indexing',
+    resumeIndexing: 'Index remaining editions',
+    cancelledBanner: (indexed, total) =>
+      `Indexing paused after ${indexed} of ${total} editions. Results reflect only indexed editions.`,
+    failedEditionsBanner: (count, dates) =>
+      `${count} historical ${count === 1 ? 'edition' : 'editions'} could not be loaded (${dates}). Results may be incomplete.`,
+    malformedEditionsNote: (count) =>
+      `${count} ${count === 1 ? 'edition' : 'editions'} contained validation errors; parsed fields remain searchable.`,
+    initialPromptTitle: 'Search across the WORLD SIGNAL archive',
+    initialPromptBody:
+      'Enter a stable Signal ID, English or Chinese keyword, claim text, or outlet name, or apply filters to inspect historical signals.',
+    searchingEmptyNote: (indexed, total) =>
+      `No matches found in the first ${indexed} of ${total} editions yet — continuing to search earlier editions…`,
+    noResultsTitle: 'No matching signals found',
+    noResultsBody:
+      'Try broadening your query, checking spelling, or resetting active archive filters.',
+    resultsSummary: (signals, occurrences) =>
+      `${signals} unique ${signals === 1 ? 'signal' : 'signals'} across ${occurrences} edition ${occurrences === 1 ? 'appearance' : 'appearances'}`,
+    matchedInPrefix: 'Matched in',
+    matchFields: {
+      signal_id: 'Signal ID',
+      headline: 'Headline',
+      topic: 'Topic',
+      tags: 'Tags',
+      geography: 'Geography',
+      claim_id: 'Claim ID',
+      claim_statement: 'Claim',
+      source_outlet: 'Publisher',
+      source_title: 'Source title',
+      source_group: 'Origin group',
+      edition: 'Edition',
+      event_date: 'Event date',
+      narrative: 'Narrative',
+    },
+    appearancesCount: (count) => `${count} ${count === 1 ? 'edition' : 'editions'}`,
+    materialUpdatesCount: (count) => `${count} material ${count === 1 ? 'update' : 'updates'}`,
+    expandHistory: 'Show edition history',
+    collapseHistory: 'Hide edition history',
+    openEditionSignal: (date) => `Open ${date}`,
+    openStoryline: 'Storyline',
+    materialUpdateTag: 'Material update',
+    keyboardHint: '↑↓ Navigate · Enter Open · Esc Close',
+  },
+  storyline: {
+    triggerButton: 'Storyline History',
+    dialogTitle: 'Longitudinal Storyline Tracker',
+    dialogSubtitle: 'Editorial revision history across retained archive editions',
+    close: 'Close storyline tracker',
+    loadingHistory: (loaded, total) => `Loading archive editions (${loaded}/${total})…`,
+    cancelLoading: 'Cancel',
+    retryLoading: 'Retry loading',
+    errorTitle: 'Unable to load storyline history',
+    emptyTitle: 'No historical snapshots found',
+    emptyBody: 'This signal ID does not appear in the currently loaded archive editions.',
+    firstSeenLabel: 'First available appearance',
+    lastSeenLabel: 'Last available appearance',
+    lastMaterialUpdateLabel: 'Last material update',
+    appearancesLabel: 'Appearances',
+    lifecycleLabel: 'Recorded status',
+    coverageLabel: 'Archive coverage',
+    coverageComplete: (count) => `All ${count} retained archive editions inspected`,
+    coverageIncomplete: (loaded, total) => `Incomplete coverage (${loaded} of ${total} archive editions loaded)`,
+    coverageLimitedNote: (count) =>
+      `Coverage reflects only the ${count} archived daily editions available in this publication index — not necessarily the complete historical life of the event.`,
+    failedEditionsWarning: (dates) => `Failed to load edition(s): ${dates}.`,
+    sameDayLimitationTitle: 'Same-day revision boundary',
+    sameDayLimitationBody:
+      'Each calendar date stores one canonical cumulative Markdown file. This tracker shows changes across retained daily edition snapshots, not every intraday sync run.',
+    absentNotResolvedTitle: 'Absent from latest edition (not resolved)',
+    absentNotResolvedBody: (lastSeen, latestDate) =>
+      `Last recorded in ${lastSeen} and absent from ${latestDate}. Absence is an editorial omission, never proof that the underlying event is resolved or retracted.`,
+    revisionTimelineTitle: 'Storyline Revision Timeline',
+    revisionTimelineNote:
+      'Chronological record of how WORLD SIGNAL recorded and revised this signal across archived editions.',
+    eventTimelineDistinctionNote:
+      'Distinct from the real-world Event Timeline inside the dossier narrative.',
+    revisionKinds: {
+      first_seen: 'First Seen',
+      material_update: 'Material Update',
+      unchanged: 'Unchanged',
+      reappeared: 'Reappeared',
+    },
+    reappearedAfterGap: (days) => `Reappeared after ${days}-day gap`,
+    inspectRevisionTitle: (date) => `Edition Snapshot · ${date}`,
+    openHistoricalDossier: (date) => `Open ${date} Dossier`,
+    noMaterialDiffNote:
+      'No material factual, evidence, status, or narrative changes compared with the preceding appearance.',
+    firstObservedNote:
+      'Earliest observed snapshot of this stable signal ID in the available archive.',
+    schemaV1Note: 'Recorded in Schema v1 edition format (continuity metadata derived deterministically).',
+    narrativeChangedNote: 'Editorial narrative or event timeline updated.',
+    topicChangedNote: (prev, curr) => `Topic/tags updated (${prev} → ${curr})`,
+    eventMetaChangedNote: 'Event dates or geographic scope updated.',
+    relationshipsChangedNote: (prevCount, currCount) =>
+      `Declared relationships updated (${prevCount} → ${currCount})`,
+  },
+  readerDesk: {
+    triggerLabel: 'Desk',
+    dialogTitle: 'My Intelligence Desk',
+    dialogSubtitle: 'Personal local research workspace',
+    close: 'Close reader desk',
+    localStorageNotice: 'Your Reader Desk is stored on this device. No account or remote sync is used.',
+    storageWarningPrefix: 'Local storage notice',
+    storageWarnings: {
+      storage_unavailable: 'Browser storage is unavailable. Changes apply only to this session.',
+      corrupt_state_recovered: 'Malformed local Reader Desk data was detected and safely reset.',
+      migrated_legacy_state: 'Your saved Reader Desk data was migrated to the current format.',
+      quota_exceeded: 'Device storage quota was reached; some local snapshots could not be saved.',
+    },
+    tabs: {
+      catchUp: 'Catch-up',
+      followed: 'Following',
+      saved: 'Saved',
+      topics: 'Topics',
+    },
+    saveAction: 'Save',
+    savedAction: 'Saved',
+    unsaveAction: 'Remove',
+    followAction: 'Follow',
+    followingAction: 'Following',
+    unfollowAction: 'Unfollow',
+    savedEmptyTitle: 'No saved signals yet',
+    savedEmptyBody:
+      'Save any signal from a dossier or Global Search to keep a reading list on this device.',
+    savedOnLabel: (date) => `Saved · ${date}`,
+    openSavedSignal: (date) => `Open ${date} dossier`,
+    followedEmptyTitle: 'Not following any signals yet',
+    followedEmptyBody:
+      'Follow a stable Signal ID to monitor material updates, new claims, and source revisions across editions.',
+    followedLoading: 'Checking followed signals across archived editions…',
+    followedLastKnownEdition: 'Last known edition',
+    followedLatestAppearance: 'Latest appearance',
+    followedLastMaterialUpdate: 'Last material update',
+    followedVersionsCount: (count) => `${count} archived ${count === 1 ? 'snapshot' : 'snapshots'}`,
+    followedAbsentLatestNote: 'Not present in the latest edition (omitted, not necessarily resolved).',
+    followedMissingArchiveNote: 'Not found in currently loaded archive editions.',
+    topicsEmptyTitle: 'No followed topics yet',
+    topicsEmptyBody:
+      'Follow normalized editorial topics from the current edition to quickly filter related developments.',
+    topicsAddLabel: 'Add normalized topic from current edition',
+    topicsAddButton: 'Follow topic',
+    topicsRemoveAction: 'Remove',
+    topicsCurrentMatches: (count) => `${count} matching ${count === 1 ? 'signal' : 'signals'} in current edition`,
+    clearDataButton: 'Clear local reader data',
+    clearDataConfirm: 'Confirm clear all',
+    clearDataCancel: 'Cancel',
+    clearDataWarning:
+      'This removes all saved signals, followed signals, topics, and reviewed checkpoints stored on this device.',
+  },
+  catchUp: {
+    eyebrow: 'Since Your Last Visit',
+    title: 'Editorial Catch-up Digest',
+    firstVisitTitle: 'Set your first reviewed checkpoint',
+    firstVisitBody: (editionDate, count) =>
+      `You are reading edition ${editionDate} (${count} signals). Mark this edition as reviewed whenever you finish to track genuine content changes on your next visit.`,
+    markAsReviewed: 'Mark as reviewed',
+    reviewedCheckpointLabel: (date) => `Last reviewed: ${date}`,
+    upToDateTitle: 'No material changes since your checkpoint',
+    upToDateBody: (date) =>
+      `The current edition has no material editorial changes compared with your reviewed checkpoint (${date}).`,
+    baselineUnavailableTitle: 'Detailed comparison unavailable',
+    baselineUnavailableSnapshot: (date) =>
+      `Your last checkpoint (${date}) was on this date, but a prior local revision snapshot is unavailable. Mark as reviewed to capture a fresh baseline.`,
+    baselineUnavailableArchived: (date) =>
+      `Your last reviewed edition (${date}) is no longer present in the loaded archive and no local snapshot is available. Differences cannot be fabricated.`,
+    changesHeadline: (fromDate, toDate) => `Changes since ${fromDate} → ${toDate}`,
+    sameDayRevisionBadge: 'Same-day revision',
+    usedLocalSnapshotNote: 'Compared deterministically against your compact local reviewed snapshot.',
+    generalCatchUpTitle: 'Publication changes',
+    personalCatchUpTitle: 'Followed signals needing attention',
+    personalCatchUpEmpty: 'None of your followed signals changed materially since your last checkpoint.',
+    groupNew: 'New signals',
+    groupUpdated: 'Materially updated',
+    groupReappeared: 'Reappeared',
+    groupClaimChanges: 'Claim ledger updates',
+    groupSourceChanges: 'Source ledger updates',
+    groupOmitted: 'Omitted since checkpoint',
+    openFullDigest: 'Inspect full catch-up',
+    inspectNextHint: 'Inspect next',
+    followedAlertKinds: {
+      new: 'New',
+      updated: 'Updated',
+      reappeared: 'Reappeared',
+      omitted: 'Omitted',
+    },
+  },
+  editionCompare: {
+    triggerButton: 'Compare editions',
+    dialogTitle: 'Arbitrary Edition Comparison',
+    dialogSubtitle: 'Deterministic diff between any two archived Markdown editions',
+    close: 'Close edition comparison',
+    fromEditionLabel: 'From edition',
+    toEditionLabel: 'To edition',
+    swapOrder: 'Swap',
+    reorderedNote: (fromDate, toDate) =>
+      `Displayed chronologically from older (${fromDate}) to newer (${toDate}).`,
+    validationErrors: {
+      insufficient_archive: 'At least two archived editions are required to compare editions.',
+      missing_date: 'Select both a From edition and a To edition.',
+      invalid_date_not_in_archive: 'One or both selected dates do not exist in the published archive index.',
+      same_edition_selected: 'Select two different edition dates to compare.',
+    },
+    loadingPair: (fromDate, toDate) => `Loading editions ${fromDate} and ${toDate}…`,
+    loadErrorTitle: 'Unable to load selected editions',
+    retry: 'Retry',
+    openPreviousVersion: (date) => `Previous (${date})`,
+    openCurrentVersion: (date) => `Current (${date})`,
+    daySpanLabel: (days) => `${days}-day span`,
+    compareAction: 'Compare',
+  },
 };
 
 const ZH_DICT: UiDictionary = {
@@ -1457,6 +1920,241 @@ const ZH_DICT: UiDictionary = {
     confidence: (label) => `置信度：${label}`,
     origins: (n) => `${n} 个独立源`,
     claims: (n) => `${n} 条声明`,
+  },
+  globalSearch: {
+    triggerLabel: '全局搜索',
+    shortcutHint: '⌘K',
+    dialogTitle: '全球情报跨期搜索',
+    dialogSubtitle: '基于权威 Markdown 归档期刊的确定性跨期检索',
+    inputPlaceholder: '搜索信号 ID、标题、声明内容、媒体来源、主题或中英文关键词…',
+    clearQuery: '清除搜索词',
+    close: '关闭搜索',
+    sortLabel: '排序方式',
+    sortOptions: {
+      relevance: '相关度',
+      latest: '最新出现',
+      importance: '重要性',
+      confidence: '置信度',
+    },
+    sortExplainer: {
+      relevance: '按确定性字段权重排序（信号 ID > 标题 > 声明 > 来源 > 正文）',
+      latest: '按最新匹配的期刊日期降序排列',
+      importance: '按编辑重要性 5 至 1 排列（独立于验证置信度）',
+      confidence: '按验证置信度由高到低排列（独立于重要性）',
+    },
+    filtersToggle: '高级筛选',
+    activeFiltersCount: (count) => `已选 ${count} 项`,
+    resetFilters: '重置筛选',
+    dateFromLabel: '起始期数',
+    dateToLabel: '截止期数',
+    claimStatusLabel: '声明状态',
+    allClaimStatuses: '全部声明状态',
+    publisherLabel: '媒体 / 机构来源',
+    publisherPlaceholder: '例如 Reuters、路透、FT',
+    indexingStatus: (indexed, total) => `正在检索归档期刊：已索引 ${indexed} / ${total} 期…`,
+    indexedCompleteStatus: (total) => `已完成全部 ${total} 期归档期刊检索`,
+    partialResultsBanner: (indexed, total) =>
+      `部分结果：当前已索引 ${indexed} / ${total} 期，历史期刊正在按批增量加载。`,
+    cancelSearch: '停止加载',
+    resumeIndexing: '继续索引剩余期数',
+    cancelledBanner: (indexed, total) =>
+      `已在加载 ${indexed} / ${total} 期后暂停，当前结果仅反映已索引期数。`,
+    failedEditionsBanner: (count, dates) =>
+      `有 ${count} 期历史期刊加载失败（${dates}），搜索结果可能不完整。`,
+    malformedEditionsNote: (count) =>
+      `有 ${count} 期存在结构校验警告，已解析字段仍参与检索。`,
+    initialPromptTitle: '跨期检索 WORLD SIGNAL 历史档案',
+    initialPromptBody:
+      '输入稳定信号 ID、中英文关键词、声明文本或来源媒体，或使用高级筛选条件追溯历史信号。',
+    searchingEmptyNote: (indexed, total) =>
+      `前 ${indexed} / ${total} 期暂未发现匹配，正在继续检索更早的历史期刊…`,
+    noResultsTitle: '未找到匹配的信号',
+    noResultsBody: '请尝试放宽关键词条件，或重置当前高级筛选器。',
+    resultsSummary: (signals, occurrences) =>
+      `共找到 ${signals} 个独立信号（涵盖 ${occurrences} 条跨期记录）`,
+    matchedInPrefix: '命中字段',
+    matchFields: {
+      signal_id: '信号 ID',
+      headline: '标题',
+      topic: '主题',
+      tags: '标签',
+      geography: '地理区域',
+      claim_id: '声明 ID',
+      claim_statement: '声明陈述',
+      source_outlet: '发布媒体',
+      source_title: '来源标题',
+      source_group: '来源分组',
+      edition: '期刊信息',
+      event_date: '事件日期',
+      narrative: '正文分析',
+    },
+    appearancesCount: (count) => `出现于 ${count} 期`,
+    materialUpdatesCount: (count) => `${count} 次实质更新`,
+    expandHistory: '展开跨期记录',
+    collapseHistory: '收起跨期记录',
+    openEditionSignal: (date) => `查看 ${date} 期`,
+    openStoryline: '脉络追踪',
+    materialUpdateTag: '实质更新',
+    keyboardHint: '↑↓ 选择 · Enter 打开 · Esc 关闭',
+  },
+  storyline: {
+    triggerButton: '脉络历史',
+    dialogTitle: '纵向事件脉络追踪',
+    dialogSubtitle: '基于已保留归档期刊的信号修订历程',
+    close: '关闭脉络追踪',
+    loadingHistory: (loaded, total) => `正在按需加载历史期刊（${loaded}/${total}）…`,
+    cancelLoading: '取消加载',
+    retryLoading: '重新加载',
+    errorTitle: '无法加载脉络历史',
+    emptyTitle: '未找到历史快照',
+    emptyBody: '在当前已加载的归档期刊中未发现该信号 ID 的记录。',
+    firstSeenLabel: '档案首次出现',
+    lastSeenLabel: '档案最近出现',
+    lastMaterialUpdateLabel: '最近实质更新',
+    appearancesLabel: '出现期数',
+    lifecycleLabel: '当前状态',
+    coverageLabel: '档案覆盖度',
+    coverageComplete: (count) => `已完整核查全部 ${count} 期已保留档案`,
+    coverageIncomplete: (loaded, total) => `历史覆盖不完整（已加载 ${loaded} / ${total} 期）`,
+    coverageLimitedNote: (count) =>
+      `当前覆盖范围仅反映档案索引中现有的 ${count} 期日报快照，并不代表该事件的完整历史周期。`,
+    failedEditionsWarning: (dates) => `以下期刊加载失败：${dates}。`,
+    sameDayLimitationTitle: '同日修订边界说明',
+    sameDayLimitationBody:
+      '每个日历日仅保留一份权威累积 Markdown 文件。本脉络追踪反映跨日归档快照之间的变更，而非同一天内每次 Muse 同步记录。',
+    absentNotResolvedTitle: '最新一期未收录（并不代表事件已解决）',
+    absentNotResolvedBody: (lastSeen, latestDate) =>
+      `该信号最后记录于 ${lastSeen}，在 ${latestDate} 期未出现。未收录仅属编辑省略，不能推断事件已解决或撤回。`,
+    revisionTimelineTitle: '信号修订脉络时间轴',
+    revisionTimelineNote:
+      '按时间顺序列出 WORLD SIGNAL 在各期归档中对该信号的记录与实质性修订。',
+    eventTimelineDistinctionNote:
+      '注意：此处为期刊修订历史，区别于档案正文中的“事件时间线”。',
+    revisionKinds: {
+      first_seen: '首次记录',
+      material_update: '实质更新',
+      unchanged: '无实质变化',
+      reappeared: '间隔后再现',
+    },
+    reappearedAfterGap: (days) => `间隔 ${days} 天后重新出现`,
+    inspectRevisionTitle: (date) => `期刊快照 · ${date}`,
+    openHistoricalDossier: (date) => `打开 ${date} 期完整档案`,
+    noMaterialDiffNote: '相较上一次出现，该信号无实质性的事实、证据、状态或正文变更。',
+    firstObservedNote: '该稳定信号 ID 在当前可用归档中的最早观察记录。',
+    schemaV1Note: '该期采用 Schema v1 格式，连续性与变更由确定性对比引擎计算得出。',
+    narrativeChangedNote: '正文叙事或事件时间线已更新。',
+    topicChangedNote: (prev, curr) => `主题/标签变更（${prev} → ${curr}）`,
+    eventMetaChangedNote: '事件日期或地理范围元数据已更新。',
+    relationshipsChangedNote: (prevCount, currCount) =>
+      `关联关系已更新（${prevCount} → ${currCount}）`,
+  },
+  readerDesk: {
+    triggerLabel: '研究台',
+    dialogTitle: '我的情报研究台',
+    dialogSubtitle: '本地优先个人研究工作区',
+    close: '关闭研究台',
+    localStorageNotice: '你的研究台数据仅保存在本设备浏览器本地，无需账号，也不会上传至服务器。',
+    storageWarningPrefix: '本地存储提示',
+    storageWarnings: {
+      storage_unavailable: '当前浏览器环境不可使用本地存储，操作仅在本次会话生效。',
+      corrupt_state_recovered: '检测到损坏的本地研究台数据，已安全恢复为空白状态。',
+      migrated_legacy_state: '本地研究台数据已安全迁移至最新格式。',
+      quota_exceeded: '设备本地存储空间不足，部分本地快照未能保存。',
+    },
+    tabs: {
+      catchUp: '自上次阅读',
+      followed: '追踪中',
+      saved: '稍后阅读',
+      topics: '关注主题',
+    },
+    saveAction: '收藏',
+    savedAction: '已收藏',
+    unsaveAction: '移除',
+    followAction: '追踪',
+    followingAction: '已追踪',
+    unfollowAction: '取消追踪',
+    savedEmptyTitle: '暂无收藏信号',
+    savedEmptyBody: '在信号档案页或全局搜索结果中点击“收藏”，即可将信号保存至本设备的稍后阅读清单。',
+    savedOnLabel: (date) => `收藏于 ${date}`,
+    openSavedSignal: (date) => `打开 ${date} 期档案`,
+    followedEmptyTitle: '尚未追踪任何信号',
+    followedEmptyBody: '按稳定信号 ID 追踪重要议题，跨期监测实质更新、新增声明与来源修订。',
+    followedLoading: '正在核查已追踪信号的跨期状态…',
+    followedLastKnownEdition: '上次已知期数',
+    followedLatestAppearance: '最新出现期数',
+    followedLastMaterialUpdate: '最近实质更新',
+    followedVersionsCount: (count) => `共 ${count} 个归档版本`,
+    followedAbsentLatestNote: '最新一期未收录（属编辑省略，不代表事件已解决）。',
+    followedMissingArchiveNote: '当前已加载的归档期刊中未找到该信号记录。',
+    topicsEmptyTitle: '尚未关注任何主题',
+    topicsEmptyBody: '从当前期刊的规范化主题中选择关注，快速聚焦相关动态。',
+    topicsAddLabel: '从当前期刊添加规范化主题',
+    topicsAddButton: '关注主题',
+    topicsRemoveAction: '移除',
+    topicsCurrentMatches: (count) => `当前期刊含 ${count} 条匹配信号`,
+    clearDataButton: '清空本地研究台数据',
+    clearDataConfirm: '确认全部清空',
+    clearDataCancel: '取消',
+    clearDataWarning: '此操作将清除本设备保存的所有收藏信号、追踪信号、关注主题及已阅检查点。',
+  },
+  catchUp: {
+    eyebrow: '自上次阅读以来',
+    title: '情报变更速览',
+    firstVisitTitle: '建立你的首个已阅检查点',
+    firstVisitBody: (editionDate, count) =>
+      `当前正在阅读 ${editionDate} 期（共 ${count} 条信号）。阅读完成后点击“标记为已阅”，下次回来即可自动比对真实内容变更。`,
+    markAsReviewed: '标记为已阅',
+    reviewedCheckpointLabel: (date) => `上次已阅：${date}`,
+    upToDateTitle: '自上次已阅以来暂无实质变更',
+    upToDateBody: (date) => `与你的已阅检查点（${date}）相比，当前期刊未检测到实质性编辑变更。`,
+    baselineUnavailableTitle: '无法生成详细变更对比',
+    baselineUnavailableSnapshot: (date) =>
+      `你的上次检查点位于当日（${date}），但缺少对应的本地精简快照。请点击“标记为已阅”以建立新基线。`,
+    baselineUnavailableArchived: (date) =>
+      `你的上次已阅期刊（${date}）不在当前已加载档案中且无本地快照，系统不会编造变更差异。`,
+    changesHeadline: (fromDate, toDate) => `变更范围：${fromDate} → ${toDate}`,
+    sameDayRevisionBadge: '同日修订对比',
+    usedLocalSnapshotNote: '已基于本地保存的精简已阅快照进行确定性内容对比。',
+    generalCatchUpTitle: '全刊变更概览',
+    personalCatchUpTitle: '已追踪信号动态',
+    personalCatchUpEmpty: '自上次已阅以来，你追踪的信号暂无实质更新。',
+    groupNew: '新增信号',
+    groupUpdated: '实质更新',
+    groupReappeared: '间隔再现',
+    groupClaimChanges: '声明台账变更',
+    groupSourceChanges: '来源台账变更',
+    groupOmitted: '检查点后未收录',
+    openFullDigest: '查看完整变更速览',
+    inspectNextHint: '建议优先核查',
+    followedAlertKinds: {
+      new: '新增',
+      updated: '更新',
+      reappeared: '再现',
+      omitted: '未收录',
+    },
+  },
+  editionCompare: {
+    triggerButton: '跨期对比',
+    dialogTitle: '任意两期期刊对比',
+    dialogSubtitle: '对归档中任意两期权威 Markdown 期刊执行确定性差异比对',
+    close: '关闭期刊对比',
+    fromEditionLabel: '对比基准期（旧）',
+    toEditionLabel: '对比目标期（新）',
+    swapOrder: '对调',
+    reorderedNote: (fromDate, toDate) => `已按时间顺序展示：从较早期（${fromDate}）至较近期（${toDate}）。`,
+    validationErrors: {
+      insufficient_archive: '至少需要两期归档期刊才能执行跨期对比。',
+      missing_date: '请同时选择起始期数与目标期数。',
+      invalid_date_not_in_archive: '所选期数不存在于已发布的归档索引中。',
+      same_edition_selected: '请选择两个不同的期刊日期进行对比。',
+    },
+    loadingPair: (fromDate, toDate) => `正在加载 ${fromDate} 与 ${toDate} 期…`,
+    loadErrorTitle: '无法加载所选期刊',
+    retry: '重试',
+    openPreviousVersion: (date) => `旧版 (${date})`,
+    openCurrentVersion: (date) => `新版 (${date})`,
+    daySpanLabel: (days) => `间隔 ${days} 天`,
+    compareAction: '开始对比',
   },
 };
 

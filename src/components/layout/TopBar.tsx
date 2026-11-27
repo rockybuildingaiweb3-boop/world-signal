@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import {
   Archive,
+  Bookmark,
   BookOpen,
   Compass,
   Newspaper,
+  Search,
   ShieldCheck,
 } from 'lucide-react';
 import type { UiLanguage, ViewId } from '../../types/edition';
@@ -15,6 +17,10 @@ interface TopBarProps {
   activeEditionDate: string | null;
   isLocalPreview: boolean;
   onOpenArchive: () => void;
+  onOpenSearch: () => void;
+  onOpenReaderDesk: () => void;
+  deskBadgeCount?: number;
+  hasCatchUpChanges?: boolean;
   lang: UiLanguage;
 }
 
@@ -39,6 +45,10 @@ export const TopBar: React.FC<TopBarProps> = ({
   activeEditionDate,
   isLocalPreview,
   onOpenArchive,
+  onOpenSearch,
+  onOpenReaderDesk,
+  deskBadgeCount = 0,
+  hasCatchUpChanges = false,
   lang,
 }) => {
   const t = getUiStrings(lang);
@@ -75,13 +85,13 @@ export const TopBar: React.FC<TopBarProps> = ({
     <>
       <header className="sticky top-0 z-30 border-b border-[var(--ws-border)] bg-[var(--ws-canvas)]/96 backdrop-blur-[10px]">
         <div className="mx-auto max-w-[1320px] px-4 sm:px-6">
-          {/* Crisp 3-Zone Publication Header: Wordmark — 4 Views — Archive Trigger */}
+          {/* Crisp 3-Zone Publication Header: Wordmark — 4 Views — Compact Utility Cluster */}
           <div className="flex h-12 md:h-[58px] items-center justify-between gap-2 sm:gap-4">
             {/* Zone 1: Signature Wordmark & Meridian Emblem */}
             <button
               type="button"
               onClick={() => onSelectView('briefing')}
-              className="flex items-center gap-2.5 text-left group cursor-pointer shrink-0 transition-opacity duration-150 hover:opacity-80"
+              className="flex items-center gap-2 sm:gap-2.5 text-left group cursor-pointer shrink-0 transition-opacity duration-150 hover:opacity-80"
               aria-label="WORLD SIGNAL"
             >
               <svg
@@ -97,7 +107,7 @@ export const TopBar: React.FC<TopBarProps> = ({
                 <line x1="2.5" y1="12" x2="21.5" y2="12" stroke="currentColor" strokeWidth="1.1" />
                 <rect x="10.5" y="10.5" width="3" height="3" fill="var(--ws-editorial-accent)" />
               </svg>
-              <span className="font-display text-[15px] sm:text-[16.5px] md:text-[18px] font-semibold tracking-[0.04em] text-[var(--ws-ink)] whitespace-nowrap">
+              <span className="font-display text-[14.5px] sm:text-[16.5px] md:text-[18px] font-semibold tracking-[0.04em] text-[var(--ws-ink)] whitespace-nowrap">
                 WORLD SIGNAL
               </span>
             </button>
@@ -133,28 +143,69 @@ export const TopBar: React.FC<TopBarProps> = ({
               })}
             </nav>
 
-            {/* Zone 3: Archive & Edition Trigger */}
-            <button
-              type="button"
-              data-testid="archive-trigger"
-              onClick={onOpenArchive}
-              className="inline-flex min-h-[34px] md:min-h-[36px] items-center gap-1.5 sm:gap-2 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-2.5 sm:px-3 py-1.5 text-[11.5px] sm:text-[12.5px] font-medium text-[var(--ws-ink)] hover:border-[var(--ws-border-strong)] hover:bg-[var(--ws-surface-hover)] transition-colors duration-150 cursor-pointer shrink-0 whitespace-nowrap"
-            >
-              <Archive className="h-3.5 w-3.5 text-[var(--ws-ink-muted)] shrink-0" />
-              <span>{t.archive.button}</span>
-              {activeEditionDate && (
-                <span className="font-mono-tabular text-[11px] sm:text-[11.5px] text-[var(--ws-ink-muted)] border-l border-[var(--ws-border)] pl-1.5 sm:pl-2">
-                  {isLocalPreview ? (
-                    'LOCAL'
-                  ) : (
-                    <>
-                      <span className="sm:hidden">{activeEditionDate.slice(5)}</span>
-                      <span className="hidden sm:inline">{activeEditionDate}</span>
-                    </>
-                  )}
-                </span>
-              )}
-            </button>
+            {/* Zone 3: Compact Utility Controls — Search, Reader Desk, Archive */}
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+              {/* Global Archive Search Trigger */}
+              <button
+                type="button"
+                data-testid="global-search-trigger"
+                onClick={onOpenSearch}
+                aria-label={`${t.globalSearch.triggerLabel} (${t.globalSearch.shortcutHint})`}
+                className="inline-flex min-h-[34px] md:min-h-[36px] items-center gap-1.5 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-2 sm:px-2.5 py-1.5 text-[11.5px] sm:text-[12.5px] font-medium text-[var(--ws-ink)] hover:border-[var(--ws-border-strong)] hover:bg-[var(--ws-surface-hover)] transition-colors duration-150 cursor-pointer shrink-0 whitespace-nowrap"
+              >
+                <Search className="h-3.5 w-3.5 text-[var(--ws-ink-muted)] shrink-0" />
+                <span className="hidden sm:inline">{t.globalSearch.triggerLabel}</span>
+                <kbd className="hidden lg:inline-block font-mono-tabular text-[10px] text-[var(--ws-ink-faint)] border-l border-[var(--ws-border)] pl-1.5">
+                  {t.globalSearch.shortcutHint}
+                </kbd>
+              </button>
+
+              {/* My Intelligence Desk (Personal Reader Workspace) Trigger */}
+              <button
+                type="button"
+                data-testid="reader-desk-trigger"
+                onClick={onOpenReaderDesk}
+                aria-label={t.readerDesk.dialogTitle}
+                className="relative inline-flex min-h-[34px] md:min-h-[36px] items-center gap-1.5 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-2 sm:px-2.5 py-1.5 text-[11.5px] sm:text-[12.5px] font-medium text-[var(--ws-ink)] hover:border-[var(--ws-border-strong)] hover:bg-[var(--ws-surface-hover)] transition-colors duration-150 cursor-pointer shrink-0 whitespace-nowrap"
+              >
+                <Bookmark className="h-3.5 w-3.5 text-[var(--ws-ink-muted)] shrink-0" />
+                <span className="hidden sm:inline">{t.readerDesk.triggerLabel}</span>
+                {deskBadgeCount > 0 && (
+                  <span className="font-mono-tabular text-[10.5px] font-semibold text-[var(--ws-ink-muted)]">
+                    {deskBadgeCount}
+                  </span>
+                )}
+                {hasCatchUpChanges && (
+                  <span
+                    aria-hidden="true"
+                    className="h-1.5 w-1.5 rounded-full bg-[var(--ws-editorial-accent)] shrink-0"
+                  />
+                )}
+              </button>
+
+              {/* Archive & Edition Trigger */}
+              <button
+                type="button"
+                data-testid="archive-trigger"
+                onClick={onOpenArchive}
+                className="inline-flex min-h-[34px] md:min-h-[36px] items-center gap-1.5 sm:gap-2 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-2 sm:px-3 py-1.5 text-[11.5px] sm:text-[12.5px] font-medium text-[var(--ws-ink)] hover:border-[var(--ws-border-strong)] hover:bg-[var(--ws-surface-hover)] transition-colors duration-150 cursor-pointer shrink-0 whitespace-nowrap"
+              >
+                <Archive className="h-3.5 w-3.5 text-[var(--ws-ink-muted)] shrink-0" />
+                <span className="hidden xs:inline sm:inline">{t.archive.button}</span>
+                {activeEditionDate && (
+                  <span className="font-mono-tabular text-[11px] sm:text-[11.5px] text-[var(--ws-ink-muted)] sm:border-l sm:border-[var(--ws-border)] sm:pl-2">
+                    {isLocalPreview ? (
+                      'LOCAL'
+                    ) : (
+                      <>
+                        <span className="sm:hidden">{activeEditionDate.slice(5)}</span>
+                        <span className="hidden sm:inline">{activeEditionDate}</span>
+                      </>
+                    )}
+                  </span>
+                )}
+              </button>
+            </div>
           </div>
         </div>
 

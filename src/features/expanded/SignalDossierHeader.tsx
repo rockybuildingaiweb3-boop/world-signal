@@ -1,5 +1,13 @@
 import React from 'react';
-import { Check, Link2 } from 'lucide-react';
+import {
+  Bookmark,
+  BookmarkCheck,
+  Check,
+  Eye,
+  EyeOff,
+  GitBranch,
+  Link2,
+} from 'lucide-react';
 import type { ParsedSignal, SignalDomain, UiLanguage } from '../../types/edition';
 import { getUiStrings } from '../../lib/i18n/uiStrings';
 import {
@@ -18,6 +26,11 @@ interface SignalDossierHeaderProps {
   isLocalPreview: boolean;
   copied: boolean;
   onCopyLink: () => void;
+  onOpenStoryline: () => void;
+  isSaved: boolean;
+  isFollowed: boolean;
+  onToggleSave: () => void;
+  onToggleFollow: () => void;
   jumpSections: Array<{ id: string; label: string }>;
 }
 
@@ -38,6 +51,11 @@ export const SignalDossierHeader: React.FC<SignalDossierHeaderProps> = ({
   isLocalPreview,
   copied,
   onCopyLink,
+  onOpenStoryline,
+  isSaved,
+  isFollowed,
+  onToggleSave,
+  onToggleFollow,
   jumpSections,
 }) => {
   const t = getUiStrings(lang);
@@ -61,25 +79,81 @@ export const SignalDossierHeader: React.FC<SignalDossierHeaderProps> = ({
             </span>
           </div>
 
-          {!isLocalPreview && (
+          <div className="flex flex-wrap items-center gap-1.5 shrink-0">
+            {!isLocalPreview && (
+              <button
+                type="button"
+                data-testid="dossier-storyline-btn"
+                onClick={onOpenStoryline}
+                className="inline-flex min-h-[30px] items-center gap-1.5 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-canvas)]/70 px-2.5 py-1 text-xs font-medium text-[var(--ws-ink-secondary)] hover:border-[var(--ws-border-strong)] hover:text-[var(--ws-ink)] transition-colors cursor-pointer shrink-0"
+              >
+                <GitBranch className="h-3 w-3 text-[var(--ws-world)]" />
+                <span>{t.storyline.triggerButton}</span>
+              </button>
+            )}
+
             <button
               type="button"
-              onClick={onCopyLink}
-              className="inline-flex min-h-[30px] items-center gap-1.5 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-canvas)]/70 px-2.5 py-1 text-xs font-medium text-[var(--ws-ink-muted)] hover:border-[var(--ws-border-strong)] hover:text-[var(--ws-ink)] transition-colors cursor-pointer shrink-0"
+              data-testid="dossier-follow-btn"
+              onClick={onToggleFollow}
+              aria-pressed={isFollowed}
+              className={`inline-flex min-h-[30px] items-center gap-1.5 rounded-[var(--ws-radius-sm)] border px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer shrink-0 ${
+                isFollowed
+                  ? 'border-[var(--ws-world)] bg-[var(--ws-surface-elevated)] text-[var(--ws-world)]'
+                  : 'border-[var(--ws-border)] bg-[var(--ws-canvas)]/70 text-[var(--ws-ink-muted)] hover:border-[var(--ws-border-strong)] hover:text-[var(--ws-ink)]'
+              }`}
             >
-              {copied ? (
-                <>
-                  <Check className="h-3 w-3 text-[var(--ws-economy)]" />
-                  <span>{t.expanded.copiedLink}</span>
-                </>
+              {isFollowed ? (
+                <Eye className="h-3 w-3" />
               ) : (
-                <>
-                  <Link2 className="h-3 w-3" />
-                  <span>{t.expanded.copySignalLink}</span>
-                </>
+                <EyeOff className="h-3 w-3" />
               )}
+              <span>
+                {isFollowed ? t.readerDesk.followingAction : t.readerDesk.followAction}
+              </span>
             </button>
-          )}
+
+            <button
+              type="button"
+              data-testid="dossier-save-btn"
+              onClick={onToggleSave}
+              aria-pressed={isSaved}
+              className={`inline-flex min-h-[30px] items-center gap-1.5 rounded-[var(--ws-radius-sm)] border px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer shrink-0 ${
+                isSaved
+                  ? 'border-[var(--ws-editorial-accent)] bg-[var(--ws-surface-elevated)] text-[var(--ws-editorial-accent)]'
+                  : 'border-[var(--ws-border)] bg-[var(--ws-canvas)]/70 text-[var(--ws-ink-muted)] hover:border-[var(--ws-border-strong)] hover:text-[var(--ws-ink)]'
+              }`}
+            >
+              {isSaved ? (
+                <BookmarkCheck className="h-3 w-3" />
+              ) : (
+                <Bookmark className="h-3 w-3" />
+              )}
+              <span>
+                {isSaved ? t.readerDesk.savedAction : t.readerDesk.saveAction}
+              </span>
+            </button>
+
+            {!isLocalPreview && (
+              <button
+                type="button"
+                onClick={onCopyLink}
+                className="inline-flex min-h-[30px] items-center gap-1.5 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-canvas)]/70 px-2.5 py-1 text-xs font-medium text-[var(--ws-ink-muted)] hover:border-[var(--ws-border-strong)] hover:text-[var(--ws-ink)] transition-colors cursor-pointer shrink-0"
+              >
+                {copied ? (
+                  <>
+                    <Check className="h-3 w-3 text-[var(--ws-economy)]" />
+                    <span>{t.expanded.copiedLink}</span>
+                  </>
+                ) : (
+                  <>
+                    <Link2 className="h-3 w-3" />
+                    <span>{t.expanded.copySignalLink}</span>
+                  </>
+                )}
+              </button>
+            )}
+          </div>
         </div>
       </div>
 

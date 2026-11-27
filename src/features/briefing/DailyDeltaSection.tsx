@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   AlertCircle,
+  ArrowLeftRight,
   ArrowRight,
   ChevronDown,
   ChevronUp,
@@ -35,6 +36,7 @@ interface DailyDeltaSectionProps {
   lang: UiLanguage;
   onOpenSignalInEdition: (editionDate: string, signalId: string) => void;
   onRetry: () => void;
+  onOpenComparison?: () => void;
 }
 
 const CATEGORIES: readonly EditionChangeKind[] = [
@@ -80,6 +82,7 @@ export const DailyDeltaSection: React.FC<DailyDeltaSectionProps> = ({
   lang,
   onOpenSignalInEdition,
   onRetry,
+  onOpenComparison,
 }) => {
   const t = getUiStrings(lang);
   const [activeCategory, setActiveCategory] =
@@ -237,9 +240,22 @@ export const DailyDeltaSection: React.FC<DailyDeltaSectionProps> = ({
           </h2>
         </div>
 
-        <div className="flex flex-col gap-0.5 md:items-end">
-          <div className="font-mono-tabular text-[12px] font-semibold text-[var(--ws-ink)]">
-            {t.dailyDelta.comparingRange(state.previousDate, state.currentDate)}
+        <div className="flex flex-col gap-1.5 md:items-end">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <span className="font-mono-tabular text-[12px] font-semibold text-[var(--ws-ink)]">
+              {t.dailyDelta.comparingRange(state.previousDate, state.currentDate)}
+            </span>
+            {onOpenComparison && (
+              <button
+                type="button"
+                data-testid="delta-compare-editions-btn"
+                onClick={onOpenComparison}
+                className="inline-flex min-h-[28px] items-center gap-1.5 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-2.5 py-0.5 text-[11.5px] font-medium text-[var(--ws-ink)] hover:border-[var(--ws-border-strong)] hover:bg-[var(--ws-surface-hover)] transition-colors cursor-pointer"
+              >
+                <ArrowLeftRight className="h-3 w-3 text-[var(--ws-editorial-accent)]" />
+                <span>{t.editionCompare.triggerButton}</span>
+              </button>
+            )}
           </div>
           <div className="text-[11.5px] text-[var(--ws-ink-muted)]">
             {t.dailyDelta.routineMetadataNote}

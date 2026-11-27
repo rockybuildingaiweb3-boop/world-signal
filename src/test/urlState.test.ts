@@ -187,4 +187,38 @@ describe('urlState — parsing, serialization, and history navigation', () => {
       signal: 'WORLD-20261123-trade-shift',
     });
   });
+
+  it('parses and serializes shareable search, storyline, and comparison parameters while ignoring invalid values', () => {
+    const parsed = parseUrlState(
+      '?edition=2026-11-26&q=%E5%8E%9F%E6%B2%B9&domain=economy&from=2026-11-23&to=2026-11-26&storyline=WORLD-20261123-us-midterms-house&compareFrom=2026-11-23&compareTo=2026-11-26'
+    );
+    assert.deepEqual(parsed, {
+      edition: '2026-11-26',
+      view: 'briefing',
+      signal: null,
+      search: {
+        q: '原油',
+        domain: 'economy',
+        from: '2026-11-23',
+        to: '2026-11-26',
+      },
+      storyline: 'WORLD-20261123-us-midterms-house',
+      compareFrom: '2026-11-23',
+      compareTo: '2026-11-26',
+    });
+
+    const rebuilt = buildUrlSearch(parsed);
+    const roundTripped = parseUrlState(rebuilt);
+    assert.deepEqual(roundTripped, parsed);
+
+    // Rejects same-date comparison or invalid storyline ID
+    const invalid = parseUrlState(
+      '?compareFrom=2026-11-26&compareTo=2026-11-26&storyline=bad-id&domain=invalid'
+    );
+    assert.equal(invalid.compareFrom, undefined);
+    assert.equal(invalid.compareTo, undefined);
+    assert.equal(invalid.storyline, undefined);
+    assert.equal(invalid.search, undefined);
+  });
 });
+

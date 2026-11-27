@@ -90,6 +90,23 @@ export function getEditionCacheSize(): number {
   return editionCache.size;
 }
 
+export function getCachedEdition(
+  editionPath: string,
+  revisionKey?: string
+): ParsedEdition | null {
+  try {
+    const { normalizedPath } = validateEditionPath(editionPath);
+    const cacheKey = buildEditionCacheKey(normalizedPath, revisionKey);
+    return editionCache.get(cacheKey) ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export function getAllCachedEditions(): ParsedEdition[] {
+  return Array.from(editionCache.values());
+}
+
 export async function fetchEditionsIndex(options?: {
   forceRefresh?: boolean;
   signal?: AbortSignal;

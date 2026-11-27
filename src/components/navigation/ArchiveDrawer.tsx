@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
+  ArrowLeftRight,
   ChevronLeft,
   ChevronRight,
   FileCode2,
@@ -30,6 +31,7 @@ interface ArchiveDrawerProps {
   isLocalPreview: boolean;
   onExitLocalPreview: () => void;
   onOpenLocalModal: () => void;
+  onOpenComparison: () => void;
 }
 
 export const ArchiveDrawer: React.FC<ArchiveDrawerProps> = ({
@@ -49,6 +51,7 @@ export const ArchiveDrawer: React.FC<ArchiveDrawerProps> = ({
   isLocalPreview,
   onExitLocalPreview,
   onOpenLocalModal,
+  onOpenComparison,
 }) => {
   const t = getUiStrings(lang);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -336,6 +339,22 @@ export const ArchiveDrawer: React.FC<ArchiveDrawerProps> = ({
                   <ChevronRight className="h-3.5 w-3.5" />
                 </button>
               </div>
+            )}
+
+            {/* Arbitrary Edition Comparison Entry Point */}
+            {editions.length > 1 && (
+              <button
+                type="button"
+                data-testid="archive-compare-editions-btn"
+                onClick={() => {
+                  onClose();
+                  onOpenComparison();
+                }}
+                className="inline-flex min-h-[36px] w-full items-center justify-center gap-2 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border-strong)] bg-[var(--ws-surface)] px-3 py-1.5 text-xs font-semibold text-[var(--ws-ink)] hover:bg-[var(--ws-surface-hover)] transition-colors cursor-pointer"
+              >
+                <ArrowLeftRight className="h-3.5 w-3.5 text-[var(--ws-editorial-accent)]" />
+                <span>{t.editionCompare.triggerButton}</span>
+              </button>
             )}
 
             {/* Archival Edition Search */}
