@@ -170,20 +170,20 @@ export const EditionComparisonModal: React.FC<EditionComparisonModalProps> = ({
         className="flex h-full sm:h-auto sm:max-h-[90vh] w-full max-w-[980px] flex-col border border-[var(--ws-border-strong)] bg-[var(--ws-canvas)] shadow-[var(--ws-shadow-lg)] sm:rounded-[var(--ws-radius-md)] overflow-hidden"
       >
         {/* Header & Edition Pair Controls */}
-        <div className="border-b border-[var(--ws-border-strong)] bg-[var(--ws-surface)] px-4 py-4 sm:px-6 space-y-4">
+        <div className="ws-drawer-masthead px-5 py-4.5 sm:px-6 space-y-4">
           <div className="flex items-start justify-between gap-4">
             <div className="space-y-0.5 min-w-0">
               <div className="flex items-center gap-2 ws-kicker text-[var(--ws-editorial-accent)]">
                 <History className="h-3.5 w-3.5 shrink-0" />
-                <span>WORLD SIGNAL</span>
+                <span>WORLD SIGNAL · EDITION DIFF</span>
               </div>
               <h2
                 id={titleId}
-                className="font-display text-[1.22rem] sm:text-[1.4rem] font-semibold tracking-[-0.015em] text-[var(--ws-ink)]"
+                className="font-display text-[1.32rem] sm:text-[1.5rem] font-semibold tracking-[-0.018em] text-[var(--ws-ink)]"
               >
                 {t.editionCompare.dialogTitle}
               </h2>
-              <p className="text-[12px] text-[var(--ws-ink-muted)]">
+              <p className="text-[12.5px] text-[var(--ws-ink-muted)]">
                 {t.editionCompare.dialogSubtitle}
               </p>
             </div>

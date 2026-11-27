@@ -1,0 +1,1277 @@
+# WORLD SIGNAL
+# PHASE 06 — EDITORIAL ART DIRECTION & READER EXPERIENCE TRANSFORMATION
+
+## PROJECT
+
+Repository:
+https://github.com/rockybuildingaiweb3-boop/world-signal
+
+Latest observed remote activity:
+`bec2e75f650373a98694a7b7549c74d2f277db0c`
+
+Latest substantial visual implementation:
+`2001af584790679b98e6ed43e307a841c7877583`
+
+Recent application functionality integration:
+`fcc59ec26eb277b393bf744b0ae0edd00355791b`
+
+Stack:
+React 19 · TypeScript · Vite · Tailwind CSS 4 · Bun.
+
+Primary views:
+- Briefing
+- Expanded
+- Synthesis
+- Audit
+
+Product:
+A bilingual global intelligence publication built on canonical Markdown editions.
+
+---
+
+# 00 — THE MISSION
+
+I want you to make WORLD SIGNAL genuinely beautiful, distinctive, attractive, and enjoyable to use.
+
+Not merely clean.
+
+Not merely functional.
+
+Not merely technically sophisticated.
+
+The current product has substantial functionality and a growing editorial design system, but it still needs a more compelling visual identity and a more sophisticated reader experience.
+
+The next phase must transform the frontend into a premium contemporary global affairs publication.
+
+The visual experience should combine:
+
+1. The authority of an international newspaper.
+2. The art direction of a premium editorial magazine.
+3. The visual storytelling of a top-tier journalism publication.
+4. The information clarity of a professional intelligence research platform.
+5. The usability of a polished modern digital product.
+
+**I want the result to look authored, composed, and art-directed — not generated from a generic UI template.**
+
+The most important goal:
+
+Make a visitor want to stay, explore stories, read deeper, and return.
+
+Visual quality is a central product requirement.
+
+---
+
+# 01 — IMPORTANT: INSPECT THE LATEST ACTUAL WORKSPACE
+
+Before implementation:
+
+1. Inspect the current branch.
+2. Run `git status`.
+3. Inspect all staged, unstaged, and untracked changes.
+4. Identify the current local HEAD.
+5. Fetch and compare the remote main branch.
+6. Preserve all existing unpushed work.
+7. Read the latest implementation, not older AI Studio prompts.
+
+The latest frontend has moved beyond the earlier screenshot.
+
+The current source already includes:
+
+- A dark editorial cover plate.
+- A split hero composition.
+- Local editorial cover illustrations.
+- A more elaborate secondary story hierarchy.
+- Three domain desks.
+- Global Search.
+- Storyline Tracker.
+- My Intelligence Desk.
+- Since Your Last Visit.
+- Arbitrary Edition Comparison.
+- Story visuals in important Expanded dossiers.
+- Updated navigation and application layout.
+
+Do not recreate these capabilities.
+
+Do not assume the screenshot from a previous phase still precisely represents the current remote code.
+
+Run and inspect the actual current local application before deciding what to change.
+
+If the working directory contains uncommitted changes, preserve them.
+
+If the current workspace is clean and on main, a new working branch may be created:
+
+`frontend/editorial-art-direction-pass-06`
+
+Never discard uncommitted work to create a branch.
+
+Do not push or merge.
+
+The user will review the combined changes later.
+
+---
+
+# 02 — STUDY THE DESIGN REFERENCES
+
+Study the following references carefully.
+
+Do not copy their branding or implementation.
+
+Extract their strongest visual and editorial principles.
+
+## 2.1 The New Yorker — Editorial cover experience
+
+Case study:
+https://apresentforce.com/tny-editorial
+
+Study:
+
+- The use of one dominant feature story.
+- Full-screen editorial art direction.
+- Cover-like headline treatment.
+- Distinctive illustration.
+- Strong brand personality.
+- How the feature moves within the larger homepage.
+- Different article formats within one coherent design system.
+
+The central lesson:
+
+One important story should have enough visual space to become memorable.
+
+Do not make every story compete equally for attention.
+
+## 2.2 Astrix Ghost — Hero and feed compositions
+
+Repository:
+https://github.com/adrianoamalfi/astrix-ghost
+
+Live showcase:
+https://adrianoamalfi.github.io/astrix-ghost/
+
+Study:
+
+- Poster hero.
+- Editorial hero.
+- Split hero.
+- Mosaic feed.
+- Bold grid feed.
+- List feed.
+- Dark and light themes.
+- Reading experience.
+
+Pay particular attention to how significantly the editorial feeling changes when the composition changes.
+
+Do not implement all variants as user-facing themes.
+
+Choose one coherent WORLD SIGNAL art direction.
+
+## 2.3 Broadsheet — Newspaper composition
+
+Repository:
+https://github.com/xyovo/broadsheet
+
+Study:
+
+- Lead story.
+- Recent stories.
+- Older story index.
+- Editorial sidebar.
+- Newspaper-like page rhythm.
+- Full-text search.
+- Markdown publication structure.
+
+## 2.4 Financial Times — Visual journalism
+
+Repository:
+https://github.com/Financial-Times/chart-doctor
+
+Study the Visual Vocabulary.
+
+Learn how to choose appropriate representations for:
+
+- Change over time.
+- Geographic distribution.
+- Ranking.
+- Flows.
+- Comparisons.
+- Relationships.
+- Uncertainty.
+
+Do not use decorative charts.
+
+## 2.5 Astro Kami — Bilingual editorial typography
+
+Repository:
+https://github.com/automann/astro-kami
+
+Study:
+
+- Chinese and English typography.
+- Locale-specific typography tokens.
+- Font fallback.
+- Headline wrapping.
+- Reading widths.
+- Long-form article rhythm.
+
+## 2.6 Other editorial references
+
+https://www.ft.com/
+
+https://www.economist.com/
+
+https://monocle.com/
+
+https://www.reuters.com/graphics/
+
+Use these publications as art-direction references.
+
+Do not copy their logos, visual assets, or exact layouts.
+
+---
+
+# 03 — RECONNAISSANCE OF THE CURRENT DESIGN
+
+Inspect these files carefully:
+
+- `src/app/App.tsx`
+- `src/components/layout/TopBar.tsx`
+- `src/components/navigation/ArchiveDrawer.tsx`
+- `src/components/editorial/StoryVisual.tsx`
+- `src/components/editorial/EditorialSignalArtwork.tsx`
+- `src/features/briefing/BriefingView.tsx`
+- `src/features/briefing/DailyDeltaSection.tsx`
+- `src/features/briefing/CatchUpBanner.tsx`
+- `src/features/expanded/ExpandedView.tsx`
+- `src/features/expanded/SignalDossierHeader.tsx`
+- `src/features/synthesis/SynthesisView.tsx`
+- `src/features/synthesis/RelationshipExplorerMatrix.tsx`
+- `src/features/audit/AuditView.tsx`
+- `src/features/audit/AuditClaimLedger.tsx`
+- `src/features/search/GlobalSearchOverlay.tsx`
+- `src/features/storyline/StorylineDrawer.tsx`
+- `src/features/reader-desk/ReaderDeskDrawer.tsx`
+- `src/features/comparison/EditionComparisonModal.tsx`
+- `src/styles/index.css`
+- `src/lib/i18n/uiStrings.ts`
+
+The current code has several important design characteristics.
+
+### Current Briefing
+
+- Publication Issue Folio.
+- Dark cover plate.
+- Left-side StoryVisual.
+- Right-side dominant headline and deck.
+- Four evidence and chronology metrics.
+- Executive Summary spread.
+- Reader Catch-Up.
+- Secondary feature.
+- Two supporting stories.
+- Compact story index.
+- Daily Delta.
+- Three Domain Desks.
+
+Retain the good structural decisions.
+
+Improve the actual presentation.
+
+### Current StoryVisual system
+
+Inspect `StoryVisual.tsx`.
+
+The current implementation uses a small set of local illustration assets:
+
+- Geopolitics.
+- Diplomacy.
+- AI Frontier.
+- Economy.
+
+Selection is based largely on domain, with a limited diplomacy keyword rule.
+
+This creates a potential visual repetition problem.
+
+Different stories within the same domain can display the same artwork.
+
+The secondary domain area also reuses the same domain-level cover art.
+
+This must be addressed.
+
+The goal is not to replace four images with twelve equally repetitive images.
+
+The goal is a coherent story-specific visual system.
+
+### Current functional features
+
+All of the following already exist and must be preserved:
+
+- Global Search.
+- Search filters and incremental indexing.
+- Storyline Tracker.
+- Historical edition navigation.
+- Save for Later.
+- Follow Signal.
+- Followed Topics.
+- Reader Desk.
+- Since Your Last Visit.
+- Reviewed checkpoint.
+- Arbitrary Edition Comparison.
+- Daily Delta.
+- Relationship Explorer.
+- Evidence and provenance inspection.
+
+Do not rebuild these features.
+
+Do not add another primary navigation page.
+
+This phase is mainly about visual experience and interaction refinement.
+
+---
+
+# 04 — THE NEW VISUAL DIRECTION
+
+## Contemporary Global Affairs Magazine
+
+The visual personality should be:
+
+- Confident.
+- Intelligent.
+- Contemporary.
+- International.
+- Editorial.
+- Expressive.
+- Refined.
+- Trustworthy.
+- Memorable.
+
+The current warm editorial foundation can remain.
+
+However, the result must be much richer than a beige background and a sequence of text blocks.
+
+Develop a visual language with:
+
+- Distinctive editorial imagery.
+- Strong headline composition.
+- Asymmetric layouts.
+- Powerful feature-story presentation.
+- Different story formats.
+- More expressive use of color.
+- Rich editorial surfaces.
+- Thoughtful whitespace.
+- Sophisticated reading typography.
+
+## 4.1 Keep a coherent palette
+
+Retain the existing semantic palette as a starting point:
+
+- Warm ivory.
+- Ink black.
+- Deep navy.
+- Signal vermilion.
+- World blue.
+- AI violet.
+- Economy green.
+
+Refine its contrast and relationships.
+
+Avoid introducing arbitrary new colors.
+
+Use domain colors for recognizable editorial identity, not as decoration everywhere.
+
+The cover can use a darker visual environment while the rest of the page retains a warm editorial canvas.
+
+Both themes must be beautifully art-directed.
+
+## 4.2 Remove sterile repetition
+
+Reduce reliance on:
+
+- Repeated horizontal rules.
+- Identical white panels.
+- Small technical metadata.
+- The same title/description/card pattern.
+- Equal-weight three-column grids.
+- Repeated circular graphic motifs.
+- Generic rounded cards.
+
+Do not remove every border.
+
+Use borders only where they help establish structure.
+
+Make typography, image composition, and whitespace the main tools for hierarchy.
+
+---
+
+# 05 — PRIORITY ZERO: CREATE A REAL EDITORIAL STORY VISUAL SYSTEM
+
+This is the most important technical design task in this phase.
+
+The current StoryVisual system is a good beginning but needs significant development.
+
+## 5.1 Different stories need different visual expressions
+
+Do not select images based only on:
+
+- Domain.
+- One or two headline keywords.
+- A generic visual theme.
+
+Build a more deliberate visual selection model.
+
+Consider editorial subject groups such as:
+
+### World Events
+
+- Diplomacy and negotiations.
+- Elections and governance.
+- Armed conflict and security.
+- Maritime trade and shipping.
+- Energy infrastructure.
+- Humanitarian and public safety.
+- International institutions.
+- Climate and environmental events.
+
+### AI Frontier
+
+- Frontier models.
+- AI agents and software.
+- Chips and computing infrastructure.
+- Robotics.
+- Scientific discovery.
+- Multimodal technology.
+- AI evaluation and research.
+- Safety and governance.
+
+### Economic Outlook
+
+- Monetary policy.
+- Inflation and employment.
+- International trade.
+- Energy markets.
+- Financial institutions.
+- Supply chains.
+- Fiscal policy.
+- Industrial transformation.
+
+Use actual normalized topic, tags, event geography, and available structured metadata.
+
+Use deterministic rules.
+
+Do not let an arbitrary keyword match produce a misleading illustration.
+
+If no sufficiently appropriate visual asset exists, use a typography-driven editorial cover rather than forcing an unrelated image.
+
+## 5.2 Build a proper editorial asset registry
+
+Create a well-structured local asset system.
+
+A possible conceptual schema:
+
+`EditorialAsset`
+- id
+- local source path
+- subject categories
+- applicable domains
+- aspect ratios
+- image credit
+- accessibility alt text
+- illustration/documentary classification
+- light/dark suitability
+- usage guidance
+
+Use proper types.
+
+Do not build a huge or unnecessarily complicated content-management system for static assets.
+
+The registry should make image selection predictable and easy to maintain.
+
+## 5.3 Improve asset diversity
+
+The current four illustrations should not simply be reused indefinitely.
+
+Develop a curated set of high-quality original editorial visuals where justified.
+
+Prefer a small, excellent, visually consistent library over a large quantity of mediocre images.
+
+If an image-generation capability is available in the implementation environment, create original editorial illustration assets.
+
+The visual direction should include:
+
+- Beautiful composition.
+- Clear focal point.
+- Strong negative space.
+- Good color harmony.
+- High-quality print-inspired texture where appropriate.
+- Controlled geometry.
+- Meaningful subject metaphors.
+- Consistent aspect ratios.
+
+Do not create fake press photographs.
+
+Do not depict an actual explosion, military attack, political leader, casualty scene, or other documentary event that has not been verified visually.
+
+Original conceptual illustration must be clearly identified as illustration.
+
+## 5.4 Editorial visual modes
+
+Support a coherent set of visual treatments:
+
+### Mode A — Editorial Illustration
+
+Use for stories where original conceptual art helps communicate the subject.
+
+### Mode B — Verified Documentary Media
+
+Use only when authentic, appropriately licensed, credited imagery already exists.
+
+### Mode C — Grounded Data Visual
+
+Use actual structured data, such as real timelines, claims, or verified distributions.
+
+### Mode D — Typographic Cover
+
+Use when no meaningful visual asset exists.
+
+This should be an intentional design solution, not a fallback that looks unfinished.
+
+## 5.5 Never fabricate visual evidence
+
+Do not invent:
+
+- Maps.
+- Coordinates.
+- Military positions.
+- Shipping routes.
+- Market price charts.
+- Casualty statistics.
+- Probabilities.
+- Causal relationships.
+
+If an illustration includes schematic geographic elements, clearly label them as conceptual and not to scale.
+
+Visual storytelling must never create false factual authority.
+
+---
+
+# 06 — BRIEFING: REIMAGINE THE DIGITAL FRONT PAGE
+
+Briefing is the most important view.
+
+Its first viewport needs to be beautiful, compelling, and recognizable.
+
+## 6.1 Explore three actual hero compositions
+
+Using the actual current lead signal and current edition, create three distinct visual directions.
+
+Do not write three descriptions only.
+
+Render real prototypes or screenshots using the actual data.
+
+### Concept A — Cinematic Editorial Cover
+
+- Large expressive image or illustration.
+- Monumental headline.
+- Strong editorial deck.
+- Minimal technical metadata.
+- Magazine-cover-like composition.
+- Strong visual identity.
+
+### Concept B — Premium Newspaper Feature Spread
+
+- Strong masthead.
+- Large lead-story headline.
+- Large supporting visual.
+- Carefully structured supporting story information.
+- More traditional international-newsroom character.
+
+### Concept C — Contemporary Visual Journalism
+
+- Large visual feature.
+- Editorial headline.
+- Real event context.
+- An elegant information layer.
+- A visual element that genuinely explains something about the story.
+
+Evaluate each concept for:
+
+- First-screen impact.
+- Headline readability.
+- Visual storytelling.
+- Brand identity.
+- Information hierarchy.
+- Desktop proportions.
+- Mobile adaptability.
+- Chinese typography.
+
+Select the strongest direction and implement it.
+
+Do not leave a carousel of design alternatives in production.
+
+## 6.2 Hero composition
+
+Reconsider the current 6:6 split.
+
+Do not assume equal halves are the best layout.
+
+Evaluate asymmetrical proportions.
+
+Possible starting structures:
+
+- 7:5.
+- 8:4.
+- 5:7.
+- Full-bleed image with adjacent editorial copy.
+- Image-first poster composition.
+
+Choose according to the actual lead-story visual.
+
+Use strong image scale.
+
+The image should not feel like a small framed illustration inserted into a report.
+
+## 6.3 Headline and deck
+
+Typography should be expressive.
+
+Make the headline a major design element.
+
+Pay attention to:
+
+- Line breaks.
+- Maximum text width.
+- Visual weight.
+- Line height.
+- Chinese character spacing.
+- English title wrapping.
+- Relationship to the hero image.
+
+The deck should communicate the actual event succinctly.
+
+Avoid excessive technical metadata beside the headline.
+
+Preserve the link to the actual dossier.
+
+## 6.4 Evidence indicators
+
+The hero currently includes several numerical indicators.
+
+Assess whether all of them deserve the same visual prominence.
+
+Keep the useful evidence facts:
+
+- Independent reporting origins.
+- Claim counts and statuses.
+- Source count.
+- Real timeline span.
+
+However, do not make the cover resemble an analytical KPI dashboard.
+
+Separate the visual story from detailed verification statistics when this improves comprehension.
+
+Do not remove the underlying evidence information.
+
+Make it accessible in an appropriate secondary presentation.
+
+## 6.5 Executive Summary
+
+Improve the summary into a compelling editorial briefing section.
+
+Do not display a large paragraph as a dense block.
+
+Use:
+
+- A clear introductory hierarchy.
+- Comfortable reading measure.
+- Good paragraph spacing.
+- Appropriate emphasis from the actual Markdown content.
+- Elegant expand/collapse behavior.
+- A clearer relationship with the edition's domain coverage and caveats.
+
+Keep the complete underlying summary.
+
+Do not invent bullets or rewrite editorial facts merely to fit the design.
+
+## 6.6 Secondary stories
+
+The current secondary hierarchy is a useful foundation.
+
+Preserve its functional editorial ranking:
+
+- Lead feature.
+- Secondary feature.
+- Supporting pair.
+- Compact dispatch index.
+
+Improve the visual quality of each story level.
+
+Avoid making every item a uniform image card.
+
+A strong publication uses different visual weights for different editorial roles.
+
+## 6.7 Three Domain Desks
+
+The current three-column domain section should evolve beyond three similar columns with domain images.
+
+Create distinctive editorial desk identities.
+
+World Events, AI Frontier, and Economic Outlook should feel like three recognizable desks within one publication.
+
+Explore:
+
+- Different editorial layouts.
+- Unique accent treatment.
+- Domain-specific story groupings.
+- Actual domain coverage information.
+- Featured stories with compelling headlines.
+- Compact lower-priority story indexes.
+
+Do not invent domain metrics.
+
+Do not simply duplicate the same visual structure three times.
+
+## 6.8 Daily Delta and Catch-Up
+
+Keep all existing functions.
+
+Make these sections feel like professional newsroom products:
+
+- Daily Delta should communicate material developments.
+- Catch-Up should provide a quick and useful reading checkpoint.
+- Arbitrary comparison should remain accessible.
+
+Do not let utility controls interrupt the editorial front page.
+
+---
+
+# 07 — EXPANDED: PREMIUM INVESTIGATIVE READING
+
+Improve the complete dossier experience.
+
+Keep:
+
+- Signal filtering.
+- Story selection.
+- Save.
+- Follow.
+- Storyline History.
+- Event Timeline.
+- Claim/source traceability.
+- Previous and current edition navigation.
+
+Improve the presentation.
+
+## 7.1 Story opening
+
+Every high-importance story deserves an intentional opening.
+
+The current dossier sometimes displays a generic domain illustration for important stories.
+
+Use a relevant story visual only when it is genuinely appropriate.
+
+Do not show the same AI picture for every AI signal.
+
+Do not show the same economy image for every economic signal.
+
+A typographic title treatment is preferable to irrelevant imagery.
+
+## 7.2 Article reading
+
+The article should feel like a premium long-form publication.
+
+Improve:
+
+- Article title.
+- Introductory deck.
+- Body measure.
+- Paragraph rhythm.
+- Section hierarchy.
+- Evidence links.
+- Timeline.
+- Scenarios.
+- Uncertainty.
+- Supporting sources.
+- Reading navigation.
+
+Do not surround every paragraph with a card.
+
+Make the narrative flow continuous.
+
+## 7.3 Storyline and event chronology
+
+Improve their visual separation.
+
+The event timeline explains real-world chronology.
+
+The storyline history explains how WORLD SIGNAL recorded and revised the signal across available editions.
+
+They must have different visual language.
+
+Preserve all existing history completeness warnings.
+
+---
+
+# 08 — SYNTHESIS: HIGH-END ANALYTICAL VISUALIZATION
+
+Keep the current relationship engine.
+
+Improve:
+
+- Node composition.
+- Edge visibility.
+- Focus selection.
+- Domain separation.
+- Relationship type distinction.
+- Evidence inspector.
+- Mobile adaptation.
+- Full relationship ledger.
+
+A diagram should clarify the analysis.
+
+If it becomes too dense, use progressive disclosure.
+
+Do not add visual connections unsupported by existing structured relationships.
+
+Improve time horizons, cross-domain analysis, and scenario presentation.
+
+Avoid generic analytical dashboard cards.
+
+Use meaningful editorial compositions.
+
+---
+
+# 09 — AUDIT: REFINED EVIDENCE PRESENTATION
+
+Maintain:
+
+- Reporting origin explorer.
+- Claim ledger.
+- Source independence.
+- Confidence and importance analysis.
+- Corrections.
+- Methodology.
+- Diagnostics.
+
+Improve:
+
+- Tables.
+- Information hierarchy.
+- Search and filter presentation.
+- Source group composition.
+- Chart readability.
+- Evidence context.
+- Mobile records.
+
+Audit may be information-dense, but it should remain elegant and approachable.
+
+Do not make it look like a generic administration console.
+
+---
+
+# 10 — VISUAL DESIGN OF THE NEW FEATURE INTERFACES
+
+Phase 05 introduced several important reader functions.
+
+They should not feel like utilities added after the main design was completed.
+
+Bring them into the same publication identity.
+
+Inspect:
+
+- `GlobalSearchOverlay.tsx`
+- `StorylineDrawer.tsx`
+- `ReaderDeskDrawer.tsx`
+- `EditionComparisonModal.tsx`
+- `ArchiveDrawer.tsx`
+
+Improve:
+
+### Global Search
+
+- Stronger search input.
+- Elegant result grouping.
+- Better typography.
+- Better result hierarchy.
+- Distinct matched snippets.
+- Refined advanced filters.
+- Helpful partial-index state.
+- Good empty state.
+
+### Storyline Drawer
+
+- Clear historical progression.
+- Elegant revision markers.
+- Easy change inspection.
+- Clear coverage limitations.
+- Distinct event and revision timeline identity.
+
+### Reader Desk
+
+- More polished personal workspace.
+- Beautiful saved and followed lists.
+- Clear update indicators.
+- Stronger empty states.
+- Clear personal catch-up hierarchy.
+
+### Edition Comparison
+
+- More intuitive comparison header.
+- Stronger before/after distinction.
+- Readable change categories.
+- Better claim and source diffs.
+- Good mobile layout.
+
+Use one coherent drawer/modal visual language.
+
+Do not rebuild their functions.
+
+---
+
+# 11 — TYPOGRAPHY, COLOR AND BRAND SYSTEM
+
+Review `src/styles/index.css`.
+
+The existing Fraunces, Plus Jakarta Sans, and IBM Plex Mono system is a useful foundation.
+
+Do not replace fonts merely for novelty.
+
+Improve the hierarchy.
+
+### Display typography
+
+Make major headlines more expressive.
+
+### Editorial prose
+
+Use comfortable body typography.
+
+### Interface labels
+
+Keep them readable.
+
+Do not use tiny monospace labels everywhere.
+
+### Chinese typography
+
+Treat Chinese as a first-class language.
+
+Use appropriate CJK font fallbacks.
+
+Adjust Chinese headline sizing and line height independently where necessary.
+
+Test mixed Chinese/English headlines.
+
+### Color
+
+Retain a recognizable WORLD SIGNAL palette.
+
+Use signal vermilion with greater intention.
+
+Use domain colors consistently.
+
+Use dark editorial surfaces for major feature treatments where appropriate.
+
+Do not turn the entire site into dark mode or a beige document.
+
+### Geometry
+
+Use precise radii, rules, image frames, and surfaces.
+
+Avoid excessive rounded SaaS-style cards.
+
+Do not make every component look like it came from the same generic UI library.
+
+---
+
+# 12 — MICROINTERACTIONS
+
+Improve:
+
+- Headline hover.
+- Story visual hover.
+- Feature card transitions.
+- Active navigation.
+- Search focus.
+- Search result selection.
+- Drawer animation.
+- Signal selection.
+- Timeline inspection.
+- Save/follow states.
+- Button feedback.
+- Expand/collapse controls.
+
+Use subtle, deliberate motion.
+
+Do not animate every component.
+
+Respect reduced-motion preferences.
+
+Every control must remain keyboard accessible.
+
+---
+
+# 13 — RESPONSIVE ART DIRECTION
+
+Required browser screenshots:
+
+- 2048 × 934 — match the supplied screenshot.
+- 1920 × 1080.
+- 1440 × 900.
+- 1280 × 800.
+- 1024 × 768.
+- 768 × 1024.
+- 390 × 844.
+- 360 × 800.
+
+Make the desktop experience feel like a properly composed magazine.
+
+Use the available wide canvas effectively without making body text excessively wide.
+
+The mobile version must be genuinely redesigned.
+
+Recompose the hero.
+
+Make images feel intentional.
+
+Maintain beautiful headline wrapping.
+
+Keep the four primary views accessible.
+
+Keep the search, Reader Desk, and Archive controls discoverable.
+
+Avoid horizontal overflow and navigation overlap.
+
+---
+
+# 14 — VISUAL QUALITY ASSURANCE
+
+This phase cannot be approved from source-code inspection alone.
+
+Run the actual application.
+
+Capture baseline screenshots.
+
+Create three hero compositions.
+
+Compare them visually.
+
+Implement the strongest option.
+
+Then perform at least three design-review rounds:
+
+### Round 1 — Art Direction
+
+Hero, masthead, page composition, story visuals.
+
+### Round 2 — Editorial Rhythm
+
+Secondary stories, domain desks, Daily Delta, Expanded, Synthesis, Audit.
+
+### Round 3 — Final Craft
+
+Typography, color, spacing, image crops, details, mobile, overlays, dark mode.
+
+Capture actual screenshots after each major round.
+
+Do not claim a screenshot test was performed if browser tooling is unavailable.
+
+---
+
+# 15 — NON-NEGOTIABLE DATA INTEGRITY
+
+Preserve:
+
+- Canonical Markdown editions.
+- Existing schema-v1 and schema-v2 compatibility.
+- Signal IDs.
+- Claim IDs.
+- Source IDs.
+- Source URLs.
+- Source independence.
+- Confidence.
+- Importance.
+- Timeline events.
+- Typed relationships.
+- Search indexing semantics.
+- Storyline history.
+- Reader Desk state.
+- Catch-Up snapshots.
+- Edition comparison.
+- URL state.
+- Bilingual localization.
+
+Do not:
+
+- Generate fake editorial stories.
+- Hard-code production headlines.
+- Invent statistics.
+- Invent maps.
+- Invent coordinates.
+- Invent causal links.
+- Invent probabilities.
+- Use AI-generated documentary photographs as evidence.
+- Hotlink arbitrary images.
+- Introduce a backend.
+- Add another major feature.
+- Replace the existing stack.
+
+If historical coverage is incomplete, keep the existing explicit warning.
+
+Use only real edition data.
+
+---
+
+# 16 — ENGINEERING QUALITY
+
+Keep the project maintainable.
+
+Avoid growing the already large view components further.
+
+Refactor only where there is an actual benefit.
+
+Build reusable editorial components when they solve real consistency problems.
+
+Do not create an excessive number of tiny components.
+
+Use semantic HTML.
+
+Preserve accessibility.
+
+Keep the existing dependencies unless an additional dependency has a clear justification.
+
+Prefer local assets, CSS and SVG for visual work.
+
+Optimize images for production.
+
+Avoid large layout shifts.
+
+Do not introduce expensive continuous animation.
+
+---
+
+# 17 — TESTING
+
+Run:
+
+`bun run typecheck`
+
+`bun run lint`
+
+`bun run test`
+
+`bun run build`
+
+Test actual workflows:
+
+1. Open Briefing.
+2. Open the lead dossier.
+3. Open a secondary story.
+4. Expand the Daily Delta.
+5. Open Global Search.
+6. Open a Storyline.
+7. Open My Intelligence Desk.
+8. Open Edition Comparison.
+9. Browse Expanded.
+10. Inspect Synthesis.
+11. Inspect Audit.
+12. Browse Archive.
+13. Switch English and Chinese.
+14. Switch light and dark themes.
+
+Check every existing interactive control after styling changes.
+
+---
+
+# 18 — VISUAL ACCEPTANCE STANDARD
+
+Use this rubric:
+
+| Dimension | Weight |
+|---|---:|
+| Overall publication identity and art direction | 15 |
+| Briefing hero impact and visual storytelling | 20 |
+| Homepage composition and editorial hierarchy | 15 |
+| Story-specific visual system | 15 |
+| Typography and reading quality | 10 |
+| Expanded dossier experience | 7 |
+| Synthesis and Audit presentation | 5 |
+| Search, Reader Desk and drawer visual quality | 5 |
+| Responsive and bilingual quality | 5 |
+| Interaction and detail polish | 3 |
+| Total | 100 |
+
+Target: 92/100 or higher, supported by actual rendered screenshots.
+
+Critical acceptance tests:
+
+- Does the first screen feel like a real premium international publication?
+- Does the lead story have a memorable visual identity?
+- Does the artwork feel appropriate to the actual story?
+- Are different stories visually distinguishable?
+- Is there a strong editorial reading rhythm?
+- Do the secondary stories feel curated?
+- Does the interface look attractive without becoming noisy?
+- Can a reader comfortably navigate deeper information?
+- Does the mobile version feel intentionally designed?
+- Do all features still work?
+
+Do not self-award a score without evidence.
+
+---
+
+# 19 — DELIVERY
+
+Provide:
+
+1. Current branch.
+2. Initial working-tree status.
+3. Latest base commit.
+4. Existing work preserved.
+5. Design references inspected.
+6. Three hero concepts and comparison.
+7. Final art direction selected.
+8. StoryVisual system changes.
+9. Briefing improvements.
+10. Expanded improvements.
+11. Synthesis and Audit improvements.
+12. Search, Storyline, Reader Desk, and Comparison styling improvements.
+13. Design token changes.
+14. Assets created or changed.
+15. Changed files.
+16. Responsive screenshot results.
+17. English/Chinese results.
+18. Light/dark theme results.
+19. Actual test results.
+20. Known limitations.
+21. Final working-tree status.
+
+Do not push.
+
+Do not merge.
+
+Preserve all existing implementation work.
+
+---
+
+# FINAL CREATIVE DIRECTION
+
+I want WORLD SIGNAL to look like an international publication that has a real creative director behind it.
+
+The lead story should feel like a magazine cover.
+
+The supporting stories should create a clear visual rhythm.
+
+The images should belong to their stories.
+
+The typography should be memorable.
+
+The page should use color and composition with confidence.
+
+The analytical information should look beautiful without losing clarity.
+
+The four main views should feel like four different editorial environments within one recognizable brand.
+
+The new functional features should feel like natural parts of the publication, not unrelated technical drawers.
+
+**Do not merely improve the code. Improve how the reader feels when using the product.**
+
+The goal is not another clean dashboard.
+
+The goal is a beautiful, distinctive, credible, and deeply engaging WORLD SIGNAL publication experience.

@@ -166,14 +166,15 @@ export const SignalDossierHeader: React.FC<SignalDossierHeaderProps> = ({
         <SignalMetaLine signal={signal} lang={lang} showClaims />
       </div>
 
-      {/* Art-Directed Investigative Dossier Cover Plate */}
+      {/* Art-Directed Investigative Dossier Cover Plate (Subject-Matched Illustration or Typographic Monograph) */}
       {signal.importance >= 4 && (
         <div className="pt-1">
           <StoryVisual
             signal={signal}
             lang={lang}
-            mode="editorial_illustration"
+            context="dossier"
             variant="dossier"
+            plateNumber={String(signal.orderIndex + 1).padStart(2, '0')}
           />
         </div>
       )}

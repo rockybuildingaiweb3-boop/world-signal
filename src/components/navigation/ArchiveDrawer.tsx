@@ -174,7 +174,7 @@ export const ArchiveDrawer: React.FC<ArchiveDrawerProps> = ({
         className="flex h-full w-full max-w-[460px] flex-col border-l border-[var(--ws-border-strong)] bg-[var(--ws-canvas)] shadow-2xl"
       >
         {/* Editorial Publication Archive Header */}
-        <div className="border-b-2 border-[var(--ws-ink)] bg-[var(--ws-surface)] px-6 py-5">
+        <div className="ws-drawer-masthead px-6 py-5">
           <div className="flex items-start justify-between gap-4">
             <div className="space-y-1">
               <div className="ws-kicker text-[var(--ws-editorial-accent)]">

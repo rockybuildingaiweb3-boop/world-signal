@@ -147,19 +147,19 @@ export const ReaderDeskDrawer: React.FC<ReaderDeskDrawerProps> = ({
         className="flex h-full w-full max-w-[580px] flex-col border-l border-[var(--ws-border-strong)] bg-[var(--ws-canvas)] shadow-[var(--ws-shadow-lg)]"
       >
         {/* Header */}
-        <div className="border-b border-[var(--ws-border-strong)] bg-[var(--ws-surface)] px-5 py-4 space-y-2.5">
+        <div className="ws-drawer-masthead px-5 py-4.5 sm:px-6 space-y-2.5">
           <div className="flex items-start justify-between gap-4">
             <div className="space-y-0.5 min-w-0">
               <div className="ws-kicker text-[var(--ws-editorial-accent)]">
-                WORLD SIGNAL
+                WORLD SIGNAL · READER FOLIO
               </div>
               <h2
                 id={titleId}
-                className="font-display text-[1.22rem] font-semibold tracking-[-0.015em] text-[var(--ws-ink)]"
+                className="font-display text-[1.32rem] sm:text-[1.45rem] font-semibold tracking-[-0.018em] text-[var(--ws-ink)]"
               >
                 {t.readerDesk.dialogTitle}
               </h2>
-              <p className="text-[12px] text-[var(--ws-ink-muted)]">
+              <p className="text-[12.5px] text-[var(--ws-ink-muted)]">
                 {t.readerDesk.dialogSubtitle}
               </p>
             </div>

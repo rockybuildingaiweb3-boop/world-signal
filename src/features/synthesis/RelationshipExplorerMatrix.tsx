@@ -596,8 +596,8 @@ export const RelationshipExplorerMatrix: React.FC<
                       rx="3"
                       fill={
                         isEndpoint || isFocused
-                          ? 'var(--ws-surface-subtle)'
-                          : 'var(--ws-canvas)'
+                          ? 'var(--ws-surface-elevated)'
+                          : 'var(--ws-surface)'
                       }
                       stroke={
                         isEndpoint
@@ -606,7 +606,7 @@ export const RelationshipExplorerMatrix: React.FC<
                           ? colColor
                           : 'var(--ws-border-strong)'
                       }
-                      strokeWidth={isEndpoint || isFocused ? 1.5 : 0.9}
+                      strokeWidth={isEndpoint || isFocused ? 1.75 : 1}
                     />
                     <rect
                       x={x + 0.5}

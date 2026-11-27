@@ -233,19 +233,19 @@ export const GlobalSearchOverlay: React.FC<GlobalSearchOverlayProps> = ({
         className="flex h-full sm:h-auto sm:max-h-[88vh] w-full max-w-[940px] flex-col border border-[var(--ws-border-strong)] bg-[var(--ws-canvas)] shadow-[var(--ws-shadow-lg)] sm:rounded-[var(--ws-radius-md)] overflow-hidden"
       >
         {/* Top Masthead & Search Input Bar */}
-        <div className="border-b border-[var(--ws-border-strong)] bg-[var(--ws-surface)] px-4 py-4 sm:px-6 space-y-3.5">
+        <div className="ws-drawer-masthead px-5 py-4.5 sm:px-6 space-y-3.5">
           <div className="flex items-start justify-between gap-4">
             <div className="space-y-0.5 min-w-0">
               <div className="ws-kicker text-[var(--ws-editorial-accent)]">
-                WORLD SIGNAL
+                WORLD SIGNAL · ARCHIVE INDEX
               </div>
               <h2
                 id={titleId}
-                className="font-display text-[1.2rem] sm:text-[1.35rem] font-semibold tracking-[-0.015em] text-[var(--ws-ink)]"
+                className="font-display text-[1.3rem] sm:text-[1.5rem] font-semibold tracking-[-0.018em] text-[var(--ws-ink)]"
               >
                 {t.globalSearch.dialogTitle}
               </h2>
-              <p className="text-[12px] text-[var(--ws-ink-muted)]">
+              <p className="text-[12.5px] text-[var(--ws-ink-muted)]">
                 {t.globalSearch.dialogSubtitle}
               </p>
             </div>
@@ -413,7 +413,7 @@ export const GlobalSearchOverlay: React.FC<GlobalSearchOverlayProps> = ({
           {filtersOpen && (
             <div
               data-testid="global-search-filters-panel"
-              className="border-t border-[var(--ws-border)] pt-3 grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 text-[12px] max-h-[38vh] overflow-y-auto sm:max-h-none sm:overflow-visible"
+              className="border border-[var(--ws-border)] bg-[var(--ws-surface-subtle)]/75 rounded-[var(--ws-radius-sm)] p-3.5 grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 text-[12px] max-h-[38vh] overflow-y-auto sm:max-h-none sm:overflow-visible"
             >
               {/* Domain */}
               <label className="space-y-1">
@@ -753,8 +753,10 @@ export const GlobalSearchOverlay: React.FC<GlobalSearchOverlayProps> = ({
                     key={item.signalId}
                     data-testid={`search-result-${item.signalId}`}
                     onMouseEnter={() => setActiveIndex(idx)}
-                    className={`py-4 px-2.5 sm:px-3 transition-colors space-y-2.5 ${
-                      isSelectedRow ? 'bg-[var(--ws-surface)]' : ''
+                    className={`relative py-4 px-3 sm:px-4 transition-colors space-y-2.5 ${
+                      isSelectedRow
+                        ? 'bg-[var(--ws-surface)] shadow-[inset_0_2px_0_0_var(--ws-editorial-accent)]'
+                        : 'hover:bg-[var(--ws-surface)]/65'
                     }`}
                   >
                     {/* Unboxed Metadata Line */}

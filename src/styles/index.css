@@ -59,6 +59,10 @@
   --ws-conf-low: #9a5508;
   --ws-conf-unverified: #6e7480;
 
+  /* Editorial Desk Subtle Paper Tints (World / AI / Economy Personality) */
+  --ws-desk-ai-bg: #f4f1fa;
+  --ws-desk-econ-bg: #eef5f2;
+
   /* Elevated Surface & Shadow Tokens */
   --ws-surface-elevated: #faf7f0;
   --ws-shadow-lg: 0 22px 54px rgba(15, 18, 25, 0.16);
@@ -116,6 +120,9 @@
   --ws-conf-low: #eab04d;
   --ws-conf-unverified: #939cab;
 
+  --ws-desk-ai-bg: #171426;
+  --ws-desk-econ-bg: #101e1b;
+
   --ws-shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.52);
 }
 
@@ -137,6 +144,13 @@
     margin: 0;
     min-height: 100vh;
     overflow-x: clip;
+  }
+
+  /* Suppress native WebKit search clear button when custom clear buttons are rendered */
+  input[type="search"]::-webkit-search-cancel-button,
+  input[type="search"]::-webkit-search-decoration {
+    -webkit-appearance: none;
+    appearance: none;
   }
 
   /* Accessible keyboard focus ring across light and dark modes */
@@ -182,10 +196,11 @@
   text-wrap: balance;
 }
 
-[data-lang="zh-CN"] .ws-headline-cover {
-  font-size: clamp(1.85rem, 2.7vw + 0.7rem, 3.1rem);
+[data-lang="zh-CN"] .ws-headline-cover,
+.ws-headline-cover-cjk {
+  font-size: clamp(1.72rem, 2.3vw + 0.6rem, 2.68rem);
   line-height: 1.24;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.014em;
   text-wrap: pretty;
 }
 
@@ -334,6 +349,30 @@
     var(--ws-editorial-accent-soft) 42%,
     var(--ws-surface)
   );
+}
+
+/* Unified Publication Drawer & Modal Folio Masthead */
+.ws-drawer-masthead {
+  background-color: var(--ws-surface);
+  border-top: 3px solid var(--ws-ink);
+  border-bottom: 1px solid var(--ws-border-strong);
+}
+
+/* Editorial Desk Tonal Plates */
+.ws-desk-ai {
+  background-color: var(--ws-desk-ai-bg);
+  border-top: 3px solid var(--ws-ai);
+  border-right: 1px solid var(--ws-border);
+  border-bottom: 1px solid var(--ws-border-strong);
+  border-left: 1px solid var(--ws-border);
+}
+
+.ws-desk-economy {
+  background-color: var(--ws-desk-econ-bg);
+  border-top: 3px solid var(--ws-economy);
+  border-right: 1px solid var(--ws-border);
+  border-bottom: 1px solid var(--ws-border-strong);
+  border-left: 1px solid var(--ws-border);
 }
 
 .ws-headline-dossier {

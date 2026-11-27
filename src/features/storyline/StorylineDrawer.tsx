@@ -149,7 +149,7 @@ export const StorylineDrawer: React.FC<StorylineDrawerProps> = ({
         className="flex h-full w-full max-w-[680px] flex-col border-l border-[var(--ws-border-strong)] bg-[var(--ws-canvas)] shadow-[var(--ws-shadow-lg)]"
       >
         {/* Header */}
-        <div className="border-b border-[var(--ws-border-strong)] bg-[var(--ws-surface)] px-5 py-4 space-y-2.5">
+        <div className="ws-drawer-masthead px-5 py-4.5 sm:px-6 space-y-2.5">
           <div className="flex items-start justify-between gap-4">
             <div className="space-y-1 min-w-0">
               <div className="flex items-center gap-2 ws-kicker text-[var(--ws-editorial-accent)]">
@@ -158,7 +158,7 @@ export const StorylineDrawer: React.FC<StorylineDrawerProps> = ({
               </div>
               <h2
                 id={titleId}
-                className="font-display text-[1.18rem] sm:text-[1.3rem] font-semibold leading-snug text-[var(--ws-ink)] break-words"
+                className="font-display text-[1.28rem] sm:text-[1.42rem] font-semibold leading-snug tracking-[-0.015em] text-[var(--ws-ink)] break-words"
               >
                 {projection ? projection.headline : signalId}
               </h2>

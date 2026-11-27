@@ -364,16 +364,38 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
                         </section>
                       )}
 
-                      {/* Layer 3: Timeline — Structured Chronological Spine */}
+                      {/* Layer 3: Timeline — Structured Real-World Event Chronology */}
                       {(activeSignal.sections.timeline ||
                         activeSignal.timelineEvents.length > 0) && (
                         <section
                           id="sec-timeline"
                           className="scroll-mt-24 space-y-4 pt-2"
                         >
-                          <h3 className="font-display text-[1.25rem] font-semibold text-[var(--ws-ink)]">
-                            {t.expanded.sections.timeline}
-                          </h3>
+                          <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[var(--ws-border-subtle)] pb-2.5">
+                            <div className="space-y-0.5">
+                              <div className="ws-kicker text-[var(--ws-ink-faint)]">
+                                {lang === 'zh-CN'
+                                  ? '真实世界事件演进'
+                                  : 'Real-World Event Chronology'}
+                              </div>
+                              <h3 className="font-display text-[1.25rem] font-semibold text-[var(--ws-ink)]">
+                                {t.expanded.sections.timeline}
+                              </h3>
+                            </div>
+                            {!edition.isLocalPreview && (
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  onOpenStoryline(activeSignal.signal_id)
+                                }
+                                className="font-mono-tabular text-[11.5px] font-medium text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
+                              >
+                                {lang === 'zh-CN'
+                                  ? '对比 WORLD SIGNAL 刊期修订史 →'
+                                  : 'Compare Edition Storyline History →'}
+                              </button>
+                            )}
+                          </div>
                           <TimelineTrack
                             entries={activeSignal.sections.timelineEntries}
                             rawFallback={activeSignal.sections.timeline}

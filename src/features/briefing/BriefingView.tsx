@@ -29,19 +29,17 @@ import {
   buildDomainEditionProfiles,
   EDITORIAL_DOMAINS,
 } from '../../lib/intelligence/visual-metrics/editorialVisualHelpers';
+import {
+  extractGroundedSignalStats,
+  selectVisualStrategyForSignal,
+  type VisualSelectionResult,
+} from '../../lib/editorial/editorialAssetRegistry';
 import { SafeMarkdown } from '../../components/editorial/SafeMarkdown';
 import { SignalMetaLine } from '../../components/editorial/SignalMetaLine';
 import { DomainEditorialEmblem } from '../../components/editorial/EditorialSignalArtwork';
-import {
-  extractGroundedSignalStats,
-  StoryVisual,
-} from '../../components/editorial/StoryVisual';
+import { StoryVisual } from '../../components/editorial/StoryVisual';
 import { DailyDeltaSection } from './DailyDeltaSection';
 import { CatchUpBanner } from './CatchUpBanner';
-
-import geopoliticsCoverUrl from '../../assets/images/editorial_cover_geopolitics_1795752024180.jpg';
-import aiFrontierCoverUrl from '../../assets/images/editorial_cover_ai_frontier_1795752024354.jpg';
-import economyCoverUrl from '../../assets/images/editorial_cover_economy_1795752025611.jpg';
 
 interface BriefingViewProps {
   edition: ParsedEdition;
@@ -60,6 +58,13 @@ interface BriefingViewProps {
   onOpenComparison?: () => void;
 }
 
+function selectRepresentativeMilestones(
+  points: Array<{ dateLabel: string; summary: string }>
+): Array<{ dateLabel: string; summary: string }> {
+  if (points.length <= 3) return points;
+  return [points[0], points[points.length - 2], points[points.length - 1]];
+}
+
 function getDomainColor(domain: SignalDomain): string {
   switch (domain) {
     case 'world':
@@ -68,17 +73,6 @@ function getDomainColor(domain: SignalDomain): string {
       return 'var(--ws-ai)';
     case 'economy':
       return 'var(--ws-economy)';
-  }
-}
-
-function getDomainPlateImage(domain: SignalDomain): string {
-  switch (domain) {
-    case 'world':
-      return geopoliticsCoverUrl;
-    case 'ai':
-      return aiFrontierCoverUrl;
-    case 'economy':
-      return economyCoverUrl;
   }
 }
 
@@ -214,6 +208,13 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
     [domainIntros, signals, topIdSet]
   );
 
+  const domainProfileMap = useMemo(() => {
+    const map: Partial<Record<SignalDomain, (typeof domainProfiles)[number]>> =
+      {};
+    for (const p of domainProfiles) map[p.domain] = p;
+    return map;
+  }, [domainProfiles]);
+
   const domainTopSignals = useMemo(() => {
     const map: Record<SignalDomain, ParsedSignal[]> = {
       world: [],
@@ -227,10 +228,74 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
           if (b.importance !== a.importance) return b.importance - a.importance;
           return b.claims.length - a.claims.length;
         })
-        .slice(0, 4);
+        .slice(0, 5);
     }
     return map;
   }, [signals]);
+
+  // Deterministic Anti-Repetition Visual Allocation Across All Briefing Slots
+  const visualAllocation = useMemo(() => {
+    const usedAssetIds = new Set<string>();
+
+    const lead: VisualSelectionResult | null = leadSignal
+      ? selectVisualStrategyForSignal(leadSignal, { context: 'hero' })
+      : null;
+    if (lead?.asset) usedAssetIds.add(lead.asset.id);
+
+    const secondaryExclude = Array.from(usedAssetIds);
+    const secondary: VisualSelectionResult | null = secondaryFeature
+      ? selectVisualStrategyForSignal(secondaryFeature, {
+          context: 'secondary',
+          excludeAssetIds: secondaryExclude,
+        })
+      : null;
+    if (secondary?.asset) usedAssetIds.add(secondary.asset.id);
+
+    // Pick a distinct featured signal for World desk if leadSignal is already World #1
+    const worldCandidates = domainTopSignals.world;
+    const worldDeskSignal =
+      worldCandidates.find((s) => s.signal_id !== leadSignal?.signal_id) ??
+      worldCandidates[0] ??
+      null;
+    const worldDeskExclude = Array.from(usedAssetIds);
+    const worldDeskSelection = worldDeskSignal
+      ? selectVisualStrategyForSignal(worldDeskSignal, {
+          context: 'desk',
+          excludeAssetIds: worldDeskExclude,
+        })
+      : null;
+    if (worldDeskSelection?.asset) usedAssetIds.add(worldDeskSelection.asset.id);
+
+    const aiDeskSignal = domainTopSignals.ai[0] ?? null;
+    const aiDeskExclude = Array.from(usedAssetIds);
+    const aiDeskSelection = aiDeskSignal
+      ? selectVisualStrategyForSignal(aiDeskSignal, {
+          context: 'desk',
+          excludeAssetIds: aiDeskExclude,
+        })
+      : null;
+    if (aiDeskSelection?.asset) usedAssetIds.add(aiDeskSelection.asset.id);
+
+    const econDeskSignal = domainTopSignals.economy[0] ?? null;
+    const econDeskExclude = Array.from(usedAssetIds);
+    const econDeskSelection = econDeskSignal
+      ? selectVisualStrategyForSignal(econDeskSignal, {
+          context: 'desk',
+          excludeAssetIds: econDeskExclude,
+        })
+      : null;
+    if (econDeskSelection?.asset) usedAssetIds.add(econDeskSelection.asset.id);
+
+    return {
+      secondaryExclude,
+      worldDeskSignal,
+      worldDeskExclude,
+      aiDeskSignal,
+      aiDeskExclude,
+      econDeskSignal,
+      econDeskExclude,
+    };
+  }, [domainTopSignals, leadSignal, secondaryFeature]);
 
   const totalClaims = useMemo(
     () => signals.reduce((sum, s) => sum + s.claims.length, 0),
@@ -261,10 +326,34 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
   const statusLabel =
     t.editionStatus[frontmatter.edition_status] ?? frontmatter.edition_status;
 
+  const worldProfile = domainProfileMap.world;
+  const aiProfile = domainProfileMap.ai;
+  const econProfile = domainProfileMap.economy;
+
+  const worldDispatches = useMemo(() => {
+    const deskLeadId = visualAllocation.worldDeskSignal?.signal_id;
+    const coverLeadId = leadSignal?.signal_id;
+    const distinct = signals
+      .filter(
+        (s) =>
+          s.domain === 'world' &&
+          s.signal_id !== deskLeadId &&
+          s.signal_id !== coverLeadId
+      )
+      .sort((a, b) => {
+        if (b.importance !== a.importance) return b.importance - a.importance;
+        return b.claims.length - a.claims.length;
+      });
+    return distinct.slice(0, 4);
+  }, [leadSignal?.signal_id, signals, visualAllocation.worldDeskSignal]);
+
+  const aiDispatches = domainTopSignals.ai.slice(1, 5);
+  const econDispatches = domainTopSignals.economy.slice(1, 5);
+
   return (
-    <div className="space-y-11 pb-16">
+    <div className="space-y-12 pb-16">
       {/* =====================================================================
-          PUBLICATION ISSUE FOLIO (Clean Broadsheet Masthead Utility Rule)
+          PUBLICATION ISSUE FOLIO (Broadsheet Masthead Utility Rule)
          ===================================================================== */}
       <section
         aria-label="Edition folio"
@@ -345,7 +434,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
       </section>
 
       {/* =====================================================================
-          VISUAL JOURNALISM COVER PLATE (Selected Production Hero Direction)
+          FLAGSHIP COVER PLATE (Narrative-First Cover + Verified Chronology Ribbon)
          ===================================================================== */}
       {leadSignal && (
         <section
@@ -353,21 +442,10 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
           className="ws-plate border border-[var(--ws-plate-border)] p-6 sm:p-8 lg:p-10 space-y-7"
         >
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 lg:gap-11 items-center">
-            {/* Expressive Art-Directed Feature Illustration */}
-            <div className="lg:col-span-6 group">
-              <StoryVisual
-                signal={leadSignal}
-                lang={lang}
-                mode="editorial_illustration"
-                variant="hero"
-                tone="dark"
-              />
-            </div>
-
-            {/* Authoritative Cover Story Typography */}
-            <div className="lg:col-span-6 space-y-5">
+            {/* Narrative-First Cover Column */}
+            <div className="lg:col-span-5 space-y-5 order-2 lg:order-1">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
                   <span className="inline-flex items-center gap-2 ws-kicker text-[#ef7362]">
                     <span className="h-[2px] w-5 bg-[#ef7362]" />
                     {t.briefing.leadKicker}
@@ -382,12 +460,18 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                     {t.domains[leadSignal.domain]}
                   </span>
                 </div>
-                <span className="font-mono-tabular text-[11.5px] text-[var(--ws-plate-muted)]">
-                  {leadSignal.signal_id}
+                <span className="font-mono-tabular text-[11px] text-[var(--ws-plate-muted)]">
+                  {leadSignal.event.start_date || frontmatter.edition_date}
                 </span>
               </div>
 
-              <h1 className="ws-headline-cover text-[var(--ws-plate-ink)]">
+              <h1
+                className={`ws-headline-cover ${
+                  /[\u4e00-\u9fff]/.test(leadSignal.headline)
+                    ? 'ws-headline-cover-cjk'
+                    : ''
+                } text-[var(--ws-plate-ink)]`}
+              >
                 <button
                   type="button"
                   onClick={() => onOpenSignal(leadSignal.signal_id)}
@@ -397,8 +481,8 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                 </button>
               </h1>
 
-              <p className="text-[16.5px] sm:text-[18px] leading-[1.72] text-[var(--ws-plate-secondary)] max-w-[52ch] [text-wrap:pretty]">
-                {getSignalExcerpt(leadSignal, 155)}
+              <p className="text-[16px] sm:text-[17px] leading-[1.72] text-[var(--ws-plate-secondary)] max-w-[46ch] [text-wrap:pretty]">
+                {getSignalExcerpt(leadSignal, 165)}
               </p>
 
               <div className="flex flex-wrap items-center gap-x-5 gap-y-3 pt-1">
@@ -425,54 +509,89 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                 </div>
               </div>
             </div>
+
+            {/* Commanding 7-Column Editorial Print Plate */}
+            <div className="lg:col-span-7 group order-1 lg:order-2">
+              <StoryVisual
+                signal={leadSignal}
+                lang={lang}
+                context="hero"
+                variant="hero"
+                tone="dark"
+              />
+            </div>
           </div>
 
-          {/* Grounded Signal Evidence & Chronology Strip (Strictly From Verified Data) */}
+          {/* Grounded Real-World Chronology & Verification Ribbon */}
           {leadStats && (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-5 border-t border-[var(--ws-plate-border)] pt-6">
-              <div className="space-y-1">
-                <div className="font-display text-[26px] sm:text-[30px] font-semibold leading-none text-[var(--ws-plate-ink)] ws-tabular">
-                  {leadStats.independentOriginsCount}
+            <div className="border-t border-[var(--ws-plate-border)] pt-5 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              {/* Grounded Evidence Numbers */}
+              <div className="lg:col-span-4 grid grid-cols-3 gap-4 lg:border-r lg:border-[var(--ws-plate-border)] lg:pr-6">
+                <div className="space-y-1">
+                  <div className="font-display text-[24px] sm:text-[28px] font-semibold leading-none text-[var(--ws-plate-ink)] ws-tabular">
+                    {leadStats.independentOriginsCount}
+                  </div>
+                  <div className="text-[11.5px] text-[var(--ws-plate-muted)]">
+                    {t.briefing.artworkOriginsLabel}
+                  </div>
                 </div>
-                <div className="text-[12px] text-[var(--ws-plate-muted)]">
-                  {t.briefing.artworkOriginsLabel}
+                <div className="space-y-1">
+                  <div className="font-display text-[24px] sm:text-[28px] font-semibold leading-none text-[var(--ws-plate-ink)] ws-tabular">
+                    {leadStats.confirmedClaimsCount}
+                    <span className="text-[var(--ws-plate-muted)] font-normal text-[17px]">
+                      /{leadStats.claimsCount}
+                    </span>
+                  </div>
+                  <div className="text-[11.5px] text-[var(--ws-plate-muted)]">
+                    {lang === 'zh-CN' ? '已证实声明' : 'Confirmed'}
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <div className="font-display text-[24px] sm:text-[28px] font-semibold leading-none text-[var(--ws-plate-ink)] ws-tabular">
+                    {leadStats.sourcesCount}
+                  </div>
+                  <div className="text-[11.5px] text-[var(--ws-plate-muted)]">
+                    {t.briefing.artworkSourcesLabel}
+                  </div>
                 </div>
               </div>
-              <div className="md:border-l md:border-[var(--ws-plate-border)] md:pl-5 space-y-1">
-                <div className="font-display text-[26px] sm:text-[30px] font-semibold leading-none text-[var(--ws-plate-ink)] ws-tabular">
-                  {leadStats.confirmedClaimsCount}
-                  <span className="text-[var(--ws-plate-muted)] font-normal text-[20px]">
-                    {' '}
-                    / {leadStats.claimsCount}
+
+              {/* Grounded Real-World Chronology Milestones (Strictly from verified timelineEvents) */}
+              <div className="lg:col-span-8 space-y-2.5">
+                <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono-tabular text-[var(--ws-plate-muted)]">
+                  <span className="ws-kicker text-[var(--ws-plate-secondary)]">
+                    {lang === 'zh-CN'
+                      ? '真实世界关键节点'
+                      : 'Verified Real-World Chronology'}
                   </span>
+                  {leadStats.timelineSpanLabel && (
+                    <span>{leadStats.timelineSpanLabel}</span>
+                  )}
                 </div>
-                <div className="text-[12px] text-[var(--ws-plate-muted)]">
-                  {lang === 'zh-CN'
-                    ? '已证实 / 总声明'
-                    : 'Confirmed / Total Claims'}
-                </div>
-              </div>
-              <div className="md:border-l md:border-[var(--ws-plate-border)] md:pl-5 space-y-1">
-                <div className="font-display text-[26px] sm:text-[30px] font-semibold leading-none text-[var(--ws-plate-ink)] ws-tabular">
-                  {leadStats.sourcesCount}
-                </div>
-                <div className="text-[12px] text-[var(--ws-plate-muted)]">
-                  {t.briefing.artworkSourcesLabel}
-                </div>
-              </div>
-              <div className="md:border-l md:border-[var(--ws-plate-border)] md:pl-5 space-y-1">
-                <div className="font-mono-tabular text-[14.5px] font-medium leading-tight text-[var(--ws-plate-ink)] pt-1">
-                  {leadStats.timelineSpanLabel ??
-                    leadSignal.event.start_date ??
-                    '—'}
-                </div>
-                <div className="text-[12px] text-[var(--ws-plate-muted)]">
-                  {leadStats.timelineCount > 0
-                    ? t.briefing.artworkTimelineMilestones(
-                        leadStats.timelineCount
-                      )
-                    : t.expanded.eventDateLabel}
-                </div>
+                {leadStats.timelinePoints.length > 0 ? (
+                  <ol className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {selectRepresentativeMilestones(
+                      leadStats.timelinePoints
+                    ).map((pt, idx) => (
+                      <li
+                        key={`${pt.dateLabel}-${idx}`}
+                        className="border-t border-[var(--ws-plate-border)] pt-2 space-y-1"
+                      >
+                        <div className="font-mono-tabular text-[11px] font-semibold text-[#ef7362]">
+                          {pt.dateLabel}
+                        </div>
+                        <div className="text-[12.5px] leading-snug text-[var(--ws-plate-secondary)] line-clamp-2">
+                          {pt.summary}
+                        </div>
+                      </li>
+                    ))}
+                  </ol>
+                ) : (
+                  <div className="text-[12.5px] text-[var(--ws-plate-muted)]">
+                    {leadSignal.event.geography.join(' · ') ||
+                      leadSignal.signal_id}
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -661,18 +780,15 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
             </p>
           </div>
 
-          {/* Rank #02 — Prominent Secondary Feature Spread */}
+          {/* Rank #02 — Prominent Secondary Feature Spread (Anti-Repetition Guaranteed) */}
           {secondaryFeature && (
             <article className="grid grid-cols-1 lg:grid-cols-12 gap-7 lg:gap-10 pb-8 border-b border-[var(--ws-border)] items-center">
               <div className="lg:col-span-5 group">
                 <StoryVisual
                   signal={secondaryFeature}
                   lang={lang}
-                  mode={
-                    secondaryFeature.domain === leadSignal?.domain
-                      ? 'grounded_visual'
-                      : 'editorial_illustration'
-                  }
+                  context="secondary"
+                  excludeAssetIds={visualAllocation.secondaryExclude}
                   variant="feature"
                   plateNumber="02"
                 />
@@ -853,7 +969,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
       )}
 
       {/* =====================================================================
-          THREE DISTINCTIVE EDITORIAL DOMAINS (World / AI / Economy)
+          THREE DISTINCTIVE EDITORIAL DESKS (Asymmetric Broadsheet + Twin Desks)
          ===================================================================== */}
       <section aria-label={t.briefing.domainsOverviewTitle} className="space-y-8">
         <div className="ws-rule-section pt-4 flex flex-wrap items-baseline justify-between gap-3">
@@ -877,167 +993,340 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
           )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10">
-          {domainProfiles.map((profile, idx) => {
-            const { domain } = profile;
-            const accent = getDomainColor(domain);
-            const topItems = domainTopSignals[domain];
-            const domainLead = topItems[0] ?? null;
-            const domainRest = topItems.slice(1, 4);
-            const total = Math.max(1, profile.total);
-            const imp5Pct = Math.round((profile.imp5Count / total) * 100);
-            const imp4Pct = Math.round((profile.imp4Count / total) * 100);
-            const impOtherPct = Math.max(0, 100 - imp5Pct - imp4Pct);
+        {/* DESK I — WORLD EVENTS: Full-Width Asymmetric Broadsheet Foreign Desk */}
+        {worldProfile && (
+          <div className="ws-editorial-sheet border-t-[3px] border-t-[var(--ws-world)] p-6 sm:p-8 space-y-6">
+            <div className="flex flex-wrap items-end justify-between gap-4 border-b border-[var(--ws-border)] pb-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <DomainEditorialEmblem domain="world" className="h-4 w-4" />
+                  <span
+                    className="ws-kicker"
+                    style={{ color: 'var(--ws-world)' }}
+                  >
+                    {t.briefing.coverPlateFolio.world}
+                  </span>
+                </div>
+                <h3 className="font-display text-[24px] sm:text-[28px] font-semibold tracking-[-0.018em] text-[var(--ws-ink)]">
+                  {t.domains.world}
+                </h3>
+              </div>
 
-            return (
-              <div
-                key={domain}
-                className={`flex flex-col justify-between space-y-5 ${
-                  idx > 0
-                    ? 'lg:border-l lg:border-[var(--ws-border)] lg:pl-8'
-                    : ''
-                }`}
-              >
-                <div className="space-y-5">
-                  <div className="space-y-3">
-                    <div
-                      className="h-[3px] w-full"
-                      style={{ backgroundColor: accent }}
-                    />
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <DomainEditorialEmblem
-                            domain={domain}
-                            className="h-4 w-4"
-                          />
-                          <span className="ws-kicker" style={{ color: accent }}>
-                            {t.briefing.coverPlateFolio[domain]}
-                          </span>
-                        </div>
-                        <h3 className="font-display text-[24px] font-semibold tracking-[-0.015em] text-[var(--ws-ink)]">
-                          {t.domains[domain]}
-                        </h3>
-                      </div>
-                      <div className="text-right font-mono-tabular">
-                        <div className="font-display text-[28px] font-semibold leading-none text-[var(--ws-ink)] ws-tabular">
-                          {profile.total}
-                        </div>
-                        <div className="text-[11px] text-[var(--ws-ink-muted)] mt-1">
-                          {t.briefing.domainShareLabel(profile.sharePct)}
-                        </div>
-                      </div>
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+                <div className="font-mono-tabular text-[12px] text-[var(--ws-ink-muted)]">
+                  <span className="font-semibold text-[var(--ws-ink)]">
+                    {worldProfile.total}
+                  </span>{' '}
+                  · {t.briefing.domainShareLabel(worldProfile.sharePct)} · 5/5:{' '}
+                  {worldProfile.imp5Count} · 4/5: {worldProfile.imp4Count}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => onExploreDomain('world')}
+                  className="inline-flex items-center gap-1.5 text-[13px] font-semibold hover:underline cursor-pointer"
+                  style={{ color: 'var(--ws-world)' }}
+                >
+                  <span>
+                    {t.briefing.exploreDomain} ({worldProfile.total})
+                  </span>
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 lg:gap-10 items-start">
+              {/* Left 5 cols: Featured World Dispatch with Distinct Non-Repeating Subject Plate */}
+              {visualAllocation.worldDeskSignal && (
+                <article className="lg:col-span-5 space-y-4 group">
+                  <StoryVisual
+                    signal={visualAllocation.worldDeskSignal}
+                    lang={lang}
+                    context="desk"
+                    excludeAssetIds={visualAllocation.worldDeskExclude}
+                    variant="plate"
+                    plateNumber="I"
+                  />
+                  <div className="space-y-2">
+                    <div className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
+                      {visualAllocation.worldDeskSignal.topic} ·{' '}
+                      {t.metaLine.importance(
+                        visualAllocation.worldDeskSignal.importance
+                      )}
                     </div>
+                    <h4 className="font-display text-[21px] font-semibold leading-snug text-[var(--ws-ink)]">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          onOpenSignal(
+                            visualAllocation.worldDeskSignal!.signal_id
+                          )
+                        }
+                        className="text-left hover:text-[var(--ws-world)] transition-colors cursor-pointer"
+                      >
+                        {visualAllocation.worldDeskSignal.headline}
+                      </button>
+                    </h4>
+                    <p className="text-[14px] leading-[1.68] text-[var(--ws-ink-secondary)] line-clamp-3">
+                      {getSignalExcerpt(visualAllocation.worldDeskSignal, 160)}
+                    </p>
+                  </div>
+                </article>
+              )}
 
-                    <div className="ws-art-frame aspect-[16/7] w-full">
-                      <img
-                        src={getDomainPlateImage(domain)}
-                        alt={t.domains[domain]}
-                        loading="lazy"
-                        className="h-full w-full object-cover object-center"
-                      />
+              {/* Right 7 cols: 2-Column Foreign Correspondent Dispatch Ledger */}
+              <div className="lg:col-span-7 lg:border-l lg:border-[var(--ws-border)] lg:pl-8 grid grid-cols-1 sm:grid-cols-2 gap-x-7 gap-y-5">
+                {worldDispatches.map((sig) => (
+                  <article
+                    key={sig.signal_id}
+                    className="group border-b border-[var(--ws-border-subtle)] pb-4 space-y-2"
+                  >
+                    <div className="flex items-center justify-between gap-2 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                      <span className="truncate">{sig.topic}</span>
+                      <span className="shrink-0 font-semibold text-[var(--ws-world)]">
+                        {sig.importance}/5
+                      </span>
                     </div>
+                    <h4 className="font-display text-[17px] font-semibold leading-snug text-[var(--ws-ink)]">
+                      <button
+                        type="button"
+                        onClick={() => onOpenSignal(sig.signal_id)}
+                        className="text-left group-hover:text-[var(--ws-world)] transition-colors cursor-pointer"
+                      >
+                        {sig.headline}
+                      </button>
+                    </h4>
+                    <p className="text-[13px] leading-relaxed text-[var(--ws-ink-secondary)] line-clamp-2">
+                      {getSignalExcerpt(sig, 110)}
+                    </p>
+                    <div className="font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                      {t.metaLine.origins(sig.independentOriginCount)} ·{' '}
+                      {t.confidence[sig.confidence.overall]}
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
-                    <div className="space-y-1.5">
-                      <div className="flex h-1.5 w-full overflow-hidden rounded-[1px] bg-[var(--ws-border-subtle)] gap-[1px]">
-                        {profile.imp5Count > 0 && (
-                          <div
-                            style={{
-                              width: `${imp5Pct}%`,
-                              backgroundColor: accent,
-                            }}
-                          />
-                        )}
-                        {profile.imp4Count > 0 && (
-                          <div
-                            style={{
-                              width: `${imp4Pct}%`,
-                              backgroundColor: accent,
-                              opacity: 0.55,
-                            }}
-                          />
-                        )}
-                        {profile.impLowerCount > 0 && (
-                          <div
-                            style={{
-                              width: `${impOtherPct}%`,
-                              backgroundColor: 'var(--ws-border-strong)',
-                            }}
-                          />
-                        )}
-                      </div>
-                      <div className="flex items-center justify-between text-[11.5px] font-mono-tabular text-[var(--ws-ink-muted)]">
-                        <span>
-                          {t.briefing.domainHighPriorityCount(
-                            profile.imp5Count + profile.imp4Count
-                          )}
-                        </span>
-                        <span>
-                          5/5: {profile.imp5Count} · 4/5: {profile.imp4Count}
-                        </span>
-                      </div>
+        {/* DESK II (AI FRONTIER · 7 cols) + DESK III (ECONOMIC OUTLOOK · 5 cols) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+          {/* DESK II — AI FRONTIER (Technical Monograph Desk) */}
+          {aiProfile && (
+            <div className="lg:col-span-7 ws-desk-ai p-6 sm:p-7 flex flex-col justify-between space-y-6">
+              <div className="space-y-5">
+                <div className="flex items-start justify-between gap-3 border-b border-[var(--ws-border)] pb-3.5">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <DomainEditorialEmblem domain="ai" className="h-4 w-4" />
+                      <span
+                        className="ws-kicker"
+                        style={{ color: 'var(--ws-ai)' }}
+                      >
+                        {t.briefing.coverPlateFolio.ai}
+                      </span>
+                    </div>
+                    <h3 className="font-display text-[24px] font-semibold tracking-[-0.015em] text-[var(--ws-ink)]">
+                      {t.domains.ai}
+                    </h3>
+                  </div>
+                  <div className="text-right font-mono-tabular">
+                    <div className="font-display text-[28px] font-semibold leading-none text-[var(--ws-ink)] ws-tabular">
+                      {aiProfile.total}
+                    </div>
+                    <div className="text-[11px] text-[var(--ws-ink-muted)] mt-1">
+                      {t.briefing.domainShareLabel(aiProfile.sharePct)}
                     </div>
                   </div>
+                </div>
 
-                  {domainLead && (
-                    <article className="space-y-2 border-b border-[var(--ws-border)] pb-4">
+                {visualAllocation.aiDeskSignal && (
+                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-5 items-center border-b border-[var(--ws-border)] pb-5">
+                    <div className="sm:col-span-6 group">
+                      <StoryVisual
+                        signal={visualAllocation.aiDeskSignal}
+                        lang={lang}
+                        context="desk"
+                        excludeAssetIds={visualAllocation.aiDeskExclude}
+                        variant="feature"
+                        plateNumber="II"
+                      />
+                    </div>
+                    <article className="sm:col-span-6 space-y-2.5">
+                      <div className="font-mono-tabular text-[11px] font-semibold text-[var(--ws-ai)]">
+                        {visualAllocation.aiDeskSignal.topic} ·{' '}
+                        {t.metaLine.importance(
+                          visualAllocation.aiDeskSignal.importance
+                        )}
+                      </div>
+                      <h4 className="font-display text-[19.5px] font-semibold leading-snug text-[var(--ws-ink)]">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            onOpenSignal(
+                              visualAllocation.aiDeskSignal!.signal_id
+                            )
+                          }
+                          className="text-left hover:text-[var(--ws-ai)] transition-colors cursor-pointer"
+                        >
+                          {visualAllocation.aiDeskSignal.headline}
+                        </button>
+                      </h4>
+                      <p className="text-[13.5px] leading-relaxed text-[var(--ws-ink-secondary)] line-clamp-3">
+                        {getSignalExcerpt(visualAllocation.aiDeskSignal, 135)}
+                      </p>
+                    </article>
+                  </div>
+                )}
+
+                {aiDispatches.length > 0 && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+                    {aiDispatches.map((sig) => (
+                      <article
+                        key={sig.signal_id}
+                        className="group space-y-1.5 border-b border-[var(--ws-border-subtle)] pb-3"
+                      >
+                        <button
+                          type="button"
+                          onClick={() => onOpenSignal(sig.signal_id)}
+                          className="text-left block w-full cursor-pointer space-y-1"
+                        >
+                          <div className="text-[14px] font-semibold leading-snug text-[var(--ws-ink)] group-hover:text-[var(--ws-ai)] transition-colors">
+                            {sig.headline}
+                          </div>
+                          <div className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
+                            {sig.topic} · {sig.importance}/5 ·{' '}
+                            {t.metaLine.origins(sig.independentOriginCount)}
+                          </div>
+                        </button>
+                      </article>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="pt-2 border-t border-[var(--ws-border)] flex items-center justify-between gap-3">
+                <span className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
+                  5/5: {aiProfile.imp5Count} · 4/5: {aiProfile.imp4Count}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => onExploreDomain('ai')}
+                  className="inline-flex items-center gap-1.5 text-[13px] font-semibold hover:underline cursor-pointer"
+                  style={{ color: 'var(--ws-ai)' }}
+                >
+                  <span>
+                    {t.briefing.exploreDomain} ({aiProfile.total})
+                  </span>
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* DESK III — ECONOMIC OUTLOOK (FT-Inspired Financial & Macro Ledger Desk) */}
+          {econProfile && (
+            <div className="lg:col-span-5 ws-desk-economy p-6 sm:p-7 flex flex-col justify-between space-y-6">
+              <div className="space-y-5">
+                <div className="flex items-start justify-between gap-3 border-b border-[var(--ws-border)] pb-3.5">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <DomainEditorialEmblem
+                        domain="economy"
+                        className="h-4 w-4"
+                      />
+                      <span
+                        className="ws-kicker"
+                        style={{ color: 'var(--ws-economy)' }}
+                      >
+                        {t.briefing.coverPlateFolio.economy}
+                      </span>
+                    </div>
+                    <h3 className="font-display text-[24px] font-semibold tracking-[-0.015em] text-[var(--ws-ink)]">
+                      {t.domains.economy}
+                    </h3>
+                  </div>
+                  <div className="text-right font-mono-tabular">
+                    <div className="font-display text-[28px] font-semibold leading-none text-[var(--ws-ink)] ws-tabular">
+                      {econProfile.total}
+                    </div>
+                    <div className="text-[11px] text-[var(--ws-ink-muted)] mt-1">
+                      {t.briefing.domainShareLabel(econProfile.sharePct)}
+                    </div>
+                  </div>
+                </div>
+
+                {visualAllocation.econDeskSignal && (
+                  <div className="space-y-3.5 border-b border-[var(--ws-border)] pb-5 group">
+                    <StoryVisual
+                      signal={visualAllocation.econDeskSignal}
+                      lang={lang}
+                      context="desk"
+                      excludeAssetIds={visualAllocation.econDeskExclude}
+                      variant="plate"
+                      plateNumber="III"
+                    />
+                    <article className="space-y-1.5">
                       <h4 className="font-display text-[19px] font-semibold leading-snug text-[var(--ws-ink)]">
                         <button
                           type="button"
-                          onClick={() => onOpenSignal(domainLead.signal_id)}
-                          className="text-left hover:text-[var(--ws-world)] transition-colors cursor-pointer"
+                          onClick={() =>
+                            onOpenSignal(
+                              visualAllocation.econDeskSignal!.signal_id
+                            )
+                          }
+                          className="text-left hover:text-[var(--ws-economy)] transition-colors cursor-pointer"
                         >
-                          {domainLead.headline}
+                          {visualAllocation.econDeskSignal.headline}
                         </button>
                       </h4>
                       <p className="text-[13.5px] leading-relaxed text-[var(--ws-ink-secondary)] line-clamp-2">
-                        {getSignalExcerpt(domainLead, 130)}
+                        {getSignalExcerpt(visualAllocation.econDeskSignal, 125)}
                       </p>
                     </article>
-                  )}
+                  </div>
+                )}
 
-                  {domainRest.length > 0 && (
-                    <ul className="space-y-3">
-                      {domainRest.map((sig) => (
-                        <li
-                          key={sig.signal_id}
-                          className="border-b border-[var(--ws-border-subtle)] pb-2.5 last:border-b-0 last:pb-0"
+                {econDispatches.length > 0 && (
+                  <ul className="divide-y divide-[var(--ws-border-subtle)]">
+                    {econDispatches.map((sig) => (
+                      <li key={sig.signal_id} className="py-2.5 first:pt-0 last:pb-0">
+                        <button
+                          type="button"
+                          onClick={() => onOpenSignal(sig.signal_id)}
+                          className="w-full text-left group cursor-pointer flex items-baseline justify-between gap-3"
                         >
-                          <button
-                            type="button"
-                            onClick={() => onOpenSignal(sig.signal_id)}
-                            className="text-left block w-full group cursor-pointer space-y-1"
-                          >
-                            <div className="text-[14px] font-medium leading-snug text-[var(--ws-ink)] group-hover:text-[var(--ws-world)] transition-colors">
-                              {sig.headline}
-                            </div>
-                            <div className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
-                              {t.metaLine.importance(sig.importance)} ·{' '}
-                              {t.metaLine.origins(sig.independentOriginCount)}
-                            </div>
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-
-                <div className="pt-2">
-                  <button
-                    type="button"
-                    onClick={() => onExploreDomain(domain)}
-                    className="inline-flex items-center gap-1.5 text-[13px] font-semibold hover:underline cursor-pointer"
-                    style={{ color: accent }}
-                  >
-                    <span>
-                      {t.briefing.exploreDomain} ({profile.total})
-                    </span>
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </button>
-                </div>
+                          <span className="text-[13.5px] font-medium leading-snug text-[var(--ws-ink)] group-hover:text-[var(--ws-economy)] transition-colors">
+                            {sig.headline}
+                          </span>
+                          <span className="font-mono-tabular text-[11px] font-semibold text-[var(--ws-economy)] shrink-0">
+                            {sig.importance}/5
+                          </span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
-            );
-          })}
+
+              <div className="pt-2 border-t border-[var(--ws-border)] flex items-center justify-between gap-3">
+                <span className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
+                  5/5: {econProfile.imp5Count} · 4/5: {econProfile.imp4Count}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => onExploreDomain('economy')}
+                  className="inline-flex items-center gap-1.5 text-[13px] font-semibold hover:underline cursor-pointer"
+                  style={{ color: 'var(--ws-economy)' }}
+                >
+                  <span>
+                    {t.briefing.exploreDomain} ({econProfile.total})
+                  </span>
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 

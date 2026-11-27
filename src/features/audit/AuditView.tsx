@@ -198,7 +198,10 @@ export const AuditView: React.FC<AuditViewProps> = ({
                 </thead>
                 <tbody className="divide-y divide-[var(--ws-border-subtle)] font-mono-tabular">
                   {matrix.rows.map((row) => (
-                    <tr key={row.importance}>
+                    <tr
+                      key={row.importance}
+                      className="transition-colors hover:bg-[var(--ws-surface-subtle)]/55"
+                    >
                       <td className="py-3 pr-3 font-semibold text-[var(--ws-ink)] whitespace-nowrap">
                         {row.importance}/5
                       </td>

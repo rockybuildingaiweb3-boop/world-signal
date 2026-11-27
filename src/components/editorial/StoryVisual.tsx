@@ -1,97 +1,25 @@
 import React, { useMemo, useState } from 'react';
 import type { ParsedSignal, SignalDomain, UiLanguage } from '../../types/edition';
 import { getUiStrings } from '../../lib/i18n/uiStrings';
-
-import geopoliticsCoverUrl from '../../assets/images/editorial_cover_geopolitics_1795752024180.jpg';
-import aiFrontierCoverUrl from '../../assets/images/editorial_cover_ai_frontier_1795752024354.jpg';
-import economyCoverUrl from '../../assets/images/editorial_cover_economy_1795752025611.jpg';
-import diplomacyCoverUrl from '../../assets/images/editorial_cover_diplomacy_1795752026803.jpg';
-
-export type StoryVisualMode =
-  | 'editorial_illustration'
-  | 'grounded_visual'
-  | 'typographic_cover';
+import {
+  extractGroundedSignalStats,
+  selectVisualStrategyForSignal,
+  type StoryVisualMode,
+  type VerifiedDocumentaryMedia,
+  type VisualSlotContext,
+} from '../../lib/editorial/editorialAssetRegistry';
+import { EDITORIAL_ASSET_URLS } from './editorialAssetUrls';
 
 interface StoryVisualProps {
   signal: ParsedSignal;
   lang: UiLanguage;
   mode?: StoryVisualMode;
+  context?: VisualSlotContext;
+  excludeAssetIds?: ReadonlySet<string> | readonly string[];
+  verifiedMedia?: VerifiedDocumentaryMedia | null;
   variant?: 'hero' | 'feature' | 'dossier' | 'plate';
   tone?: 'light' | 'dark';
   plateNumber?: string;
-}
-
-interface IllustrationAsset {
-  src: string;
-  altEn: string;
-  altZh: string;
-  creditEn: string;
-  creditZh: string;
-}
-
-const DIPLOMACY_KEYWORDS = [
-  'diplom',
-  'summit',
-  'treaty',
-  'alliance',
-  'parliament',
-  'election',
-  'eu',
-  'un',
-  'nato',
-  '峰会',
-  '外交',
-  '谈判',
-  '欧盟',
-  '议会',
-  '协议',
-  '联合国',
-];
-
-function selectIllustrationForSignal(signal: ParsedSignal): IllustrationAsset {
-  if (signal.domain === 'ai') {
-    return {
-      src: aiFrontierCoverUrl,
-      altEn:
-        'Original editorial print illustration of optical prisms and architectural grids representing AI Frontier developments',
-      altZh: '人工智能前沿主题原创编务版画插图：几何棱镜与建筑测绘结构',
-      creditEn: 'Original Editorial Illustration · Non-documentary',
-      creditZh: '原创编务插画 · 概念性视觉，非实拍纪实影像',
-    };
-  }
-  if (signal.domain === 'economy') {
-    return {
-      src: economyCoverUrl,
-      altEn:
-        'Original editorial print illustration of sculptural columns, freight architecture, and fiscal balance representing Economic Outlook',
-      altZh: '经济展望主题原创编务版画插图：国际贸易与宏观均衡结构',
-      creditEn: 'Original Editorial Illustration · Non-documentary',
-      creditZh: '原创编务插画 · 概念性视觉，非实拍纪实影像',
-    };
-  }
-
-  const haystack = `${signal.headline} ${signal.topic} ${signal.tags.join(' ')}`.toLowerCase();
-  const isDiplomatic = DIPLOMACY_KEYWORDS.some((kw) => haystack.includes(kw));
-
-  if (isDiplomatic) {
-    return {
-      src: diplomacyCoverUrl,
-      altEn:
-        'Original editorial print illustration of a geometric diplomatic amphitheater overlooking a maritime horizon',
-      altZh: '国际外交与治理主题原创编务插画：多边议事几何空间',
-      creditEn: 'Original Editorial Illustration · Non-documentary',
-      creditZh: '原创编务插画 · 概念性视觉，非实拍纪实影像',
-    };
-  }
-
-  return {
-    src: geopoliticsCoverUrl,
-    altEn:
-      'Original editorial print illustration of maritime trade corridors, arched colonnades, and meridian arcs representing global geopolitical events',
-    altZh: '国际地缘与航运通道主题原创编务版画插图：拱廊、海浪与经纬弧线',
-    creditEn: 'Original Editorial Illustration · Non-documentary',
-    creditZh: '原创编务插画 · 概念性视觉，非实拍纪实影像',
-  };
 }
 
 function getDomainAccentVar(domain: SignalDomain): string {
@@ -105,70 +33,13 @@ function getDomainAccentVar(domain: SignalDomain): string {
   }
 }
 
-export interface GroundedSignalStats {
-  independentOriginsCount: number;
-  claimsCount: number;
-  sourcesCount: number;
-  confirmedClaimsCount: number;
-  reportedClaimsCount: number;
-  disputedOrUnverifiedCount: number;
-  timelineCount: number;
-  timelineSpanLabel: string | null;
-  timelinePoints: Array<{ dateLabel: string; summary: string }>;
-}
-
-export function extractGroundedSignalStats(
-  signal: ParsedSignal
-): GroundedSignalStats {
-  let confirmedClaimsCount = 0;
-  let reportedClaimsCount = 0;
-  let disputedOrUnverifiedCount = 0;
-
-  for (const claim of signal.claims) {
-    if (claim.status === 'confirmed') confirmedClaimsCount += 1;
-    else if (claim.status === 'reported' || claim.status === 'official_claim') {
-      reportedClaimsCount += 1;
-    } else {
-      disputedOrUnverifiedCount += 1;
-    }
-  }
-
-  const timelinePoints =
-    signal.timelineEvents.length > 0
-      ? signal.timelineEvents.map((ev) => ({
-          dateLabel: ev.occurred_at.slice(0, 10),
-          summary: ev.title || ev.summary,
-        }))
-      : signal.sections.timelineEntries.map((entry) => ({
-          dateLabel: entry.dateLabel || '—',
-          summary: entry.text,
-        }));
-
-  const datedLabels = timelinePoints
-    .map((p) => p.dateLabel)
-    .filter((d) => d && d !== '—');
-  const timelineSpanLabel =
-    datedLabels.length >= 2
-      ? `${datedLabels[0]} – ${datedLabels[datedLabels.length - 1]}`
-      : datedLabels[0] ?? signal.event.start_date ?? null;
-
-  return {
-    independentOriginsCount: signal.independentOriginCount,
-    claimsCount: signal.claims.length,
-    sourcesCount: signal.sources.length,
-    confirmedClaimsCount,
-    reportedClaimsCount,
-    disputedOrUnverifiedCount,
-    timelineCount: timelinePoints.length,
-    timelineSpanLabel,
-    timelinePoints,
-  };
-}
-
 export const StoryVisual: React.FC<StoryVisualProps> = ({
   signal,
   lang,
-  mode = 'editorial_illustration',
+  mode,
+  context = 'secondary',
+  excludeAssetIds,
+  verifiedMedia = null,
   variant = 'hero',
   tone = 'light',
   plateNumber = '01',
@@ -177,96 +48,223 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
   const [imageError, setImageError] = useState(false);
 
   const stats = useMemo(() => extractGroundedSignalStats(signal), [signal]);
-  const illustration = useMemo(() => selectIllustrationForSignal(signal), [signal]);
-  const accent = getDomainAccentVar(signal.domain);
+  const selection = useMemo(
+    () =>
+      selectVisualStrategyForSignal(signal, {
+        context,
+        excludeAssetIds,
+        preferredMode: mode,
+        verifiedMedia,
+      }),
+    [context, excludeAssetIds, mode, signal, verifiedMedia]
+  );
 
+  const accent = getDomainAccentVar(signal.domain);
   const isDarkPlate = tone === 'dark';
 
   const effectiveMode: StoryVisualMode =
-    mode === 'editorial_illustration' && imageError ? 'typographic_cover' : mode;
+    (selection.mode === 'editorial_illustration' ||
+      selection.mode === 'verified_documentary') &&
+    imageError
+      ? 'typographic_cover'
+      : selection.mode;
 
   const claimTotal = stats.claimsCount;
   const confirmedPct =
-    claimTotal > 0 ? Math.round((stats.confirmedClaimsCount / claimTotal) * 100) : 0;
+    claimTotal > 0
+      ? Math.round((stats.confirmedClaimsCount / claimTotal) * 100)
+      : 0;
   const reportedPct =
-    claimTotal > 0 ? Math.round((stats.reportedClaimsCount / claimTotal) * 100) : 0;
+    claimTotal > 0
+      ? Math.round((stats.reportedClaimsCount / claimTotal) * 100)
+      : 0;
   const disputedPct =
     claimTotal > 0 ? Math.max(0, 100 - confirmedPct - reportedPct) : 0;
 
+  const aspectClass =
+    variant === 'hero'
+      ? 'aspect-[16/10]'
+      : variant === 'plate'
+        ? 'aspect-[16/9]'
+        : variant === 'dossier'
+          ? 'aspect-[21/9]'
+          : 'aspect-[4/3]';
+
+  // MODE 4: Intentional Museum-Monograph Typographic Cover Plate
   if (effectiveMode === 'typographic_cover') {
+    const subjectLabel =
+      lang === 'zh-CN' ? selection.subjectLabelZh : selection.subjectLabelEn;
+    const geoLabel =
+      signal.event.geography.length > 0
+        ? signal.event.geography.slice(0, 3).join(' · ')
+        : null;
+
     return (
       <figure
+        data-visual-mode="typographic_cover"
+        data-subject-category={selection.subjectCategory}
         className={`relative overflow-hidden border ${
           isDarkPlate
             ? 'border-[var(--ws-plate-border)] bg-[var(--ws-plate-elevated)] text-[var(--ws-plate-ink)]'
-            : 'border-[var(--ws-border)] bg-[var(--ws-plate)] text-[var(--ws-plate-ink)]'
-        } p-6 sm:p-8 flex flex-col justify-between min-h-[260px]`}
+            : 'border-[var(--ws-border-strong)] bg-[var(--ws-surface-subtle)] text-[var(--ws-ink)]'
+        } p-6 sm:p-7 flex flex-col justify-between ${
+          variant === 'dossier' ? 'min-h-[196px]' : 'min-h-[250px]'
+        }`}
       >
-        <div className="flex items-center justify-between gap-3 border-b border-[var(--ws-plate-border)] pb-3">
-          <span className="ws-kicker text-[var(--ws-editorial-accent)]">
-            {t.domains[signal.domain]}
-          </span>
-          <span className="font-mono-tabular text-[12px] text-[var(--ws-plate-muted)]">
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-0 top-0 h-[3px]"
+          style={{ backgroundColor: accent }}
+        />
+
+        <div
+          className={`flex flex-wrap items-center justify-between gap-2 border-b pb-3 ${
+            isDarkPlate
+              ? 'border-[var(--ws-plate-border)]'
+              : 'border-[var(--ws-border)]'
+          }`}
+        >
+          <div className="flex items-center gap-2.5">
+            <span className="ws-kicker" style={{ color: accent }}>
+              {t.domains[signal.domain]}
+            </span>
+            <span
+              aria-hidden="true"
+              className={
+                isDarkPlate
+                  ? 'text-[var(--ws-plate-muted)]'
+                  : 'text-[var(--ws-ink-faint)]'
+              }
+            >
+              /
+            </span>
+            <span
+              className={`text-[12px] font-medium ${
+                isDarkPlate
+                  ? 'text-[var(--ws-plate-secondary)]'
+                  : 'text-[var(--ws-ink-secondary)]'
+              }`}
+            >
+              {subjectLabel}
+            </span>
+          </div>
+          <span
+            className={`font-mono-tabular text-[11.5px] ${
+              isDarkPlate
+                ? 'text-[var(--ws-plate-muted)]'
+                : 'text-[var(--ws-ink-muted)]'
+            }`}
+          >
             {t.briefing.coverPlateFolio[signal.domain]} · {plateNumber}
           </span>
         </div>
 
-        <div className="py-6 space-y-3">
+        <div className="py-5 grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-4 sm:gap-6 items-baseline">
           <div
-            className="font-display text-[48px] sm:text-[60px] font-semibold leading-none tracking-[-0.04em] text-[var(--ws-plate-ink)]/90"
+            className={`font-display text-[44px] sm:text-[54px] font-semibold leading-none tracking-[-0.04em] ws-tabular ${
+              isDarkPlate
+                ? 'text-[var(--ws-plate-ink)]/85'
+                : 'text-[var(--ws-ink)]/20'
+            }`}
             aria-hidden="true"
           >
             {plateNumber}
           </div>
-          <p className="font-display text-[19px] sm:text-[22px] leading-snug text-[var(--ws-plate-ink)] max-w-[32ch]">
-            {signal.topic || signal.headline}
-          </p>
+          <div className="space-y-2 min-w-0">
+            <div className="font-display text-[19px] sm:text-[22px] font-semibold leading-snug tracking-[-0.015em] break-words">
+              {signal.topic || subjectLabel}
+            </div>
+            {geoLabel && (
+              <div
+                className={`font-mono-tabular text-[12px] ${
+                  isDarkPlate
+                    ? 'text-[var(--ws-plate-secondary)]'
+                    : 'text-[var(--ws-ink-muted)]'
+                }`}
+              >
+                {geoLabel}
+              </div>
+            )}
+          </div>
         </div>
 
-        <figcaption className="flex flex-wrap items-center justify-between gap-2 border-t border-[var(--ws-plate-border)] pt-3 text-[12px] text-[var(--ws-plate-muted)] font-mono-tabular">
+        <figcaption
+          className={`flex flex-wrap items-center justify-between gap-2 border-t pt-3 text-[11.5px] font-mono-tabular ${
+            isDarkPlate
+              ? 'border-[var(--ws-plate-border)] text-[var(--ws-plate-muted)]'
+              : 'border-[var(--ws-border)] text-[var(--ws-ink-muted)]'
+          }`}
+        >
           <span>
             {stats.independentOriginsCount} {t.briefing.artworkOriginsLabel} ·{' '}
-            {stats.claimsCount} {t.briefing.artworkClaimsLabel}
+            {stats.confirmedClaimsCount}/{stats.claimsCount}{' '}
+            {t.briefing.artworkClaimsLabel}
           </span>
-          <span>{signal.event.start_date || signal.signal_id}</span>
+          <span>
+            {stats.timelineSpanLabel || signal.event.start_date || signal.signal_id}
+          </span>
         </figcaption>
       </figure>
     );
   }
 
+  // MODE 3: Grounded Evidence & Chronology Ledger (FT Chart Doctor Discipline)
   if (effectiveMode === 'grounded_visual') {
     const timelineItems = stats.timelinePoints.slice(0, 4);
     return (
       <figure
+        data-visual-mode="grounded_visual"
+        data-subject-category={selection.subjectCategory}
         className={`border ${
           isDarkPlate
             ? 'border-[var(--ws-plate-border)] bg-[var(--ws-plate-elevated)] text-[var(--ws-plate-ink)]'
             : 'border-[var(--ws-border)] bg-[var(--ws-surface)] text-[var(--ws-ink)]'
         } p-5 sm:p-6 space-y-5`}
       >
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--ws-border-subtle)] pb-3">
+        <div
+          className={`flex flex-wrap items-center justify-between gap-2 border-b pb-3 ${
+            isDarkPlate
+              ? 'border-[var(--ws-plate-border)]'
+              : 'border-[var(--ws-border-subtle)]'
+          }`}
+        >
           <div className="flex items-center gap-2">
             <span
-              className="h-2.5 w-2.5 rounded-full shrink-0"
+              className="h-2.5 w-2.5 rounded-[1px] shrink-0"
               style={{ backgroundColor: accent }}
               aria-hidden="true"
             />
-            <span className="ws-kicker text-[var(--ws-ink)]">
+            <span
+              className={`ws-kicker ${
+                isDarkPlate ? 'text-[var(--ws-plate-ink)]' : 'text-[var(--ws-ink)]'
+              }`}
+            >
               {lang === 'zh-CN' ? '循证核查图谱' : 'Evidence & Chronology Ledger'}
             </span>
           </div>
-          <span className="font-mono-tabular text-[12px] text-[var(--ws-ink-muted)]">
+          <span
+            className={`font-mono-tabular text-[11.5px] ${
+              isDarkPlate
+                ? 'text-[var(--ws-plate-muted)]'
+                : 'text-[var(--ws-ink-muted)]'
+            }`}
+          >
             {signal.signal_id}
           </span>
         </div>
 
-        {/* Grounded Metric Trio */}
         <div className="grid grid-cols-3 gap-4">
           <div className="space-y-1">
             <div className="font-display text-[28px] sm:text-[32px] font-semibold leading-none ws-tabular">
               {stats.independentOriginsCount}
             </div>
-            <div className="text-[12px] text-[var(--ws-ink-muted)]">
+            <div
+              className={`text-[12px] ${
+                isDarkPlate
+                  ? 'text-[var(--ws-plate-muted)]'
+                  : 'text-[var(--ws-ink-muted)]'
+              }`}
+            >
               {t.briefing.artworkOriginsLabel}
             </div>
           </div>
@@ -274,7 +272,13 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
             <div className="font-display text-[28px] sm:text-[32px] font-semibold leading-none ws-tabular">
               {stats.claimsCount}
             </div>
-            <div className="text-[12px] text-[var(--ws-ink-muted)]">
+            <div
+              className={`text-[12px] ${
+                isDarkPlate
+                  ? 'text-[var(--ws-plate-muted)]'
+                  : 'text-[var(--ws-ink-muted)]'
+              }`}
+            >
               {t.briefing.artworkClaimsLabel}
             </div>
           </div>
@@ -282,25 +286,46 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
             <div className="font-display text-[28px] sm:text-[32px] font-semibold leading-none ws-tabular">
               {stats.sourcesCount}
             </div>
-            <div className="text-[12px] text-[var(--ws-ink-muted)]">
+            <div
+              className={`text-[12px] ${
+                isDarkPlate
+                  ? 'text-[var(--ws-plate-muted)]'
+                  : 'text-[var(--ws-ink-muted)]'
+              }`}
+            >
               {t.briefing.artworkSourcesLabel}
             </div>
           </div>
         </div>
 
-        {/* FT Chart Doctor Style Proportional Claim Verification Bar */}
         {claimTotal > 0 && (
           <div className="space-y-2">
             <div className="flex items-center justify-between text-[12px]">
-              <span className="font-medium text-[var(--ws-ink-secondary)]">
+              <span
+                className={`font-medium ${
+                  isDarkPlate
+                    ? 'text-[var(--ws-plate-secondary)]'
+                    : 'text-[var(--ws-ink-secondary)]'
+                }`}
+              >
                 {lang === 'zh-CN' ? '声明核验分布' : 'Claim Verification Split'}
               </span>
-              <span className="font-mono-tabular text-[var(--ws-ink-muted)]">
+              <span
+                className={`font-mono-tabular ${
+                  isDarkPlate
+                    ? 'text-[var(--ws-plate-muted)]'
+                    : 'text-[var(--ws-ink-muted)]'
+                }`}
+              >
                 {confirmedPct}% {lang === 'zh-CN' ? '已证实' : 'confirmed'}
               </span>
             </div>
             <div
-              className="flex h-2.5 w-full overflow-hidden rounded-[2px] bg-[var(--ws-surface-subtle)]"
+              className={`flex h-2.5 w-full overflow-hidden rounded-[2px] ${
+                isDarkPlate
+                  ? 'bg-[var(--ws-plate-border)]'
+                  : 'bg-[var(--ws-surface-subtle)]'
+              }`}
               role="img"
               aria-label={
                 lang === 'zh-CN'
@@ -327,19 +352,26 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
                 />
               )}
             </div>
-            <div className="flex flex-wrap gap-x-4 gap-y-1 text-[12px] text-[var(--ws-ink-muted)]">
+            <div
+              className={`flex flex-wrap gap-x-4 gap-y-1 text-[12px] ${
+                isDarkPlate
+                  ? 'text-[var(--ws-plate-muted)]'
+                  : 'text-[var(--ws-ink-muted)]'
+              }`}
+            >
               <span className="inline-flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-full bg-[var(--ws-good)]" />
-                {lang === 'zh-CN' ? '已证实' : 'Confirmed'}: {stats.confirmedClaimsCount}
+                <span className="h-2 w-2 rounded-[1px] bg-[var(--ws-good)]" />
+                {lang === 'zh-CN' ? '已证实' : 'Confirmed'}:{' '}
+                {stats.confirmedClaimsCount}
               </span>
               <span className="inline-flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-full bg-[var(--ws-world)]" />
+                <span className="h-2 w-2 rounded-[1px] bg-[var(--ws-world)]" />
                 {lang === 'zh-CN' ? '报道/官方' : 'Reported / Official'}:{' '}
                 {stats.reportedClaimsCount}
               </span>
               {stats.disputedOrUnverifiedCount > 0 && (
                 <span className="inline-flex items-center gap-1.5">
-                  <span className="h-2 w-2 rounded-full bg-[var(--ws-warn)]" />
+                  <span className="h-2 w-2 rounded-[1px] bg-[var(--ws-warn)]" />
                   {lang === 'zh-CN' ? '存疑/未证实' : 'Disputed / Unverified'}:{' '}
                   {stats.disputedOrUnverifiedCount}
                 </span>
@@ -348,10 +380,21 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
           </div>
         )}
 
-        {/* Grounded Real-World Milestones */}
         {timelineItems.length > 0 && (
-          <div className="border-t border-[var(--ws-border-subtle)] pt-3.5 space-y-2">
-            <div className="text-[11.5px] font-semibold uppercase tracking-[0.08em] text-[var(--ws-ink-muted)]">
+          <div
+            className={`border-t pt-3.5 space-y-2 ${
+              isDarkPlate
+                ? 'border-[var(--ws-plate-border)]'
+                : 'border-[var(--ws-border-subtle)]'
+            }`}
+          >
+            <div
+              className={`text-[11.5px] font-semibold uppercase tracking-[0.08em] ${
+                isDarkPlate
+                  ? 'text-[var(--ws-plate-muted)]'
+                  : 'text-[var(--ws-ink-muted)]'
+              }`}
+            >
               {t.briefing.artworkTimelineMilestones(stats.timelineCount)}
             </div>
             <ol className="space-y-2">
@@ -360,10 +403,22 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
                   key={`${pt.dateLabel}-${idx}`}
                   className="grid grid-cols-[84px_1fr] gap-2.5 text-[12.5px] leading-snug"
                 >
-                  <span className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)] pt-0.5">
+                  <span
+                    className={`font-mono-tabular text-[11.5px] pt-0.5 ${
+                      isDarkPlate
+                        ? 'text-[var(--ws-plate-muted)]'
+                        : 'text-[var(--ws-ink-muted)]'
+                    }`}
+                  >
                     {pt.dateLabel}
                   </span>
-                  <span className="text-[var(--ws-ink-secondary)] line-clamp-1">
+                  <span
+                    className={`line-clamp-1 ${
+                      isDarkPlate
+                        ? 'text-[var(--ws-plate-secondary)]'
+                        : 'text-[var(--ws-ink-secondary)]'
+                    }`}
+                  >
                     {pt.summary}
                   </span>
                 </li>
@@ -372,7 +427,13 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
           </div>
         )}
 
-        <figcaption className="border-t border-[var(--ws-border-subtle)] pt-2.5 text-[11.5px] text-[var(--ws-ink-muted)]">
+        <figcaption
+          className={`border-t pt-2.5 text-[11.5px] ${
+            isDarkPlate
+              ? 'border-[var(--ws-plate-border)] text-[var(--ws-plate-muted)]'
+              : 'border-[var(--ws-border-subtle)] text-[var(--ws-ink-muted)]'
+          }`}
+        >
           {lang === 'zh-CN'
             ? '仅基于本期已核查声明与独立报道来源统计生成，不含推测数据。'
             : 'Computed exclusively from verified claims, independent reporting origins, and structured timeline entries in this edition.'}
@@ -381,35 +442,78 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
     );
   }
 
-  // Primary Mode: Art-Directed Original Editorial Print Illustration
-  const aspectClass =
-    variant === 'hero'
-      ? 'aspect-[16/10]'
-      : variant === 'plate'
-        ? 'aspect-[16/9]'
-        : variant === 'dossier'
-          ? 'aspect-[21/9]'
-          : 'aspect-[4/3]';
+  // MODE 2: Verified Documentary Media (Only rendered when real verified media is explicitly supplied)
+  if (effectiveMode === 'verified_documentary' && verifiedMedia) {
+    return (
+      <figure
+        data-visual-mode="verified_documentary"
+        className="space-y-2.5"
+      >
+        <div
+          className={`ws-art-frame ${aspectClass} w-full ${
+            isDarkPlate ? 'border-[var(--ws-plate-border)] bg-[#0f131b]' : ''
+          }`}
+        >
+          <img
+            src={verifiedMedia.src}
+            alt={verifiedMedia.alt}
+            referrerPolicy="no-referrer"
+            onError={() => setImageError(true)}
+            loading={variant === 'hero' || variant === 'plate' ? 'eager' : 'lazy'}
+            className="h-full w-full object-cover object-center"
+          />
+        </div>
+        <figcaption
+          className={`flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-[12px] leading-snug ${
+            isDarkPlate
+              ? 'text-[var(--ws-plate-muted)]'
+              : 'text-[var(--ws-ink-muted)]'
+          }`}
+        >
+          <span>{verifiedMedia.caption}</span>
+          <span className="font-mono-tabular text-[11.5px]">
+            {verifiedMedia.credit}
+          </span>
+        </figcaption>
+      </figure>
+    );
+  }
+
+  // MODE 1: Subject-Specific Original Editorial Print Illustration
+  const asset = selection.asset;
+  const assetSrc = asset ? EDITORIAL_ASSET_URLS[asset.id] : null;
+
+  if (!asset || !assetSrc) {
+    return null;
+  }
 
   return (
-    <figure className="space-y-2.5">
+    <figure
+      data-visual-mode="editorial_illustration"
+      data-asset-id={asset.id}
+      data-subject-category={selection.subjectCategory}
+      className="space-y-2.5"
+    >
       <div
         className={`ws-art-frame ${aspectClass} w-full ${
           isDarkPlate ? 'border-[var(--ws-plate-border)] bg-[#0f131b]' : ''
         }`}
       >
         <img
-          src={illustration.src}
-          alt={lang === 'zh-CN' ? illustration.altZh : illustration.altEn}
+          src={assetSrc}
+          alt={lang === 'zh-CN' ? asset.altZh : asset.altEn}
+          referrerPolicy="no-referrer"
           onError={() => setImageError(true)}
           loading={variant === 'hero' || variant === 'plate' ? 'eager' : 'lazy'}
-          className="h-full w-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.02]"
+          className="h-full w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-[1.018]"
         />
       </div>
 
       <figcaption
         className={`flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-[12px] leading-snug ${
-          isDarkPlate ? 'text-[var(--ws-plate-muted)]' : 'text-[var(--ws-ink-muted)]'
+          isDarkPlate
+            ? 'text-[var(--ws-plate-muted)]'
+            : 'text-[var(--ws-ink-muted)]'
         }`}
       >
         <span className="inline-flex items-center gap-2">
@@ -419,7 +523,7 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
             aria-hidden="true"
           />
           <span>
-            {lang === 'zh-CN' ? illustration.creditZh : illustration.creditEn}
+            {lang === 'zh-CN' ? asset.creditZh : asset.creditEn}
           </span>
         </span>
         {stats.timelineSpanLabel && (

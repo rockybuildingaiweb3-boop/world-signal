@@ -51,12 +51,12 @@ export const TopBar: React.FC<TopBarProps> = ({
   return (
     <>
       <header className="sticky top-0 z-30 border-b border-[var(--ws-border)] bg-[var(--ws-canvas)]/96 backdrop-blur-xs">
-        <div className="mx-auto flex h-[62px] max-w-[1480px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex h-[62px] max-w-[1480px] items-center justify-between gap-2 sm:gap-4 px-3 sm:px-6 lg:px-8">
           {/* Editorial Publication Nameplate Wordmark */}
           <button
             type="button"
             onClick={() => onSelectView('briefing')}
-            className="flex items-center gap-2.5 text-left group cursor-pointer shrink-0"
+            className="flex items-center gap-2 sm:gap-2.5 text-left group cursor-pointer shrink-0"
           >
             <svg
               width="20"
@@ -91,7 +91,7 @@ export const TopBar: React.FC<TopBarProps> = ({
               />
               <circle cx="12" cy="12" r="2" fill="var(--ws-editorial-accent)" />
             </svg>
-            <span className="font-display text-[19px] sm:text-[21px] font-bold tracking-[0.06em] text-[var(--ws-ink)] whitespace-nowrap leading-none">
+            <span className="font-display text-[17px] sm:text-[21px] font-bold tracking-[0.05em] sm:tracking-[0.06em] text-[var(--ws-ink)] whitespace-nowrap leading-none">
               WORLD SIGNAL
             </span>
           </button>
@@ -134,7 +134,7 @@ export const TopBar: React.FC<TopBarProps> = ({
               data-testid="topbar-search-trigger"
               onClick={onOpenSearch}
               aria-label={`${t.globalSearch.triggerLabel} (${t.globalSearch.shortcutHint})`}
-              className="inline-flex h-[36px] items-center gap-2 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-2.5 sm:px-3 text-[12.5px] font-medium text-[var(--ws-ink-secondary)] hover:border-[var(--ws-border-strong)] hover:text-[var(--ws-ink)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
+              className="inline-flex h-[36px] items-center gap-2 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-2 sm:px-3 text-[12.5px] font-medium text-[var(--ws-ink-secondary)] hover:border-[var(--ws-border-strong)] hover:text-[var(--ws-ink)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
             >
               <Search className="h-3.5 w-3.5 text-[var(--ws-ink-muted)] shrink-0" />
               <span className="hidden xl:inline">{t.globalSearch.triggerLabel}</span>
@@ -148,7 +148,7 @@ export const TopBar: React.FC<TopBarProps> = ({
               data-testid="topbar-desk-trigger"
               onClick={onOpenReaderDesk}
               aria-label={t.readerDesk.dialogTitle}
-              className="relative inline-flex h-[36px] items-center gap-1.5 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-2.5 sm:px-3 text-[12.5px] font-medium text-[var(--ws-ink-secondary)] hover:border-[var(--ws-border-strong)] hover:text-[var(--ws-ink)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
+              className="relative inline-flex h-[36px] items-center gap-1.5 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-2 sm:px-3 text-[12.5px] font-medium text-[var(--ws-ink-secondary)] hover:border-[var(--ws-border-strong)] hover:text-[var(--ws-ink)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
             >
               <Bookmark className="h-3.5 w-3.5 text-[var(--ws-ink-muted)] shrink-0" />
               <span className="hidden xl:inline">{t.readerDesk.triggerLabel}</span>
@@ -170,7 +170,7 @@ export const TopBar: React.FC<TopBarProps> = ({
               data-testid="topbar-archive-trigger"
               onClick={onOpenArchive}
               aria-label={t.archive.button}
-              className="inline-flex h-[36px] items-center gap-2 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border-strong)] bg-[var(--ws-surface)] px-2.5 sm:px-3 text-[12.5px] font-medium text-[var(--ws-ink)] hover:bg-[var(--ws-surface-hover)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
+              className="inline-flex h-[36px] items-center gap-2 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border-strong)] bg-[var(--ws-surface)] px-2 sm:px-3 text-[12.5px] font-medium text-[var(--ws-ink)] hover:bg-[var(--ws-surface-hover)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
             >
               <Archive className="h-3.5 w-3.5 text-[var(--ws-ink-muted)] shrink-0" />
               <span className="hidden sm:inline">{t.archive.button}</span>
