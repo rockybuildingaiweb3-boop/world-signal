@@ -1,109 +1,95 @@
-# WORLD SIGNAL — Interface Image Library
+# WORLD SIGNAL — Interface Image Library (Phase 10 Specification — 36 Curated Local Assets)
 
-> Curated visual-design assets for the frontend art direction.
-> This manifest is **not** a newsroom evidence registry and must never be treated as editorial verification.
+> **Status**: Active Implementation Specification (Phase 10)  
+> **Classification**: `interface_editorial_photography` (**Strictly Non-Documentary — `isDocumentaryEvidence: false`**)  
+> **Machine-Readable Inventory**: `public/assets/interface-library/manifest.json`  
+> **Human-Readable Attribution Index**: `public/assets/interface-library/README.md`  
+> **TypeScript Registry**: `src/lib/editorial/interfaceImageLibrary.ts`
 
-Repository: https://github.com/rockybuildingaiweb3-boop/world-signal  
-Base reviewed: main at dd5f343ebed0136ff216ae92d6962dd20ef79733  
-Research date: 2026-11-27
+---
 
-## 1. Purpose and separation
+## 1. Purpose & Non-Negotiable Separation Policy
 
-The existing docs/MEDIA_ASSET_POLICY.md remains authoritative for images attached to specific news signals.
+`docs/MEDIA_ASSET_POLICY.md` remains the sole authority for verified documentary media attached to individual news signals (`media_assets`).
 
-This library has a separate, narrower purpose: give the frontend team a small set of high-quality photographic assets for art-direction exploration and, where appropriate, restrained site-level editorial design.
+This Interface Image Library serves a strictly separate architectural purpose: providing the active React frontend with **36 visually curated, open-licensed, locally hosted WebP photographs** (12 per editorial domain) that power WORLD SIGNAL's three distinct visual worlds, panoramic pacing breaks, visual desk folio, and selective story-specific atmosphere on Importance 4–5 dossiers.
 
-These photographs are **generic visual context**. They must not be represented as proof of a current event, a photograph of a particular breaking incident, or a verified image of a facility mentioned in a signal.
+**Hard Integrity Guardrails:**
+1. **Strict Isolation**: Never register interface library photos in `src/lib/editorial/editorialAssetRegistry.ts` or canonical Markdown `media_assets`.
+2. **Verified Media Exclusive Precedence**: `selectEditorialPhotoForDossier()` MUST return `null` whenever a signal carries any approved documentary/verified `media_assets`.
+3. **Explicit Non-Documentary Labeling**: Every rendered `InterfacePhotoPlate` displays a clear bilingual non-documentary colophon (`Editorial Context · Non-Documentary` / `编务语境摄影 · 非纪实证据`), photographer attribution, source page link, and license link.
+4. **Zero Hotlinking**: Every photograph MUST be downloaded, decoded, visually inspected, and saved locally as uncropped 1600w primary + 800w responsive WebP pairs under `public/assets/interface-library/{world,ai,economy}/`. Production code MUST NOT hotlink remote hosts.
+5. **Repository Size Discipline**: Total footprint across all 36 assets (72 WebP files) MUST stay well under `25 MB` (target: `~12–15 MB`).
 
-Do not add these files to canonical edition media_assets. Do not register them as documentary news media. Do not use them to imply an event location, date, casualty, participant, company endorsement, or causal claim.
+---
 
-Do not build a stock-photo gallery or asset-browsing product. These are a handful of selected visual resources integrated into the publication's design—not a competing image service.
+## 2. Asset Architecture (36 Curated Photographs · 12 Per Domain)
 
-## 2. Curated starter set
+### Domain 1 — World Events (`public/assets/interface-library/world/` · 12 Assets)
+*Visual World: Global Documentary — geographic scale, diplomacy, maritime corridors, institutions, borders, climate frontiers, and civic public life.*
 
-All five individual Unsplash source pages were inspected on 2026-11-27. Each page displayed the image as free to use under the Unsplash License at the time of review. The Unsplash License permits broad commercial and non-commercial use, subject to its restrictions; in particular, it prohibits compiling Unsplash images to replicate a similar or competing service.
+| # | Asset ID | Subject Category | Status | Intended Design Roles |
+| :--- | :--- | :--- | :--- | :--- |
+| 01 | `world-city-aerial` | `urban_geopolitics` | Verified on disk (Phase 09) | `desk_panorama`, `dossier_opener`, `folio_thumb` |
+| 02 | `world-maritime-port` | `maritime_logistics` | Verified on disk (Phase 09) | `desk_companion`, `dossier_opener` |
+| 03 | `world-diplomatic-institution` | `diplomatic_architecture` | Verified on disk (Phase 09) | `desk_companion`, `dossier_opener`, `folio_thumb` |
+| 04 | `world-international-assembly` | `international_assembly` | Verified on disk (Phase 09) | `desk_companion`, `dossier_opener` |
+| 05 | `world-global-transport` | `global_transport` | Verified on disk (Phase 09) | `desk_companion`, `dossier_opener` |
+| 06 | `world-earth-observation` | `earth_observation` | Verified on disk (Phase 09) | `documentary_break`, `dossier_opener` |
+| 07 | `world-coastline-geography` | `coastline_geography` | Verified on disk (Phase 09) | `desk_panorama`, `dossier_opener` |
+| 08 | `world-urban-infrastructure` | `urban_infrastructure` | Verified on disk (Phase 09) | `desk_companion`, `documentary_break`, `dossier_opener` |
+| 09 | `world-human-environment` | `human_environment` | Verified on disk (Phase 09) | `desk_companion`, `folio_thumb`, `dossier_opener` |
+| 10 | `world-public-space` | `public_institution` | Verified on disk (Phase 09) | `desk_panorama`, `dossier_opener` |
+| 11 | `world-climate-environment` | `climate_environment` | **Phase 10 Stage 3 Acquisition** | `dossier_opener` (COP / climate / Arctic / extreme weather), `desk_companion` |
+| 12 | `world-border-checkpoint` | `border_geography` | **Phase 10 Stage 3 Acquisition** | `dossier_opener` (borders / migration / sovereign crossings / customs), `folio_thumb` |
 
-Prefer preserving photographer credit in local asset metadata and, where visually appropriate, in unobtrusive captions or credits even though attribution is not generally required by the standard Unsplash License.
+### Domain 2 — AI Frontier (`public/assets/interface-library/ai/` · 12 Assets)
+*Visual World: Scientific Modernism — silicon lithography, compute racks, supercomputing halls, photonics, robotics, quantum cryogenics, and autonomous mobility.*
 
-| ID | Target local path | Image / creator | Suggested design use | Source page | Download endpoint |
-|---|---|---|---|---|---|
-| world-city-aerial | public/assets/interface-library/world-city-aerial.jpg | “Aerial view of a city skyline at dusk” — Klaus Birner (@thebrowny) | World Events cover texture, urban systems, global city feature composition | https://unsplash.com/photos/aerial-view-of-a-city-skyline-at-dusk-3mdHgIGJdrM | https://unsplash.com/photos/3mdHgIGJdrM/download?force=true |
-| world-maritime-port | public/assets/interface-library/world-maritime-port.jpg | “Container ships and cranes at a busy port” — Wolfgang Weiser (@hamburgmeinefreundin); Hamburg, Germany | Trade, logistics and supply-chain visual composition; generic contextual imagery only | https://unsplash.com/photos/container-ships-and-cranes-at-a-busy-port-azTSkG93BG4 | https://unsplash.com/photos/azTSkG93BG4/download?force=true |
-| ai-data-center | public/assets/interface-library/ai-data-center.jpg | “Two server racks filled with electronic components and wires” — Eric Stoynov; TRIUMF, Vancouver, Canada | AI infrastructure, compute, research and data-center layouts | https://unsplash.com/photos/two-server-racks-filled-with-electronic-components-and-wires-k27hkqXuveo | https://unsplash.com/photos/k27hkqXuveo/download?force=true |
-| ai-silicon-wafer | public/assets/interface-library/ai-silicon-wafer.jpg | “A close up of a metal plate with squares on it” — Laura Ockel; 4-inch silicon wafer macro | Semiconductor, chip manufacturing and technical feature imagery | https://unsplash.com/photos/a-close-up-of-a-metal-plate-with-squares-on-it-0Gw_p-RQq8k | https://unsplash.com/photos/0Gw_p-RQq8k/download?force=true |
-| economy-stock-exchange | public/assets/interface-library/economy-stock-exchange.jpg | “New york stock exchange building facade with columns” — Maxim Klimashin (@maxim_klimashin); New York, USA | Economic Outlook / institutions / market architecture feature composition | https://unsplash.com/photos/new-york-stock-exchange-building-facade-with-columns-1QSXCd0LHVs | https://unsplash.com/photos/1QSXCd0LHVs/download?force=true |
+| # | Asset ID | Subject Category | Status | Intended Design Roles |
+| :--- | :--- | :--- | :--- | :--- |
+| 13 | `ai-silicon-wafer` | `semiconductor_macro` | Verified on disk (Phase 09) | `desk_companion`, `dossier_opener`, `folio_thumb` |
+| 14 | `ai-data-center` | `compute_infrastructure` | Verified on disk (Phase 09) | `desk_spine`, `dossier_portrait` |
+| 15 | `ai-chip-architecture` | `chip_architecture` | Verified on disk (Phase 09) | `desk_spine`, `dossier_portrait` |
+| 16 | `ai-supercomputer-hall` | `supercomputer_hall` | Verified on disk (Phase 09) | `desk_companion`, `dossier_opener` |
+| 17 | `ai-robotics-automation` | `robotics_automation` | Verified on disk (Phase 09) | `desk_companion`, `dossier_opener` |
+| 18 | `ai-research-laboratory` | `research_laboratory` | Verified on disk (Phase 09) | `desk_companion`, `dossier_opener` |
+| 19 | `ai-optics-photonics` | `optics_photonics` | Verified on disk (Phase 09) | `desk_companion`, `documentary_break`, `dossier_opener` |
+| 20 | `ai-scientific-instrument` | `scientific_instrument` | Verified on disk (Phase 09) | `desk_companion`, `dossier_opener` |
+| 21 | `ai-engineering-workspace` | `engineering_workspace` | Verified on disk (Phase 09) | `desk_companion`, `dossier_opener` |
+| 22 | `ai-advanced-materials` | `advanced_materials` | Verified on disk (Phase 09) | `desk_companion`, `dossier_opener` |
+| 23 | `ai-quantum-computing` | `quantum_computing` | **Phase 10 Stage 3 Acquisition** | `dossier_opener` (quantum / frontier physics / cryptography), `folio_thumb` |
+| 24 | `ai-autonomous-mobility` | `autonomous_mobility` | **Phase 10 Stage 3 Acquisition** | `dossier_opener` (autonomous vehicles / LiDAR / robotaxi / edge AI), `desk_companion` |
 
-License reference for all five entries: https://unsplash.com/license
+### Domain 3 — Economic Outlook (`public/assets/interface-library/economy/` · 12 Assets)
+*Visual World: Institutional & Economic Humanism — financial institutions, central banks, manufacturing, energy transition, commodities, urban housing, and agricultural supply.*
 
-Photographer profile links:
-- Klaus Birner: https://unsplash.com/@thebrowny
-- Wolfgang Weiser: https://unsplash.com/@hamburgmeinefreundin
-- Eric Stoynov: profile link not independently confirmed; use the source page above.
-- Laura Ockel: profile link not independently confirmed; use the source page above.
-- Maxim Klimashin: https://unsplash.com/@maxim_klimashin
+| # | Asset ID | Subject Category | Status | Intended Design Roles |
+| :--- | :--- | :--- | :--- | :--- |
+| 25 | `economy-stock-exchange` | `financial_institutions` | Verified on disk (Phase 09) | `desk_spine`, `dossier_portrait` |
+| 26 | `economy-central-bank` | `central_bank` | Verified on disk (Phase 09) | `desk_spine`, `dossier_portrait` |
+| 27 | `economy-financial-district` | `financial_district` | Verified on disk (Phase 09) | `desk_companion`, `folio_thumb`, `dossier_opener` |
+| 28 | `economy-manufacturing-factory` | `manufacturing_factory` | Verified on disk (Phase 09) | `desk_companion`, `dossier_opener` |
+| 29 | `economy-global-trade` | `global_trade` | Verified on disk (Phase 09) | `desk_spine`, `dossier_opener` |
+| 30 | `economy-energy-infrastructure` | `energy_infrastructure` | Verified on disk (Phase 09) | `desk_companion`, `dossier_opener` |
+| 31 | `economy-commodity-production` | `commodity_production` | Verified on disk (Phase 09) | `desk_companion`, `dossier_opener` |
+| 32 | `economy-retail-consumption` | `retail_consumption` | Verified on disk (Phase 09) | `desk_companion`, `dossier_opener` |
+| 33 | `economy-supply-chain` | `supply_chain` | Verified on disk (Phase 09) | `desk_companion`, `dossier_opener` |
+| 34 | `economy-infrastructure-investment` | `infrastructure_investment` | Verified on disk (Phase 09) | `desk_companion`, `dossier_opener` |
+| 35 | `economy-housing-urban` | `housing_real_estate` | **Phase 10 Stage 3 Acquisition** | `dossier_opener` (housing / mortgages / property / urban affordability), `folio_thumb` |
+| 36 | `economy-agriculture-food` | `agriculture_food` | **Phase 10 Stage 3 Acquisition** | `dossier_opener` (food inflation / grain exports / agricultural supply), `desk_companion` |
 
-## 3. Download and local-asset requirements
+---
 
-The current task workspace should download the five images from the individual Unsplash download endpoints above. Do not hotlink them in production.
+## 3. Stage 3 Acquisition & Validation Protocol (Mandatory for All 6 New Assets)
 
-1. Save the files to the exact target paths in the table.
-2. Confirm each response is a valid image file, not an HTML page or redirect-error document.
-3. Inspect every downloaded image locally before using it.
-4. Record actual byte sizes and image dimensions in the asset manifest.
-5. Keep the original downloaded JPEGs as the source masters.
-6. Generate optimized WebP derivatives only when the current build pipeline supports them; do not silently overwrite the originals.
-7. Use responsive image sizing and lazy loading for below-the-fold assets. Keep only the actual initial-viewport lead visual eager.
-8. Use appropriate object-position values per asset. Do not apply one global crop.
-9. Do not crop the original source masters. Cropping in the UI is permitted only as a presentation choice for these stock assets; retain a full uncropped source file.
-
-Create public/assets/interface-library/README.md after download. For every file, record:
-- local path
-- source title
-- photographer / creator
-- source page URL
-- license name
-- license URL
-- date checked
-- actual file size
-- pixel dimensions
-- intended interface use
-- note that this is non-documentary generic imagery
-
-If any endpoint cannot be downloaded, the file fails image validation, or its source metadata cannot be reconciled, do not create a placeholder file and do not silently replace it with another image. Report the missing item.
-
-## 4. Rights and editorial guardrails
-
-- The Unsplash standard license does not eliminate other rights that may apply to recognizable people, private property, artwork, logos, trademarks, or depicted brands.
-- Never imply endorsement by a person, photographer, organization, company, or institution appearing in a photograph.
-- The server-rack photograph is at TRIUMF in Vancouver. It is not a photograph of any particular AI company's data center.
-- The maritime photograph is from Hamburg. It is not documentation of a specific conflict, blockade, canal incident, or port event.
-- The stock-exchange photograph shows the New York Stock Exchange facade. Do not use it to claim that a specific transaction or market move occurred there.
-- The city photograph is generic city imagery; do not infer a specific city or geopolitical location from it.
-- The silicon-wafer photograph is descriptive of wafer/chip manufacturing generally; do not represent it as an image of a named chipmaker's proprietary process.
-- If a signal-specific image is needed, use the source and item-level rights checks required by docs/MEDIA_ASSET_POLICY.md. This interface library is not a shortcut around that policy.
-
-## 5. Recommended design application
-
-Use the library to demonstrate a stronger photographic language—not to put an image into every section.
-
-Suggested applications:
-- One carefully cropped editorial image in the Briefing lead spread when the asset materially strengthens the composition.
-- Asymmetric image-led secondary feature layouts.
-- Small image / text pairings in the three domain desks.
-- A visually differentiated image header for selected Expanded dossiers.
-- A restrained, editorial image strip in the landing page, not a generic card grid.
-
-Do not use these five images simultaneously as a repeating decorative wallpaper. Do not repeat the same image in multiple adjacent cards. Mix photography with existing original illustrations and typographic cover plates.
-
-Preserve strong text contrast. Dark gradients or scrims may be used only as local legibility treatments, not as a universal overlay that obscures the photograph.
-
-The image is a compositional element; its relationship with headline, deck, caption, spacing, and surrounding typography is what should make the page feel art-directed.
-
-## 6. Official references
-
-- Unsplash License: https://unsplash.com/license
-- Unsplash Terms: https://unsplash.com/terms
-- Unsplash Help — commercial and personal use: https://help.unsplash.com/en/articles/2612315-can-i-use-unsplash-images-for-personal-or-commercial-projects
-- Unsplash Help — releases and trademarks: https://help.unsplash.com/en/articles/2612329-releases-and-trademarks
-
-This manifest documents a research shortlist. It is not a legal opinion, a guarantee of third-party model/property releases, or approval for use as event-specific news photography.
+For each of the 6 Phase 10 additions (`world-climate-environment`, `world-border-checkpoint`, `ai-quantum-computing`, `ai-autonomous-mobility`, `economy-housing-urban`, `economy-agriculture-food`):
+1. Source exclusively from verifiable open licenses (**Public Domain / CC0 / CC BY / CC BY-SA** via Wikimedia Commons or NASA Images, or Unsplash License).
+2. Download the real image binary directly to disk; verify HTTP 200 and genuine image magic bytes.
+3. Convert uncropped to two responsive WebP files (`1600px` long edge primary `.webp` + `800px` long edge `-800.webp`) under `public/assets/interface-library/{domain}/`.
+4. Render all 6 newly downloaded images on a visual contact sheet (`.playwright-cli/p10-new-assets-contact.jpg`) and inspect every single frame visually before accepting it into `interfaceImageLibrary.ts`. Reject and replace any blurry, watermarked, or off-subject candidate.
+5. Record exact `naturalWidth`, `naturalHeight`, `fileSizeBytes`, `webp800Bytes`, per-asset visually tuned `objectPosition`, creator, source page URL, license name/URL, and bilingual EN+ZH alt text, captions, and non-documentary context notes in:
+   - `src/lib/editorial/interfaceImageLibrary.ts`
+   - `public/assets/interface-library/manifest.json`
+   - `public/assets/interface-library/README.md`
+6. Verify via automated unit tests (`src/test/interfaceImageLibrary.test.ts`) that all 36 primary + 36 responsive WebP files exist on disk, decode as valid `RIFF/WEBP`, match byte counts, stay under `25 MB` total, and maintain zero overlap with `EDITORIAL_ASSET_REGISTRY`.
