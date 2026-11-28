@@ -182,12 +182,14 @@ export function validateMediaAssets(mediaAssets, signalId) {
     if (typeof rights.license_name !== 'string' || !rights.license_name.trim()) {
       throw new Error(refLabel + ': rights.license_name must be a non-empty string.');
     }
-    if (rights.basis === 'public_domain') {
-      if (rights.license_url !== undefined && rights.license_url !== null && rights.license_url !== '' && !isHttpsUrl(rights.license_url)) {
-        throw new Error(refLabel + ': rights.license_url must be a valid HTTPS URL when provided.');
-      }
-    } else if (!isHttpsUrl(rights.license_url)) {
-      throw new Error(refLabel + ': rights.license_url must be a valid HTTPS URL for rights basis "' + rights.basis + '".');
+    if (typeof rights.rights_holder !== 'string' || !rights.rights_holder.trim()) {
+      throw new Error(refLabel + ': rights.rights_holder must explicitly identify the verified rights holder or documented public-domain basis; do not infer it from creator.');
+    }
+    if (!isHttpsUrl(rights.license_url)) {
+      const requirement = rights.basis === 'public_domain'
+        ? 'a valid HTTPS public-domain/rights-policy URL documenting jurisdiction'
+        : 'a valid HTTPS license URL';
+      throw new Error(refLabel + ': rights.license_url must be ' + requirement + ' for rights basis "' + rights.basis + '".');
     }
     if (rights.public_web_display_allowed !== true) {
       throw new Error(refLabel + ': rights.public_web_display_allowed must be true.');
