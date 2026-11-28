@@ -576,15 +576,11 @@ export function isApprovedMediaAsset(asset: SignalMediaAsset | null | undefined)
     return false;
   }
   if (
-    asset.rights.basis !== 'public_domain' &&
-    !isHttpsUrlString(asset.rights.license_url)
-  ) {
-    return false;
-  }
-  if (
-    asset.rights.basis === 'public_domain' &&
-    asset.rights.license_url.trim().length > 0 &&
-    !isHttpsUrlString(asset.rights.license_url)
+    !['public_domain', 'cc0', 'cc_by', 'cc_by_sa', 'explicit_permission', 'editorial_license'].includes(asset.rights.basis) ||
+    !isHttpsUrlString(asset.rights.license_url) ||
+    typeof asset.rights.crop_allowed !== 'boolean' ||
+    !asset.rights.verified_at ||
+    !Number.isFinite(Date.parse(asset.rights.verified_at))
   ) {
     return false;
   }
