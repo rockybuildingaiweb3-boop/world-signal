@@ -208,11 +208,12 @@ export const SignalMediaGallery: React.FC<SignalMediaGalleryProps> = ({
               {/* Caption, Relationship Disclosure & Provenance Attribution */}
               <figcaption className="flex flex-1 flex-col justify-between gap-3 p-4">
                 <div className="space-y-1.5">
-                  {asset.title.trim() && (
-                    <div className="font-display text-[15px] font-semibold leading-snug text-[var(--ws-ink)]">
-                      {asset.title}
-                    </div>
-                  )}
+                  {asset.title.trim() &&
+                    asset.title.trim() !== asset.caption.trim() && (
+                      <div className="font-display text-[15px] font-semibold leading-snug text-[var(--ws-ink)]">
+                        {asset.title}
+                      </div>
+                    )}
                   <p className="text-[13.5px] leading-[1.65] text-[var(--ws-ink-secondary)]">
                     {asset.caption}
                   </p>

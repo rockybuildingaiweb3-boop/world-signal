@@ -607,26 +607,26 @@ describe('Phase 07 — Publishing Validator (scripts/build-public-content.mjs)',
     );
     assert.equal(v2Entry.date, '2026-10-15');
 
-    // Real canonical published editions without media_assets (2026-11-23..25)
-    // Note: 2026-11-26.md has a pre-existing non-media YAML typo (added_source_urls: null)
-    // in WORLD-20261126-iran-kuwait-drone-strike, so we verify its media-free compatibility
-    // via parseEditionMarkdown + validateMediaAssets without modifying canonical editions.
+    // All real canonical published editions without media_assets (2026-11-23..27) remain 100% valid
     const editionsDir = path.resolve(process.cwd(), 'content/editions/2026/11');
-    for (const file of ['2026-11-23.md', '2026-11-24.md', '2026-11-25.md']) {
+    const files = fs
+      .readdirSync(editionsDir)
+      .filter((f) => f.endsWith('.md'))
+      .sort();
+    assert.ok(files.length >= 5);
+    for (const file of files) {
       const fullPath = path.join(editionsDir, file);
       const raw = fs.readFileSync(fullPath, 'utf8');
       const entry = validateEdition(fullPath, `2026/11/${file}`, raw);
       assert.equal(entry.date, file.replace(/\.md$/, ''));
     }
 
-    const latestRaw = fs.readFileSync(
-      path.join(editionsDir, '2026-11-26.md'),
-      'utf8'
-    );
+    const latestFile = files[files.length - 1];
+    const latestRaw = fs.readFileSync(path.join(editionsDir, latestFile), 'utf8');
     const parsedLatest = parseEditionMarkdown(
       latestRaw,
-      '/editions/2026/11/2026-11-26.md',
-      { expectedDate: '2026-11-26' }
+      `/editions/2026/11/${latestFile}`,
+      { expectedDate: latestFile.replace(/\.md$/, '') }
     );
     assert.ok(parsedLatest.signals.length > 0);
     for (const sig of parsedLatest.signals) {
