@@ -502,18 +502,18 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
       </header>
 
       {/* =====================================================================
-          OPEN-PAPER FRONT-PAGE COVER SPREAD (8:4 Asymmetric Broadsheet Hero)
+          ASYMMETRIC MAGAZINE FRONT COVER (9:3 Spread · 100% Above the Fold)
          ===================================================================== */}
       {leadSignal && (
         <section
           aria-label="Cover story"
           data-testid="briefing-cover-spread"
-          className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start"
+          className="grid grid-cols-1 lg:grid-cols-12 gap-7 xl:gap-9 items-start"
         >
-          {/* PRIMARY 8-COLUMN COVER STORY ON OPEN WARM PAPER */}
-          <article className="lg:col-span-8 space-y-5">
+          {/* PRIMARY 9-COLUMN COVER FEATURE: 5:7 Text-to-Visual Spread + Provenance Band */}
+          <article className="lg:col-span-9 space-y-5">
             {/* Kicker & Geography Bar */}
-            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--ws-border)] pb-2.5">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--ws-border)] pb-2">
               <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
                 <span className="inline-flex items-center gap-2 ws-kicker text-[var(--ws-editorial-accent)]">
                   <span
@@ -539,72 +539,77 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
               </span>
             </div>
 
-            {/* Commanding Front-Page Display Headline */}
-            <h1
-              className={`ws-headline-cover ${
-                /[\u4e00-\u9fff]/.test(leadSignal.headline)
-                  ? 'ws-headline-cover-cjk'
-                  : ''
-              } text-[var(--ws-ink)]`}
-            >
-              <button
-                type="button"
-                onClick={() => onOpenSignal(leadSignal.signal_id)}
-                className="text-left ws-headline-link hover:text-[var(--ws-editorial-accent)] cursor-pointer"
-              >
-                {leadSignal.headline}
-              </button>
-            </h1>
+            {/* Asymmetric 5:7 Editorial Cover Pair — Headline & Narrative Left, Full Showcase Visual Right */}
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 xl:gap-7 items-start">
+              <div className="xl:col-span-5 flex flex-col justify-between gap-4">
+                <div className="space-y-3.5">
+                  <h1
+                    className={`ws-headline-cover ${
+                      /[\u4e00-\u9fff]/.test(leadSignal.headline)
+                        ? 'ws-headline-cover-cjk'
+                        : ''
+                    } text-[var(--ws-ink)]`}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => onOpenSignal(leadSignal.signal_id)}
+                      className="text-left ws-headline-link hover:text-[var(--ws-editorial-accent)] cursor-pointer"
+                    >
+                      {leadSignal.headline}
+                    </button>
+                  </h1>
 
-            {/* Editorial Deck & Action Row */}
-            <div className="space-y-4">
-              <p className="ws-deck max-w-[66ch] [text-wrap:pretty]">
-                {getSignalExcerpt(leadSignal, 185)}
-              </p>
-
-              <div className="flex flex-wrap items-center justify-between gap-4 pt-0.5">
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 ws-meta text-[12.5px] text-[var(--ws-ink-muted)]">
-                  <span className="font-semibold text-[var(--ws-ink)]">
-                    {t.metaLine.importance(leadSignal.importance)}
-                  </span>
-                  <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
-                    ·
-                  </span>
-                  <span>
-                    {t.metaLine.confidence(
-                      t.confidence[leadSignal.confidence.overall]
-                    )}
-                  </span>
-                  <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
-                    ·
-                  </span>
-                  <span>{t.signalStatus[leadSignal.status]}</span>
+                  <p className="ws-deck [text-wrap:pretty]">
+                    {getSignalExcerpt(leadSignal, 175)}
+                  </p>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => onOpenSignal(leadSignal.signal_id)}
-                  className="group inline-flex items-center gap-2 rounded-[var(--ws-radius-sm)] bg-[var(--ws-ink)] px-5 py-2.5 text-[13px] font-semibold text-[var(--ws-surface)] hover:bg-[var(--ws-editorial-accent)] hover:text-white transition-colors cursor-pointer"
-                >
-                  <span>{t.briefing.readDossier}</span>
-                  <ArrowRight className="h-3.5 w-3.5 motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5" />
-                </button>
+                <div className="space-y-3.5 pt-2 border-t border-[var(--ws-border-subtle)]">
+                  <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 ws-meta text-[12px] text-[var(--ws-ink-muted)]">
+                    <span className="font-semibold text-[var(--ws-ink)]">
+                      {t.metaLine.importance(leadSignal.importance)}
+                    </span>
+                    <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
+                      ·
+                    </span>
+                    <span>
+                      {t.metaLine.confidence(
+                        t.confidence[leadSignal.confidence.overall]
+                      )}
+                    </span>
+                    <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
+                      ·
+                    </span>
+                    <span>{t.signalStatus[leadSignal.status]}</span>
+                  </div>
+
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() => onOpenSignal(leadSignal.signal_id)}
+                      className="group inline-flex items-center gap-2 rounded-[var(--ws-radius-sm)] bg-[var(--ws-ink)] px-5 py-2.5 text-[13px] font-semibold text-[var(--ws-surface)] hover:bg-[var(--ws-editorial-accent)] hover:text-white transition-colors cursor-pointer"
+                    >
+                      <span>{t.briefing.readDossier}</span>
+                      <ArrowRight className="h-3.5 w-3.5 motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Expressive Full-Visibility Cover Plate / Verified Media Showcase */}
+              <div className="xl:col-span-7 group">
+                <StoryVisual
+                  signal={leadSignal}
+                  lang={lang}
+                  context="hero"
+                  variant="cover"
+                  tone="light"
+                  plateNumber="01"
+                />
               </div>
             </div>
 
-            {/* Expressive Hero Print Plate / Verified Media Showcase */}
-            <div className="group pt-1">
-              <StoryVisual
-                signal={leadSignal}
-                lang={lang}
-                context="hero"
-                variant="hero"
-                tone="light"
-                plateNumber="01"
-              />
-            </div>
-
-            {/* Poised Verification & Chronology Band (Compact, Grounded, Zero Void) */}
+            {/* Poised Verification & Chronology Band (Compact, Grounded, Visible Above Fold) */}
             {leadStats &&
               (() => {
                 const milestones = selectRepresentativeMilestones(
@@ -618,8 +623,8 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                       : 'grid-cols-1 sm:grid-cols-3';
 
                 return (
-                  <div className="border-t border-b border-[var(--ws-border)] bg-[var(--ws-surface-tint)]/75 px-4 py-4 sm:px-5 grid grid-cols-1 md:grid-cols-12 gap-5 items-start">
-                    <div className="md:col-span-4 md:border-r md:border-[var(--ws-border)] md:pr-5 space-y-2">
+                  <div className="border-t border-b border-[var(--ws-border)] bg-[var(--ws-surface-tint)]/75 px-4 py-3.5 sm:px-5 grid grid-cols-1 md:grid-cols-12 gap-5 items-start">
+                    <div className="md:col-span-4 md:border-r md:border-[var(--ws-border)] md:pr-5 space-y-1.5">
                       <div className="ws-kicker text-[var(--ws-ink-muted)] text-[10.5px]">
                         {lang === 'zh-CN' ? '核查溯源摘要' : 'Verification Dossier'}
                       </div>
@@ -656,7 +661,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                       </dl>
                     </div>
 
-                    <div className="md:col-span-8 space-y-2">
+                    <div className="md:col-span-8 space-y-1.5">
                       <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-[var(--ws-ink-muted)]">
                         <span className="ws-kicker text-[var(--ws-ink-secondary)] text-[10.5px]">
                           {lang === 'zh-CN'
@@ -680,7 +685,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                                 {pt.dateLabel}
                               </div>
                               <div
-                                className={`text-[12.5px] leading-[1.55] text-[var(--ws-ink-secondary)] ${
+                                className={`text-[12.5px] leading-[1.52] text-[var(--ws-ink-secondary)] ${
                                   milestones.length === 1
                                     ? 'max-w-[70ch]'
                                     : 'line-clamp-2'
@@ -703,22 +708,22 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
               })()}
           </article>
 
-          {/* RIGHT 4-COLUMN FRONT-PAGE DISPATCH RAIL (#02, #03, #04 Above the Fold) */}
+          {/* RIGHT 3-COLUMN FRONT-PAGE DISPATCH RAIL (#02, #03, #04 Above the Fold) */}
           {frontPageRail.length > 0 && (
             <aside
               aria-label={lang === 'zh-CN' ? '本期要闻导读' : 'In this edition'}
-              className="lg:col-span-4 lg:border-l lg:border-[var(--ws-border)] lg:pl-8 space-y-5"
+              className="lg:col-span-3 lg:border-l lg:border-[var(--ws-border-strong)] lg:pl-7 space-y-4"
             >
-              <div className="flex items-baseline justify-between gap-2 border-b-[2px] border-b-[var(--ws-ink)] pb-2.5">
+              <div className="flex items-baseline justify-between gap-2 border-b-[2px] border-b-[var(--ws-ink)] pb-2">
                 <span className="ws-kicker text-[var(--ws-ink)]">
                   {lang === 'zh-CN' ? '本期要闻 · 02–04' : 'In This Edition · 02–04'}
                 </span>
                 <button
                   type="button"
                   onClick={() => onSwitchView('expanded')}
-                  className="text-[12px] font-semibold text-[var(--ws-editorial-accent)] hover:underline underline-offset-4 cursor-pointer"
+                  className="text-[11.5px] font-semibold text-[var(--ws-editorial-accent)] hover:underline underline-offset-4 cursor-pointer whitespace-nowrap"
                 >
-                  {lang === 'zh-CN' ? '全部档案 →' : 'All dossiers →'}
+                  {lang === 'zh-CN' ? '全部档案 →' : 'All →'}
                 </button>
               </div>
 
@@ -728,28 +733,28 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                   return (
                     <article
                       key={signal.signal_id}
-                      className={`group space-y-2.5 ${
-                        idx === 0 ? 'pb-5' : 'py-5'
+                      className={`group space-y-2 ${
+                        idx === 0 ? 'pb-4' : 'py-4'
                       }`}
                     >
                       <div className="flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-2.5">
-                          <span className="ws-editorial-numeral text-[24px] text-[var(--ws-ink-faint)]">
+                        <div className="flex items-center gap-2">
+                          <span className="ws-editorial-numeral text-[21px] text-[var(--ws-ink-muted)]">
                             {rankLabel}
                           </span>
                           <span
-                            className="ws-kicker"
+                            className="ws-kicker text-[10.5px]"
                             style={{ color: getDomainColor(signal.domain) }}
                           >
                             {t.domains[signal.domain]}
                           </span>
                         </div>
-                        <span className="font-mono-tabular text-[11.5px] font-semibold text-[var(--ws-ink-muted)]">
+                        <span className="font-mono-tabular text-[11px] font-semibold text-[var(--ws-ink-muted)]">
                           {signal.importance}/5
                         </span>
                       </div>
 
-                      <h2 className="ws-headline-story text-[var(--ws-ink)]">
+                      <h2 className="font-display text-[16.5px] font-semibold leading-[1.32] tracking-[-0.014em] text-[var(--ws-ink)]">
                         <button
                           type="button"
                           onClick={() => onOpenSignal(signal.signal_id)}
@@ -759,11 +764,11 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
                         </button>
                       </h2>
 
-                      <p className="text-[13.5px] leading-[1.68] text-[var(--ws-ink-secondary)] line-clamp-3">
-                        {getSignalExcerpt(signal, 130)}
+                      <p className="text-[12.5px] leading-[1.6] text-[var(--ws-ink-secondary)] line-clamp-2">
+                        {getSignalExcerpt(signal, 105)}
                       </p>
 
-                      <div className="flex flex-wrap items-center justify-between gap-2 pt-0.5 ws-meta text-[11.5px] text-[var(--ws-ink-muted)]">
+                      <div className="flex flex-wrap items-center justify-between gap-2 pt-0.5 ws-meta text-[11px] text-[var(--ws-ink-muted)]">
                         <span>
                           {t.metaLine.origins(signal.independentOriginCount)} ·{' '}
                           {t.confidence[signal.confidence.overall]}
@@ -1153,7 +1158,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
               <div className="flex items-end gap-4">
                 <span
                   aria-hidden="true"
-                  className="ws-editorial-numeral text-[44px] sm:text-[56px] text-[var(--ws-world)]/22 select-none"
+                  className="ws-editorial-numeral text-[44px] sm:text-[54px] text-[var(--ws-world)]/42 select-none"
                 >
                   01
                 </span>
@@ -1330,7 +1335,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
               <div className="flex items-end gap-4">
                 <span
                   aria-hidden="true"
-                  className="ws-editorial-numeral text-[44px] sm:text-[56px] text-[#cbb4ff]/30 select-none"
+                  className="ws-editorial-numeral text-[44px] sm:text-[54px] text-[#cbb4ff]/52 select-none"
                 >
                   02
                 </span>
@@ -1505,7 +1510,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
               <div className="flex items-end gap-4">
                 <span
                   aria-hidden="true"
-                  className="ws-editorial-numeral text-[44px] sm:text-[56px] text-[var(--ws-economy)]/24 select-none"
+                  className="ws-editorial-numeral text-[44px] sm:text-[54px] text-[var(--ws-economy)]/44 select-none"
                 >
                   03
                 </span>

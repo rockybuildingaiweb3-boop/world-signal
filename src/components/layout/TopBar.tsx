@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Archive,
   Bookmark,
@@ -55,15 +55,29 @@ export const TopBar: React.FC<TopBarProps> = ({
   onChangeTheme,
 }) => {
   const t = getUiStrings(lang);
+  const [scrolledPastMasthead, setScrolledPastMasthead] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolledPastMasthead(window.scrollY > 108);
+    };
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const deferDesktopWordmark =
+    activeView === 'briefing' && !scrolledPastMasthead;
 
   return (
     <>
       <header className="sticky top-0 z-30 border-b border-[var(--ws-border)] bg-[var(--ws-canvas)]/95 backdrop-blur-sm">
-        <div className="mx-auto flex h-[56px] max-w-[1480px] items-center justify-between gap-2 sm:gap-3 lg:gap-4 px-3 sm:px-5 lg:px-8">
+        <div className="mx-auto flex h-[54px] max-w-[1480px] items-center justify-between gap-2 sm:gap-3 lg:gap-4 px-3 sm:px-5 lg:px-8">
           {/* Editorial Publication Nameplate Wordmark */}
           <button
             type="button"
             onClick={() => onSelectView('briefing')}
+            aria-label="WORLD SIGNAL"
             className="flex items-center gap-1.5 sm:gap-2.5 text-left group cursor-pointer shrink-0"
           >
             <svg
@@ -99,9 +113,28 @@ export const TopBar: React.FC<TopBarProps> = ({
               />
               <circle cx="12" cy="12" r="2" fill="var(--ws-editorial-accent)" />
             </svg>
-            <span className="font-display text-[15px] sm:text-[17.5px] lg:text-[19px] font-bold tracking-[0.04em] sm:tracking-[0.055em] lg:tracking-[0.065em] text-[var(--ws-ink)] whitespace-nowrap leading-none">
+            <span
+              className={`font-display text-[14px] sm:text-[15px] lg:text-[15.5px] font-semibold tracking-[0.08em] sm:tracking-[0.11em] text-[var(--ws-ink)] whitespace-nowrap leading-none ${
+                deferDesktopWordmark ? 'lg:hidden' : ''
+              }`}
+            >
               WORLD SIGNAL
             </span>
+            {deferDesktopWordmark && (
+              <span className="hidden lg:inline-flex items-center gap-2 ws-kicker text-[11px] text-[var(--ws-ink-muted)] whitespace-nowrap">
+                <span>{lang === 'zh-CN' ? '每日简报' : 'DAILY EDITION'}</span>
+                {activeEditionDate && (
+                  <>
+                    <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
+                      ·
+                    </span>
+                    <span className="font-mono-tabular font-semibold text-[var(--ws-ink)]">
+                      {activeEditionDate}
+                    </span>
+                  </>
+                )}
+              </span>
+            )}
           </button>
 
           {/* Desktop 4-View Editorial Navigation */}

@@ -177,7 +177,7 @@ export const SynthesisView: React.FC<SynthesisViewProps> = ({
                     <div className="flex items-baseline gap-3">
                       <span
                         aria-hidden="true"
-                        className="ws-editorial-numeral text-[36px] sm:text-[44px] text-[var(--ws-world)]/25 select-none"
+                        className="ws-editorial-numeral text-[36px] sm:text-[44px] text-[var(--ws-world)]/48 select-none"
                       >
                         {String(idx + 1).padStart(2, '0')}
                       </span>

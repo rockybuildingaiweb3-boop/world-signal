@@ -21,7 +21,7 @@ interface StoryVisualProps {
   excludeAssetIds?: ReadonlySet<string> | readonly string[];
   excludeMediaUrls?: ReadonlySet<string> | readonly string[];
   verifiedMedia?: VerifiedDocumentaryMedia | null;
-  variant?: 'hero' | 'feature' | 'dossier' | 'plate';
+  variant?: 'hero' | 'cover' | 'feature' | 'dossier' | 'plate';
   tone?: 'light' | 'dark';
   plateNumber?: string;
 }
@@ -133,13 +133,15 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
     claimTotal > 0 ? Math.max(0, 100 - confirmedPct - reportedPct) : 0;
 
   const aspectClass =
-    variant === 'hero'
-      ? 'aspect-[16/9]'
-      : variant === 'plate'
+    variant === 'cover'
+      ? 'aspect-[16/11]'
+      : variant === 'hero'
         ? 'aspect-[16/9]'
-        : variant === 'dossier'
-          ? 'aspect-[21/9]'
-          : 'aspect-[4/3]';
+        : variant === 'plate'
+          ? 'aspect-[16/9]'
+          : variant === 'dossier'
+            ? 'aspect-[21/9]'
+            : 'aspect-[4/3]';
 
   // MODE 4: Expressive Contemporary Print Typographic Cover Plate
   if (effectiveMode === 'typographic_cover') {
@@ -606,7 +608,10 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
               decoding="async"
               onError={() => markUrlFailed(media.asset_url)}
               loading={
-                variant === 'hero' || variant === 'plate' || variant === 'dossier'
+                variant === 'hero' ||
+                variant === 'cover' ||
+                variant === 'plate' ||
+                variant === 'dossier'
                   ? 'eager'
                   : 'lazy'
               }
@@ -628,7 +633,10 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
               decoding="async"
               onError={() => markUrlFailed(media.asset_url)}
               loading={
-                variant === 'hero' || variant === 'plate' || variant === 'dossier'
+                variant === 'hero' ||
+                variant === 'cover' ||
+                variant === 'plate' ||
+                variant === 'dossier'
                   ? 'eager'
                   : 'lazy'
               }
@@ -773,7 +781,11 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
             alt={verifiedMedia.alt}
             referrerPolicy="no-referrer"
             onError={() => markUrlFailed(verifiedMedia.src)}
-            loading={variant === 'hero' || variant === 'plate' ? 'eager' : 'lazy'}
+            loading={
+            variant === 'hero' || variant === 'cover' || variant === 'plate'
+              ? 'eager'
+              : 'lazy'
+          }
             className="h-full w-full object-cover object-center"
           />
         </div>
@@ -821,7 +833,11 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
           alt={lang === 'zh-CN' ? asset.altZh : asset.altEn}
           referrerPolicy="no-referrer"
           onError={() => markUrlFailed(assetSrc)}
-          loading={variant === 'hero' || variant === 'plate' ? 'eager' : 'lazy'}
+          loading={
+            variant === 'hero' || variant === 'cover' || variant === 'plate'
+              ? 'eager'
+              : 'lazy'
+          }
           className="h-full w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-[1.018]"
         />
       </div>
