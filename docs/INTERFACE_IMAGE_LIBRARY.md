@@ -38,8 +38,8 @@ License reference for all five entries: https://unsplash.com/license
 Photographer profile links:
 - Klaus Birner: https://unsplash.com/@thebrowny
 - Wolfgang Weiser: https://unsplash.com/@hamburgmeinefreundin
-- Eric Stoynov: https://unsplash.com/@ericstoynov
-- Laura Ockel: https://unsplash.com/@lauraockel
+- Eric Stoynov: profile link not independently confirmed; use the source page above.
+- Laura Ockel: profile link not independently confirmed; use the source page above.
 - Maxim Klimashin: https://unsplash.com/@maxim_klimashin
 
 ## 3. Download and local-asset requirements
