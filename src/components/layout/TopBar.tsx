@@ -4,9 +4,11 @@ import {
   Bookmark,
   FileSearch,
   Globe2,
+  Moon,
   Network,
   Search,
   ShieldCheck,
+  Sun,
 } from 'lucide-react';
 import type { UiLanguage, ViewId } from '../../types/edition';
 import { getUiStrings } from '../../lib/i18n/uiStrings';
@@ -22,6 +24,9 @@ interface TopBarProps {
   deskBadgeCount?: number;
   hasCatchUpChanges?: boolean;
   lang: UiLanguage;
+  onChangeLang: (lang: UiLanguage) => void;
+  theme: 'light' | 'dark';
+  onChangeTheme: (theme: 'light' | 'dark') => void;
 }
 
 const NAV_ITEMS: Array<{
@@ -45,22 +50,25 @@ export const TopBar: React.FC<TopBarProps> = ({
   deskBadgeCount = 0,
   hasCatchUpChanges = false,
   lang,
+  onChangeLang,
+  theme,
+  onChangeTheme,
 }) => {
   const t = getUiStrings(lang);
 
   return (
     <>
       <header className="sticky top-0 z-30 border-b border-[var(--ws-border)] bg-[var(--ws-canvas)]/95 backdrop-blur-sm">
-        <div className="mx-auto flex h-[60px] max-w-[1480px] items-center justify-between gap-2 sm:gap-4 px-3.5 sm:px-6 lg:px-8">
+        <div className="mx-auto flex h-[56px] max-w-[1480px] items-center justify-between gap-2 sm:gap-3 lg:gap-4 px-3 sm:px-5 lg:px-8">
           {/* Editorial Publication Nameplate Wordmark */}
           <button
             type="button"
             onClick={() => onSelectView('briefing')}
-            className="flex items-center gap-2 sm:gap-2.5 text-left group cursor-pointer shrink-0"
+            className="flex items-center gap-1.5 sm:gap-2.5 text-left group cursor-pointer shrink-0"
           >
             <svg
-              width="19"
-              height="19"
+              width="18"
+              height="18"
               viewBox="0 0 24 24"
               fill="none"
               aria-hidden="true"
@@ -91,7 +99,7 @@ export const TopBar: React.FC<TopBarProps> = ({
               />
               <circle cx="12" cy="12" r="2" fill="var(--ws-editorial-accent)" />
             </svg>
-            <span className="font-display text-[17px] sm:text-[20px] font-bold tracking-[0.055em] sm:tracking-[0.065em] text-[var(--ws-ink)] whitespace-nowrap leading-none">
+            <span className="font-display text-[15px] sm:text-[17.5px] lg:text-[19px] font-bold tracking-[0.04em] sm:tracking-[0.055em] lg:tracking-[0.065em] text-[var(--ws-ink)] whitespace-nowrap leading-none">
               WORLD SIGNAL
             </span>
           </button>
@@ -99,7 +107,7 @@ export const TopBar: React.FC<TopBarProps> = ({
           {/* Desktop 4-View Editorial Navigation */}
           <nav
             aria-label="Primary navigation"
-            className="hidden md:flex items-center gap-5 lg:gap-8 h-full"
+            className="hidden md:flex items-center gap-3.5 lg:gap-7 h-full"
           >
             {NAV_ITEMS.map(({ id }) => {
               const isActive = activeView === id;
@@ -109,7 +117,7 @@ export const TopBar: React.FC<TopBarProps> = ({
                   type="button"
                   onClick={() => onSelectView(id)}
                   aria-current={isActive ? 'page' : undefined}
-                  className={`group relative inline-flex h-full items-center px-0.5 text-[13.5px] lg:text-[14px] tracking-[0.012em] transition-colors cursor-pointer whitespace-nowrap ${
+                  className={`group relative inline-flex h-full items-center px-0.5 text-[13px] lg:text-[14px] tracking-[0.012em] transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                     isActive
                       ? 'font-semibold text-[var(--ws-ink)]'
                       : 'font-medium text-[var(--ws-ink-muted)] hover:text-[var(--ws-ink)]'
@@ -130,13 +138,13 @@ export const TopBar: React.FC<TopBarProps> = ({
           </nav>
 
           {/* Cohesive Editorial Utility Cluster (Hairline-Separated, Non-Boxy) */}
-          <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
+          <div className="flex items-center gap-0.5 lg:gap-1 shrink-0">
             <button
               type="button"
               data-testid="topbar-search-trigger"
               onClick={onOpenSearch}
               aria-label={`${t.globalSearch.triggerLabel} (${t.globalSearch.shortcutHint})`}
-              className="inline-flex h-[34px] items-center gap-1.5 rounded-[var(--ws-radius-sm)] px-2 sm:px-2.5 text-[12.5px] font-medium text-[var(--ws-ink-secondary)] hover:bg-[var(--ws-surface-subtle)] hover:text-[var(--ws-ink)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
+              className="inline-flex h-[32px] items-center gap-1.5 rounded-[var(--ws-radius-sm)] px-1.5 sm:px-2 lg:px-2.5 text-[12.5px] font-medium text-[var(--ws-ink-secondary)] hover:bg-[var(--ws-surface-subtle)] hover:text-[var(--ws-ink)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
             >
               <Search className="h-3.5 w-3.5 text-[var(--ws-ink-muted)] shrink-0" />
               <span className="hidden xl:inline">{t.globalSearch.triggerLabel}</span>
@@ -147,7 +155,7 @@ export const TopBar: React.FC<TopBarProps> = ({
 
             <span
               aria-hidden="true"
-              className="hidden sm:block h-3.5 w-px bg-[var(--ws-border)] mx-0.5"
+              className="hidden lg:block h-3.5 w-px bg-[var(--ws-border)] mx-0.5"
             />
 
             <button
@@ -155,7 +163,7 @@ export const TopBar: React.FC<TopBarProps> = ({
               data-testid="topbar-desk-trigger"
               onClick={onOpenReaderDesk}
               aria-label={t.readerDesk.dialogTitle}
-              className="relative inline-flex h-[34px] items-center gap-1.5 rounded-[var(--ws-radius-sm)] px-2 sm:px-2.5 text-[12.5px] font-medium text-[var(--ws-ink-secondary)] hover:bg-[var(--ws-surface-subtle)] hover:text-[var(--ws-ink)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
+              className="relative inline-flex h-[32px] items-center gap-1.5 rounded-[var(--ws-radius-sm)] px-1.5 sm:px-2 lg:px-2.5 text-[12.5px] font-medium text-[var(--ws-ink-secondary)] hover:bg-[var(--ws-surface-subtle)] hover:text-[var(--ws-ink)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
             >
               <Bookmark
                 className={`h-3.5 w-3.5 shrink-0 ${
@@ -183,7 +191,56 @@ export const TopBar: React.FC<TopBarProps> = ({
 
             <span
               aria-hidden="true"
-              className="hidden sm:block h-3.5 w-px bg-[var(--ws-border)] mx-1"
+              className="hidden lg:block h-3.5 w-px bg-[var(--ws-border)] mx-0.5"
+            />
+
+            {/* Quick Bilingual Switch (EN / 中文) */}
+            <button
+              type="button"
+              data-testid="topbar-lang-toggle"
+              onClick={() => onChangeLang(lang === 'en' ? 'zh-CN' : 'en')}
+              aria-label={lang === 'en' ? '切换至中文界面' : 'Switch interface to English'}
+              title={lang === 'en' ? '切换至中文' : 'Switch to English'}
+              className="inline-flex h-[32px] items-center justify-center rounded-[var(--ws-radius-sm)] px-1.5 sm:px-2 text-[11.5px] font-semibold tracking-[0.02em] text-[var(--ws-ink-secondary)] hover:bg-[var(--ws-surface-subtle)] hover:text-[var(--ws-ink)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
+            >
+              {lang === 'en' ? '中文' : 'EN'}
+            </button>
+
+            {/* Quick Light / Dark Editorial Theme Toggle */}
+            <button
+              type="button"
+              data-testid="topbar-theme-toggle"
+              onClick={() => onChangeTheme(theme === 'light' ? 'dark' : 'light')}
+              aria-label={
+                theme === 'light'
+                  ? lang === 'zh-CN'
+                    ? '切换深色阅读模式'
+                    : 'Switch to dark mode'
+                  : lang === 'zh-CN'
+                    ? '切换浅色纸面模式'
+                    : 'Switch to light mode'
+              }
+              title={
+                theme === 'light'
+                  ? lang === 'zh-CN'
+                    ? '深色模式'
+                    : 'Dark edition'
+                  : lang === 'zh-CN'
+                    ? '浅色纸面'
+                    : 'Light paper'
+              }
+              className="inline-flex h-[32px] w-[28px] sm:w-[32px] items-center justify-center rounded-[var(--ws-radius-sm)] text-[var(--ws-ink-muted)] hover:bg-[var(--ws-surface-subtle)] hover:text-[var(--ws-ink)] transition-colors cursor-pointer shrink-0"
+            >
+              {theme === 'light' ? (
+                <Moon className="h-3.5 w-3.5" />
+              ) : (
+                <Sun className="h-3.5 w-3.5" />
+              )}
+            </button>
+
+            <span
+              aria-hidden="true"
+              className="hidden lg:block h-3.5 w-px bg-[var(--ws-border)] mx-0.5"
             />
 
             <button
@@ -191,10 +248,10 @@ export const TopBar: React.FC<TopBarProps> = ({
               data-testid="topbar-archive-trigger"
               onClick={onOpenArchive}
               aria-label={t.archive.button}
-              className="inline-flex h-[34px] items-center gap-2 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-2.5 sm:px-3 text-[12.5px] font-medium text-[var(--ws-ink)] hover:border-[var(--ws-border-strong)] hover:bg-[var(--ws-surface-subtle)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
+              className="inline-flex h-[32px] items-center gap-1.5 lg:gap-2 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-2 lg:px-3 text-[12.5px] font-medium text-[var(--ws-ink)] hover:border-[var(--ws-border-strong)] hover:bg-[var(--ws-surface-subtle)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
             >
               <Archive className="h-3.5 w-3.5 text-[var(--ws-ink-muted)] shrink-0" />
-              <span className="hidden sm:inline">{t.archive.button}</span>
+              <span className="hidden lg:inline">{t.archive.button}</span>
               {isLocalPreview ? (
                 <span className="font-mono-tabular text-[11px] font-semibold text-[var(--ws-warn)] border-l border-[var(--ws-border)] pl-2">
                   LOCAL

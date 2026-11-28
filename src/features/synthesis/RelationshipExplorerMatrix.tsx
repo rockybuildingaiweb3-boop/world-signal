@@ -259,8 +259,8 @@ export const RelationshipExplorerMatrix: React.FC<
         : TOP_OFFSET;
 
     const svgHeight = Math.max(
-      240,
-      TOP_OFFSET + maxColNodes * (NODE_HEIGHT + NODE_GAP) + 38
+      250,
+      TOP_OFFSET + maxColNodes * (NODE_HEIGHT + NODE_GAP) + 56
     );
 
     return { positions, byDomain, svgHeight, aiBottom };
@@ -378,7 +378,7 @@ export const RelationshipExplorerMatrix: React.FC<
                 setFocusedSignalId(e.target.value);
                 setSelectedEdgeId(null);
               }}
-              className="max-w-[300px] sm:max-w-[380px] rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-2.5 py-1.5 text-xs text-[var(--ws-ink)]"
+              className="max-w-[300px] sm:max-w-[380px] rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-2.5 py-1.5 text-xs text-[var(--ws-ink)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ws-editorial-accent)]"
             >
               <option value="all">
                 {t.synthesis.relationshipFocusAll} ({connectedHubSignals.length})
@@ -495,7 +495,7 @@ export const RelationshipExplorerMatrix: React.FC<
                     layout.aiBottom + 14 + (idx % 4) * 6,
                     Math.max(y1, y2) + 18
                   );
-                  const clampedY = Math.min(detourY, layout.svgHeight - 8);
+                  const clampedY = Math.min(detourY, layout.svgHeight - 14);
                   const midX1 = goingRight ? x1 + 92 : x1 - 92;
                   const midX2 = goingRight ? x2 - 92 : x2 + 92;
                   pathD = `M ${x1} ${y1} C ${midX1} ${clampedY}, ${midX2} ${clampedY}, ${x2} ${y2}`;

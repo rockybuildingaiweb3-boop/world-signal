@@ -417,9 +417,12 @@ export const App: React.FC = () => {
         deskBadgeCount={deskBadgeCount}
         hasCatchUpChanges={hasCatchUpChanges}
         lang={lang}
+        onChangeLang={setLang}
+        theme={theme}
+        onChangeTheme={setTheme}
       />
 
-      <main className="mx-auto w-full max-w-[1480px] flex-1 px-4 pt-5 sm:px-6 lg:px-8 sm:pt-8">
+      <main className="mx-auto w-full max-w-[1480px] flex-1 px-4 pt-4 sm:px-6 lg:px-8 sm:pt-6">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-24 gap-3 text-sm text-[var(--ws-ink-muted)]">
             <RefreshCw className="h-5 w-5 animate-spin" />

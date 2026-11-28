@@ -134,7 +134,7 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
 
   const aspectClass =
     variant === 'hero'
-      ? 'aspect-[16/10]'
+      ? 'aspect-[16/9]'
       : variant === 'plate'
         ? 'aspect-[16/9]'
         : variant === 'dossier'
@@ -382,7 +382,7 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
 
         <div className="grid grid-cols-3 gap-4 border-b border-[var(--ws-border-subtle)] pb-4">
           <div className="space-y-1">
-            <div className="ws-editorial-numeral text-[32px] sm:text-[38px]">
+            <div className="ws-editorial-numeral font-mono-tabular text-[30px] sm:text-[36px]">
               {stats.independentOriginsCount}
             </div>
             <div
@@ -396,7 +396,7 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
             </div>
           </div>
           <div className="space-y-1">
-            <div className="ws-editorial-numeral text-[32px] sm:text-[38px]">
+            <div className="ws-editorial-numeral font-mono-tabular text-[30px] sm:text-[36px]">
               {stats.claimsCount}
             </div>
             <div
@@ -410,7 +410,7 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
             </div>
           </div>
           <div className="space-y-1">
-            <div className="ws-editorial-numeral text-[32px] sm:text-[38px]">
+            <div className="ws-editorial-numeral font-mono-tabular text-[30px] sm:text-[36px]">
               {stats.sourcesCount}
             </div>
             <div
@@ -540,7 +540,7 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
                     {pt.dateLabel}
                   </span>
                   <span
-                    className={`line-clamp-1 ${
+                    className={`line-clamp-2 ${
                       isDarkPlate
                         ? 'text-[var(--ws-plate-secondary)]'
                         : 'text-[var(--ws-ink-secondary)]'
@@ -618,7 +618,7 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
             className={`relative overflow-hidden border ${aspectClass} w-full flex items-center justify-center p-3 sm:p-4 ${
               isDarkPlate
                 ? 'border-[var(--ws-plate-border)] bg-[var(--ws-plate-elevated)]'
-                : 'border-[var(--ws-border)] bg-[var(--ws-surface-subtle)]'
+                : 'border-[var(--ws-border)] bg-[var(--ws-surface-tint)]'
             }`}
           >
             <img

@@ -385,18 +385,18 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
   const econDispatches = domainTopSignals.economy.slice(1, 5);
 
   return (
-    <div className="space-y-12 pb-16">
+    <div className="space-y-10 pb-16">
       {/* =====================================================================
           FRONT-PAGE PUBLICATION MASTHEAD (Iconic Broadsheet Nameplate + Folio)
          ===================================================================== */}
       <header
         aria-label="Edition masthead"
         data-testid="briefing-masthead"
-        className="space-y-3"
+        className="space-y-2"
       >
-        {/* Top Vermilion Signature Hairline + Edition Nameplate */}
-        <div className="border-t-[3px] border-t-[var(--ws-ink)] pt-4 pb-3 border-b border-b-[var(--ws-border-strong)]">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-3 lg:gap-x-6 items-end">
+        {/* Top Ink Rule + Edition Nameplate */}
+        <div className="border-t-[3px] border-t-[var(--ws-ink)] pt-3 pb-2.5 border-b border-b-[var(--ws-border-strong)]">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-2.5 lg:gap-x-6 items-end">
             {/* Left Folio Column: Edition Date & Sync Cycle */}
             <div className="lg:col-span-3 flex flex-wrap lg:flex-col gap-x-2.5 gap-y-0.5 text-[12px] text-[var(--ws-ink-secondary)]">
               <span className="font-semibold text-[var(--ws-ink)] tracking-[-0.005em]">
@@ -408,7 +408,7 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
             </div>
 
             {/* Center Monumental Wordmark */}
-            <div className="lg:col-span-6 lg:text-center space-y-1">
+            <div className="lg:col-span-6 lg:text-center space-y-0.5">
               <div className="inline-flex items-center lg:justify-center gap-3">
                 <span
                   aria-hidden="true"

@@ -143,18 +143,18 @@ export const AuditView: React.FC<AuditViewProps> = ({
             </div>
             <div>
               <dt className="text-[11px] text-[var(--ws-ink-muted)]">
-                {t.audit.overviewCards.independentOrigins}
+                {lang === 'zh-CN' ? '来源记录总数' : 'Source Records'}
               </dt>
-              <dd className="mt-0.5 ws-editorial-numeral text-[26px] text-[var(--ws-conf-high)]">
-                {summary.independentOriginCount}
+              <dd className="mt-0.5 ws-editorial-numeral text-[26px] text-[var(--ws-world)]">
+                {summary.totalRecords}
               </dd>
             </div>
             <div>
               <dt className="text-[11px] text-[var(--ws-ink-muted)]">
-                {t.audit.overviewCards.claimsAudited}
+                {t.expanded.unregisteredCandidate}
               </dt>
-              <dd className="mt-0.5 ws-editorial-numeral text-[26px] text-[var(--ws-ink)]">
-                {allClaims.length}
+              <dd className="mt-0.5 ws-editorial-numeral text-[26px] text-[var(--ws-ink-secondary)]">
+                {summary.unregisteredRecords}
               </dd>
             </div>
             <div>

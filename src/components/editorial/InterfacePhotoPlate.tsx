@@ -81,11 +81,11 @@ export const InterfacePhotoPlate: React.FC<InterfacePhotoPlateProps> = ({
   const sourceLabel = lang === 'zh-CN' ? '来源' : 'Source';
 
   const responsiveSizes =
-    resolvedAspect === '21/9'
-      ? '(min-width: 1280px) 1040px, 100vw'
-      : resolvedAspect === '16/9'
-        ? '(min-width: 1024px) 760px, 100vw'
-        : '(min-width: 1024px) 460px, 100vw';
+    resolvedAspect === '21/8' || resolvedAspect === '21/9'
+      ? '(min-width: 1280px) 1360px, 100vw'
+      : resolvedAspect === '16/9' || resolvedAspect === '16/10'
+        ? '(min-width: 1024px) 780px, 100vw'
+        : '(min-width: 1024px) 480px, 100vw';
   const webpWidth800 =
     photo.orientation === 'portrait'
       ? Math.round((photo.naturalWidth / photo.naturalHeight) * 800)

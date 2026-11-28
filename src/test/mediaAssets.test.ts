@@ -621,6 +621,21 @@ describe('Phase 07 — Publishing Validator (scripts/build-public-content.mjs)',
       assert.equal(entry.date, file.replace(/\.md$/, ''));
     }
 
+    // Historical pre-media canonical archive edition remains valid with empty mediaAssets
+    const earliestFile = files[0];
+    const earliestRaw = fs.readFileSync(path.join(editionsDir, earliestFile), 'utf8');
+    const parsedEarliest = parseEditionMarkdown(
+      earliestRaw,
+      `/editions/2026/11/${earliestFile}`,
+      { expectedDate: earliestFile.replace(/\.md$/, '') }
+    );
+    assert.ok(parsedEarliest.signals.length > 0);
+    for (const sig of parsedEarliest.signals) {
+      assert.deepEqual(sig.mediaAssets, []);
+      assert.doesNotThrow(() => validateMediaAssets(undefined, sig.signal_id));
+    }
+
+    // Latest canonical edition parses cleanly; any included media_assets must be fully approved
     const latestFile = files[files.length - 1];
     const latestRaw = fs.readFileSync(path.join(editionsDir, latestFile), 'utf8');
     const parsedLatest = parseEditionMarkdown(
@@ -630,8 +645,16 @@ describe('Phase 07 — Publishing Validator (scripts/build-public-content.mjs)',
     );
     assert.ok(parsedLatest.signals.length > 0);
     for (const sig of parsedLatest.signals) {
-      assert.deepEqual(sig.mediaAssets, []);
-      assert.doesNotThrow(() => validateMediaAssets(undefined, sig.signalId));
+      for (const asset of sig.mediaAssets) {
+        assert.equal(asset.isApprovedForDisplay, true);
+        assert.equal(asset.rights.public_web_display_allowed, true);
+      }
+      assert.doesNotThrow(() =>
+        validateMediaAssets(
+          sig.mediaAssets.length > 0 ? sig.mediaAssets : undefined,
+          sig.signal_id
+        )
+      );
     }
     assert.equal(
       parsedLatest.validation.errors.filter((e) => e.code.includes('MEDIA'))

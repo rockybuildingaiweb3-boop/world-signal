@@ -55,10 +55,10 @@ All foreground/background pairs maintain WCAG AA contrast (`>= 4.5:1` for prose,
 ### 4.1 Briefing — Front-Page Publication Cover
 1. **Front-Page Publication Masthead**: A dedicated editorial nameplate (`WORLD SIGNAL` in monumental Fraunces display type with globe-meridian monogram, vermilion top rule, and publication descriptor) paired with an aligned Edition Folio (date, sync cycle, coverage window, signal/origin/claim totals, diagnostics alert, and refresh trigger). Distinct from the compact sticky TopBar.
 2. **Asymmetric 8:4 Front-Page Cover Spread (Open Paper)**:
-   - **Left 8 columns (Lead Story)**: Oversized editorial headline, clean narrative deck, prominent 16:10 `StoryVisual` showcase plate, and a poised **Verification & Chronology Strip** below the visual (eliminating the empty dark void of the legacy 6:6 black box).
+   - **Left 8 columns (Lead Story)**: Oversized editorial headline, clean narrative deck, prominent 16:9 `StoryVisual` showcase plate, and a poised **Verification & Chronology Strip** below the visual (eliminating the empty dark void of the legacy 6:6 black box).
    - **Right 4 columns ("In This Edition" Front-Page Rail)**: Hairline-separated front-page dispatch column showcasing Ranks `#02`, `#03`, and `#04` directly inside the initial desktop viewport, immediately inviting exploration.
 3. **Executive Summary Spread**: Full-width warm tonal paper spread pairing the editorial briefing (with refined drop-cap opening in English) against an FT-style Domain Composition Breakdown (stacked ribbon + per-domain shares + `5/5` priority counts) and collapsible Editorial Limitations.
-4. **Tiered Secondary Hierarchy**: Dedicated asymmetric visual feature spread for Rank `#02` (anti-repetition `StoryVisual`), followed by a crisp 3-column numbered dispatch index for Ranks `#05–#10`.
+4. **Tiered Secondary Hierarchy**: Dedicated asymmetric visual feature spread for Rank `#05` (anti-repetition `StoryVisual`), followed by a crisp 3-column numbered dispatch index for Ranks `#06–#10`.
 5. **Daily Delta & Catch-Up Continuity**: Harmonized newsroom change ledger preserving exact deterministic diffs and the *Omission Is Not Resolution* safeguard.
 6. **Three Unmistakably Distinct Domain Desks**:
    - **World Events** (`ws-desk-world`): Crisp warm-ivory foreign affairs broadsheet with oversized `01` numeral, panoramic dusk skyline photography (`world-city-aerial.jpg`), featured geopolitical dispatch, and maritime freight corridor strip (`world-maritime-port.jpg`).
