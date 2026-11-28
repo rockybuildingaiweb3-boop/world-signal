@@ -18,6 +18,17 @@ Visual media is used strictly to improve understanding of consequential real-wor
 
 Do **not** attach imagery merely to fill empty layouts or decorate every signal. An absent `media_assets` array or `media_assets: []` is always preferable to an unverified, poorly matched, or legally ambiguous image.
 
+### 1.1 Editorial selection priority
+
+Use signal importance to allocate visual-research effort, not to relax the rights or verification standard:
+
+- **Importance 5:** Actively search for a story-specific visual, starting with the Briefing lead story. If no suitable rights-cleared asset can be verified, publish no image and disclose the limitation where relevant.
+- **Importance 4:** Strongly consider sourcing an image when it materially improves comprehension or provides relevant documentary context.
+- **Importance 3:** Search selectively only when a visual adds meaningful explanatory value.
+- **Importance 1–2:** Normally omit image research unless a rare, clearly justified visual adds substantial reader value.
+
+Prefer one excellent image per selected signal. A second image is justified only when it adds a distinct, verified perspective or a different documented stage. There is no image quota and no requirement to attach an image to every signal. Prioritize the lead story and a small number of consequential secondary stories; never use an unrelated image to fill a layout.
+
 ---
 
 ## 2. Supported media categories and signal relationships
