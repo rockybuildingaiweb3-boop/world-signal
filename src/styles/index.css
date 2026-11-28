@@ -458,7 +458,7 @@
    THREE DISTINCT EDITORIAL DESK ARCHITECTURES
    ========================================================================== */
 
-/* Desk I — World Events: Crisp Foreign Affairs Broadsheet on Pure Warm Ivory */
+/* Desk I — World Events: Global Documentary Broadsheet on Pure Warm Ivory */
 .ws-desk-world {
   background-color: var(--ws-desk-world-bg);
   border-top: 3px solid var(--ws-world);
@@ -466,7 +466,11 @@
   box-shadow: var(--ws-shadow-sm);
 }
 
-/* Desk II — AI Frontier: Nocturnal Technical Monograph Plate (No Neon Clichés) */
+.ws-cartographic-strip {
+  border-bottom: 1px dashed color-mix(in srgb, var(--ws-world) 34%, var(--ws-border));
+}
+
+/* Desk II — AI Frontier: Scientific Modernism Nocturnal Monograph (Zero Neon) */
 .ws-desk-ai-plate {
   background-color: var(--ws-desk-ai-bg);
   color: var(--ws-plate-ink);
@@ -477,13 +481,37 @@
   box-shadow: var(--ws-shadow-md);
 }
 
-/* Desk III — Economic Outlook: FT-Inspired Warm Parchment-Salmon Financial Folio */
+.ws-scientific-grid {
+  background-image:
+    linear-gradient(
+      to right,
+      rgba(203, 180, 255, 0.045) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(203, 180, 255, 0.045) 1px,
+      transparent 1px
+    );
+  background-size: 28px 28px;
+}
+
+/* Desk III — Economic Outlook: Institutional & Economic Humanism Folio */
 .ws-desk-economy {
   background-color: var(--ws-desk-econ-bg);
   border-top: 3px solid var(--ws-economy);
   border-bottom: 1px solid var(--ws-border-strong);
   border-left: 1px solid var(--ws-border);
   border-right: 1px solid var(--ws-border);
+}
+
+.ws-financial-ledger-row {
+  border-bottom: 1px solid var(--ws-border-strong);
+}
+
+/* Wide Documentary Image Break Band */
+.ws-documentary-break {
+  background-color: color-mix(in srgb, var(--ws-surface-tint) 62%, var(--ws-canvas));
 }
 
 /* Subtle Architectural Drafting Surface for Relationship Atlas */

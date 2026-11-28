@@ -34,12 +34,19 @@ import {
   selectVisualStrategyForSignal,
   type VisualSelectionResult,
 } from '../../lib/editorial/editorialAssetRegistry';
-import { getInterfacePhoto } from '../../lib/editorial/interfaceImageLibrary';
+import {
+  getInterfacePhoto,
+  selectDeskPhotoSet,
+} from '../../lib/editorial/interfaceImageLibrary';
 import { SafeMarkdown } from '../../components/editorial/SafeMarkdown';
 import { SignalMetaLine } from '../../components/editorial/SignalMetaLine';
-import { DomainEditorialEmblem } from '../../components/editorial/EditorialSignalArtwork';
-import { InterfacePhotoPlate } from '../../components/editorial/InterfacePhotoPlate';
 import { StoryVisual } from '../../components/editorial/StoryVisual';
+import { DocumentaryImageBreak } from '../../components/editorial/compositions/DocumentaryImageBreak';
+import {
+  AiModernistDesk,
+  EconomicHumanismDesk,
+  WorldDocumentaryDesk,
+} from '../../components/editorial/compositions/DomainDesks';
 import { DailyDeltaSection } from './DailyDeltaSection';
 import { CatchUpBanner } from './CatchUpBanner';
 
@@ -383,6 +390,27 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
 
   const aiDispatches = domainTopSignals.ai.slice(1, 5);
   const econDispatches = domainTopSignals.economy.slice(1, 5);
+
+  // Content-responsive, zero-repetition photographic allocation across the
+  // Documentary Image Break and all three Domain Desks (10 distinct local WebP plates)
+  const homepagePhotos = useMemo(() => {
+    const breakPhoto = getInterfacePhoto('world-earth-observation');
+    const used = new Set<string>([breakPhoto.id]);
+
+    const world = selectDeskPhotoSet('world', domainTopSignals.world, used);
+    used.add(world.primary.id);
+    used.add(world.secondary.id);
+    used.add(world.tertiary.id);
+
+    const ai = selectDeskPhotoSet('ai', domainTopSignals.ai, used);
+    used.add(ai.primary.id);
+    used.add(ai.secondary.id);
+    used.add(ai.tertiary.id);
+
+    const economy = selectDeskPhotoSet('economy', domainTopSignals.economy, used);
+
+    return { breakPhoto, world, ai, economy };
+  }, [domainTopSignals]);
 
   return (
     <div className="space-y-10 pb-16">
@@ -1108,28 +1136,32 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
       )}
 
       {/* =====================================================================
-          DAILY DELTA — ELEVATED NEWSROOM UPDATE LEDGER
+          WIDE DOCUMENTARY IMAGE BREAK (Editorial Visual Breathing Room)
          ===================================================================== */}
-      {dailyDelta && (
-        <DailyDeltaSection
-          state={dailyDelta}
-          lang={lang}
-          onOpenSignalInEdition={
-            onOpenSignalInEdition ?? ((_date, id) => onOpenSignal(id))
-          }
-          onRetry={onRetryDailyDelta}
-          onOpenComparison={onOpenComparison}
-        />
-      )}
+      <DocumentaryImageBreak
+        photo={homepagePhotos.breakPhoto}
+        lang={lang}
+        kickerEn="Global Perspective"
+        kickerZh="全球视角 · 跨领域观察"
+        titleEn="One interconnected edition across diplomacy, frontier compute, and macro policy"
+        titleZh="外交地缘、前沿算力与宏观经济在同一份核查版图中的联动"
+        bodyEn="Explore explicit cross-domain relationships, verified reporting origins, and edition-to-edition storyline shifts across all three desks."
+        bodyZh="在三大独立编辑部之外，您可进入综合图谱查看明确标注的跨领域关联、独立报道来源分布与连续刊期演变。"
+        folioCode={`EDITION ${frontmatter.edition_date} · PLATE IV`}
+        ctaLabelEn="Open Cross-Domain Synthesis"
+        ctaLabelZh="查看跨领域综合图谱"
+        onCtaClick={() => onSwitchView('synthesis')}
+      />
 
       {/* =====================================================================
-          THREE UNMISTAKABLY DISTINCT EDITORIAL DESKS
+          THREE UNMISTAKABLY DISTINCT EDITORIAL VISUAL WORLDS
+          (World = Global Documentary · AI = Scientific Modernism · Economy = Institutional Humanism)
          ===================================================================== */}
-      <section aria-label={t.briefing.domainsOverviewTitle} className="space-y-10">
+      <section aria-label={t.briefing.domainsOverviewTitle} className="space-y-12">
         <div className="ws-rule-section pt-4 flex flex-wrap items-baseline justify-between gap-3">
           <div className="space-y-1">
             <div className="ws-kicker text-[var(--ws-editorial-accent)]">
-              {lang === 'zh-CN' ? '三大编辑部板块' : 'Editorial Desks'}
+              {lang === 'zh-CN' ? '三大独立编辑部板块' : 'Three Editorial Worlds'}
             </div>
             <h2 className="font-display text-[26px] sm:text-[32px] font-semibold tracking-[-0.02em] text-[var(--ws-ink)]">
               {t.briefing.domainsOverviewTitle}
@@ -1147,518 +1179,60 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
           )}
         </div>
 
-        {/* DESK I — WORLD EVENTS: Crisp Warm-Ivory Foreign Affairs Broadsheet */}
         {worldProfile && (
-          <div
-            data-testid="desk-world-events"
-            className="ws-desk-world p-6 sm:p-8 lg:p-9 space-y-7"
-          >
-            {/* Distinct Desk I Header with Oversized Watermark Numeral */}
-            <div className="flex flex-wrap items-end justify-between gap-4 border-b border-[var(--ws-border)] pb-4">
-              <div className="flex items-end gap-4">
-                <span
-                  aria-hidden="true"
-                  className="ws-editorial-numeral text-[44px] sm:text-[54px] text-[var(--ws-world)]/42 select-none"
-                >
-                  01
-                </span>
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <DomainEditorialEmblem domain="world" className="h-4 w-4" />
-                    <span
-                      className="ws-kicker"
-                      style={{ color: 'var(--ws-world)' }}
-                    >
-                      {lang === 'zh-CN'
-                        ? '外交与地缘政治部'
-                        : 'Foreign Affairs Desk'}
-                    </span>
-                  </div>
-                  <h3 className="font-display text-[26px] sm:text-[32px] font-semibold tracking-[-0.02em] text-[var(--ws-ink)] leading-none">
-                    {t.domains.world}
-                  </h3>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-                <div className="ws-meta text-[12.5px] text-[var(--ws-ink-muted)]">
-                  <span className="font-semibold text-[var(--ws-ink)]">
-                    {worldProfile.total}
-                  </span>{' '}
-                  · {t.briefing.domainShareLabel(worldProfile.sharePct)} · 5/5:{' '}
-                  {worldProfile.imp5Count} · 4/5: {worldProfile.imp4Count}
-                </div>
-                <button
-                  type="button"
-                  onClick={() => onExploreDomain('world')}
-                  className="inline-flex items-center gap-1.5 text-[13px] font-semibold hover:underline underline-offset-4 cursor-pointer"
-                  style={{ color: 'var(--ws-world)' }}
-                >
-                  <span>
-                    {t.briefing.exploreDomain} ({worldProfile.total})
-                  </span>
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </button>
-              </div>
-            </div>
-
-            {/* Row 1: Panoramic Urban Skyline (Clean Top-Cropped 21:8) Above Split Foreign Feature */}
-            <div className="space-y-6">
-              <div className="group">
-                <InterfacePhotoPlate
-                  photo={getInterfacePhoto('world-city-aerial')}
-                  lang={lang}
-                  aspect="21/8"
-                  objectPositionOverride="50% 0%"
-                  compact
-                  plateLabel={
-                    lang === 'zh-CN' ? '国际部 · 都市天际线' : 'DESK I · METROPOLITAN CONTEXT'
-                  }
-                />
-              </div>
-
-              {visualAllocation.worldDeskSignal && (
-                <article className="border-t border-[var(--ws-border)] pt-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-baseline">
-                  <div className="lg:col-span-7 space-y-3">
-                    <div className="flex items-center gap-3 ws-meta text-[12px] text-[var(--ws-ink-muted)]">
-                      <span className="font-semibold text-[var(--ws-world)]">
-                        {visualAllocation.worldDeskSignal.topic}
-                      </span>
-                      <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
-                        ·
-                      </span>
-                      <span className="font-mono-tabular font-semibold text-[var(--ws-ink)]">
-                        {t.metaLine.importance(
-                          visualAllocation.worldDeskSignal.importance
-                        )}
-                      </span>
-                    </div>
-                    <h4 className="ws-headline-feature text-[var(--ws-ink)]">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          onOpenSignal(
-                            visualAllocation.worldDeskSignal!.signal_id
-                          )
-                        }
-                        className="text-left ws-headline-link hover:text-[var(--ws-world)] cursor-pointer"
-                      >
-                        {visualAllocation.worldDeskSignal.headline}
-                      </button>
-                    </h4>
-                  </div>
-
-                  <div className="lg:col-span-5 space-y-3.5">
-                    <p className="text-[14.5px] leading-[1.74] text-[var(--ws-ink-secondary)]">
-                      {getSignalExcerpt(visualAllocation.worldDeskSignal, 190)}
-                    </p>
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                      <SignalMetaLine
-                        signal={visualAllocation.worldDeskSignal}
-                        lang={lang}
-                        compact
-                      />
-                      <button
-                        type="button"
-                        onClick={() =>
-                          onOpenSignal(
-                            visualAllocation.worldDeskSignal!.signal_id
-                          )
-                        }
-                        className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-[var(--ws-ink)] hover:text-[var(--ws-world)] transition-colors cursor-pointer"
-                      >
-                        <span>{t.briefing.readDossier}</span>
-                        <ArrowRight className="h-3.5 w-3.5" />
-                      </button>
-                    </div>
-                  </div>
-                </article>
-              )}
-            </div>
-
-            {/* Row 2: Maritime Freight Corridor Plate + 2-Column Foreign Correspondent Ledger */}
-            <div className="border-t border-[var(--ws-border)] pt-6 grid grid-cols-1 lg:grid-cols-12 gap-7 lg:gap-10 items-start">
-              <div className="lg:col-span-4 group">
-                <InterfacePhotoPlate
-                  photo={getInterfacePhoto('world-maritime-port')}
-                  lang={lang}
-                  aspect="16/10"
-                  compact
-                  plateLabel={
-                    lang === 'zh-CN' ? '航运贸易 · 港口语境' : 'DESK I · MARITIME CORRIDOR'
-                  }
-                />
-              </div>
-
-              <div className="lg:col-span-8 lg:border-l lg:border-[var(--ws-border)] lg:pl-8 grid grid-cols-1 sm:grid-cols-2 gap-x-7 gap-y-5">
-                {worldDispatches.map((sig) => (
-                  <article
-                    key={sig.signal_id}
-                    className="group border-b border-[var(--ws-border-subtle)] pb-4 space-y-2"
-                  >
-                    <div className="flex items-center justify-between gap-2 ws-meta text-[11.5px] text-[var(--ws-ink-muted)]">
-                      <span className="truncate">{sig.topic}</span>
-                      <span className="shrink-0 font-mono-tabular font-semibold text-[var(--ws-world)]">
-                        {sig.importance}/5
-                      </span>
-                    </div>
-                    <h4 className="font-display text-[17px] font-semibold leading-snug text-[var(--ws-ink)]">
-                      <button
-                        type="button"
-                        onClick={() => onOpenSignal(sig.signal_id)}
-                        className="text-left ws-headline-link group-hover:text-[var(--ws-world)] cursor-pointer"
-                      >
-                        {sig.headline}
-                      </button>
-                    </h4>
-                    <p className="text-[13px] leading-relaxed text-[var(--ws-ink-secondary)] line-clamp-2">
-                      {getSignalExcerpt(sig, 110)}
-                    </p>
-                    <div className="ws-meta text-[11.5px] text-[var(--ws-ink-muted)]">
-                      {t.metaLine.origins(sig.independentOriginCount)} ·{' '}
-                      {t.confidence[sig.confidence.overall]}
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </div>
-          </div>
+          <WorldDocumentaryDesk
+            profile={worldProfile}
+            leadSignal={visualAllocation.worldDeskSignal}
+            dispatches={worldDispatches}
+            photos={homepagePhotos.world}
+            lang={lang}
+            getSignalExcerpt={getSignalExcerpt}
+            onOpenSignal={onOpenSignal}
+            onExploreDomain={onExploreDomain}
+          />
         )}
 
-        {/* DESK II — AI FRONTIER: Nocturnal Obsidian Technical Monograph */}
         {aiProfile && (
-          <div
-            data-testid="desk-ai-frontier"
-            className="ws-desk-ai-plate p-6 sm:p-8 lg:p-9 space-y-7"
-          >
-            <div className="flex flex-wrap items-end justify-between gap-4 border-b border-[var(--ws-plate-border)] pb-4">
-              <div className="flex items-end gap-4">
-                <span
-                  aria-hidden="true"
-                  className="ws-editorial-numeral text-[44px] sm:text-[54px] text-[#cbb4ff]/52 select-none"
-                >
-                  02
-                </span>
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <DomainEditorialEmblem
-                      domain="ai"
-                      className="h-4 w-4 text-[#cbb4ff]"
-                    />
-                    <span className="ws-kicker text-[#cbb4ff]">
-                      {lang === 'zh-CN'
-                        ? '前沿计算与模型实验室'
-                        : 'Frontier Compute & Systems Monograph'}
-                    </span>
-                  </div>
-                  <h3 className="font-display text-[26px] sm:text-[32px] font-semibold tracking-[-0.02em] text-[var(--ws-plate-ink)] leading-none">
-                    {t.domains.ai}
-                  </h3>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-                <div className="ws-meta text-[12.5px] text-[var(--ws-plate-muted)]">
-                  <span className="font-semibold text-[var(--ws-plate-ink)]">
-                    {aiProfile.total}
-                  </span>{' '}
-                  · {t.briefing.domainShareLabel(aiProfile.sharePct)} · 5/5:{' '}
-                  {aiProfile.imp5Count} · 4/5: {aiProfile.imp4Count}
-                </div>
-                <button
-                  type="button"
-                  onClick={() => onExploreDomain('ai')}
-                  className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-[#cbb4ff] hover:text-white hover:underline underline-offset-4 cursor-pointer"
-                >
-                  <span>
-                    {t.briefing.exploreDomain} ({aiProfile.total})
-                  </span>
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </button>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 lg:gap-10 items-start">
-              {/* Left 4 cols: Portrait Vertical Server-Rack Instrumentation Spine */}
-              <div className="lg:col-span-4 group">
-                <InterfacePhotoPlate
-                  photo={getInterfacePhoto('ai-data-center')}
-                  lang={lang}
-                  aspect="3/4"
-                  tone="dark"
-                  compact
-                  plateLabel={
-                    lang === 'zh-CN' ? '算力机柜 · 语境 I' : 'DESK II · INFRASTRUCTURE'
-                  }
-                />
-              </div>
-
-              {/* Right 8 cols: Featured AI Dispatch + Macro Silicon Wafer Detail + Dispatch Ledger */}
-              <div className="lg:col-span-8 lg:border-l lg:border-[var(--ws-plate-border)] lg:pl-8 space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start border-b border-[var(--ws-plate-border)] pb-6">
-                  {visualAllocation.aiDeskSignal && (
-                    <article className="md:col-span-7 space-y-3.5">
-                      <div className="flex items-center justify-between gap-2 ws-meta text-[12px]">
-                        <span className="font-semibold text-[#cbb4ff]">
-                          {visualAllocation.aiDeskSignal.topic}
-                        </span>
-                        <span className="font-mono-tabular text-[var(--ws-plate-muted)]">
-                          {t.metaLine.importance(
-                            visualAllocation.aiDeskSignal.importance
-                          )}
-                        </span>
-                      </div>
-                      <h4 className="font-display text-[22px] sm:text-[26px] font-semibold leading-[1.24] tracking-[-0.016em] text-[var(--ws-plate-ink)]">
-                        <button
-                          type="button"
-                          onClick={() =>
-                            onOpenSignal(
-                              visualAllocation.aiDeskSignal!.signal_id
-                            )
-                          }
-                          className="text-left ws-headline-link hover:text-[#cbb4ff] cursor-pointer"
-                        >
-                          {visualAllocation.aiDeskSignal.headline}
-                        </button>
-                      </h4>
-                      <p className="text-[14px] leading-[1.74] text-[var(--ws-plate-secondary)]">
-                        {getSignalExcerpt(visualAllocation.aiDeskSignal, 185)}
-                      </p>
-                      <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-                        <span className="ws-meta text-[12px] text-[var(--ws-plate-muted)]">
-                          {t.metaLine.origins(
-                            visualAllocation.aiDeskSignal.independentOriginCount
-                          )}{' '}
-                          ·{' '}
-                          {t.confidence[
-                            visualAllocation.aiDeskSignal.confidence.overall
-                          ]}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            onOpenSignal(
-                              visualAllocation.aiDeskSignal!.signal_id
-                            )
-                          }
-                          className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-[var(--ws-plate-ink)] hover:text-[#cbb4ff] transition-colors cursor-pointer"
-                        >
-                          <span>{t.briefing.readDossier}</span>
-                          <ArrowRight className="h-3.5 w-3.5" />
-                        </button>
-                      </div>
-                    </article>
-                  )}
-
-                  {/* Macro Silicon Wafer Plate (4:3 technical crop) */}
-                  <div className="md:col-span-5 group">
-                    <InterfacePhotoPlate
-                      photo={getInterfacePhoto('ai-silicon-wafer')}
-                      lang={lang}
-                      aspect="4/3"
-                      tone="dark"
-                      compact
-                      plateLabel={
-                        lang === 'zh-CN' ? '晶圆微距 · 语境 II' : 'DESK II · SILICON MACRO'
-                      }
-                    />
-                  </div>
-                </div>
-
-                {aiDispatches.length > 0 && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-7 gap-y-5">
-                    {aiDispatches.map((sig) => (
-                      <article
-                        key={sig.signal_id}
-                        className="group space-y-1.5 border-b border-[var(--ws-plate-border)] pb-4"
-                      >
-                        <div className="flex items-center justify-between gap-2 ws-meta text-[11.5px] text-[var(--ws-plate-muted)]">
-                          <span className="truncate">{sig.topic}</span>
-                          <span className="font-mono-tabular font-semibold text-[#cbb4ff] shrink-0">
-                            {sig.importance}/5
-                          </span>
-                        </div>
-                        <h4 className="font-display text-[16.5px] font-semibold leading-snug text-[var(--ws-plate-ink)]">
-                          <button
-                            type="button"
-                            onClick={() => onOpenSignal(sig.signal_id)}
-                            className="text-left ws-headline-link group-hover:text-[#cbb4ff] cursor-pointer"
-                          >
-                            {sig.headline}
-                          </button>
-                        </h4>
-                        <div className="ws-meta text-[11.5px] text-[var(--ws-plate-muted)]">
-                          {t.metaLine.origins(sig.independentOriginCount)} ·{' '}
-                          {t.confidence[sig.confidence.overall]}
-                        </div>
-                      </article>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
+          <AiModernistDesk
+            profile={aiProfile}
+            leadSignal={visualAllocation.aiDeskSignal}
+            dispatches={aiDispatches}
+            photos={homepagePhotos.ai}
+            lang={lang}
+            getSignalExcerpt={getSignalExcerpt}
+            onOpenSignal={onOpenSignal}
+            onExploreDomain={onExploreDomain}
+          />
         )}
 
-        {/* DESK III — ECONOMIC OUTLOOK: FT-Inspired Warm Parchment-Salmon Financial Folio */}
         {econProfile && (
-          <div
-            data-testid="desk-economic-outlook"
-            className="ws-desk-economy p-6 sm:p-8 lg:p-9 space-y-7"
-          >
-            <div className="flex flex-wrap items-end justify-between gap-4 border-b border-[var(--ws-border-strong)] pb-4">
-              <div className="flex items-end gap-4">
-                <span
-                  aria-hidden="true"
-                  className="ws-editorial-numeral text-[44px] sm:text-[54px] text-[var(--ws-economy)]/44 select-none"
-                >
-                  03
-                </span>
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <DomainEditorialEmblem domain="economy" className="h-4 w-4" />
-                    <span
-                      className="ws-kicker"
-                      style={{ color: 'var(--ws-economy)' }}
-                    >
-                      {lang === 'zh-CN'
-                        ? '宏观经济与资本市场专刊'
-                        : 'Markets & Macro Policy Folio'}
-                    </span>
-                  </div>
-                  <h3 className="font-display text-[26px] sm:text-[32px] font-semibold tracking-[-0.02em] text-[var(--ws-ink)] leading-none">
-                    {t.domains.economy}
-                  </h3>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-                <div className="ws-meta text-[12.5px] text-[var(--ws-ink-muted)]">
-                  <span className="font-semibold text-[var(--ws-ink)]">
-                    {econProfile.total}
-                  </span>{' '}
-                  · {t.briefing.domainShareLabel(econProfile.sharePct)} · 5/5:{' '}
-                  {econProfile.imp5Count} · 4/5: {econProfile.imp4Count}
-                </div>
-                <button
-                  type="button"
-                  onClick={() => onExploreDomain('economy')}
-                  className="inline-flex items-center gap-1.5 text-[13px] font-semibold hover:underline underline-offset-4 cursor-pointer"
-                  style={{ color: 'var(--ws-economy)' }}
-                >
-                  <span>
-                    {t.briefing.exploreDomain} ({econProfile.total})
-                  </span>
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </button>
-              </div>
-            </div>
-
-            {/* Full-Width Spanning FT-Style Macro Lead Headline */}
-            {visualAllocation.econDeskSignal && (
-              <article className="border-b border-[var(--ws-border-strong)] pb-6 space-y-3">
-                <div className="flex flex-wrap items-center justify-between gap-2 ws-meta text-[12px]">
-                  <span className="font-semibold text-[var(--ws-economy)]">
-                    {visualAllocation.econDeskSignal.topic}
-                  </span>
-                  <span className="font-mono-tabular font-semibold text-[var(--ws-ink-muted)]">
-                    {t.metaLine.importance(
-                      visualAllocation.econDeskSignal.importance
-                    )}{' '}
-                    ·{' '}
-                    {t.confidence[
-                      visualAllocation.econDeskSignal.confidence.overall
-                    ]}
-                  </span>
-                </div>
-                <h4 className="ws-headline-feature text-[var(--ws-ink)] max-w-[36ch]">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      onOpenSignal(visualAllocation.econDeskSignal!.signal_id)
-                    }
-                    className="text-left ws-headline-link hover:text-[var(--ws-economy)] cursor-pointer"
-                  >
-                    {visualAllocation.econDeskSignal.headline}
-                  </button>
-                </h4>
-                <div className="flex flex-wrap items-end justify-between gap-4">
-                  <p className="text-[14.5px] leading-[1.74] text-[var(--ws-ink-secondary)] max-w-[70ch]">
-                    {getSignalExcerpt(visualAllocation.econDeskSignal, 220)}
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      onOpenSignal(visualAllocation.econDeskSignal!.signal_id)
-                    }
-                    className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-[var(--ws-ink)] hover:text-[var(--ws-economy)] transition-colors cursor-pointer shrink-0"
-                  >
-                    <span>{t.briefing.readDossier}</span>
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </button>
-                </div>
-              </article>
-            )}
-
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 lg:gap-10 items-start">
-              {/* Left 8 cols: 2-Column Analytical Markets Ledger */}
-              <div className="lg:col-span-8 order-2 lg:order-1">
-                {econDispatches.length > 0 && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5">
-                    {econDispatches.map((sig, idx) => (
-                      <article
-                        key={sig.signal_id}
-                        className="group border-b border-[var(--ws-border)] pb-4 space-y-2"
-                      >
-                        <div className="flex items-center justify-between gap-2 ws-meta text-[11.5px] text-[var(--ws-ink-muted)]">
-                          <span className="inline-flex items-center gap-2 truncate">
-                            <span className="font-mono-tabular font-semibold text-[var(--ws-economy)]/70">
-                              {String(idx + 1).padStart(2, '0')}
-                            </span>
-                            <span className="truncate">{sig.topic}</span>
-                          </span>
-                          <span className="font-mono-tabular font-semibold text-[var(--ws-economy)] shrink-0">
-                            {sig.importance}/5
-                          </span>
-                        </div>
-                        <h4 className="font-display text-[17px] font-semibold leading-snug text-[var(--ws-ink)]">
-                          <button
-                            type="button"
-                            onClick={() => onOpenSignal(sig.signal_id)}
-                            className="text-left ws-headline-link group-hover:text-[var(--ws-economy)] cursor-pointer"
-                          >
-                            {sig.headline}
-                          </button>
-                        </h4>
-                        <p className="text-[13px] leading-relaxed text-[var(--ws-ink-secondary)] line-clamp-2">
-                          {getSignalExcerpt(sig, 115)}
-                        </p>
-                        <div className="ws-meta text-[11.5px] text-[var(--ws-ink-muted)]">
-                          {t.metaLine.origins(sig.independentOriginCount)} ·{' '}
-                          {t.confidence[sig.confidence.overall]}
-                        </div>
-                      </article>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Right 4 cols: Portrait Classical Institutional Architecture Plate */}
-              <div className="lg:col-span-4 lg:border-l lg:border-[var(--ws-border-strong)] lg:pl-8 group order-1 lg:order-2">
-                <InterfacePhotoPlate
-                  photo={getInterfacePhoto('economy-stock-exchange')}
-                  lang={lang}
-                  aspect="3/4"
-                  compact
-                  plateLabel={
-                    lang === 'zh-CN' ? '金融建筑 · 语境 I' : 'DESK III · INSTITUTIONAL'
-                  }
-                />
-              </div>
-            </div>
-          </div>
+          <EconomicHumanismDesk
+            profile={econProfile}
+            leadSignal={visualAllocation.econDeskSignal}
+            dispatches={econDispatches}
+            photos={homepagePhotos.economy}
+            lang={lang}
+            getSignalExcerpt={getSignalExcerpt}
+            onOpenSignal={onOpenSignal}
+            onExploreDomain={onExploreDomain}
+          />
         )}
       </section>
+
+      {/* =====================================================================
+          DAILY DELTA — DATA-LED NEWSROOM UPDATE LEDGER
+         ===================================================================== */}
+      {dailyDelta && (
+        <DailyDeltaSection
+          state={dailyDelta}
+          lang={lang}
+          onOpenSignalInEdition={
+            onOpenSignalInEdition ?? ((_date, id) => onOpenSignal(id))
+          }
+          onRetry={onRetryDailyDelta}
+          onOpenComparison={onOpenComparison}
+        />
+      )}
 
       {/* =====================================================================
           LOWER-PAGE EDITORIAL READING PATHWAYS (Nocturnal Ink Band)

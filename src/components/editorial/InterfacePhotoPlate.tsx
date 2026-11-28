@@ -4,6 +4,7 @@ import type { SignalDomain, UiLanguage } from '../../types/edition';
 import type { InterfacePhotoAsset } from '../../lib/editorial/interfaceImageLibrary';
 
 export type InterfacePhotoAspect =
+  | '21/7'
   | '21/8'
   | '21/9'
   | '16/9'
@@ -12,11 +13,18 @@ export type InterfacePhotoAspect =
   | '4/5'
   | '3/4';
 
+export type InterfacePhotoFrameStyle =
+  | 'default'
+  | 'documentary'
+  | 'scientific'
+  | 'institutional';
+
 interface InterfacePhotoPlateProps {
   photo: InterfacePhotoAsset;
   lang: UiLanguage;
   aspect?: InterfacePhotoAspect;
   tone?: 'light' | 'dark';
+  frameStyle?: InterfacePhotoFrameStyle;
   priority?: boolean;
   /** Optional custom object-position override when a specific layout needs fine framing */
   objectPositionOverride?: string;
@@ -30,6 +38,7 @@ interface InterfacePhotoPlateProps {
 }
 
 const ASPECT_CLASSES: Record<InterfacePhotoAspect, string> = {
+  '21/7': 'aspect-[21/7]',
   '21/8': 'aspect-[21/8]',
   '21/9': 'aspect-[21/9]',
   '16/9': 'aspect-[16/9]',
@@ -55,6 +64,7 @@ export const InterfacePhotoPlate: React.FC<InterfacePhotoPlateProps> = ({
   lang,
   aspect,
   tone = 'light',
+  frameStyle = 'default',
   priority = false,
   objectPositionOverride,
   plateLabel,
@@ -76,64 +86,74 @@ export const InterfacePhotoPlate: React.FC<InterfacePhotoPlateProps> = ({
       ? photo.editorialContextNoteZh
       : photo.editorialContextNoteEn;
   const contextTag =
-    lang === 'zh-CN' ? '编务语境摄影 · 非纪实证据' : 'Editorial Context · Non-Documentary';
+    lang === 'zh-CN'
+      ? '编务语境摄影 · 非纪实证据'
+      : 'Editorial Context · Non-Documentary';
   const photoByLabel = lang === 'zh-CN' ? '摄影' : 'Photo';
   const sourceLabel = lang === 'zh-CN' ? '来源' : 'Source';
 
   const responsiveSizes =
-    resolvedAspect === '21/8' || resolvedAspect === '21/9'
+    resolvedAspect === '21/7' ||
+    resolvedAspect === '21/8' ||
+    resolvedAspect === '21/9'
       ? '(min-width: 1280px) 1360px, 100vw'
       : resolvedAspect === '16/9' || resolvedAspect === '16/10'
         ? '(min-width: 1024px) 780px, 100vw'
         : '(min-width: 1024px) 480px, 100vw';
+
   const webpWidth800 =
     photo.orientation === 'portrait'
       ? Math.round((photo.naturalWidth / photo.naturalHeight) * 800)
       : 800;
-  const webpWidth1600 =
-    photo.orientation === 'portrait'
-      ? Math.round((photo.naturalWidth / photo.naturalHeight) * 1600)
-      : 1600;
+  const webpWidth1600 = photo.naturalWidth;
+
+  const frameBorderClass =
+    frameStyle === 'scientific'
+      ? 'border-[var(--ws-plate-border)] bg-[#0b0f19] p-[3px]'
+      : frameStyle === 'institutional'
+        ? isDark
+          ? 'border-[var(--ws-plate-border)] bg-[var(--ws-plate-elevated)]'
+          : 'border-[var(--ws-border-strong)] bg-[var(--ws-surface-subtle)]'
+        : frameStyle === 'documentary'
+          ? isDark
+            ? 'border-[var(--ws-plate-border)] bg-[var(--ws-plate-elevated)]'
+            : 'border-[var(--ws-ink)]/18 bg-[var(--ws-surface-subtle)]'
+          : isDark
+            ? 'border-[var(--ws-plate-border)] bg-[var(--ws-plate-elevated)]'
+            : 'border-[var(--ws-border)] bg-[var(--ws-surface-subtle)]';
 
   return (
     <figure
       data-interface-photo-id={photo.id}
       data-photo-classification={photo.classification}
       data-documentary-evidence="false"
+      data-frame-style={frameStyle}
       className={`space-y-2.5 ${className}`.trim()}
     >
-      <div
-        className={`ws-photo-frame ${aspectClass} w-full ${
-          isDark
-            ? 'border-[var(--ws-plate-border)] bg-[var(--ws-plate-elevated)]'
-            : 'border-[var(--ws-border)] bg-[var(--ws-surface-subtle)]'
-        }`}
-      >
+      <div className={`ws-photo-frame ${aspectClass} w-full ${frameBorderClass}`}>
         {!imageError ? (
-          <picture className="block h-full w-full">
-            <source
-              type="image/webp"
-              srcSet={`${photo.webp800Path} ${webpWidth800}w, ${photo.webp1600Path} ${webpWidth1600}w`}
-              sizes={responsiveSizes}
-            />
-            <img
-              src={photo.localPath}
-              alt={altText}
-              width={photo.naturalWidth}
-              height={photo.naturalHeight}
-              loading={priority ? 'eager' : 'lazy'}
-              decoding="async"
-              onError={() => setImageError(true)}
-              style={{
-                objectPosition: objectPositionOverride ?? photo.objectPosition,
-              }}
-              className="h-full w-full object-cover motion-safe:transition-transform motion-safe:duration-700 motion-safe:ease-out motion-safe:group-hover:scale-[1.018]"
-            />
-          </picture>
+          <img
+            src={photo.localPath}
+            srcSet={`${photo.webp800Path} ${webpWidth800}w, ${photo.localPath} ${webpWidth1600}w`}
+            sizes={responsiveSizes}
+            alt={altText}
+            width={photo.naturalWidth}
+            height={photo.naturalHeight}
+            referrerPolicy="no-referrer"
+            loading={priority ? 'eager' : 'lazy'}
+            decoding="async"
+            onError={() => setImageError(true)}
+            style={{
+              objectPosition: objectPositionOverride ?? photo.objectPosition,
+            }}
+            className="h-full w-full object-cover motion-safe:transition-transform motion-safe:duration-700 motion-safe:ease-out motion-safe:group-hover:scale-[1.018]"
+          />
         ) : (
           <div
             className={`flex h-full w-full flex-col justify-between p-5 ${
-              isDark ? 'text-[var(--ws-plate-secondary)]' : 'text-[var(--ws-ink-secondary)]'
+              isDark
+                ? 'text-[var(--ws-plate-secondary)]'
+                : 'text-[var(--ws-ink-secondary)]'
             }`}
           >
             <div className="flex items-center justify-between gap-2 ws-meta text-[11px]">
@@ -141,10 +161,14 @@ export const InterfacePhotoPlate: React.FC<InterfacePhotoPlateProps> = ({
                 {contextTag}
               </span>
               {plateLabel && (
-                <span className="font-mono-tabular opacity-70">{plateLabel}</span>
+                <span className="font-mono-tabular opacity-70">
+                  {plateLabel}
+                </span>
               )}
             </div>
-            <p className="font-display text-[17px] leading-snug">{captionText}</p>
+            <p className="font-display text-[17px] leading-snug">
+              {captionText}
+            </p>
             <span className="ws-meta text-[11.5px] opacity-75">
               {photoByLabel}: {photo.creator}
             </span>
@@ -180,7 +204,7 @@ export const InterfacePhotoPlate: React.FC<InterfacePhotoPlateProps> = ({
               className={`font-mono-tabular text-[10.5px] ${
                 isDark
                   ? 'text-[var(--ws-plate-muted)]'
-                  : 'text-[var(--ws-ink-faint)]'
+                  : 'text-[var(--ws-ink-muted)]'
               }`}
             >
               {plateLabel}
@@ -212,7 +236,7 @@ export const InterfacePhotoPlate: React.FC<InterfacePhotoPlateProps> = ({
           </p>
         )}
 
-        {/* Quiet Photographer Credit + Source & Unsplash License Provenance */}
+        {/* Quiet Photographer Credit + Source & License Provenance */}
         <div
           className={`flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-t pt-1.5 ws-meta text-[11px] ${
             isDark
@@ -258,7 +282,10 @@ export const InterfacePhotoPlate: React.FC<InterfacePhotoPlateProps> = ({
               }`}
             >
               <span>{sourceLabel}</span>
-              <ExternalLink className="h-2.5 w-2.5 shrink-0" aria-hidden="true" />
+              <ExternalLink
+                className="h-2.5 w-2.5 shrink-0"
+                aria-hidden="true"
+              />
             </a>
             <span aria-hidden="true" className="opacity-45">
               ·

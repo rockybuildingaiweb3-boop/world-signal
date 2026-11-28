@@ -21,6 +21,8 @@ import { selectApprovedSignalMedia } from '../../lib/editorial/editorialAssetReg
 import { SignalFilterSidebar } from './SignalFilterSidebar';
 import { SignalDossierHeader } from './SignalDossierHeader';
 import { SignalEvidenceLedgers } from './SignalEvidenceLedgers';
+import { NarrativeArcRibbon } from '../../components/editorial/compositions/NarrativeArcRibbon';
+import { ReadingProgressBar } from '../../components/editorial/compositions/ReadingProgressBar';
 
 import type { SignalBookmarkInput } from '../../hooks/useReaderDesk';
 
@@ -174,6 +176,11 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
       });
     if (activeSignal.sections.timeline || activeSignal.timelineEvents.length > 0)
       list.push({ id: 'sec-timeline', label: t.expanded.sections.timeline });
+    if (activeSignal.sections.whyItMatters)
+      list.push({
+        id: 'sec-why-it-matters',
+        label: t.expanded.sections.whyItMatters,
+      });
     if (activeSignal.sections.analysis)
       list.push({ id: 'sec-analysis', label: t.expanded.sections.analysis });
     if (activeSignal.sections.uncertainties)
@@ -183,6 +190,16 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
       });
     if (activeSignal.sections.scenarios)
       list.push({ id: 'sec-scenarios', label: t.expanded.sections.scenarios });
+    if (activeSignal.sections.personalRelevance)
+      list.push({
+        id: 'sec-personal-relevance',
+        label: t.expanded.sections.personalRelevance,
+      });
+    if (activeSignal.sections.whatToWatch)
+      list.push({
+        id: 'sec-what-to-watch',
+        label: t.expanded.sections.whatToWatch,
+      });
     if (supportingMediaAssets.length > 0)
       list.push({ id: 'sec-media', label: t.expanded.sections.media });
     list.push({ id: 'sec-claims', label: t.expanded.sections.claims });
@@ -291,6 +308,13 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
             </div>
           ) : (
             <article className="ws-editorial-sheet -mx-4 px-4 py-6 sm:mx-0 sm:px-8 sm:py-9 lg:px-10 lg:py-10 xl:px-12 xl:py-11 space-y-10">
+              {activeSignal && (
+                <ReadingProgressBar
+                  domain={activeSignal.domain}
+                  resetKey={activeSignal.signal_id}
+                />
+              )}
+
               <SignalDossierHeader
                 signal={activeSignal}
                 lang={lang}
@@ -317,6 +341,14 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
                   })
                 }
                 jumpSections={jumpSections}
+              />
+
+              {/* Grounded Narrative Progression Ribbon (Global Event -> Context -> Consequence -> Personal Relevance -> Watch) */}
+              <NarrativeArcRibbon
+                signal={activeSignal}
+                lang={lang}
+                activeSectionId={activeSectionId}
+                onSelectSection={(id) => setActiveSectionId(id)}
               />
 
               {/* 3-Zone Monograph Reading Canvas on xl+: Long-Form Editorial Column + Sticky Editorial Margin Rail */}
@@ -443,7 +475,10 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
 
                       {/* Layer 4: Why It Matters — Elevated Significance Band (Top & Bottom Hairlines) */}
                       {activeSignal.sections.whyItMatters && (
-                        <section className="ws-significance-band px-5 py-5 sm:px-6 sm:py-6 space-y-2.5">
+                        <section
+                          id="sec-why-it-matters"
+                          className="scroll-mt-24 ws-significance-band px-5 py-5 sm:px-6 sm:py-6 space-y-2.5"
+                        >
                           <h3 className="ws-kicker text-[var(--ws-editorial-accent)]">
                             {t.expanded.sections.whyItMatters}
                           </h3>
@@ -737,7 +772,8 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
                 <div className="border-t border-[var(--ws-border)] pt-8 grid grid-cols-1 gap-7 md:grid-cols-2 md:gap-0">
                   {activeSignal.sections.personalRelevance && (
                     <section
-                      className={`space-y-3 ${
+                      id="sec-personal-relevance"
+                      className={`scroll-mt-24 space-y-3 ${
                         activeSignal.sections.whatToWatch
                           ? 'md:border-r md:border-[var(--ws-border)] md:pr-8'
                           : 'md:col-span-2 max-w-[70ch]'
@@ -760,7 +796,8 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
 
                   {activeSignal.sections.whatToWatch && (
                     <section
-                      className={`space-y-3 ${
+                      id="sec-what-to-watch"
+                      className={`scroll-mt-24 space-y-3 ${
                         activeSignal.sections.personalRelevance
                           ? 'border-t border-[var(--ws-border-subtle)] pt-6 md:border-t-0 md:pt-0 md:pl-8'
                           : 'md:col-span-2 max-w-[70ch]'

@@ -307,6 +307,13 @@ export const SignalDossierHeader: React.FC<SignalDossierHeaderProps> = ({
           </div>
         ) : null;
 
+        const dossierFrameStyle =
+          signal.domain === 'world'
+            ? 'documentary'
+            : signal.domain === 'ai'
+              ? 'scientific'
+              : 'institutional';
+
         if (dossierPhoto && isPortraitPhoto) {
           const plateLabel =
             lang === 'zh-CN'
@@ -323,6 +330,7 @@ export const SignalDossierHeader: React.FC<SignalDossierHeaderProps> = ({
                   photo={dossierPhoto}
                   lang={lang}
                   aspect="4/5"
+                  frameStyle={dossierFrameStyle}
                   priority
                   compact
                   plateLabel={plateLabel}
@@ -378,9 +386,7 @@ export const SignalDossierHeader: React.FC<SignalDossierHeaderProps> = ({
                   photo={dossierPhoto}
                   lang={lang}
                   aspect={dossierPhoto.id === 'world-city-aerial' ? '21/8' : '21/9'}
-                  objectPositionOverride={
-                    dossierPhoto.id === 'world-city-aerial' ? '50% 0%' : undefined
-                  }
+                  frameStyle={dossierFrameStyle}
                   priority
                   plateLabel={
                     lang === 'zh-CN'
