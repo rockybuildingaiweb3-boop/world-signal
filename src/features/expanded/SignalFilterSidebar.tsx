@@ -95,7 +95,7 @@ export const SignalFilterSidebar: React.FC<SignalFilterSidebarProps> = ({
           <h1 className="font-display text-[1.1rem] font-semibold tracking-[-0.012em] text-[var(--ws-ink)]">
             {t.expanded.title}
           </h1>
-          <span className="font-mono-tabular text-[11.5px] font-medium text-[var(--ws-ink-muted)] shrink-0">
+          <span className="ws-meta text-[11.5px] font-medium text-[var(--ws-ink-muted)] shrink-0">
             {t.expanded.showingCount(filteredSignals.length, totalCount)}
           </span>
         </div>
@@ -172,7 +172,7 @@ export const SignalFilterSidebar: React.FC<SignalFilterSidebarProps> = ({
             <button
               type="button"
               onClick={() => onChangeFilters({ ...DEFAULT_FILTERS })}
-              className="inline-flex min-h-[28px] items-center gap-1 font-mono-tabular text-[11px] font-medium text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
+              className="inline-flex min-h-[28px] items-center gap-1 ws-meta text-[11.5px] font-medium text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
             >
               <RotateCcw className="h-3 w-3" />
               {t.expanded.resetFilters}
@@ -333,9 +333,9 @@ export const SignalFilterSidebar: React.FC<SignalFilterSidebarProps> = ({
                     className={`absolute inset-x-0 top-0 h-[2px] ${domainBarBg(sig.domain)}`}
                   />
                 )}
-                <div className="flex items-center justify-between gap-2 font-mono-tabular text-[11px] mb-1">
+                <div className="flex items-center justify-between gap-2 ws-meta text-[11.5px] mb-1">
                   <div className="flex items-center gap-1.5 min-w-0">
-                    <span className="text-[var(--ws-ink-faint)]">
+                    <span className="font-mono-tabular text-[11px] text-[var(--ws-ink-faint)]">
                       {String(idx + 1).padStart(2, '0')}
                     </span>
                     <span
@@ -345,14 +345,14 @@ export const SignalFilterSidebar: React.FC<SignalFilterSidebarProps> = ({
                     </span>
                   </div>
                   <span className="text-[var(--ws-ink-muted)] shrink-0">
-                    {sig.importance}/5 ·{' '}
+                    <span className="font-mono-tabular text-[11px]">{sig.importance}/5</span> ·{' '}
                     <span className={confidenceColorClass(sig.confidence.overall)}>
                       {t.confidence[sig.confidence.overall]}
                     </span>
                   </span>
                 </div>
                 <div
-                  className={`text-[13.5px] leading-[1.42] break-words ${
+                  className={`text-[13.5px] leading-[1.45] break-words ${
                     isActive
                       ? 'font-semibold text-[var(--ws-ink)]'
                       : 'font-medium text-[var(--ws-ink-secondary)]'
@@ -360,7 +360,7 @@ export const SignalFilterSidebar: React.FC<SignalFilterSidebarProps> = ({
                 >
                   {sig.headline}
                 </div>
-                <div className="mt-1.5 flex items-center justify-between gap-2 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                <div className="mt-1.5 flex items-center justify-between gap-2 ws-meta text-[11.5px] text-[var(--ws-ink-muted)]">
                   <span className="truncate">{sig.topic}</span>
                   <span className="shrink-0">
                     {t.metaLine.origins(sig.independentOriginCount)}

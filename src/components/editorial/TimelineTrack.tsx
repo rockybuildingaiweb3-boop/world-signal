@@ -86,7 +86,7 @@ export const TimelineTrack: React.FC<TimelineTrackProps> = ({
                     </div>
                   )}
                   {(ev.claim_ids.length > 0 || ev.source_ids.length > 0) && (
-                    <div className="flex flex-wrap items-center gap-x-3.5 gap-y-1 pt-1 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                    <div className="flex flex-wrap items-center gap-x-3.5 gap-y-1 pt-1 ws-meta text-[11.5px] text-[var(--ws-ink-muted)]">
                       {ev.claim_ids.length > 0 && (
                         <div className="inline-flex flex-wrap items-center gap-1.5">
                           <span className="text-[var(--ws-ink-faint)]">
@@ -98,12 +98,14 @@ export const TimelineTrack: React.FC<TimelineTrackProps> = ({
                                 key={cid}
                                 type="button"
                                 onClick={() => onInspectClaim(cid)}
-                                className="text-[var(--ws-world)] underline decoration-dotted underline-offset-2 hover:decoration-solid cursor-pointer"
+                                className="font-mono-tabular text-[11px] text-[var(--ws-world)] underline decoration-dotted underline-offset-2 hover:decoration-solid cursor-pointer"
                               >
                                 {cid}
                               </button>
                             ) : (
-                              <span key={cid}>{cid}</span>
+                              <span key={cid} className="font-mono-tabular text-[11px]">
+                                {cid}
+                              </span>
                             )
                           )}
                         </div>
@@ -122,11 +124,13 @@ export const TimelineTrack: React.FC<TimelineTrackProps> = ({
                                 onClick={() => onInspectSource(sid)}
                                 className="text-[var(--ws-ink-secondary)] underline decoration-[var(--ws-border-strong)] underline-offset-2 hover:text-[var(--ws-world)] cursor-pointer"
                               >
-                                {sid}
+                                <span className="font-mono-tabular text-[11px]">{sid}</span>
                                 {src ? ` (${src.outlet})` : ''}
                               </button>
                             ) : (
-                              <span key={sid}>{sid}</span>
+                              <span key={sid} className="font-mono-tabular text-[11px]">
+                                {sid}
+                              </span>
                             );
                           })}
                         </div>

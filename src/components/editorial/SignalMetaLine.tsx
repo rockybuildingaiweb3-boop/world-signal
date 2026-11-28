@@ -29,8 +29,8 @@ export const SignalMetaLine: React.FC<SignalMetaLineProps> = ({
 
   return (
     <div
-      className={`flex flex-wrap items-center gap-x-2 gap-y-0.5 font-mono-tabular leading-snug ${
-        compact ? 'text-[11px]' : 'text-[12px]'
+      className={`flex flex-wrap items-center gap-x-2 gap-y-0.5 ws-meta leading-snug ${
+        compact ? 'text-[11.5px]' : 'text-[12.5px]'
       } text-[var(--ws-ink-muted)]`}
     >
       {!hideDomain && (

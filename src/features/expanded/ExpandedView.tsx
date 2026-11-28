@@ -397,7 +397,7 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
                                 onClick={() =>
                                   onOpenStoryline(activeSignal.signal_id)
                                 }
-                                className="font-mono-tabular text-[11.5px] font-medium text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
+                                className="ws-meta text-[12px] font-medium text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
                               >
                                 {lang === 'zh-CN'
                                   ? '对比 WORLD SIGNAL 刊期修订史 →'
@@ -521,40 +521,64 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
                   className="hidden xl:block sticky top-[84px] border-l border-[var(--ws-border-subtle)] pl-5 space-y-6"
                 >
                   {/* Active-Section Scroll-Spy Outline */}
-                  {jumpSections.length > 0 && (
-                    <nav className="space-y-2">
-                      <div className="ws-kicker text-[var(--ws-ink-faint)]">
-                        {t.expanded.dossierOutlineTitle}
-                      </div>
-                      <ul className="space-y-0.5">
-                        {jumpSections.map((sec) => {
-                          const isCurrent = activeSectionId === sec.id;
-                          return (
-                            <li key={sec.id}>
-                              <a
-                                href={`#${sec.id}`}
-                                onClick={() => setActiveSectionId(sec.id)}
-                                className={`block py-1.5 pl-2.5 text-[12px] leading-snug border-l-[2px] transition-colors ${
-                                  isCurrent
-                                    ? 'border-[var(--ws-editorial-accent)] font-semibold text-[var(--ws-ink)]'
-                                    : 'border-transparent text-[var(--ws-ink-muted)] hover:border-[var(--ws-border-strong)] hover:text-[var(--ws-ink)]'
-                                }`}
-                              >
-                                {sec.label}
-                              </a>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </nav>
-                  )}
+                  {jumpSections.length > 0 && (() => {
+                    const activeIdx = Math.max(
+                      0,
+                      jumpSections.findIndex((s) => s.id === activeSectionId)
+                    );
+                    const progressPct = Math.round(
+                      ((activeIdx + 1) / jumpSections.length) * 100
+                    );
+                    return (
+                      <nav className="space-y-2.5">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="ws-kicker text-[var(--ws-ink-faint)]">
+                            {t.expanded.dossierOutlineTitle}
+                          </span>
+                          <span className="font-mono-tabular text-[10.5px] text-[var(--ws-ink-faint)]">
+                            {String(activeIdx + 1).padStart(2, '0')}/
+                            {String(jumpSections.length).padStart(2, '0')}
+                          </span>
+                        </div>
+                        <div
+                          aria-hidden="true"
+                          className="h-[2px] w-full bg-[var(--ws-border-subtle)] overflow-hidden"
+                        >
+                          <div
+                            className="h-full bg-[var(--ws-editorial-accent)] transition-all duration-300"
+                            style={{ width: `${progressPct}%` }}
+                          />
+                        </div>
+                        <ul className="space-y-0.5">
+                          {jumpSections.map((sec) => {
+                            const isCurrent = activeSectionId === sec.id;
+                            return (
+                              <li key={sec.id}>
+                                <a
+                                  href={`#${sec.id}`}
+                                  onClick={() => setActiveSectionId(sec.id)}
+                                  className={`block py-1.5 pl-2.5 text-[12px] leading-snug border-l-[2px] transition-colors ${
+                                    isCurrent
+                                      ? 'border-[var(--ws-editorial-accent)] font-semibold text-[var(--ws-ink)]'
+                                      : 'border-transparent text-[var(--ws-ink-muted)] hover:border-[var(--ws-border-strong)] hover:text-[var(--ws-ink)]'
+                                  }`}
+                                >
+                                  {sec.label}
+                                </a>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </nav>
+                    );
+                  })()}
 
                   {/* Clickable Evidence Telemetry Snapshot */}
                   <div className="border-t border-[var(--ws-border-subtle)] pt-4 space-y-2.5">
                     <div className="ws-kicker text-[var(--ws-ink-faint)]">
                       {t.expanded.evidenceSnapshotTitle}
                     </div>
-                    <dl className="space-y-1.5 font-mono-tabular text-[11.5px]">
+                    <dl className="space-y-1.5 ws-meta text-[12px]">
                       <div className="flex items-center justify-between gap-2">
                         <dt className="text-[var(--ws-ink-muted)]">
                           <a
@@ -564,7 +588,7 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
                             {t.briefing.artworkClaimsLabel}
                           </a>
                         </dt>
-                        <dd className="font-semibold text-[var(--ws-ink)] tabular-nums">
+                        <dd className="font-mono-tabular font-semibold text-[var(--ws-ink)]">
                           {activeSignal.claims.length}
                         </dd>
                       </div>
@@ -577,7 +601,7 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
                             {t.briefing.artworkOriginsLabel}
                           </a>
                         </dt>
-                        <dd className="font-semibold text-[var(--ws-ink)] tabular-nums">
+                        <dd className="font-mono-tabular font-semibold text-[var(--ws-ink)]">
                           {activeSignal.independentOriginCount}
                         </dd>
                       </div>
@@ -590,7 +614,7 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
                             {t.briefing.artworkSourcesLabel}
                           </a>
                         </dt>
-                        <dd className="font-semibold text-[var(--ws-ink)] tabular-nums">
+                        <dd className="font-mono-tabular font-semibold text-[var(--ws-ink)]">
                           {activeSignal.sources.length}
                         </dd>
                       </div>
@@ -604,7 +628,7 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
                               {t.expanded.sections.timeline}
                             </a>
                           </dt>
-                          <dd className="font-semibold text-[var(--ws-ink)] tabular-nums">
+                          <dd className="font-mono-tabular font-semibold text-[var(--ws-ink)]">
                             {activeSignal.timelineEvents.length}
                           </dd>
                         </div>
@@ -620,7 +644,7 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
                               {t.expanded.sections.related}
                             </a>
                           </dt>
-                          <dd className="font-semibold text-[var(--ws-ink)] tabular-nums">
+                          <dd className="font-mono-tabular font-semibold text-[var(--ws-ink)]">
                             {activeSignal.relationships.length > 0
                               ? activeSignal.relationships.length
                               : activeSignal.related_signal_ids.length}
@@ -633,13 +657,13 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
                   {/* Sequential Signal Pager */}
                   {filteredSignals.length > 1 && currentSignalIndex >= 0 && (
                     <div className="border-t border-[var(--ws-border-subtle)] pt-4 space-y-2.5">
-                      <div className="font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                      <div className="ws-meta text-[11.5px] text-[var(--ws-ink-muted)]">
                         {t.expanded.signalPosition(
                           currentSignalIndex + 1,
                           filteredSignals.length
                         )}
                       </div>
-                      <div className="grid grid-cols-2 gap-1.5">
+                      <div className="grid grid-cols-2 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-canvas)]/65 divide-x divide-[var(--ws-border-subtle)] overflow-hidden">
                         <button
                           type="button"
                           disabled={!prevSignal}
@@ -647,7 +671,7 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
                             prevSignal && handleSelectFromList(prevSignal.signal_id)
                           }
                           aria-label={t.expanded.prevSignal}
-                          className="inline-flex min-h-[32px] items-center justify-center gap-1 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-canvas)]/70 px-2 py-1 text-[11.5px] font-medium text-[var(--ws-ink)] hover:border-[var(--ws-border-strong)] disabled:opacity-35 cursor-pointer disabled:cursor-not-allowed transition-colors"
+                          className="inline-flex min-h-[32px] items-center justify-center gap-1 px-2 py-1 text-[11.5px] font-medium text-[var(--ws-ink)] hover:bg-[var(--ws-surface-hover)] disabled:opacity-35 cursor-pointer disabled:cursor-not-allowed transition-colors"
                         >
                           <ChevronLeft className="h-3.5 w-3.5 shrink-0" />
                           <span>{lang === 'zh-CN' ? '上一条' : 'Prev'}</span>
@@ -659,7 +683,7 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
                             nextSignal && handleSelectFromList(nextSignal.signal_id)
                           }
                           aria-label={t.expanded.nextSignal}
-                          className="inline-flex min-h-[32px] items-center justify-center gap-1 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-canvas)]/70 px-2 py-1 text-[11.5px] font-medium text-[var(--ws-ink)] hover:border-[var(--ws-border-strong)] disabled:opacity-35 cursor-pointer disabled:cursor-not-allowed transition-colors"
+                          className="inline-flex min-h-[32px] items-center justify-center gap-1 px-2 py-1 text-[11.5px] font-medium text-[var(--ws-ink)] hover:bg-[var(--ws-surface-hover)] disabled:opacity-35 cursor-pointer disabled:cursor-not-allowed transition-colors"
                         >
                           <span>{lang === 'zh-CN' ? '下一条' : 'Next'}</span>
                           <ChevronRight className="h-3.5 w-3.5 shrink-0" />

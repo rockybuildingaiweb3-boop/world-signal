@@ -223,12 +223,12 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
             {plateNumber}
           </div>
           <div className="space-y-2 min-w-0">
-            <div className="font-display text-[19px] sm:text-[22px] font-semibold leading-snug tracking-[-0.015em] break-words">
+            <div className="font-display text-[19px] sm:text-[22px] font-semibold leading-snug tracking-[-0.014em] break-words">
               {signal.topic || subjectLabel}
             </div>
             {geoLabel && (
               <div
-                className={`font-mono-tabular text-[12px] ${
+                className={`ws-meta text-[12px] ${
                   isDarkPlate
                     ? 'text-[var(--ws-plate-secondary)]'
                     : 'text-[var(--ws-ink-muted)]'
@@ -241,7 +241,7 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
         </div>
 
         <figcaption
-          className={`flex flex-wrap items-center justify-between gap-2 border-t pt-3 text-[11.5px] font-mono-tabular ${
+          className={`flex flex-wrap items-center justify-between gap-2 border-t pt-3 text-[12px] ws-meta ${
             isDarkPlate
               ? 'border-[var(--ws-plate-border)] text-[var(--ws-plate-muted)]'
               : 'border-[var(--ws-border)] text-[var(--ws-ink-muted)]'
@@ -252,7 +252,7 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
             {stats.confirmedClaimsCount}/{stats.claimsCount}{' '}
             {t.briefing.artworkClaimsLabel}
           </span>
-          <span>
+          <span className="font-mono-tabular text-[11.5px]">
             {stats.timelineSpanLabel || signal.event.start_date || signal.signal_id}
           </span>
         </figcaption>
@@ -519,7 +519,9 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
         {cropAllowed ? (
           <div
             className={`ws-art-frame ${aspectClass} w-full ${
-              isDarkPlate ? 'border-[var(--ws-plate-border)] bg-[#0f131b]' : ''
+              isDarkPlate
+                ? 'border-[var(--ws-plate-border)] bg-[var(--ws-plate-elevated)]'
+                : ''
             }`}
           >
             <img
@@ -538,9 +540,9 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
           </div>
         ) : (
           <div
-            className={`relative overflow-hidden border ${aspectClass} w-full flex items-center justify-center p-2.5 sm:p-3 ${
+            className={`relative overflow-hidden border ${aspectClass} w-full flex items-center justify-center p-3 sm:p-4 ${
               isDarkPlate
-                ? 'border-[var(--ws-plate-border)] bg-[#0f131b]'
+                ? 'border-[var(--ws-plate-border)] bg-[var(--ws-plate-elevated)]'
                 : 'border-[var(--ws-border)] bg-[var(--ws-surface-subtle)]'
             }`}
           >
@@ -561,13 +563,13 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
         )}
 
         <figcaption
-          className={`space-y-1.5 text-[12px] leading-snug ${
+          className={`space-y-2 text-[12.5px] leading-snug ${
             isDarkPlate
               ? 'text-[var(--ws-plate-secondary)]'
               : 'text-[var(--ws-ink-secondary)]'
           }`}
         >
-          <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 font-mono-tabular text-[11px]">
+          <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 ws-meta text-[11.5px]">
             <span className="inline-flex items-center gap-2 font-semibold">
               <span
                 className="h-1.5 w-3.5 shrink-0"
@@ -605,22 +607,22 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
             </span>
             {!cropAllowed && (
               <span
-                className={
+                className={`text-[11px] ${
                   isDarkPlate
                     ? 'text-[var(--ws-plate-muted)]'
                     : 'text-[var(--ws-ink-muted)]'
-                }
+                }`}
               >
                 {t.media.uncroppedNote}
               </span>
             )}
           </div>
 
-          <p className="leading-[1.55] break-words">{media.caption}</p>
+          <p className="leading-[1.6] break-words">{media.caption}</p>
 
           {showDisclosure && (
             <p
-              className={`text-[11px] leading-snug ${
+              className={`text-[11.5px] leading-snug ${
                 isDarkPlate
                   ? 'text-[var(--ws-plate-muted)]'
                   : 'text-[var(--ws-ink-muted)]'
@@ -631,7 +633,7 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
           )}
 
           <div
-            className={`flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t pt-1.5 font-mono-tabular text-[11px] ${
+            className={`flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t pt-2 ws-meta text-[11.5px] ${
               isDarkPlate
                 ? 'border-[var(--ws-plate-border)] text-[var(--ws-plate-muted)]'
                 : 'border-[var(--ws-border-subtle)] text-[var(--ws-ink-muted)]'
@@ -646,7 +648,7 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
                 href={media.source_page_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`inline-flex items-center gap-1 hover:underline underline-offset-4 ${
+                className={`inline-flex items-center gap-1 font-medium hover:underline underline-offset-4 ${
                   isDarkPlate
                     ? 'text-[#9ec5f8]'
                     : 'text-[var(--ws-world)]'
@@ -734,7 +736,9 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
     >
       <div
         className={`ws-art-frame ${aspectClass} w-full ${
-          isDarkPlate ? 'border-[var(--ws-plate-border)] bg-[#0f131b]' : ''
+          isDarkPlate
+            ? 'border-[var(--ws-plate-border)] bg-[var(--ws-plate-elevated)]'
+            : ''
         }`}
       >
         <img
@@ -756,7 +760,7 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
       >
         <span className="inline-flex items-center gap-2">
           <span
-            className="h-1.5 w-4 shrink-0"
+            className="h-[2px] w-4 shrink-0"
             style={{ backgroundColor: accent }}
             aria-hidden="true"
           />

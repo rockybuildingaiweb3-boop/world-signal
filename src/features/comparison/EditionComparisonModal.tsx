@@ -175,7 +175,11 @@ export const EditionComparisonModal: React.FC<EditionComparisonModalProps> = ({
             <div className="space-y-0.5 min-w-0">
               <div className="flex items-center gap-2 ws-kicker text-[var(--ws-editorial-accent)]">
                 <History className="h-3.5 w-3.5 shrink-0" />
-                <span>WORLD SIGNAL · EDITION DIFF</span>
+                <span>
+                  {lang === 'zh-CN'
+                    ? 'WORLD SIGNAL · 刊期修订对比'
+                    : 'WORLD SIGNAL · EDITION DIFF'}
+                </span>
               </div>
               <h2
                 id={titleId}
@@ -273,7 +277,7 @@ export const EditionComparisonModal: React.FC<EditionComparisonModalProps> = ({
 
           {/* Loading State */}
           {isLoading && (
-            <div className="py-12 flex items-center justify-center gap-2.5 font-mono-tabular text-[12.5px] text-[var(--ws-ink-muted)]">
+            <div className="py-12 flex items-center justify-center gap-2.5 ws-meta text-[12.5px] text-[var(--ws-ink-muted)]">
               <RefreshCw className="h-4 w-4 animate-spin text-[var(--ws-world)]" />
               <span>{t.editionCompare.loadingPair(fromDate, toDate)}</span>
             </div>
@@ -308,7 +312,7 @@ export const EditionComparisonModal: React.FC<EditionComparisonModalProps> = ({
           {result && !isLoading && !fetchError && (
             <div className="space-y-4">
               {/* Comparison Metadata Strip */}
-              <div className="flex flex-wrap items-center justify-between gap-2 font-mono-tabular text-[12px] text-[var(--ws-ink-muted)]">
+              <div className="flex flex-wrap items-center justify-between gap-2 ws-meta text-[12px] text-[var(--ws-ink-muted)]">
                 <div className="flex flex-wrap items-center gap-2">
                   <span
                     data-testid="compare-range-label"
@@ -320,7 +324,7 @@ export const EditionComparisonModal: React.FC<EditionComparisonModalProps> = ({
                     <span>· {t.editionCompare.daySpanLabel(result.dayGapCount)}</span>
                   )}
                 </div>
-                <span className="text-[11px]">
+                <span className="text-[11.5px]">
                   {t.dailyDelta.routineMetadataNote}
                 </span>
               </div>
@@ -502,10 +506,10 @@ const ComparisonSignalRow: React.FC<{
       data-testid={`compare-item-${change.signalId}`}
       className="py-4 first:pt-1 last:pb-1 space-y-2"
     >
-      <div className="flex flex-wrap items-center justify-between gap-2 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+      <div className="flex flex-wrap items-center justify-between gap-2 ws-meta text-[11.5px] text-[var(--ws-ink-muted)]">
         <div className="flex flex-wrap items-center gap-x-2">
           <span
-            className={`font-semibold uppercase tracking-[0.08em] ${categoryAccentClass(
+            className={`ws-kicker ${categoryAccentClass(
               change.kind
             )}`}
           >
@@ -524,7 +528,7 @@ const ComparisonSignalRow: React.FC<{
             {t.metaLine.confidence(t.confidence[displaySignal.confidence.overall])}
           </span>
         </div>
-        <span className="text-[10.5px] text-[var(--ws-ink-faint)] break-all">
+        <span className="font-mono-tabular text-[10.5px] text-[var(--ws-ink-faint)] break-all">
           {change.signalId}
         </span>
       </div>
@@ -536,7 +540,7 @@ const ComparisonSignalRow: React.FC<{
       {change.kind === 'updated' && (
         <div className="space-y-1 text-[12px] text-[var(--ws-ink-secondary)]">
           {change.diff.reasons.length > 0 && (
-            <div className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
+            <div className="ws-meta text-[11.5px] text-[var(--ws-ink-muted)]">
               <strong className="text-[var(--ws-ink-secondary)]">
                 {t.dailyDelta.updatedReasonsPrefix}:{' '}
               </strong>
@@ -693,7 +697,7 @@ const ComparisonSignalRow: React.FC<{
             <button
               type="button"
               onClick={onToggleExpand}
-              className="inline-flex items-center gap-1 font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)] hover:text-[var(--ws-ink)] cursor-pointer"
+              className="inline-flex items-center gap-1 ws-meta text-[11.5px] text-[var(--ws-ink-muted)] hover:text-[var(--ws-ink)] cursor-pointer"
             >
               <span>
                 {isExpanded
@@ -710,7 +714,7 @@ const ComparisonSignalRow: React.FC<{
           <button
             type="button"
             onClick={() => onOpenStoryline(change.signalId)}
-            className="inline-flex items-center gap-1 font-mono-tabular text-[11.5px] text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
+            className="inline-flex items-center gap-1 ws-meta text-[11.5px] text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
           >
             <GitBranch className="h-3 w-3" />
             <span>{t.globalSearch.openStoryline}</span>

@@ -73,7 +73,7 @@ export const SignalEvidenceLedgers: React.FC<SignalEvidenceLedgersProps> = ({
           <ShieldCheck className="h-3.5 w-3.5 text-[var(--ws-economy)] shrink-0" />
           <span>{t.expanded.evidenceChainLabel}</span>
         </div>
-        <div className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
+        <div className="ws-meta text-[12px] text-[var(--ws-ink-muted)]">
           {t.metaLine.claims(signal.claims.length)} ·{' '}
           {t.masthead.recordsCount(signal.sources.length)} ·{' '}
           {t.masthead.independentOriginsCount(signal.independentOriginCount)}
@@ -86,7 +86,7 @@ export const SignalEvidenceLedgers: React.FC<SignalEvidenceLedgersProps> = ({
           <h3 className="font-display text-[1.2rem] font-semibold text-[var(--ws-ink)]">
             {t.expanded.sections.claims}
           </h3>
-          <span className="font-mono-tabular text-xs text-[var(--ws-ink-muted)]">
+          <span className="ws-meta text-[12px] text-[var(--ws-ink-muted)]">
             {t.metaLine.claims(signal.claims.length)}
           </span>
         </div>
@@ -105,11 +105,13 @@ export const SignalEvidenceLedgers: React.FC<SignalEvidenceLedgersProps> = ({
                     key={claim.claim_id}
                     id={`dossier-claim-${claim.claim_id}`}
                     className={`scroll-mt-24 py-4 px-3 -mx-3 space-y-2 transition-colors rounded-[var(--ws-radius-sm)] ${
-                      isHighlighted ? 'bg-[var(--ws-world-soft)]' : ''
+                      isHighlighted
+                        ? 'bg-[var(--ws-world-soft)] ring-1 ring-inset ring-[var(--ws-world)]/30'
+                        : ''
                     }`}
                   >
-                    <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
-                      <span className="font-semibold text-[var(--ws-ink)]">
+                    <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 ws-meta text-[12px] text-[var(--ws-ink-muted)]">
+                      <span className="font-mono-tabular text-[11.5px] font-semibold text-[var(--ws-ink)]">
                         {claim.claim_id}
                       </span>
                       <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
@@ -123,11 +125,11 @@ export const SignalEvidenceLedgers: React.FC<SignalEvidenceLedgersProps> = ({
                         {t.confidence[claim.confidence]}
                       </span>
                     </div>
-                    <p className="text-[14px] leading-[1.6] text-[var(--ws-ink-secondary)] break-words">
+                    <p className="text-[14px] leading-[1.65] text-[var(--ws-ink-secondary)] break-words">
                       {claim.statement}
                     </p>
                     {claim.source_ids.length > 0 && (
-                      <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono-tabular text-[11.5px]">
+                      <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 ws-meta text-[12px]">
                         <span className="text-[var(--ws-ink-muted)]">
                           {t.expanded.supportingSources}:
                         </span>
@@ -142,7 +144,7 @@ export const SignalEvidenceLedgers: React.FC<SignalEvidenceLedgersProps> = ({
                               onClick={() => onInspectSource(sid)}
                               className="text-[var(--ws-world)] underline decoration-[var(--ws-border-strong)] underline-offset-4 hover:decoration-current cursor-pointer"
                             >
-                              {sid}
+                              <span className="font-mono-tabular text-[11.5px]">{sid}</span>
                               {src ? ` (${src.outlet})` : ''}
                             </button>
                           );
@@ -158,7 +160,7 @@ export const SignalEvidenceLedgers: React.FC<SignalEvidenceLedgersProps> = ({
               <button
                 type="button"
                 onClick={() => setShowAllClaims((prev) => !prev)}
-                className="inline-flex min-h-[34px] items-center gap-1.5 font-mono-tabular text-[11.5px] font-medium text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
+                className="inline-flex min-h-[34px] items-center gap-1.5 ws-meta text-[12px] font-medium text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
               >
                 <span>
                   {showAllClaims
@@ -185,7 +187,7 @@ export const SignalEvidenceLedgers: React.FC<SignalEvidenceLedgersProps> = ({
           <h3 className="font-display text-[1.2rem] font-semibold text-[var(--ws-ink)]">
             {t.expanded.sections.sources}
           </h3>
-          <span className="font-mono-tabular text-xs text-[var(--ws-ink-muted)]">
+          <span className="ws-meta text-[12px] text-[var(--ws-ink-muted)]">
             {t.masthead.independentOriginsCount(signal.independentOriginCount)} ·{' '}
             {t.masthead.recordsCount(signal.sources.length)}
           </span>
@@ -205,13 +207,15 @@ export const SignalEvidenceLedgers: React.FC<SignalEvidenceLedgersProps> = ({
                     key={src.source_id}
                     id={`dossier-source-${src.source_id}`}
                     className={`scroll-mt-24 py-4 px-3 -mx-3 space-y-2 transition-colors rounded-[var(--ws-radius-sm)] ${
-                      isHighlighted ? 'bg-[var(--ws-world-soft)]' : ''
+                      isHighlighted
+                        ? 'bg-[var(--ws-world-soft)] ring-1 ring-inset ring-[var(--ws-world)]/30'
+                        : ''
                     }`}
                   >
                     <div className="flex flex-wrap items-start justify-between gap-2">
                       <div className="space-y-1 min-w-0">
-                        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 font-mono-tabular text-[11.5px]">
-                          <span className="font-semibold text-[var(--ws-ink)]">
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 ws-meta text-[12px]">
+                          <span className="font-mono-tabular text-[11.5px] font-semibold text-[var(--ws-ink)]">
                             {src.source_id}
                           </span>
                           <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
@@ -251,7 +255,7 @@ export const SignalEvidenceLedgers: React.FC<SignalEvidenceLedgersProps> = ({
                         </div>
                       </div>
 
-                      <div className="font-mono-tabular text-[11px] shrink-0">
+                      <div className="ws-meta text-[11.5px] shrink-0">
                         {src.qualifiesAsIndependent ? (
                           <span className="font-semibold text-[var(--ws-conf-high)]">
                             {t.expanded.qualifiesIndependent}
@@ -264,22 +268,28 @@ export const SignalEvidenceLedgers: React.FC<SignalEvidenceLedgersProps> = ({
                       </div>
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 ws-meta text-[11.5px] text-[var(--ws-ink-muted)]">
                       <span>
                         {t.expanded.sourceGroupLabel}:{' '}
-                        {src.independence_group || t.audit.unassignedBadge}
+                        <span className="font-mono-tabular text-[11px]">
+                          {src.independence_group || t.audit.unassignedBadge}
+                        </span>
                       </span>
                       <span>
                         {t.expanded.registryIdLabel}:{' '}
-                        {src.registry_id &&
-                        src.registry_id.toLowerCase() !== 'null'
-                          ? src.registry_id
-                          : t.expanded.unregisteredCandidate}
+                        <span className="font-mono-tabular text-[11px]">
+                          {src.registry_id &&
+                          src.registry_id.toLowerCase() !== 'null'
+                            ? src.registry_id
+                            : t.expanded.unregisteredCandidate}
+                        </span>
                       </span>
                       {src.published_at && (
                         <span>
                           {t.expanded.publishedLabel}:{' '}
-                          {formatCompactTimestamp(src.published_at, lang)}
+                          <span className="font-mono-tabular text-[11px]">
+                            {formatCompactTimestamp(src.published_at, lang)}
+                          </span>
                         </span>
                       )}
                     </div>
@@ -298,7 +308,7 @@ export const SignalEvidenceLedgers: React.FC<SignalEvidenceLedgersProps> = ({
                     )}
 
                     {src.supports_claim_ids.length > 0 && (
-                      <div className="flex flex-wrap items-center gap-2 pt-1 font-mono-tabular text-[11px]">
+                      <div className="flex flex-wrap items-center gap-2 pt-1 ws-meta text-[11.5px]">
                         <span className="text-[var(--ws-ink-muted)]">
                           {t.expanded.supportsClaims}:
                         </span>
@@ -307,7 +317,7 @@ export const SignalEvidenceLedgers: React.FC<SignalEvidenceLedgersProps> = ({
                             key={cid}
                             type="button"
                             onClick={() => onInspectClaim(cid)}
-                            className="text-[var(--ws-world)] underline decoration-dotted underline-offset-2 hover:decoration-solid cursor-pointer"
+                            className="font-mono-tabular text-[11px] text-[var(--ws-world)] underline decoration-dotted underline-offset-2 hover:decoration-solid cursor-pointer"
                           >
                             {cid}
                           </button>
@@ -323,7 +333,7 @@ export const SignalEvidenceLedgers: React.FC<SignalEvidenceLedgersProps> = ({
               <button
                 type="button"
                 onClick={() => setShowAllSources((prev) => !prev)}
-                className="inline-flex min-h-[34px] items-center gap-1.5 font-mono-tabular text-[11.5px] font-medium text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
+                className="inline-flex min-h-[34px] items-center gap-1.5 ws-meta text-[12px] font-medium text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
               >
                 <span>
                   {showAllSources
@@ -373,9 +383,9 @@ export const SignalEvidenceLedgers: React.FC<SignalEvidenceLedgersProps> = ({
                       key={`${rel.target_signal_id}-${rel.relationship_type}-${idx}`}
                       className="py-4 space-y-2"
                     >
-                      <div className="flex flex-wrap items-center justify-between gap-2 font-mono-tabular text-[11.5px]">
+                      <div className="flex flex-wrap items-center justify-between gap-2 ws-meta text-[12px]">
                         <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
-                          <span className="font-semibold uppercase tracking-[0.08em] text-[var(--ws-world)]">
+                          <span className="ws-kicker text-[var(--ws-world)]">
                             {t.signalRelationshipType[rel.relationship_type]}
                           </span>
                           <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
@@ -391,14 +401,14 @@ export const SignalEvidenceLedgers: React.FC<SignalEvidenceLedgersProps> = ({
                         </div>
                         {target ? (
                           <span
-                            className={`text-[11px] font-semibold ${domainAccentTextClass(
+                            className={`text-[11.5px] font-semibold ${domainAccentTextClass(
                               target.domain
                             )}`}
                           >
                             {t.domains[target.domain]}
                           </span>
                         ) : (
-                          <span className="text-[11px] text-[var(--ws-ink-muted)]">
+                          <span className="text-[11.5px] text-[var(--ws-ink-muted)]">
                             {t.expanded.relatedNotInEdition}
                           </span>
                         )}
@@ -424,20 +434,20 @@ export const SignalEvidenceLedgers: React.FC<SignalEvidenceLedgersProps> = ({
                       )}
 
                       {rel.rationale && (
-                        <p className="text-[13.5px] leading-[1.6] text-[var(--ws-ink-secondary)] break-words">
+                        <p className="text-[13.5px] leading-[1.65] text-[var(--ws-ink-secondary)] break-words">
                           {rel.rationale}
                         </p>
                       )}
 
                       {rel.supporting_claim_ids.length > 0 && (
-                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 ws-meta text-[11.5px] text-[var(--ws-ink-muted)]">
                           <span>{t.expanded.supportingClaimsLabel}:</span>
                           {rel.supporting_claim_ids.map((cid) => (
                             <button
                               key={cid}
                               type="button"
                               onClick={() => onInspectClaim(cid)}
-                              className="text-[var(--ws-world)] underline decoration-dotted underline-offset-2 hover:decoration-solid cursor-pointer"
+                              className="font-mono-tabular text-[11px] text-[var(--ws-world)] underline decoration-dotted underline-offset-2 hover:decoration-solid cursor-pointer"
                             >
                               {cid}
                             </button>
@@ -495,7 +505,7 @@ export const SignalEvidenceLedgers: React.FC<SignalEvidenceLedgersProps> = ({
                         onClick={() => onJumpToSignal(target.signal_id)}
                         className="rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-canvas)]/55 p-3.5 text-left hover:border-[var(--ws-border-strong)] hover:bg-[var(--ws-surface-hover)]/60 transition-colors cursor-pointer space-y-1"
                       >
-                        <div className="font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                        <div className="ws-meta text-[11.5px] text-[var(--ws-ink-muted)]">
                           <span
                             className={`font-semibold ${domainAccentTextClass(
                               target.domain
@@ -503,7 +513,10 @@ export const SignalEvidenceLedgers: React.FC<SignalEvidenceLedgersProps> = ({
                           >
                             {t.domains[target.domain]}
                           </span>{' '}
-                          · {target.signal_id}
+                          ·{' '}
+                          <span className="font-mono-tabular text-[11px]">
+                            {target.signal_id}
+                          </span>
                         </div>
                         <div className="text-[13px] font-semibold text-[var(--ws-ink)] leading-snug break-words">
                           {target.headline}
@@ -520,7 +533,7 @@ export const SignalEvidenceLedgers: React.FC<SignalEvidenceLedgersProps> = ({
 
       {/* Localized Tags Footer */}
       {signal.tags.length > 0 && (
-        <footer className="border-t border-[var(--ws-border-subtle)] pt-4 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
+        <footer className="border-t border-[var(--ws-border-subtle)] pt-4 flex flex-wrap items-center gap-x-3 gap-y-1 ws-meta text-[12px] text-[var(--ws-ink-muted)]">
           <span>{t.expanded.sourceTagsLabel}:</span>
           {signal.tags.map((tag) => (
             <button

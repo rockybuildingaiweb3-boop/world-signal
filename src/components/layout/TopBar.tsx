@@ -50,8 +50,8 @@ export const TopBar: React.FC<TopBarProps> = ({
 
   return (
     <>
-      <header className="sticky top-0 z-30 border-b border-[var(--ws-border)] bg-[var(--ws-canvas)]/96 backdrop-blur-xs">
-        <div className="mx-auto flex h-[62px] max-w-[1480px] items-center justify-between gap-2 sm:gap-4 px-3 sm:px-6 lg:px-8">
+      <header className="sticky top-0 z-30 border-b border-[var(--ws-border)] bg-[var(--ws-canvas)]/95 backdrop-blur-sm">
+        <div className="mx-auto flex h-[60px] max-w-[1480px] items-center justify-between gap-2 sm:gap-4 px-3.5 sm:px-6 lg:px-8">
           {/* Editorial Publication Nameplate Wordmark */}
           <button
             type="button"
@@ -59,8 +59,8 @@ export const TopBar: React.FC<TopBarProps> = ({
             className="flex items-center gap-2 sm:gap-2.5 text-left group cursor-pointer shrink-0"
           >
             <svg
-              width="20"
-              height="20"
+              width="19"
+              height="19"
               viewBox="0 0 24 24"
               fill="none"
               aria-hidden="true"
@@ -91,7 +91,7 @@ export const TopBar: React.FC<TopBarProps> = ({
               />
               <circle cx="12" cy="12" r="2" fill="var(--ws-editorial-accent)" />
             </svg>
-            <span className="font-display text-[17px] sm:text-[21px] font-bold tracking-[0.05em] sm:tracking-[0.06em] text-[var(--ws-ink)] whitespace-nowrap leading-none">
+            <span className="font-display text-[17px] sm:text-[20px] font-bold tracking-[0.055em] sm:tracking-[0.065em] text-[var(--ws-ink)] whitespace-nowrap leading-none">
               WORLD SIGNAL
             </span>
           </button>
@@ -99,7 +99,7 @@ export const TopBar: React.FC<TopBarProps> = ({
           {/* Desktop 4-View Editorial Navigation */}
           <nav
             aria-label="Primary navigation"
-            className="hidden md:flex items-center gap-4 lg:gap-7 h-full"
+            className="hidden md:flex items-center gap-5 lg:gap-8 h-full"
           >
             {NAV_ITEMS.map(({ id }) => {
               const isActive = activeView === id;
@@ -109,73 +109,94 @@ export const TopBar: React.FC<TopBarProps> = ({
                   type="button"
                   onClick={() => onSelectView(id)}
                   aria-current={isActive ? 'page' : undefined}
-                  className={`relative inline-flex h-full items-center px-0.5 text-[13.5px] lg:text-[14px] tracking-[0.01em] transition-colors cursor-pointer whitespace-nowrap ${
+                  className={`relative inline-flex h-full items-center px-0.5 text-[13.5px] lg:text-[14px] tracking-[0.012em] transition-colors cursor-pointer whitespace-nowrap ${
                     isActive
                       ? 'font-semibold text-[var(--ws-ink)]'
                       : 'font-medium text-[var(--ws-ink-muted)] hover:text-[var(--ws-ink)]'
                   }`}
                 >
                   {t.nav[id]}
-                  {isActive && (
-                    <span
-                      aria-hidden="true"
-                      className="absolute inset-x-0 bottom-0 h-[2.5px] bg-[var(--ws-editorial-accent)]"
-                    />
-                  )}
+                  <span
+                    aria-hidden="true"
+                    className={`absolute inset-x-0 bottom-0 h-[2px] transition-opacity duration-200 ${
+                      isActive
+                        ? 'bg-[var(--ws-editorial-accent)] opacity-100'
+                        : 'bg-[var(--ws-border-strong)] opacity-0 hover:opacity-40'
+                    }`}
+                  />
                 </button>
               );
             })}
           </nav>
 
-          {/* Compact Single-Line Utility Controls */}
-          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          {/* Cohesive Editorial Utility Cluster (Hairline-Separated, Non-Boxy) */}
+          <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
             <button
               type="button"
               data-testid="topbar-search-trigger"
               onClick={onOpenSearch}
               aria-label={`${t.globalSearch.triggerLabel} (${t.globalSearch.shortcutHint})`}
-              className="inline-flex h-[36px] items-center gap-2 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-2 sm:px-3 text-[12.5px] font-medium text-[var(--ws-ink-secondary)] hover:border-[var(--ws-border-strong)] hover:text-[var(--ws-ink)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
+              className="inline-flex h-[34px] items-center gap-1.5 rounded-[var(--ws-radius-sm)] px-2 sm:px-2.5 text-[12.5px] font-medium text-[var(--ws-ink-secondary)] hover:bg-[var(--ws-surface-subtle)] hover:text-[var(--ws-ink)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
             >
               <Search className="h-3.5 w-3.5 text-[var(--ws-ink-muted)] shrink-0" />
               <span className="hidden xl:inline">{t.globalSearch.triggerLabel}</span>
-              <kbd className="hidden lg:inline-block font-mono-tabular text-[10.5px] text-[var(--ws-ink-muted)] border-l border-[var(--ws-border-subtle)] pl-1.5">
+              <kbd className="hidden lg:inline-block font-mono-tabular text-[10.5px] text-[var(--ws-ink-faint)] pl-0.5">
                 {t.globalSearch.shortcutHint}
               </kbd>
             </button>
+
+            <span
+              aria-hidden="true"
+              className="hidden sm:block h-3.5 w-px bg-[var(--ws-border)] mx-0.5"
+            />
 
             <button
               type="button"
               data-testid="topbar-desk-trigger"
               onClick={onOpenReaderDesk}
               aria-label={t.readerDesk.dialogTitle}
-              className="relative inline-flex h-[36px] items-center gap-1.5 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-2 sm:px-3 text-[12.5px] font-medium text-[var(--ws-ink-secondary)] hover:border-[var(--ws-border-strong)] hover:text-[var(--ws-ink)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
+              className="relative inline-flex h-[34px] items-center gap-1.5 rounded-[var(--ws-radius-sm)] px-2 sm:px-2.5 text-[12.5px] font-medium text-[var(--ws-ink-secondary)] hover:bg-[var(--ws-surface-subtle)] hover:text-[var(--ws-ink)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
             >
-              <Bookmark className="h-3.5 w-3.5 text-[var(--ws-ink-muted)] shrink-0" />
+              <Bookmark
+                className={`h-3.5 w-3.5 shrink-0 ${
+                  hasCatchUpChanges
+                    ? 'text-[var(--ws-editorial-accent)]'
+                    : 'text-[var(--ws-ink-muted)]'
+                }`}
+              />
               <span className="hidden xl:inline">{t.readerDesk.triggerLabel}</span>
               {deskBadgeCount > 0 && (
-                <span className="font-mono-tabular text-[11px] font-semibold text-[var(--ws-ink)]">
+                <span
+                  className={`font-mono-tabular text-[11px] font-semibold ${
+                    hasCatchUpChanges
+                      ? 'text-[var(--ws-editorial-accent)]'
+                      : 'text-[var(--ws-ink)]'
+                  }`}
+                >
                   {deskBadgeCount}
                 </span>
               )}
-              {hasCatchUpChanges && (
-                <span
-                  aria-label={t.catchUp.title}
-                  className="h-1.5 w-1.5 rounded-full bg-[var(--ws-editorial-accent)] shrink-0"
-                />
+              {hasCatchUpChanges && deskBadgeCount === 0 && (
+                <span className="sr-only">{t.catchUp.title}</span>
               )}
             </button>
+
+            <span
+              aria-hidden="true"
+              className="hidden sm:block h-3.5 w-px bg-[var(--ws-border)] mx-1"
+            />
 
             <button
               type="button"
               data-testid="topbar-archive-trigger"
               onClick={onOpenArchive}
               aria-label={t.archive.button}
-              className="inline-flex h-[36px] items-center gap-2 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border-strong)] bg-[var(--ws-surface)] px-2 sm:px-3 text-[12.5px] font-medium text-[var(--ws-ink)] hover:bg-[var(--ws-surface-hover)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
+              className="inline-flex h-[34px] items-center gap-2 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-2.5 sm:px-3 text-[12.5px] font-medium text-[var(--ws-ink)] hover:border-[var(--ws-border-strong)] hover:bg-[var(--ws-surface-subtle)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
             >
               <Archive className="h-3.5 w-3.5 text-[var(--ws-ink-muted)] shrink-0" />
               <span className="hidden sm:inline">{t.archive.button}</span>
               {isLocalPreview ? (
-                <span className="font-mono-tabular text-[11.5px] font-semibold text-[var(--ws-warn)] border-l border-[var(--ws-border)] pl-2">
+                <span className="font-mono-tabular text-[11px] font-semibold text-[var(--ws-warn)] border-l border-[var(--ws-border)] pl-2">
                   LOCAL
                 </span>
               ) : activeEditionDate ? (
@@ -191,7 +212,7 @@ export const TopBar: React.FC<TopBarProps> = ({
       {/* Mobile Bottom Editorial Navigation Bar */}
       <nav
         aria-label="Mobile primary navigation"
-        className="fixed inset-x-0 bottom-0 z-30 flex md:hidden border-t border-[var(--ws-border-strong)] bg-[var(--ws-canvas)]/98 pb-[env(safe-area-inset-bottom)]"
+        className="fixed inset-x-0 bottom-0 z-30 flex md:hidden border-t border-[var(--ws-border-strong)] bg-[var(--ws-canvas)]/96 backdrop-blur-sm pb-[env(safe-area-inset-bottom)]"
       >
         {NAV_ITEMS.map(({ id, icon: Icon }) => {
           const isActive = activeView === id;
@@ -201,16 +222,16 @@ export const TopBar: React.FC<TopBarProps> = ({
               type="button"
               onClick={() => onSelectView(id)}
               aria-current={isActive ? 'page' : undefined}
-              className={`relative flex flex-1 flex-col items-center justify-center gap-1 py-2.5 text-[11px] font-medium transition-colors cursor-pointer ${
+              className={`relative flex flex-1 flex-col items-center justify-center gap-1 py-2.5 text-[11px] transition-colors cursor-pointer ${
                 isActive
                   ? 'text-[var(--ws-ink)] font-semibold'
-                  : 'text-[var(--ws-ink-muted)]'
+                  : 'text-[var(--ws-ink-muted)] font-medium'
               }`}
             >
               {isActive && (
                 <span
                   aria-hidden="true"
-                  className="absolute inset-x-4 top-0 h-[2px] bg-[var(--ws-editorial-accent)]"
+                  className="absolute inset-x-5 top-0 h-[2px] bg-[var(--ws-editorial-accent)]"
                 />
               )}
               <Icon className="h-4 w-4" />

@@ -104,7 +104,7 @@ export const AuditOverviewCards: React.FC<AuditOverviewCardsProps> = ({
       {/* Asymmetric Editorial Verification Brief (Open Broadsheet Ledger) */}
       <div className="ws-broadsheet-ledger grid grid-cols-1 lg:grid-cols-12">
         {/* Primary Provenance Hero Column (5 cols) */}
-        <div className="lg:col-span-5 p-5 sm:p-7 flex flex-col justify-between gap-6 border-b lg:border-b-0 lg:border-r border-[var(--ws-border)]">
+        <div className="lg:col-span-5 p-5 sm:p-7 flex flex-col justify-start gap-6 border-b lg:border-b-0 lg:border-r border-[var(--ws-border)]">
           <div className="grid grid-cols-2 gap-6 items-end">
             <div className="space-y-1.5">
               <div className="ws-kicker text-[var(--ws-conf-high)]">
@@ -166,7 +166,7 @@ export const AuditOverviewCards: React.FC<AuditOverviewCardsProps> = ({
         </div>
 
         {/* Proportional Composition & Source Class Analysis Column (7 cols) */}
-        <div className="lg:col-span-7 p-5 sm:p-7 flex flex-col justify-between gap-6 bg-[var(--ws-surface-elevated)]/45">
+        <div className="lg:col-span-7 p-5 sm:p-7 flex flex-col justify-start gap-6 bg-[var(--ws-surface-elevated)]/45">
           {summary.totalRecords > 0 && (
             <>
               {/* Derived Record Independence Composition */}
@@ -175,7 +175,7 @@ export const AuditOverviewCards: React.FC<AuditOverviewCardsProps> = ({
                   <h3 className="ws-kicker text-[var(--ws-ink-muted)]">
                     {t.audit.compositionTitle}
                   </h3>
-                  <span className="font-mono-tabular text-[12px] font-semibold text-[var(--ws-ink)]">
+                  <span className="ws-meta text-[12px] font-semibold text-[var(--ws-ink)]">
                     {t.masthead.recordsCount(summary.totalRecords)}
                   </span>
                 </div>
@@ -221,13 +221,19 @@ export const AuditOverviewCards: React.FC<AuditOverviewCardsProps> = ({
                   <span className="ws-kicker text-[var(--ws-ink-muted)]">
                     {t.audit.sourceBreakdownTitle}
                   </span>
-                  <span className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
-                    {t.expanded.unregisteredCandidate}: {summary.unregisteredRecords}
+                  <span className="ws-meta text-[12px] text-[var(--ws-ink-muted)]">
+                    {t.expanded.unregisteredCandidate}:{' '}
+                    <span className="font-mono-tabular font-semibold text-[var(--ws-ink-secondary)]">
+                      {summary.unregisteredRecords}
+                    </span>
                     {summary.unassignedRecords.length > 0 && (
                       <>
                         {' · '}
                         <span className="text-[var(--ws-warn)] font-semibold">
-                          {t.audit.unassignedBadge}: {summary.unassignedRecords.length}
+                          {t.audit.unassignedBadge}:{' '}
+                          <span className="font-mono-tabular">
+                            {summary.unassignedRecords.length}
+                          </span>
                         </span>
                       </>
                     )}

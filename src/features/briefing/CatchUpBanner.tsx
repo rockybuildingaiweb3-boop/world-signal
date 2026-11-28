@@ -144,23 +144,23 @@ export const CatchUpBanner: React.FC<CatchUpBannerProps> = ({
           <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
             ·
           </span>
-          <span className="font-mono-tabular text-[12.5px] font-semibold text-[var(--ws-ink)]">
+          <span className="ws-meta text-[12.5px] font-semibold text-[var(--ws-ink)]">
             {t.catchUp.changesHeadline(
               catchUp.baselineEditionDate,
               catchUp.currentEditionDate
             )}
           </span>
           {catchUp.isSameDayRevision && (
-            <span className="font-mono-tabular text-[11.5px] font-semibold text-[var(--ws-world)]">
+            <span className="ws-meta text-[12px] font-semibold text-[var(--ws-world)]">
               ({t.catchUp.sameDayRevisionBadge})
             </span>
           )}
         </div>
 
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono-tabular text-[12px] text-[var(--ws-ink-muted)]">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 ws-meta text-[12.5px] text-[var(--ws-ink-muted)]">
           {catchUp.newSignals.length > 0 && (
             <span>
-              <strong className="text-[var(--ws-economy)]">
+              <strong className="font-mono-tabular text-[var(--ws-economy)]">
                 {catchUp.newSignals.length}
               </strong>{' '}
               {t.catchUp.groupNew}
@@ -168,7 +168,7 @@ export const CatchUpBanner: React.FC<CatchUpBannerProps> = ({
           )}
           {catchUp.updatedSignals.length > 0 && (
             <span>
-              <strong className="text-[var(--ws-world)]">
+              <strong className="font-mono-tabular text-[var(--ws-world)]">
                 {catchUp.updatedSignals.length}
               </strong>{' '}
               {t.catchUp.groupUpdated}
@@ -176,7 +176,7 @@ export const CatchUpBanner: React.FC<CatchUpBannerProps> = ({
           )}
           {catchUp.reappearedSignals.length > 0 && (
             <span>
-              <strong className="text-[var(--ws-warn)]">
+              <strong className="font-mono-tabular text-[var(--ws-warn)]">
                 {catchUp.reappearedSignals.length}
               </strong>{' '}
               {t.catchUp.groupReappeared}
@@ -184,7 +184,7 @@ export const CatchUpBanner: React.FC<CatchUpBannerProps> = ({
           )}
           {catchUp.followedAlerts.length > 0 && (
             <span>
-              <strong className="text-[var(--ws-editorial-accent)]">
+              <strong className="font-mono-tabular text-[var(--ws-editorial-accent)]">
                 {catchUp.followedAlerts.length}
               </strong>{' '}
               {t.catchUp.personalCatchUpTitle}
@@ -192,7 +192,7 @@ export const CatchUpBanner: React.FC<CatchUpBannerProps> = ({
           )}
           {catchUp.omittedSignals.length > 0 && (
             <span>
-              <strong className="text-[var(--ws-warn)]">
+              <strong className="font-mono-tabular text-[var(--ws-warn)]">
                 {catchUp.omittedSignals.length}
               </strong>{' '}
               {t.catchUp.groupOmitted}

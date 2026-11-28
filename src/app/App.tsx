@@ -528,42 +528,44 @@ export const App: React.FC = () => {
       </main>
 
       {/* Minimal Editorial Publication Colophon Footer */}
-      <footer className="border-t border-[var(--ws-border-strong)] bg-[var(--ws-surface)]/55 py-7 mt-12">
-        <div className="mx-auto max-w-[1480px] px-4 sm:px-6 lg:px-8 flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between font-mono-tabular text-[12px] text-[var(--ws-ink-muted)]">
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
-            <span className="font-display text-[13px] font-semibold tracking-[0.03em] text-[var(--ws-ink)]">
+      <footer className="border-t border-[var(--ws-border)] bg-[var(--ws-surface)]/60 py-7 mt-14">
+        <div className="mx-auto max-w-[1480px] px-4 sm:px-6 lg:px-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between text-[12.5px] text-[var(--ws-ink-muted)]">
+          <div className="flex flex-wrap items-center gap-x-2.5 gap-y-0.5">
+            <span className="font-display text-[13.5px] font-bold tracking-[0.04em] text-[var(--ws-ink)]">
               WORLD SIGNAL
             </span>
             <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">·</span>
             <span>{t.brandTagline}</span>
           </div>
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-            <span>America/Los_Angeles</span>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
+            <span className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-faint)]">
+              America/Los_Angeles
+            </span>
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
-              className="hover:text-[var(--ws-ink)] underline decoration-[var(--ws-border-strong)] underline-offset-4 cursor-pointer"
+              className="hover:text-[var(--ws-ink)] underline decoration-[var(--ws-border)] hover:decoration-[var(--ws-ink)] underline-offset-4 transition-colors cursor-pointer"
             >
               {t.globalSearch.triggerLabel}
             </button>
             <button
               type="button"
               onClick={() => handleOpenReaderDesk('catchUp')}
-              className="hover:text-[var(--ws-ink)] underline decoration-[var(--ws-border-strong)] underline-offset-4 cursor-pointer"
+              className="hover:text-[var(--ws-ink)] underline decoration-[var(--ws-border)] hover:decoration-[var(--ws-ink)] underline-offset-4 transition-colors cursor-pointer"
             >
               {t.readerDesk.triggerLabel}
             </button>
             <button
               type="button"
               onClick={() => setArchiveOpen(true)}
-              className="hover:text-[var(--ws-ink)] underline decoration-[var(--ws-border-strong)] underline-offset-4 cursor-pointer"
+              className="hover:text-[var(--ws-ink)] underline decoration-[var(--ws-border)] hover:decoration-[var(--ws-ink)] underline-offset-4 transition-colors cursor-pointer"
             >
               {t.archive.button}
             </button>
             <button
               type="button"
               onClick={() => setLocalModalOpen(true)}
-              className="hover:text-[var(--ws-ink)] underline decoration-[var(--ws-border-strong)] underline-offset-4 cursor-pointer"
+              className="hover:text-[var(--ws-ink)] underline decoration-[var(--ws-border)] hover:decoration-[var(--ws-ink)] underline-offset-4 transition-colors cursor-pointer"
             >
               {t.archive.developerTools}
             </button>

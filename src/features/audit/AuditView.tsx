@@ -169,7 +169,7 @@ export const AuditView: React.FC<AuditViewProps> = ({
                   {t.audit.matrixSubtitle}
                 </p>
               </div>
-              <p className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-faint)]">
+              <p className="ws-meta text-[11.5px] text-[var(--ws-ink-faint)]">
                 {t.audit.matrixAxisNote}
               </p>
             </div>
@@ -277,7 +277,7 @@ export const AuditView: React.FC<AuditViewProps> = ({
           </div>
 
           {/* Right 5 cols: Confidence & Importance Marginal Distributions */}
-          <div className="lg:col-span-5 p-5 sm:p-7 flex flex-col justify-between gap-6 bg-[var(--ws-surface-elevated)]/45">
+          <div className="lg:col-span-5 p-5 sm:p-7 flex flex-col justify-start gap-6 bg-[var(--ws-surface-elevated)]/45">
             <div className="space-y-3">
               <h3 className="ws-kicker text-[var(--ws-ink-muted)]">
                 {t.audit.confidenceDistribution}
@@ -465,7 +465,7 @@ export const AuditView: React.FC<AuditViewProps> = ({
                   <>
                     {edition.validation.errors.length > 0 && (
                       <div className="space-y-2">
-                        <h3 className="font-mono-tabular text-xs font-semibold uppercase tracking-wider text-[var(--ws-error)]">
+                        <h3 className="ws-kicker text-[var(--ws-error)]">
                           {t.audit.diagnosticsErrors} (
                           {edition.validation.errors.length})
                         </h3>
@@ -490,7 +490,7 @@ export const AuditView: React.FC<AuditViewProps> = ({
 
                     {edition.validation.warnings.length > 0 && (
                       <div className="space-y-2">
-                        <h3 className="font-mono-tabular text-xs font-semibold uppercase tracking-wider text-[var(--ws-warn)]">
+                        <h3 className="ws-kicker text-[var(--ws-warn)]">
                           {t.audit.diagnosticsWarnings} (
                           {edition.validation.warnings.length})
                         </h3>

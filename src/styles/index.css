@@ -5,31 +5,33 @@
   --font-display: "Fraunces", "Noto Serif SC", "Songti SC", "STSong", Georgia, serif;
   --font-serif-body: "Fraunces", "Noto Serif SC", "Songti SC", Georgia, serif;
   --font-sans: "Plus Jakarta Sans", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-mono: "IBM Plex Mono", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 :root {
   /* Editorial Broadsheet & Magazine Light Palette */
   --ws-canvas: #f8f5ef;
-  --ws-surface: #ffffff;
-  --ws-surface-subtle: #f2ede3;
-  --ws-surface-hover: #ebe4d7;
-  --ws-ink: #13161c;
-  --ws-ink-secondary: #373c46;
-  --ws-ink-muted: #5e6470;
-  --ws-ink-faint: #848a96;
-  --ws-border: #dfd8ca;
-  --ws-border-strong: #c2b8a5;
-  --ws-border-subtle: #ebe5d8;
-  --ws-rule-editorial: #13161c;
+  --ws-surface: #fffdf9;
+  --ws-surface-subtle: #f1ece2;
+  --ws-surface-hover: #e8e0d2;
+  --ws-surface-elevated: #faf6ee;
+  --ws-ink: #12151c;
+  --ws-ink-secondary: #353b45;
+  --ws-ink-muted: #5c6370;
+  --ws-ink-faint: #848b97;
+  --ws-border: #ddd5c5;
+  --ws-border-strong: #bfb39c;
+  --ws-border-subtle: #eae3d5;
+  --ws-rule-editorial: #12151c;
 
   /* Editorial Ink-Plate Contrast Surface (Magazine Cover / Feature Bands) */
-  --ws-plate: #12161f;
-  --ws-plate-elevated: #1a202e;
-  --ws-plate-ink: #f7f4ed;
-  --ws-plate-secondary: #c9d0dc;
-  --ws-plate-muted: #8f99aa;
-  --ws-plate-border: #2a3346;
+  --ws-plate: #121721;
+  --ws-plate-elevated: #1a2130;
+  --ws-plate-ink: #f7f4ec;
+  --ws-plate-secondary: #cbd2df;
+  --ws-plate-muted: #939db0;
+  --ws-plate-border: #2a3448;
+  --ws-plate-accent: #f07665;
 
   /* Authoritative Editorial Accents (Economist / FT / Monocle Discipline) */
   --ws-editorial-accent: #b42818;
@@ -60,11 +62,11 @@
   --ws-conf-unverified: #6e7480;
 
   /* Editorial Desk Subtle Paper Tints (World / AI / Economy Personality) */
-  --ws-desk-ai-bg: #f4f1fa;
-  --ws-desk-econ-bg: #eef5f2;
+  --ws-desk-ai-bg: #f4f0fa;
+  --ws-desk-econ-bg: #eef5f1;
 
   /* Elevated Surface & Shadow Tokens */
-  --ws-surface-elevated: #faf7f0;
+  --ws-shadow-sm: 0 2px 10px rgba(15, 18, 25, 0.05);
   --ws-shadow-lg: 0 22px 54px rgba(15, 18, 25, 0.16);
 
   /* Editorial Surface Geometry */
@@ -74,41 +76,43 @@
 }
 
 .dark {
-  /* Nocturnal Editorial Ink Palette (Art-Directed Dark Mode, Never Raw Inversion) */
-  --ws-canvas: #0c0f14;
-  --ws-surface: #131822;
-  --ws-surface-subtle: #19202d;
-  --ws-surface-hover: #212a3a;
-  --ws-surface-elevated: #1c2433;
-  --ws-ink: #f2eee6;
-  --ws-ink-secondary: #c9cfd9;
-  --ws-ink-muted: #939cab;
-  --ws-ink-faint: #677080;
-  --ws-border: #262f40;
-  --ws-border-strong: #3a465d;
-  --ws-border-subtle: #1c2433;
-  --ws-rule-editorial: #f2eee6;
+  /* Nocturnal Editorial Ink Palette (Art-Directed Dark Mode, Distinct Layered Depth) */
+  --ws-canvas: #0b0e14;
+  --ws-surface: #121722;
+  --ws-surface-subtle: #181f2d;
+  --ws-surface-hover: #212a3c;
+  --ws-surface-elevated: #161d2b;
+  --ws-ink: #f3efe6;
+  --ws-ink-secondary: #ccd2dc;
+  --ws-ink-muted: #949eae;
+  --ws-ink-faint: #677285;
+  --ws-border: #252f42;
+  --ws-border-strong: #3c4a63;
+  --ws-border-subtle: #1b2333;
+  --ws-rule-editorial: #f3efe6;
 
-  --ws-plate: #080b10;
-  --ws-plate-elevated: #111621;
-  --ws-plate-ink: #f5f2eb;
-  --ws-plate-secondary: #c6cdd9;
-  --ws-plate-muted: #8b95a7;
-  --ws-plate-border: #252e40;
+  /* Layered Nocturnal Magazine Plate (Elevated Above Canvas for Clear Figure-Ground) */
+  --ws-plate: #141b29;
+  --ws-plate-elevated: #1b2436;
+  --ws-plate-ink: #f6f2e9;
+  --ws-plate-secondary: #ccd3e0;
+  --ws-plate-muted: #949fb2;
+  --ws-plate-border: #2f3c55;
+  --ws-plate-accent: #f27b6a;
 
-  --ws-editorial-accent: #e56454;
+  --ws-editorial-accent: #ea6a5a;
   --ws-editorial-accent-soft: #2e1917;
 
-  --ws-world: #79b1ef;
+  --ws-world: #7eb5f2;
   --ws-world-soft: #152538;
-  --ws-ai: #b499f5;
+  --ws-ai: #b99ef7;
   --ws-ai-soft: #211936;
-  --ws-economy: #5cc9a3;
+  --ws-economy: #60cca7;
   --ws-economy-soft: #122922;
 
   --ws-good: #62d18c;
   --ws-good-soft: #12281b;
-  --ws-warn: #eab04d;
+  --ws-warn: #ebb354;
   --ws-warn-soft: #2c2111;
   --ws-warn-border: #63491d;
   --ws-error: #f27b7b;
@@ -116,14 +120,15 @@
   --ws-error-border: #6e2d2d;
 
   --ws-conf-high: #62d18c;
-  --ws-conf-medium: #79b1ef;
-  --ws-conf-low: #eab04d;
-  --ws-conf-unverified: #939cab;
+  --ws-conf-medium: #7eb5f2;
+  --ws-conf-low: #ebb354;
+  --ws-conf-unverified: #949eae;
 
-  --ws-desk-ai-bg: #171426;
-  --ws-desk-econ-bg: #101e1b;
+  --ws-desk-ai-bg: #171427;
+  --ws-desk-econ-bg: #101f1c;
 
-  --ws-shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.52);
+  --ws-shadow-sm: 0 2px 12px rgba(0, 0, 0, 0.28);
+  --ws-shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.54);
 }
 
 @layer base {
@@ -167,8 +172,13 @@
 .font-display {
   font-family: var(--font-display);
   font-optical-sizing: auto;
-  font-variation-settings: "SOFT" 25, "WONK" 0;
+  font-variation-settings: "SOFT" 22, "WONK" 0;
   text-wrap: balance;
+}
+
+[data-lang="zh-CN"] .font-display {
+  text-wrap: pretty;
+  line-break: strict;
 }
 
 .font-serif-body {
@@ -176,91 +186,102 @@
   font-optical-sizing: auto;
 }
 
+/* Strictly for IDs, dates, timestamps, URLs, and aligned numeric indices */
 .font-mono-tabular {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
+}
+
+/* Readable editorial sans metadata with aligned tabular numerals (ideal for EN + ZH) */
+.ws-meta {
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.004em;
 }
 
 .ws-tabular {
   font-variant-numeric: tabular-nums;
 }
 
-/* Fluid Lead Cover Headline: 48–62px desktop, 38–46px tablet, 30–38px mobile */
+/* Fluid Lead Cover Headline: authoritative display scale on desktop, poised on mobile */
 .ws-headline-cover {
   font-family: var(--font-display);
   font-optical-sizing: auto;
   font-weight: 600;
-  font-size: clamp(1.95rem, 3.2vw + 0.7rem, 3.55rem);
-  line-height: 1.08;
+  font-size: clamp(1.9rem, 2.9vw + 0.65rem, 3.35rem);
+  line-height: 1.09;
   letter-spacing: -0.028em;
   text-wrap: balance;
 }
 
 [data-lang="zh-CN"] .ws-headline-cover,
 .ws-headline-cover-cjk {
-  font-size: clamp(1.72rem, 2.3vw + 0.6rem, 2.68rem);
-  line-height: 1.24;
-  letter-spacing: -0.014em;
+  font-size: clamp(1.62rem, 2.05vw + 0.55rem, 2.48rem);
+  line-height: 1.26;
+  letter-spacing: -0.012em;
   text-wrap: pretty;
+  line-break: strict;
 }
 
-/* Secondary Feature Headline: 26–34px desktop */
+/* Secondary Feature Headline: 24–33px desktop */
 .ws-headline-feature {
   font-family: var(--font-display);
   font-optical-sizing: auto;
   font-weight: 600;
-  font-size: clamp(1.4rem, 1.4vw + 0.85rem, 2.05rem);
+  font-size: clamp(1.38rem, 1.35vw + 0.85rem, 2.02rem);
   line-height: 1.18;
   letter-spacing: -0.022em;
   text-wrap: balance;
 }
 
 [data-lang="zh-CN"] .ws-headline-feature {
-  font-size: clamp(1.32rem, 1.15vw + 0.85rem, 1.82rem);
-  line-height: 1.32;
-  letter-spacing: -0.01em;
+  font-size: clamp(1.3rem, 1.1vw + 0.82rem, 1.78rem);
+  line-height: 1.34;
+  letter-spacing: -0.008em;
   text-wrap: pretty;
+  line-break: strict;
 }
 
-/* Supporting Story Headline: 19–23px */
+/* Supporting Story Headline: 18–22px */
 .ws-headline-story {
   font-family: var(--font-display);
   font-optical-sizing: auto;
   font-weight: 600;
-  font-size: clamp(1.125rem, 0.5vw + 0.98rem, 1.375rem);
-  line-height: 1.26;
-  letter-spacing: -0.016em;
+  font-size: clamp(1.125rem, 0.45vw + 0.98rem, 1.35rem);
+  line-height: 1.27;
+  letter-spacing: -0.015em;
 }
 
 [data-lang="zh-CN"] .ws-headline-story {
-  line-height: 1.38;
-  letter-spacing: -0.008em;
+  line-height: 1.4;
+  letter-spacing: -0.006em;
+  line-break: strict;
 }
 
-/* Editorial Deck / Subhead: 17–20px */
+/* Editorial Deck / Subhead: 16–19px */
 .ws-deck {
-  font-size: clamp(1rem, 0.35vw + 0.92rem, 1.1875rem);
-  line-height: 1.65;
+  font-size: clamp(0.98rem, 0.3vw + 0.9rem, 1.14rem);
+  line-height: 1.66;
   color: var(--ws-ink-secondary);
 }
 
 [data-lang="zh-CN"] .ws-deck {
-  line-height: 1.78;
+  line-height: 1.8;
 }
 
 /* Editorial Section Kicker (refined, legible, never tiny micro-noise) */
 .ws-kicker {
   font-family: var(--font-sans);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.13em;
   text-transform: uppercase;
   line-height: 1.3;
 }
 
 [data-lang="zh-CN"] .ws-kicker {
-  font-size: 0.78rem;
-  letter-spacing: 0.08em;
+  font-size: 0.76rem;
+  letter-spacing: 0.09em;
   text-transform: none;
 }
 
@@ -290,6 +311,7 @@
   background-color: var(--ws-plate);
   color: var(--ws-plate-ink);
   border-radius: var(--ws-radius-sm);
+  box-shadow: var(--ws-shadow-sm);
 }
 
 .ws-folio-panel {
@@ -300,12 +322,12 @@
 
 .ws-caution-panel {
   background-color: var(--ws-warn-soft);
-  border: 1px solid color-mix(in srgb, var(--ws-warn) 28%, var(--ws-border));
+  border: 1px solid color-mix(in srgb, var(--ws-warn) 26%, var(--ws-border));
   border-radius: var(--ws-radius-sm);
 }
 
 .ws-section-rule {
-  border-top: 2px solid var(--ws-ink);
+  border-top: 1.5px solid var(--ws-ink);
 }
 
 .ws-masthead-rule {
@@ -346,7 +368,7 @@
   border-bottom: 1px solid var(--ws-border);
   background-color: color-mix(
     in srgb,
-    var(--ws-editorial-accent-soft) 42%,
+    var(--ws-editorial-accent-soft) 36%,
     var(--ws-surface)
   );
 }
@@ -379,15 +401,16 @@
   font-family: var(--font-display);
   font-optical-sizing: auto;
   font-weight: 600;
-  line-height: 1.15;
-  letter-spacing: -0.024em;
+  line-height: 1.16;
+  letter-spacing: -0.022em;
   text-wrap: balance;
 }
 
 [data-lang="zh-CN"] .ws-headline-dossier {
-  line-height: 1.28;
-  letter-spacing: -0.012em;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
   text-wrap: pretty;
+  line-break: strict;
 }
 
 .headline-balance {
@@ -396,9 +419,10 @@
 
 [data-lang="zh-CN"] .headline-balance {
   text-wrap: pretty;
+  line-break: strict;
 }
 
-/* Editorial Print Illustration Plate Treatment */
+/* Editorial Print Illustration & Photography Plate Treatment */
 .ws-art-frame {
   position: relative;
   overflow: hidden;
@@ -407,10 +431,10 @@
 }
 
 .dark .ws-art-frame img {
-  filter: brightness(0.9) contrast(1.04);
+  filter: brightness(0.92) contrast(1.03);
 }
 
-/* Long-form Reading Prose (65–75ch comfortable editorial rhythm) */
+/* Long-form Reading Prose (65–72ch comfortable magazine measure) */
 .ws-prose {
   color: var(--ws-ink-secondary);
   font-size: 1.03125rem;
@@ -418,14 +442,19 @@
   max-width: 70ch;
 }
 
+.dark .ws-prose {
+  letter-spacing: 0.008em;
+}
+
 [data-lang="zh-CN"] .ws-prose {
   font-size: 1.03125rem;
-  line-height: 1.88;
+  line-height: 1.9;
+  letter-spacing: 0.012em;
 }
 
 .ws-prose p {
   margin-top: 0;
-  margin-bottom: 1em;
+  margin-bottom: 1.05em;
 }
 
 .ws-prose p:last-child {
@@ -434,8 +463,8 @@
 
 .ws-prose ul,
 .ws-prose ol {
-  margin-top: 0.45em;
-  margin-bottom: 1em;
+  margin-top: 0.5em;
+  margin-bottom: 1.05em;
   padding-left: 1.35em;
 }
 
@@ -448,7 +477,7 @@
 }
 
 .ws-prose li {
-  margin-bottom: 0.42em;
+  margin-bottom: 0.45em;
 }
 
 .ws-prose li::marker {
@@ -469,26 +498,34 @@
   color: var(--ws-ink);
 }
 
+/* Classic editorial pull-quote framed by top and bottom hairline rules */
 .ws-prose blockquote {
-  margin: 1.1em 0;
-  padding: 0.25rem 0 0.25rem 1.15rem;
-  border-left: 2px solid var(--ws-editorial-accent);
+  margin: 1.35em 0;
+  padding: 0.85rem 0;
+  border-top: 1.5px solid var(--ws-ink);
+  border-bottom: 1px solid var(--ws-border);
   color: var(--ws-ink);
   font-family: var(--font-serif-body);
-  font-size: 1.06em;
+  font-size: 1.08em;
   line-height: 1.72;
 }
 
 .ws-prose a {
   color: var(--ws-world);
   text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--ws-world) 45%, transparent);
   text-underline-offset: 3px;
+  transition: text-decoration-color 150ms ease;
+}
+
+.ws-prose a:hover {
+  text-decoration-color: var(--ws-world);
 }
 
 .ws-prose table {
   width: 100%;
   border-collapse: collapse;
-  margin: 1rem 0;
+  margin: 1.1rem 0;
   font-size: 0.9rem;
 }
 
@@ -513,7 +550,7 @@
 }
 
 [data-lang="zh-CN"] .ws-prose-compact {
-  line-height: 1.84;
+  line-height: 1.86;
 }
 
 /* Inverted plate prose */
@@ -538,7 +575,7 @@
 }
 
 .ws-view-enter {
-  animation: wsEditorialReveal 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: wsEditorialReveal 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @media (prefers-reduced-motion: reduce) {

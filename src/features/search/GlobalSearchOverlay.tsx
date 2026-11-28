@@ -240,7 +240,9 @@ export const GlobalSearchOverlay: React.FC<GlobalSearchOverlayProps> = ({
           <div className="flex items-start justify-between gap-4">
             <div className="space-y-0.5 min-w-0">
               <div className="ws-kicker text-[var(--ws-editorial-accent)]">
-                WORLD SIGNAL · ARCHIVE INDEX
+                {lang === 'zh-CN'
+                  ? 'WORLD SIGNAL · 全库档案索引'
+                  : 'WORLD SIGNAL · ARCHIVE INDEX'}
               </div>
               <h2
                 id={titleId}
@@ -332,7 +334,7 @@ export const GlobalSearchOverlay: React.FC<GlobalSearchOverlayProps> = ({
 
               {/* Sort Selector */}
               <label className="inline-flex items-center gap-1.5 text-[12px] text-[var(--ws-ink-muted)]">
-                <span className="font-mono-tabular text-[11px] uppercase tracking-[0.08em]">
+                <span className="ws-kicker">
                   {t.globalSearch.sortLabel}
                 </span>
                 <select
@@ -353,7 +355,7 @@ export const GlobalSearchOverlay: React.FC<GlobalSearchOverlayProps> = ({
             </div>
 
             {/* Indexing Status & Cancel/Resume */}
-            <div className="flex items-center gap-2 font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
+            <div className="flex items-center gap-2 ws-meta text-[12px] text-[var(--ws-ink-muted)]">
               {isIndexing ? (
                 <>
                   <RefreshCw className="h-3 w-3 animate-spin text-[var(--ws-world)] shrink-0" />
@@ -371,7 +373,7 @@ export const GlobalSearchOverlay: React.FC<GlobalSearchOverlayProps> = ({
                 </>
               ) : isCancelled ? (
                 <>
-                  <span className="text-[var(--ws-warn)]">
+                  <span className="font-mono-tabular text-[var(--ws-warn)]">
                     {indexedCount}/{totalEditions}
                   </span>
                   <button
@@ -394,7 +396,7 @@ export const GlobalSearchOverlay: React.FC<GlobalSearchOverlayProps> = ({
           {/* Sort Explainer Note */}
           <div className="flex flex-wrap items-center justify-between gap-2 text-[11.5px] text-[var(--ws-ink-muted)]">
             <span>{t.globalSearch.sortExplainer[sortBy]}</span>
-            <span className="hidden sm:inline font-mono-tabular text-[11px] text-[var(--ws-ink-faint)]">
+            <span className="hidden sm:inline ws-meta text-[11px] text-[var(--ws-ink-faint)]">
               {t.globalSearch.keyboardHint}
             </span>
           </div>
@@ -697,7 +699,7 @@ export const GlobalSearchOverlay: React.FC<GlobalSearchOverlayProps> = ({
 
           {/* Results Summary Bar */}
           {results.length > 0 && (
-            <div className="flex items-center justify-between border-b border-[var(--ws-border)] pb-2 font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
+            <div className="flex items-center justify-between border-b border-[var(--ws-border)] pb-2 ws-meta text-[12px] text-[var(--ws-ink-muted)]">
               <span data-testid="global-search-summary">
                 {t.globalSearch.resultsSummary(results.length, totalOccurrences)}
               </span>
@@ -720,7 +722,7 @@ export const GlobalSearchOverlay: React.FC<GlobalSearchOverlayProps> = ({
           ) : results.length === 0 && isIndexing ? (
             <div className="py-10 flex flex-col items-center justify-center gap-2.5 text-center">
               <RefreshCw className="h-4 w-4 animate-spin text-[var(--ws-world)]" />
-              <p className="font-mono-tabular text-[12.5px] text-[var(--ws-ink-muted)]">
+              <p className="ws-meta text-[12.5px] text-[var(--ws-ink-muted)]">
                 {t.globalSearch.searchingEmptyNote(indexedCount, totalEditions)}
               </p>
             </div>
@@ -763,10 +765,10 @@ export const GlobalSearchOverlay: React.FC<GlobalSearchOverlayProps> = ({
                     }`}
                   >
                     {/* Unboxed Metadata Line */}
-                    <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                    <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 ws-meta text-[11.5px] text-[var(--ws-ink-muted)]">
                       <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
                         <span
-                          className={`font-semibold uppercase tracking-[0.06em] ${domainAccentTextClass(
+                          className={`ws-kicker ${domainAccentTextClass(
                             item.domain
                           )}`}
                         >
@@ -795,12 +797,12 @@ export const GlobalSearchOverlay: React.FC<GlobalSearchOverlayProps> = ({
                         <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
                           ·
                         </span>
-                        <span className="text-[var(--ws-ink)] font-semibold">
+                        <span className="font-mono-tabular text-[11px] text-[var(--ws-ink)] font-semibold">
                           {item.latestEditionDate}
                         </span>
                       </div>
 
-                      <span className="text-[10.5px] text-[var(--ws-ink-faint)] break-all sm:break-normal">
+                      <span className="font-mono-tabular text-[10.5px] text-[var(--ws-ink-faint)] break-all sm:break-normal">
                         {item.signalId}
                       </span>
                     </div>
@@ -867,7 +869,7 @@ export const GlobalSearchOverlay: React.FC<GlobalSearchOverlayProps> = ({
                     </div>
 
                     {/* Matched Fields & Longitudinal Appearance Summary */}
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 ws-meta text-[11.5px] text-[var(--ws-ink-muted)]">
                       {item.topic && <span>{item.topic}</span>}
                       {item.matchedFields.length > 0 && (
                         <span>
@@ -892,7 +894,7 @@ export const GlobalSearchOverlay: React.FC<GlobalSearchOverlayProps> = ({
 
                     {/* Action Bar */}
                     <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
-                      <div className="flex flex-wrap items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-3">
                         <button
                           type="button"
                           onClick={() =>
@@ -912,7 +914,7 @@ export const GlobalSearchOverlay: React.FC<GlobalSearchOverlayProps> = ({
                             data-testid={`search-expand-history-${item.signalId}`}
                             onClick={() => toggleHistory(item.signalId)}
                             aria-expanded={isExpanded}
-                            className="inline-flex min-h-[30px] items-center gap-1 font-mono-tabular text-[11.5px] font-medium text-[var(--ws-ink-muted)] hover:text-[var(--ws-ink)] cursor-pointer"
+                            className="inline-flex min-h-[30px] items-center gap-1 ws-meta text-[11.5px] font-medium text-[var(--ws-ink-muted)] hover:text-[var(--ws-ink)] cursor-pointer"
                           >
                             <History className="h-3 w-3" />
                             <span>
@@ -929,7 +931,7 @@ export const GlobalSearchOverlay: React.FC<GlobalSearchOverlayProps> = ({
                         )}
                       </div>
 
-                      <div className="flex flex-wrap items-center gap-1.5">
+                      <div className="inline-flex flex-wrap items-center rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-canvas)] divide-x divide-[var(--ws-border-subtle)] overflow-hidden">
                         <button
                           type="button"
                           data-testid={`search-storyline-${item.signalId}`}
@@ -937,9 +939,9 @@ export const GlobalSearchOverlay: React.FC<GlobalSearchOverlayProps> = ({
                             onClose();
                             onOpenStoryline(item.signalId);
                           }}
-                          className="inline-flex min-h-[28px] items-center gap-1 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-canvas)] px-2 py-0.5 text-[11.5px] font-medium text-[var(--ws-ink-secondary)] hover:border-[var(--ws-border-strong)] hover:text-[var(--ws-ink)] cursor-pointer"
+                          className="inline-flex min-h-[28px] items-center gap-1 px-2 py-0.5 text-[11.5px] font-medium text-[var(--ws-ink-secondary)] hover:bg-[var(--ws-surface-hover)] hover:text-[var(--ws-ink)] cursor-pointer transition-colors"
                         >
-                          <GitBranch className="h-3 w-3" />
+                          <GitBranch className="h-3 w-3 text-[var(--ws-world)]" />
                           <span>{t.globalSearch.openStoryline}</span>
                         </button>
 
@@ -947,10 +949,10 @@ export const GlobalSearchOverlay: React.FC<GlobalSearchOverlayProps> = ({
                           type="button"
                           onClick={() => onToggleFollow(bookmarkInput)}
                           aria-pressed={followed}
-                          className={`inline-flex min-h-[28px] items-center gap-1 rounded-[var(--ws-radius-sm)] border px-2 py-0.5 text-[11.5px] font-medium cursor-pointer transition-colors ${
+                          className={`inline-flex min-h-[28px] items-center gap-1 px-2 py-0.5 text-[11.5px] font-medium cursor-pointer transition-colors ${
                             followed
-                              ? 'border-[var(--ws-world)] bg-[var(--ws-surface-elevated)] text-[var(--ws-world)]'
-                              : 'border-[var(--ws-border)] bg-[var(--ws-canvas)] text-[var(--ws-ink-secondary)] hover:border-[var(--ws-border-strong)] hover:text-[var(--ws-ink)]'
+                              ? 'bg-[var(--ws-world-soft)] text-[var(--ws-world)]'
+                              : 'text-[var(--ws-ink-secondary)] hover:bg-[var(--ws-surface-hover)] hover:text-[var(--ws-ink)]'
                           }`}
                         >
                           {followed ? (
@@ -969,10 +971,10 @@ export const GlobalSearchOverlay: React.FC<GlobalSearchOverlayProps> = ({
                           type="button"
                           onClick={() => onToggleSave(bookmarkInput)}
                           aria-pressed={saved}
-                          className={`inline-flex min-h-[28px] items-center gap-1 rounded-[var(--ws-radius-sm)] border px-2 py-0.5 text-[11.5px] font-medium cursor-pointer transition-colors ${
+                          className={`inline-flex min-h-[28px] items-center gap-1 px-2 py-0.5 text-[11.5px] font-medium cursor-pointer transition-colors ${
                             saved
-                              ? 'border-[var(--ws-editorial-accent)] bg-[var(--ws-surface-elevated)] text-[var(--ws-editorial-accent)]'
-                              : 'border-[var(--ws-border)] bg-[var(--ws-canvas)] text-[var(--ws-ink-secondary)] hover:border-[var(--ws-border-strong)] hover:text-[var(--ws-ink)]'
+                              ? 'bg-[var(--ws-surface-elevated)] text-[var(--ws-editorial-accent)]'
+                              : 'text-[var(--ws-ink-secondary)] hover:bg-[var(--ws-surface-hover)] hover:text-[var(--ws-ink)]'
                           }`}
                         >
                           {saved ? (
@@ -1002,8 +1004,8 @@ export const GlobalSearchOverlay: React.FC<GlobalSearchOverlayProps> = ({
                               className="py-2 first:pt-0 last:pb-0 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between"
                             >
                               <div className="min-w-0 space-y-0.5">
-                                <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 font-mono-tabular text-[11px]">
-                                  <span className="font-semibold text-[var(--ws-ink)]">
+                                <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 ws-meta text-[11.5px]">
+                                  <span className="font-mono-tabular text-[11px] font-semibold text-[var(--ws-ink)]">
                                     {occ.editionDate}
                                   </span>
                                   <span className="text-[var(--ws-ink-muted)]">
@@ -1032,7 +1034,7 @@ export const GlobalSearchOverlay: React.FC<GlobalSearchOverlayProps> = ({
                                 onClick={() =>
                                   handleOpenOccurrence(occ.editionDate, item.signalId)
                                 }
-                                className="inline-flex self-start sm:self-center shrink-0 items-center gap-1 font-mono-tabular text-[11.5px] font-semibold text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
+                                className="inline-flex self-start sm:self-center shrink-0 items-center gap-1 ws-meta text-[11.5px] font-semibold text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
                               >
                                 <span>
                                   {t.globalSearch.openEditionSignal(occ.editionDate)}

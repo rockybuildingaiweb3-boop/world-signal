@@ -242,7 +242,7 @@ export const DailyDeltaSection: React.FC<DailyDeltaSectionProps> = ({
 
         <div className="flex flex-col gap-1.5 md:items-end">
           <div className="flex flex-wrap items-center gap-2.5">
-            <span className="font-mono-tabular text-[12px] font-semibold text-[var(--ws-ink)]">
+            <span className="ws-meta text-[12.5px] font-semibold text-[var(--ws-ink)]">
               {t.dailyDelta.comparingRange(state.previousDate, state.currentDate)}
             </span>
             {onOpenComparison && (
@@ -250,7 +250,7 @@ export const DailyDeltaSection: React.FC<DailyDeltaSectionProps> = ({
                 type="button"
                 data-testid="delta-compare-editions-btn"
                 onClick={onOpenComparison}
-                className="inline-flex min-h-[28px] items-center gap-1.5 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-2.5 py-0.5 text-[11.5px] font-medium text-[var(--ws-ink)] hover:border-[var(--ws-border-strong)] hover:bg-[var(--ws-surface-hover)] transition-colors cursor-pointer"
+                className="inline-flex min-h-[28px] items-center gap-1.5 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-2.5 py-0.5 text-[12px] font-medium text-[var(--ws-ink)] hover:border-[var(--ws-border-strong)] hover:bg-[var(--ws-surface-subtle)] transition-colors cursor-pointer"
               >
                 <ArrowLeftRight className="h-3 w-3 text-[var(--ws-editorial-accent)]" />
                 <span>{t.editionCompare.triggerButton}</span>
@@ -556,10 +556,10 @@ const DeltaSignalRow: React.FC<DeltaSignalRowProps> = ({
     >
       <div className="space-y-2 min-w-0">
         {/* Compact Unboxed Metadata Line */}
-        <div className="flex flex-wrap items-center justify-between gap-x-2.5 gap-y-1 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+        <div className="flex flex-wrap items-center justify-between gap-x-2.5 gap-y-1 ws-meta text-[11.5px] text-[var(--ws-ink-muted)]">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
             <span
-              className={`font-semibold uppercase tracking-[0.08em] ${categoryAccentClass(
+              className={`font-semibold tracking-[0.04em] ${categoryAccentClass(
                 change.kind
               )}`}
             >
@@ -590,13 +590,13 @@ const DeltaSignalRow: React.FC<DeltaSignalRowProps> = ({
               {t.metaLine.confidence(t.confidence[signal.confidence.overall])}
             </span>
           </div>
-          <span className="text-[10.5px] text-[var(--ws-ink-faint)] break-all sm:break-normal">
+          <span className="font-mono-tabular text-[10.5px] text-[var(--ws-ink-faint)] break-all sm:break-normal">
             {change.signalId}
           </span>
         </div>
 
         {/* Signal Headline */}
-        <h3 className="font-display text-[1rem] sm:text-[1.0625rem] font-semibold leading-[1.35] text-[var(--ws-ink)] headline-balance">
+        <h3 className="font-display text-[1rem] sm:text-[1.0625rem] font-semibold leading-[1.36] text-[var(--ws-ink)] headline-balance">
           <button
             type="button"
             onClick={handleOpen}
@@ -611,7 +611,7 @@ const DeltaSignalRow: React.FC<DeltaSignalRowProps> = ({
           {change.kind === 'updated' && (
             <>
               {change.diff.reasons.length > 0 && (
-                <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
+                <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 ws-meta text-[12px] text-[var(--ws-ink-muted)]">
                   <span className="font-semibold text-[var(--ws-ink-secondary)]">
                     {t.dailyDelta.updatedReasonsPrefix}:
                   </span>
@@ -624,7 +624,7 @@ const DeltaSignalRow: React.FC<DeltaSignalRowProps> = ({
               )}
 
               {transitions.length > 0 && (
-                <div className="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 font-mono-tabular text-[11.5px] font-medium text-[var(--ws-ink)]">
+                <div className="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 ws-meta text-[12px] font-medium text-[var(--ws-ink)]">
                   {transitions.map((item, idx) => (
                     <span key={idx}>{item}</span>
                   ))}
@@ -674,7 +674,7 @@ const DeltaSignalRow: React.FC<DeltaSignalRowProps> = ({
 
         {/* Compact Evidence Delta Summary (before expansion) */}
         {hasEvidenceDisclosure && (
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 ws-meta text-[11.5px] text-[var(--ws-ink-muted)]">
             {claimChangesCount > 0 && (
               <span>
                 {t.dailyDelta.evidenceSummaryClaims(
@@ -757,7 +757,7 @@ const DeltaSignalRow: React.FC<DeltaSignalRowProps> = ({
               data-testid={`delta-inspect-${change.signalId}`}
               onClick={onToggleEvidence}
               aria-expanded={isExpanded}
-              className="inline-flex min-h-[30px] items-center gap-1 font-mono-tabular text-[11.5px] font-medium text-[var(--ws-ink-muted)] hover:text-[var(--ws-ink)] transition-colors duration-150 cursor-pointer"
+              className="inline-flex min-h-[30px] items-center gap-1 ws-meta text-[12px] font-medium text-[var(--ws-ink-muted)] hover:text-[var(--ws-ink)] transition-colors duration-150 cursor-pointer"
             >
               <span>
                 {isExpanded

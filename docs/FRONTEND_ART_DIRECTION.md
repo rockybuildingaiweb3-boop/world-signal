@@ -126,3 +126,24 @@ All foreground/background pairs meet or exceed WCAG AA (`>= 4.5:1` body text, `>
 - **`768×1024` (Tablet)**: Balanced 2-column grids, full-width cover artwork, accessible single-row top navigation, cleanly reflowing Audit & Watchlist tables.
 - **`390×844` & `360×800` (Mobile)**: Compact top bar + slim bottom navigation bar (`<= 12%` viewport height with `env(safe-area-inset-bottom)`), zero horizontal overflow (`0px` tolerance), generous tap targets, stacked mobile ledgers for Watchlist, Daily Delta, and Relationship Atlas, and effortless list ↔ dossier switching in Expanded view.
 - **Accessibility & Motion**: Full keyboard focus rings (`:focus-visible`), `aria-current`/`aria-selected`/`aria-expanded` semantics, and `@media (prefers-reduced-motion: reduce)` compliance.
+
+---
+
+## 8. Phase 08 Editorial Craftsmanship Refinements
+
+1. **Strict Typography Role Separation (`.ws-meta` vs `.font-mono-tabular`)**:
+   - `.ws-meta` (`--font-sans` with `tabular-nums`) is used for all descriptive English and Simplified Chinese metadata, status labels, captions, and navigation summaries so CJK characters never inherit awkward monospace fallbacks.
+   - `.font-mono-tabular` (now equipped with explicit CJK fallbacks in `--font-mono`) is reserved strictly for forensic identifiers (`signal_id`, `claim_id`, `source_id`, `registry_id`), ISO dates, timestamps, URLs, schema versions, and numeric indices/ratios.
+   - Editorial blockquotes inside `.ws-prose` use restrained top/bottom hairline rules rather than generic left-border stripes.
+2. **Dark-Mode Nocturnal Depth & High-Contrast Editorial Plates**:
+   - Refined surface hierarchy in Dark mode (`--ws-canvas: #0b0e14`, `--ws-surface: #121722`, `--ws-plate: #141b29`, `--ws-plate-elevated: #1b2436`, `--ws-plate-border: #2f3c55`) ensures crisp figure-ground contrast between archival canvas, reading sheets, and dark editorial plates.
+   - Tokenized `--ws-plate-accent` (`#f07665` light / `#f27b6a` dark) governs warm vermilion highlights inside dark plates without hardcoded color literals.
+3. **Calm Cover Plate & Documentary Media Presentation**:
+   - The Flagship Cover Plate uses a balanced 6:6 split, quiet archival Verification Dossier `<dl>` (eliminating oversized KPI scoreboards), and an adaptive 1/2/3-column real-world chronology grid so single-event timelines leave no empty dark void.
+   - `SignalMediaGallery` renders numbered documentary plates (`01`, `02`, ...) with featured wide lead framing, archival gallery mat padding for `crop_allowed: false` (`object-contain`), and clean `.ws-meta` caption/attribution bands preserving full `source_page_url` and `license_url` provenance.
+4. **Hairline-Divided Utility Strips & Zero-Dot Discipline**:
+   - Action clusters (`TopBar`, `SignalDossierHeader`, `GlobalSearchOverlay`, `StorylineDrawer`, `ArchiveDrawer`) are unified into calm hairline-divided editorial strips rather than scattered bordered boxes.
+   - All remaining circular status dots (`TopBar`, `SynthesisView`, `StorylineDrawer`) have been replaced with crisp typographic accent states and architectural hairline/vertical markers.
+   - `RelationshipExplorerMatrix` quiets unselected arcs to subtle neutral hairlines and replaces loud all-around red endpoint node borders with editorial ink rules + crisp top vermilion bars.
+   - `ExpandedView` adds a quiet section reading-progress indicator (`01/N` + 2px rule) to the sticky Editorial Margin Rail, and `AuditOverviewCards` / `AuditView` align multi-column analytical ledgers cleanly to top baselines with zero stretched vertical voids.
+

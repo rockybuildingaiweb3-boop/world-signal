@@ -57,7 +57,7 @@ function revisionKindAccent(kind: StorylineRevisionDetail['kind']): string {
   }
 }
 
-function revisionDotColor(kind: StorylineRevisionDetail['kind']): string {
+function revisionMarkerColor(kind: StorylineRevisionDetail['kind']): string {
   switch (kind) {
     case 'first_seen':
       return 'bg-[var(--ws-economy)]';
@@ -162,11 +162,11 @@ export const StorylineDrawer: React.FC<StorylineDrawerProps> = ({
               >
                 {projection ? projection.headline : signalId}
               </h2>
-              <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 ws-meta text-[11.5px] text-[var(--ws-ink-muted)]">
                 {projection && (
                   <>
                     <span
-                      className={`font-semibold uppercase tracking-[0.06em] ${domainAccentTextClass(
+                      className={`ws-kicker ${domainAccentTextClass(
                         projection.domain
                       )}`}
                     >
@@ -177,7 +177,7 @@ export const StorylineDrawer: React.FC<StorylineDrawerProps> = ({
                     </span>
                   </>
                 )}
-                <span className="break-all">{signalId}</span>
+                <span className="font-mono-tabular text-[11px] break-all">{signalId}</span>
               </div>
             </div>
 
@@ -194,50 +194,52 @@ export const StorylineDrawer: React.FC<StorylineDrawerProps> = ({
 
           {/* Quick Personal Desk Actions */}
           {bookmarkInput && (
-            <div className="flex flex-wrap items-center gap-2 pt-0.5">
-              <button
-                type="button"
-                data-testid="storyline-follow-btn"
-                onClick={() => onToggleFollow(bookmarkInput)}
-                aria-pressed={followed}
-                className={`inline-flex min-h-[30px] items-center gap-1.5 rounded-[var(--ws-radius-sm)] border px-2.5 py-1 text-[11.5px] font-medium cursor-pointer transition-colors ${
-                  followed
-                    ? 'border-[var(--ws-world)] bg-[var(--ws-surface-elevated)] text-[var(--ws-world)]'
-                    : 'border-[var(--ws-border)] bg-[var(--ws-canvas)] text-[var(--ws-ink-secondary)] hover:border-[var(--ws-border-strong)] hover:text-[var(--ws-ink)]'
-                }`}
-              >
-                {followed ? (
-                  <Eye className="h-3.5 w-3.5" />
-                ) : (
-                  <EyeOff className="h-3.5 w-3.5" />
-                )}
-                <span>
-                  {followed
-                    ? t.readerDesk.followingAction
-                    : t.readerDesk.followAction}
-                </span>
-              </button>
+            <div className="pt-0.5">
+              <div className="inline-flex flex-wrap items-center rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-canvas)] divide-x divide-[var(--ws-border-subtle)] overflow-hidden">
+                <button
+                  type="button"
+                  data-testid="storyline-follow-btn"
+                  onClick={() => onToggleFollow(bookmarkInput)}
+                  aria-pressed={followed}
+                  className={`inline-flex min-h-[30px] items-center gap-1.5 px-2.5 py-1 text-[11.5px] font-medium cursor-pointer transition-colors ${
+                    followed
+                      ? 'bg-[var(--ws-world-soft)] text-[var(--ws-world)]'
+                      : 'text-[var(--ws-ink-secondary)] hover:bg-[var(--ws-surface-hover)] hover:text-[var(--ws-ink)]'
+                  }`}
+                >
+                  {followed ? (
+                    <Eye className="h-3.5 w-3.5" />
+                  ) : (
+                    <EyeOff className="h-3.5 w-3.5" />
+                  )}
+                  <span>
+                    {followed
+                      ? t.readerDesk.followingAction
+                      : t.readerDesk.followAction}
+                  </span>
+                </button>
 
-              <button
-                type="button"
-                data-testid="storyline-save-btn"
-                onClick={() => onToggleSave(bookmarkInput)}
-                aria-pressed={saved}
-                className={`inline-flex min-h-[30px] items-center gap-1.5 rounded-[var(--ws-radius-sm)] border px-2.5 py-1 text-[11.5px] font-medium cursor-pointer transition-colors ${
-                  saved
-                    ? 'border-[var(--ws-editorial-accent)] bg-[var(--ws-surface-elevated)] text-[var(--ws-editorial-accent)]'
-                    : 'border-[var(--ws-border)] bg-[var(--ws-canvas)] text-[var(--ws-ink-secondary)] hover:border-[var(--ws-border-strong)] hover:text-[var(--ws-ink)]'
-                }`}
-              >
-                {saved ? (
-                  <BookmarkCheck className="h-3.5 w-3.5" />
-                ) : (
-                  <Bookmark className="h-3.5 w-3.5" />
-                )}
-                <span>
-                  {saved ? t.readerDesk.savedAction : t.readerDesk.saveAction}
-                </span>
-              </button>
+                <button
+                  type="button"
+                  data-testid="storyline-save-btn"
+                  onClick={() => onToggleSave(bookmarkInput)}
+                  aria-pressed={saved}
+                  className={`inline-flex min-h-[30px] items-center gap-1.5 px-2.5 py-1 text-[11.5px] font-medium cursor-pointer transition-colors ${
+                    saved
+                      ? 'bg-[var(--ws-surface-elevated)] text-[var(--ws-editorial-accent)]'
+                      : 'text-[var(--ws-ink-secondary)] hover:bg-[var(--ws-surface-hover)] hover:text-[var(--ws-ink)]'
+                  }`}
+                >
+                  {saved ? (
+                    <BookmarkCheck className="h-3.5 w-3.5" />
+                  ) : (
+                    <Bookmark className="h-3.5 w-3.5" />
+                  )}
+                  <span>
+                    {saved ? t.readerDesk.savedAction : t.readerDesk.saveAction}
+                  </span>
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -247,7 +249,7 @@ export const StorylineDrawer: React.FC<StorylineDrawerProps> = ({
           {/* Incremental Loading Banner */}
           {isLoading && (
             <div className="ws-folio-note px-3.5 py-2.5 flex flex-wrap items-center justify-between gap-2 text-[12px] text-[var(--ws-ink-secondary)]">
-              <div className="flex items-center gap-2 font-mono-tabular">
+              <div className="flex items-center gap-2 ws-meta">
                 <RefreshCw className="h-3.5 w-3.5 animate-spin text-[var(--ws-world)] shrink-0" />
                 <span>{t.storyline.loadingHistory(loadedCount, totalCount)}</span>
               </div>
@@ -337,7 +339,7 @@ export const StorylineDrawer: React.FC<StorylineDrawerProps> = ({
                       {projection.schemaV2Lifecycle &&
                         t.signalLifecycle[projection.schemaV2Lifecycle.lifecycle] !==
                           t.signalStatus[projection.lifecycleStatus] && (
-                          <span className="ml-1.5 font-mono-tabular text-[11px] font-normal text-[var(--ws-ink-muted)]">
+                          <span className="ml-1.5 ws-meta text-[11.5px] font-normal text-[var(--ws-ink-muted)]">
                             ({t.signalLifecycle[projection.schemaV2Lifecycle.lifecycle]})
                           </span>
                         )}
@@ -349,7 +351,7 @@ export const StorylineDrawer: React.FC<StorylineDrawerProps> = ({
                     </dt>
                     <dd
                       data-testid="storyline-coverage-status"
-                      className={`mt-1 font-mono-tabular text-[11.5px] font-semibold ${
+                      className={`mt-1 ws-meta text-[12px] font-semibold ${
                         projection.coverage.isArchiveCoverageComplete
                           ? 'text-[var(--ws-economy)]'
                           : 'text-[var(--ws-warn)]'
@@ -448,7 +450,7 @@ export const StorylineDrawer: React.FC<StorylineDrawerProps> = ({
                             <div className="flex items-center gap-2.5">
                               <span
                                 aria-hidden="true"
-                                className={`h-2 w-2 rounded-full shrink-0 ${revisionDotColor(
+                                className={`h-3.5 w-[2.5px] shrink-0 ${revisionMarkerColor(
                                   rev.kind
                                 )}`}
                               />
@@ -456,7 +458,7 @@ export const StorylineDrawer: React.FC<StorylineDrawerProps> = ({
                                 {rev.editionDate}
                               </span>
                               <span
-                                className={`font-mono-tabular text-[11px] font-semibold uppercase tracking-[0.06em] ${revisionKindAccent(
+                                className={`ws-kicker ${revisionKindAccent(
                                   rev.kind
                                 )}`}
                               >
@@ -464,12 +466,12 @@ export const StorylineDrawer: React.FC<StorylineDrawerProps> = ({
                               </span>
                               {rev.kind === 'reappeared' &&
                                 rev.gapDaysFromPrevious > 1 && (
-                                  <span className="font-mono-tabular text-[11px] text-[var(--ws-warn)]">
+                                  <span className="ws-meta text-[11.5px] text-[var(--ws-warn)]">
                                     ({t.storyline.reappearedAfterGap(rev.gapDaysFromPrevious)})
                                   </span>
                                 )}
                             </div>
-                            <span className="font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                            <span className="ws-meta text-[11.5px] text-[var(--ws-ink-muted)]">
                               {t.metaLine.importance(rev.signal.importance)} ·{' '}
                               <span
                                 className={confidenceColorClass(
@@ -487,7 +489,7 @@ export const StorylineDrawer: React.FC<StorylineDrawerProps> = ({
                           </div>
 
                           {rev.diff.reasons.length > 0 && rev.kind !== 'first_seen' && (
-                            <div className="mt-1 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                            <div className="mt-1 ws-meta text-[11.5px] text-[var(--ws-ink-muted)]">
                               {t.dailyDelta.updatedReasonsPrefix}:{' '}
                               {rev.diff.reasons
                                 .map((r) => t.dailyDelta.reasons[r])
@@ -514,9 +516,11 @@ export const StorylineDrawer: React.FC<StorylineDrawerProps> = ({
                           selectedRevision.editionDate
                         )}
                       </h4>
-                      <div className="font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
-                        {t.storyline.revisionKinds[selectedRevision.kind]} · Schema v
-                        {selectedRevision.schemaVersion}
+                      <div className="ws-meta text-[11.5px] text-[var(--ws-ink-muted)]">
+                        {t.storyline.revisionKinds[selectedRevision.kind]} ·{' '}
+                        <span className="font-mono-tabular text-[11px]">
+                          Schema v{selectedRevision.schemaVersion}
+                        </span>
                       </div>
                     </div>
                     <button
@@ -549,7 +553,7 @@ export const StorylineDrawer: React.FC<StorylineDrawerProps> = ({
                   {selectedRevision.kind === 'first_seen' ? (
                     <p className="text-[13px] leading-relaxed text-[var(--ws-ink-secondary)]">
                       {t.storyline.firstObservedNote}{' '}
-                      <span className="font-mono-tabular text-[12px] text-[var(--ws-ink-muted)]">
+                      <span className="ws-meta text-[12px] text-[var(--ws-ink-muted)]">
                         ({t.metaLine.claims(selectedRevision.signal.claims.length)} ·{' '}
                         {t.metaLine.origins(
                           selectedRevision.signal.independentOriginCount
@@ -620,7 +624,7 @@ const RevisionDiffDetails: React.FC<{
             </li>
           )}
           {previousSignal.importance !== signal.importance && (
-            <li className="font-mono-tabular font-semibold text-[var(--ws-ink)]">
+            <li className="ws-meta font-semibold text-[var(--ws-ink)]">
               {t.dailyDelta.transitionImportance(
                 previousSignal.importance,
                 signal.importance
@@ -628,7 +632,7 @@ const RevisionDiffDetails: React.FC<{
             </li>
           )}
           {previousSignal.status !== signal.status && (
-            <li className="font-mono-tabular font-semibold text-[var(--ws-ink)]">
+            <li className="ws-meta font-semibold text-[var(--ws-ink)]">
               {t.dailyDelta.transitionStatus(
                 t.signalStatus[previousSignal.status],
                 t.signalStatus[signal.status]
@@ -636,7 +640,7 @@ const RevisionDiffDetails: React.FC<{
             </li>
           )}
           {previousSignal.confidence.overall !== signal.confidence.overall && (
-            <li className="font-mono-tabular font-semibold text-[var(--ws-ink)]">
+            <li className="ws-meta font-semibold text-[var(--ws-ink)]">
               {t.dailyDelta.transitionConfidence(
                 t.confidence[previousSignal.confidence.overall],
                 t.confidence[signal.confidence.overall]

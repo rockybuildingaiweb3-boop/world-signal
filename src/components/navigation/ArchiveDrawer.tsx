@@ -226,7 +226,7 @@ export const ArchiveDrawer: React.FC<ArchiveDrawerProps> = ({
           {/* Quick Edition Navigation & Comparison Actions */}
           <div className="space-y-2.5">
             <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-1.5">
+              <div className="inline-flex items-center rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] divide-x divide-[var(--ws-border-subtle)] overflow-hidden">
                 {editions.length > 1 && (
                   <>
                     <button
@@ -238,7 +238,7 @@ export const ArchiveDrawer: React.FC<ArchiveDrawerProps> = ({
                           onClose();
                         }
                       }}
-                      className="inline-flex min-h-[34px] items-center gap-1 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-2.5 py-1 text-[12px] font-medium text-[var(--ws-ink)] hover:border-[var(--ws-border-strong)] disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed transition-colors"
+                      className="inline-flex min-h-[34px] items-center gap-1 px-2.5 py-1 text-[12px] font-medium text-[var(--ws-ink)] hover:bg-[var(--ws-surface-hover)] disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed transition-colors"
                     >
                       <ChevronLeft className="h-3.5 w-3.5" />
                       {t.archive.previousEdition}
@@ -252,7 +252,7 @@ export const ArchiveDrawer: React.FC<ArchiveDrawerProps> = ({
                           onClose();
                         }
                       }}
-                      className="inline-flex min-h-[34px] items-center gap-1 rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] px-2.5 py-1 text-[12px] font-medium text-[var(--ws-ink)] hover:border-[var(--ws-border-strong)] disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed transition-colors"
+                      className="inline-flex min-h-[34px] items-center gap-1 px-2.5 py-1 text-[12px] font-medium text-[var(--ws-ink)] hover:bg-[var(--ws-surface-hover)] disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed transition-colors"
                     >
                       {t.archive.nextEdition}
                       <ChevronRight className="h-3.5 w-3.5" />
@@ -275,7 +275,7 @@ export const ArchiveDrawer: React.FC<ArchiveDrawerProps> = ({
             </div>
 
             {refreshFeedback && (
-              <p className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
+              <p className="ws-meta text-[12px] text-[var(--ws-ink-muted)]">
                 {refreshFeedback}
               </p>
             )}
@@ -322,7 +322,7 @@ export const ArchiveDrawer: React.FC<ArchiveDrawerProps> = ({
                   )}
                 </div>
                 {archiveQuery.trim().length > 0 && (
-                  <div className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
+                  <div className="ws-meta text-[12px] text-[var(--ws-ink-muted)]">
                     {t.archive.matchingCount(
                       filteredEditions.length,
                       editions.length

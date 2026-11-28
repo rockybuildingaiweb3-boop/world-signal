@@ -193,7 +193,7 @@ export const SynthesisView: React.FC<SynthesisViewProps> = ({
                 <div className="flex items-center gap-2.5">
                   <span
                     aria-hidden="true"
-                    className="inline-block h-2 w-2 rounded-full bg-[var(--ws-warn)] shrink-0"
+                    className="inline-block h-[2px] w-6 bg-[var(--ws-warn)] shrink-0"
                   />
                   <span className="ws-kicker text-[var(--ws-warn)]">
                     {t.synthesis.unestablishedLabel}
@@ -322,12 +322,14 @@ export const SynthesisView: React.FC<SynthesisViewProps> = ({
                   >
                     {sig.headline}
                   </button>
-                  <span
-                    className={`font-mono-tabular text-[11.5px] font-semibold break-words min-w-0 ${domainAccentTextClass(
-                      sig.domain
-                    )}`}
-                  >
-                    {t.domains[sig.domain]} · {sig.signal_id}
+                  <span className="ws-meta text-[12px] break-words min-w-0 text-[var(--ws-ink-muted)]">
+                    <span className={`font-semibold ${domainAccentTextClass(sig.domain)}`}>
+                      {t.domains[sig.domain]}
+                    </span>{' '}
+                    ·{' '}
+                    <span className="font-mono-tabular text-[11.5px]">
+                      {sig.signal_id}
+                    </span>
                   </span>
                 </div>
                 <ScenariosGrid

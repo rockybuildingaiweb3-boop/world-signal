@@ -74,10 +74,10 @@ export const ScenariosGrid: React.FC<ScenariosGridProps> = ({
         return (
           <div
             key={`${item.kind}-${idx}`}
-            className="overflow-hidden rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-canvas)]/55 flex flex-col"
+            className="overflow-hidden rounded-[var(--ws-radius-sm)] border border-[var(--ws-border)] bg-[var(--ws-surface)] flex flex-col"
           >
-            <div aria-hidden="true" className={`h-[2.5px] w-full ${tone.bar}`} />
-            <div className="p-4 flex-1 flex flex-col gap-2.5">
+            <div aria-hidden="true" className={`h-[2px] w-full ${tone.bar}`} />
+            <div className="p-4 sm:p-5 flex-1 flex flex-col gap-2.5">
               <div className="flex items-center justify-between gap-2">
                 <div
                   className={`inline-flex items-center gap-1.5 ws-kicker ${tone.accent}`}

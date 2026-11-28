@@ -321,9 +321,9 @@ export const AuditClaimLedger: React.FC<AuditClaimLedgerProps> = ({
                       linkedSources.map((src) => (
                         <span
                           key={src.source_id}
-                          className="inline-flex flex-wrap items-center gap-1.5 font-mono-tabular"
+                          className="inline-flex flex-wrap items-center gap-1.5 ws-meta"
                         >
-                          <span className="font-semibold text-[var(--ws-ink)]">
+                          <span className="font-mono-tabular text-[11px] font-semibold text-[var(--ws-ink)]">
                             {src.source_id}
                           </span>
                           {src.url && src.urlSafe ? (
@@ -331,18 +331,22 @@ export const AuditClaimLedger: React.FC<AuditClaimLedgerProps> = ({
                               href={src.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-0.5 font-sans text-[var(--ws-ink-secondary)] underline decoration-[var(--ws-border-strong)] underline-offset-4 hover:text-[var(--ws-world)]"
+                              className="inline-flex items-center gap-0.5 text-[var(--ws-ink-secondary)] underline decoration-[var(--ws-border-strong)] underline-offset-4 hover:text-[var(--ws-world)]"
                             >
                               {src.outlet}
                               <ExternalLink className="h-2.5 w-2.5" />
                             </a>
                           ) : (
-                            <span className="font-sans text-[var(--ws-ink-secondary)]">
+                            <span className="text-[var(--ws-ink-secondary)]">
                               {src.outlet}
                             </span>
                           )}
                           <span className="text-[11px]">
-                            [{src.independence_group || t.audit.unassignedBadge} ·{' '}
+                            [
+                            <span className="font-mono-tabular">
+                              {src.independence_group || t.audit.unassignedBadge}
+                            </span>{' '}
+                            ·{' '}
                             <span
                               className={
                                 src.qualifiesAsIndependent
@@ -369,7 +373,7 @@ export const AuditClaimLedger: React.FC<AuditClaimLedgerProps> = ({
         {/* Clean Progressive Pagination Bar */}
         {filteredClaims.length > 0 && (
           <div className="border-t border-[var(--ws-border)] bg-[var(--ws-surface-elevated)]/65 px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
-            <span className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
+            <span className="ws-meta text-[12px] text-[var(--ws-ink-muted)]">
               {t.audit.claimShowingRange(
                 visibleClaims.length,
                 filteredClaims.length
@@ -383,14 +387,14 @@ export const AuditClaimLedger: React.FC<AuditClaimLedgerProps> = ({
                   onClick={() =>
                     setVisibleLimit((prev) => prev + PAGE_SIZE)
                   }
-                  className="inline-flex min-h-[32px] items-center rounded-[var(--ws-radius-sm)] border border-[var(--ws-border-strong)] bg-[var(--ws-surface)] px-3 py-1 font-mono-tabular text-[11.5px] font-medium text-[var(--ws-ink)] hover:bg-[var(--ws-surface-hover)] transition-colors cursor-pointer"
+                  className="inline-flex min-h-[32px] items-center rounded-[var(--ws-radius-sm)] border border-[var(--ws-border-strong)] bg-[var(--ws-surface)] px-3 py-1 ws-meta text-[12px] font-medium text-[var(--ws-ink)] hover:bg-[var(--ws-surface-hover)] transition-colors cursor-pointer"
                 >
                   {t.audit.claimLoadMore(Math.min(PAGE_SIZE, remainingCount))}
                 </button>
                 <button
                   type="button"
                   onClick={() => setVisibleLimit(filteredClaims.length)}
-                  className="font-mono-tabular text-[11.5px] font-medium text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
+                  className="ws-meta text-[12px] font-medium text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
                 >
                   {t.audit.claimShowAll(filteredClaims.length)}
                 </button>

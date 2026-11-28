@@ -90,25 +90,25 @@ export const SignalMediaGallery: React.FC<SignalMediaGalleryProps> = ({
                 {t.expanded.sections.media}
               </span>
             </div>
-            <span className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
+            <span className="ws-meta text-[12px] text-[var(--ws-ink-muted)]">
               {t.media.supportingCount(approvedAssets.length)}
             </span>
           </div>
-          <h3 className="font-display text-[1.28rem] font-semibold text-[var(--ws-ink)]">
+          <h3 className="font-display text-[1.32rem] font-semibold text-[var(--ws-ink)]">
             {title ?? t.media.sectionTitle}
           </h3>
-          <p className="text-[13px] leading-relaxed text-[var(--ws-ink-muted)] max-w-[70ch]">
+          <p className="text-[13.5px] leading-relaxed text-[var(--ws-ink-muted)] max-w-[70ch]">
             {t.media.sectionSubtitle}
           </p>
         </div>
       )}
 
       <div
-        className={`grid grid-cols-1 gap-7 ${
+        className={`grid grid-cols-1 gap-8 ${
           approvedAssets.length > 1 ? 'md:grid-cols-2' : ''
         }`}
       >
-        {approvedAssets.map((asset) => {
+        {approvedAssets.map((asset, index) => {
           const mediaKey = `${asset.media_id}::${asset.asset_url}`;
           const isBroken = failedMediaKeys.has(mediaKey);
           const cropAllowed = asset.rights.crop_allowed;
@@ -126,6 +126,10 @@ export const SignalMediaGallery: React.FC<SignalMediaGalleryProps> = ({
             !asset.credit_line
               .toLowerCase()
               .includes(asset.creator.trim().toLowerCase());
+          const isFeaturedLead =
+            approvedAssets.length === 1 ||
+            (approvedAssets.length >= 3 && index === 0);
+          const plateIndexLabel = String(index + 1).padStart(2, '0');
 
           return (
             <figure
@@ -135,14 +139,19 @@ export const SignalMediaGallery: React.FC<SignalMediaGalleryProps> = ({
               data-media-relationship={asset.relationship_to_signal}
               data-media-type={asset.media_type}
               data-crop-allowed={String(cropAllowed)}
-              className="flex flex-col justify-between border border-[var(--ws-border)] bg-[var(--ws-surface)]"
+              className={`flex flex-col justify-between border border-[var(--ws-border)] bg-[var(--ws-surface)] ${
+                isFeaturedLead && approvedAssets.length >= 3 ? 'md:col-span-2' : ''
+              }`}
             >
               <div>
                 {/* Editorial Classification Header Rule */}
-                <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-b border-[var(--ws-border-subtle)] bg-[var(--ws-surface-subtle)]/70 px-3.5 py-2 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-b border-[var(--ws-border-subtle)] bg-[var(--ws-surface-subtle)]/65 px-4 py-2.5 ws-meta text-[11.5px] text-[var(--ws-ink-muted)]">
                   <span className="inline-flex items-center gap-2 font-semibold text-[var(--ws-ink)]">
+                    <span className="font-mono-tabular text-[11px] font-medium text-[var(--ws-ink-faint)]">
+                      {plateIndexLabel}
+                    </span>
                     <span
-                      className="h-1.5 w-3 shrink-0"
+                      className="h-[2px] w-3 shrink-0"
                       style={{ backgroundColor: accent }}
                       aria-hidden="true"
                     />
@@ -155,7 +164,7 @@ export const SignalMediaGallery: React.FC<SignalMediaGalleryProps> = ({
                     </span>
                   </span>
                   {!cropAllowed && (
-                    <span className="text-[10.5px] text-[var(--ws-ink-muted)]">
+                    <span className="text-[11px] text-[var(--ws-ink-muted)]">
                       {t.media.uncroppedNote}
                     </span>
                   )}
@@ -165,7 +174,7 @@ export const SignalMediaGallery: React.FC<SignalMediaGalleryProps> = ({
                 {isBroken ? (
                   <div
                     data-testid={`media-fallback-${asset.media_id}`}
-                    className="flex min-h-[210px] flex-col items-center justify-center gap-2 bg-[var(--ws-surface-subtle)] px-6 py-8 text-center"
+                    className="flex min-h-[220px] flex-col items-center justify-center gap-2 bg-[var(--ws-surface-subtle)] px-6 py-8 text-center"
                   >
                     <ImageOff
                       aria-hidden="true"
@@ -179,7 +188,11 @@ export const SignalMediaGallery: React.FC<SignalMediaGalleryProps> = ({
                     </p>
                   </div>
                 ) : cropAllowed ? (
-                  <div className="ws-art-frame aspect-[16/10] w-full border-0 border-b border-[var(--ws-border-subtle)]">
+                  <div
+                    className={`ws-art-frame w-full border-0 border-b border-[var(--ws-border-subtle)] ${
+                      isFeaturedLead ? 'aspect-[16/9]' : 'aspect-[16/10]'
+                    }`}
+                  >
                     <img
                       src={asset.asset_url}
                       alt={asset.alt_text}
@@ -191,7 +204,11 @@ export const SignalMediaGallery: React.FC<SignalMediaGalleryProps> = ({
                     />
                   </div>
                 ) : (
-                  <div className="flex aspect-[16/10] w-full items-center justify-center border-b border-[var(--ws-border-subtle)] bg-[var(--ws-surface-subtle)] p-3">
+                  <div
+                    className={`flex w-full items-center justify-center border-b border-[var(--ws-border-subtle)] bg-[var(--ws-surface-subtle)] p-4 sm:p-5 ${
+                      isFeaturedLead ? 'aspect-[16/9]' : 'aspect-[16/10]'
+                    }`}
+                  >
                     <img
                       src={asset.asset_url}
                       alt={asset.alt_text}
@@ -206,26 +223,30 @@ export const SignalMediaGallery: React.FC<SignalMediaGalleryProps> = ({
               </div>
 
               {/* Caption, Relationship Disclosure & Provenance Attribution */}
-              <figcaption className="flex flex-1 flex-col justify-between gap-3 p-4">
+              <figcaption
+                className={`flex flex-1 flex-col justify-between gap-3.5 ${
+                  isFeaturedLead ? 'p-5 sm:p-6' : 'p-4 sm:p-5'
+                }`}
+              >
                 <div className="space-y-1.5">
                   {asset.title.trim() &&
                     asset.title.trim() !== asset.caption.trim() && (
-                      <div className="font-display text-[15px] font-semibold leading-snug text-[var(--ws-ink)]">
+                      <div className="font-display text-[16px] font-semibold leading-snug text-[var(--ws-ink)]">
                         {asset.title}
                       </div>
                     )}
-                  <p className="text-[13.5px] leading-[1.65] text-[var(--ws-ink-secondary)]">
+                  <p className="text-[13.5px] leading-[1.68] text-[var(--ws-ink-secondary)] max-w-[68ch]">
                     {asset.caption}
                   </p>
                   {showDisclosure && (
-                    <p className="text-[11.5px] leading-snug text-[var(--ws-ink-muted)]">
+                    <p className="text-[12px] leading-snug text-[var(--ws-ink-muted)]">
                       {t.media.relationshipDisclosures[asset.relationship_to_signal]}
                     </p>
                   )}
                 </div>
 
-                <div className="space-y-1.5 border-t border-[var(--ws-border-subtle)] pt-2.5 font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
-                  <div className="text-[var(--ws-ink-secondary)] break-words">
+                <div className="space-y-1.5 border-t border-[var(--ws-border-subtle)] pt-3 ws-meta text-[12px] text-[var(--ws-ink-muted)]">
+                  <div className="text-[var(--ws-ink-secondary)] font-medium break-words">
                     {asset.credit_line}
                   </div>
                   {showCreatorSeparately && (
@@ -238,7 +259,7 @@ export const SignalMediaGallery: React.FC<SignalMediaGalleryProps> = ({
                       {t.media.depictedLabel}: {depictedMeta}
                     </div>
                   )}
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pt-0.5">
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pt-0.5 text-[11.5px]">
                     <a
                       href={asset.source_page_url}
                       target="_blank"

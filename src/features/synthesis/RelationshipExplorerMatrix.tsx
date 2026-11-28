@@ -301,7 +301,7 @@ export const RelationshipExplorerMatrix: React.FC<
             {t.synthesis.relationshipMapSubtitle}
           </p>
         </div>
-        <span className="font-mono-tabular text-[11.5px] font-medium text-[var(--ws-ink-muted)] shrink-0">
+        <span className="ws-meta text-[12px] font-medium text-[var(--ws-ink-muted)] shrink-0">
           {t.synthesis.relationshipEdgeCount(visibleEdges.length, totalAllEdges)}
         </span>
       </div>
@@ -309,16 +309,16 @@ export const RelationshipExplorerMatrix: React.FC<
       {/* Controls Strip: Type Filters + Signal Focus Selector + Legacy Toggle */}
       <div className="space-y-3 border-y border-[var(--ws-border)] py-3.5">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-1.5">
+          <div className="flex flex-wrap items-center gap-1">
             {model.explicitEdges.length > 0 ? (
               <>
                 <button
                   type="button"
                   onClick={() => setSelectedType('all')}
-                  className={`rounded-[var(--ws-radius-sm)] border px-2.5 py-1 text-[12px] font-medium transition-colors cursor-pointer tabular-nums ${
+                  className={`rounded-[var(--ws-radius-sm)] px-2.5 py-1 text-[12px] font-medium transition-colors cursor-pointer tabular-nums ${
                     selectedType === 'all'
-                      ? 'border-[var(--ws-rule-editorial)] bg-[var(--ws-rule-editorial)] text-[var(--ws-surface)]'
-                      : 'border-[var(--ws-border)] bg-[var(--ws-surface)] text-[var(--ws-ink-secondary)] hover:border-[var(--ws-border-strong)]'
+                      ? 'bg-[var(--ws-rule-editorial)] text-[var(--ws-surface)] font-semibold'
+                      : 'bg-transparent text-[var(--ws-ink-secondary)] hover:bg-[var(--ws-surface-subtle)] hover:text-[var(--ws-ink)]'
                   }`}
                 >
                   {t.synthesis.relationshipFilterAllExplicit} ({model.explicitEdges.length})
@@ -330,10 +330,10 @@ export const RelationshipExplorerMatrix: React.FC<
                       key={type}
                       type="button"
                       onClick={() => setSelectedType(type)}
-                      className={`rounded-[var(--ws-radius-sm)] border px-2.5 py-1 text-[12px] font-medium transition-colors cursor-pointer tabular-nums ${
+                      className={`rounded-[var(--ws-radius-sm)] px-2.5 py-1 text-[12px] font-medium transition-colors cursor-pointer tabular-nums ${
                         isSelected
-                          ? 'border-[var(--ws-rule-editorial)] bg-[var(--ws-rule-editorial)] text-[var(--ws-surface)]'
-                          : 'border-[var(--ws-border)] bg-[var(--ws-surface)] text-[var(--ws-ink-secondary)] hover:border-[var(--ws-border-strong)]'
+                          ? 'bg-[var(--ws-rule-editorial)] text-[var(--ws-surface)] font-semibold'
+                          : 'bg-transparent text-[var(--ws-ink-secondary)] hover:bg-[var(--ws-surface-subtle)] hover:text-[var(--ws-ink)]'
                       }`}
                     >
                       {t.signalRelationshipType[type]} ({model.explicitTypeCounts[type]})
@@ -455,7 +455,8 @@ export const RelationshipExplorerMatrix: React.FC<
                     fill={col.color}
                     fontSize="11.5"
                     fontWeight="600"
-                    className="font-mono-tabular uppercase"
+                    letterSpacing="0.06em"
+                    className="ws-meta uppercase"
                   >
                     {t.domains[col.domain]} ({layout.byDomain[col.domain].length})
                   </text>
@@ -472,6 +473,8 @@ export const RelationshipExplorerMatrix: React.FC<
                 const isSelected = activeEdge ? edgeKey(activeEdge) === key : false;
                 const stroke = isSelected
                   ? 'var(--ws-editorial-accent)'
+                  : activeEdge
+                  ? 'var(--ws-border-strong)'
                   : edgeStrokeColor(edge);
                 const isDashed =
                   !edge.isExplicitlyTyped ||
@@ -539,7 +542,7 @@ export const RelationshipExplorerMatrix: React.FC<
                       d={pathD}
                       fill="none"
                       stroke={stroke}
-                      strokeWidth={isSelected ? 2.5 : 1.25}
+                      strokeWidth={isSelected ? 2.4 : 1.1}
                       strokeDasharray={isDashed ? '4 3' : undefined}
                       markerEnd={
                         isSelected && edge.isExplicitlyTyped
@@ -550,8 +553,8 @@ export const RelationshipExplorerMatrix: React.FC<
                         activeEdge
                           ? isSelected
                             ? 1
-                            : 0.28
-                          : 0.68
+                            : 0.42
+                          : 0.65
                       }
                     />
                   </g>
@@ -601,21 +604,21 @@ export const RelationshipExplorerMatrix: React.FC<
                       }
                       stroke={
                         isEndpoint
-                          ? 'var(--ws-editorial-accent)'
+                          ? 'var(--ws-rule-editorial)'
                           : isFocused
                           ? colColor
                           : 'var(--ws-border-strong)'
                       }
-                      strokeWidth={isEndpoint || isFocused ? 1.75 : 1}
+                      strokeWidth={isEndpoint || isFocused ? 1.5 : 1}
                     />
                     <rect
                       x={x + 0.5}
                       y={y + 0.5}
                       width={NODE_WIDTH - 1}
-                      height="2.5"
+                      height={isEndpoint ? '3' : '2'}
                       rx="1"
                       fill={isEndpoint ? 'var(--ws-editorial-accent)' : colColor}
-                      opacity={isEndpoint ? 1 : 0.78}
+                      opacity={isEndpoint ? 1 : 0.72}
                     />
                     <text
                       x={x + 10}
@@ -707,7 +710,7 @@ export const RelationshipExplorerMatrix: React.FC<
                           <div className="text-[13.5px] font-semibold leading-snug text-[var(--ws-ink)] group-hover:text-[var(--ws-world)] transition-colors break-words">
                             {sig.headline}
                           </div>
-                          <div className="flex flex-wrap items-center gap-x-1 gap-y-0.5 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                          <div className="flex flex-wrap items-center gap-x-1 gap-y-0.5 ws-meta text-[11.5px] text-[var(--ws-ink-muted)]">
                             <span
                               className={`font-semibold shrink-0 whitespace-nowrap ${domainAccentTextClass(
                                 sig.domain
@@ -715,7 +718,9 @@ export const RelationshipExplorerMatrix: React.FC<
                             >
                               {t.domains[sig.domain]}
                             </span>
-                            <span className="break-all">· {sig.signal_id}</span>
+                            <span className="font-mono-tabular text-[11px] break-all">
+                              · {sig.signal_id}
+                            </span>
                             <ArrowUpRight className="h-3 w-3 shrink-0 opacity-65" />
                           </div>
                         </button>
@@ -791,7 +796,7 @@ export const RelationshipExplorerMatrix: React.FC<
                     }`}
                   >
                     <div className="min-w-0 space-y-1">
-                      <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 font-mono-tabular text-[11px]">
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 ws-meta text-[11.5px]">
                         <span
                           className={`ws-kicker ${edgeBadgeTextClass(edge)}`}
                         >
@@ -834,7 +839,7 @@ export const RelationshipExplorerMatrix: React.FC<
               <button
                 type="button"
                 onClick={() => setShowAllLedger((prev) => !prev)}
-                className="font-mono-tabular text-[11.5px] font-medium text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
+                className="ws-meta text-[12px] font-medium text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
               >
                 {showAllLedger
                   ? t.expanded.showFewerItems
@@ -850,7 +855,7 @@ export const RelationshipExplorerMatrix: React.FC<
 
       {/* Unresolved Cross-Edition References Disclosure */}
       {model.unresolvedTargets.length > 0 && (
-        <p className="font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+        <p className="ws-meta text-[11.5px] text-[var(--ws-ink-muted)]">
           {t.synthesis.relationshipUnresolvedNote(
             model.unresolvedTargets.length
           )}

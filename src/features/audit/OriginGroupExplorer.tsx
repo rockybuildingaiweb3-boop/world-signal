@@ -81,7 +81,7 @@ export const OriginGroupExplorer: React.FC<OriginGroupExplorerProps> = ({
             {t.audit.originExplorerSubtitle}
           </p>
           {originGroups.length > 0 && (
-            <div className="pt-0.5 font-mono-tabular text-[11.5px] font-medium text-[var(--ws-ink-secondary)]">
+            <div className="pt-0.5 ws-meta text-[12px] font-medium text-[var(--ws-ink-secondary)]">
               {t.audit.originSummaryRibbon(qualifyingGroupCount, excludedGroupCount)}
             </div>
           )}
@@ -177,14 +177,14 @@ export const OriginGroupExplorer: React.FC<OriginGroupExplorerProps> = ({
                     />
                   </div>
 
-                  <div className="flex items-center justify-between gap-2 font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
+                  <div className="flex items-center justify-between gap-2 ws-meta text-[12px] text-[var(--ws-ink-muted)]">
                     <span>
                       {t.audit.originRecordsLabel(
                         group.qualifyingRecordCount,
                         group.totalRecordCount
                       )}
                     </span>
-                    <span className="font-semibold text-[var(--ws-ink-secondary)]">
+                    <span className="font-mono-tabular font-semibold text-[var(--ws-ink-secondary)]">
                       {qualifyingRatio}%
                     </span>
                   </div>
@@ -204,7 +204,7 @@ export const OriginGroupExplorer: React.FC<OriginGroupExplorerProps> = ({
                         <button
                           type="button"
                           onClick={() => toggleOutletGroup(group.group)}
-                          className="font-mono-tabular text-[11.5px] font-medium text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
+                          className="ws-meta text-[12px] font-medium text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
                         >
                           {isOutletsExpanded
                             ? t.audit.showFewerList
@@ -242,8 +242,8 @@ export const OriginGroupExplorer: React.FC<OriginGroupExplorerProps> = ({
                   )}
 
                   {group.signalIds.length > 0 && (
-                    <div className="pt-1 flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono-tabular text-[11.5px]">
-                      <span className="font-sans text-[var(--ws-ink-muted)]">
+                    <div className="pt-1 flex flex-wrap items-center gap-x-2.5 gap-y-1 ws-meta text-[11.5px]">
+                      <span className="text-[var(--ws-ink-muted)]">
                         {t.audit.originSignalsLabel} ({group.signalIds.length}):
                       </span>
                       {visibleSignals.map((sid) => (
@@ -251,7 +251,7 @@ export const OriginGroupExplorer: React.FC<OriginGroupExplorerProps> = ({
                           key={sid}
                           type="button"
                           onClick={() => onOpenSignal(sid)}
-                          className="text-[var(--ws-world)] underline decoration-[var(--ws-border-strong)] underline-offset-4 hover:decoration-current cursor-pointer"
+                          className="font-mono-tabular text-[11px] text-[var(--ws-world)] underline decoration-[var(--ws-border-strong)] underline-offset-4 hover:decoration-current cursor-pointer"
                         >
                           {sid}
                         </button>
@@ -297,9 +297,9 @@ export const OriginGroupExplorer: React.FC<OriginGroupExplorerProps> = ({
                 key={`${rec.signal_id ?? 'edition'}-${rec.source_id}-${idx}`}
                 className="px-4 py-3.5 space-y-1.5"
               >
-                <div className="flex flex-wrap items-center justify-between gap-2 font-mono-tabular text-[11.5px]">
+                <div className="flex flex-wrap items-center justify-between gap-2 ws-meta text-[12px]">
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
-                    <span className="font-semibold text-[var(--ws-ink)]">
+                    <span className="font-mono-tabular text-[11.5px] font-semibold text-[var(--ws-ink)]">
                       {rec.source_id}
                     </span>
                     <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
@@ -316,7 +316,7 @@ export const OriginGroupExplorer: React.FC<OriginGroupExplorerProps> = ({
                         <button
                           type="button"
                           onClick={() => onOpenSignal(rec.signal_id!)}
-                          className="text-[var(--ws-world)] underline decoration-[var(--ws-border-strong)] underline-offset-4 hover:decoration-current cursor-pointer"
+                          className="font-mono-tabular text-[11.5px] text-[var(--ws-world)] underline decoration-[var(--ws-border-strong)] underline-offset-4 hover:decoration-current cursor-pointer"
                         >
                           {rec.signal_id}
                         </button>
@@ -346,7 +346,7 @@ export const OriginGroupExplorer: React.FC<OriginGroupExplorerProps> = ({
                   </div>
                 )}
 
-                <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 ws-meta text-[11.5px] text-[var(--ws-ink-muted)]">
                   <span>{t.sourceClass[rec.source_class]}</span>
                   <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
                     ·

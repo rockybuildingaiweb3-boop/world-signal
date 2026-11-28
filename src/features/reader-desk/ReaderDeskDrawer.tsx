@@ -151,7 +151,9 @@ export const ReaderDeskDrawer: React.FC<ReaderDeskDrawerProps> = ({
           <div className="flex items-start justify-between gap-4">
             <div className="space-y-0.5 min-w-0">
               <div className="ws-kicker text-[var(--ws-editorial-accent)]">
-                WORLD SIGNAL · READER FOLIO
+                {lang === 'zh-CN'
+                  ? 'WORLD SIGNAL · 读者工作台'
+                  : 'WORLD SIGNAL · READER FOLIO'}
               </div>
               <h2
                 id={titleId}
@@ -177,7 +179,7 @@ export const ReaderDeskDrawer: React.FC<ReaderDeskDrawerProps> = ({
           {/* Explicit Device-Storage Privacy Disclosure */}
           <div
             data-testid="reader-desk-local-notice"
-            className="flex items-center gap-2 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]"
+            className="flex items-center gap-2 ws-meta text-[11.5px] text-[var(--ws-ink-muted)]"
           >
             <HardDrive className="h-3.5 w-3.5 shrink-0 text-[var(--ws-ink-faint)]" />
             <span>{t.readerDesk.localStorageNotice}</span>
@@ -261,7 +263,7 @@ export const ReaderDeskDrawer: React.FC<ReaderDeskDrawerProps> = ({
                     <div className="ws-kicker text-[var(--ws-ink-faint)]">
                       {t.catchUp.eyebrow}
                     </div>
-                    <div className="font-mono-tabular text-[12px] text-[var(--ws-ink)]">
+                    <div className="ws-meta text-[12px] text-[var(--ws-ink)]">
                       {readerState.lastReviewedEditionDate
                         ? t.catchUp.reviewedCheckpointLabel(
                             readerState.lastReviewedEditionDate
@@ -335,7 +337,7 @@ export const ReaderDeskDrawer: React.FC<ReaderDeskDrawerProps> = ({
                         )}
                       </h3>
                       {catchUp.isSameDayRevision && (
-                        <span className="font-mono-tabular text-[11px] font-semibold uppercase tracking-[0.06em] text-[var(--ws-world)]">
+                        <span className="ws-kicker text-[var(--ws-world)]">
                           · {t.catchUp.sameDayRevisionBadge}
                         </span>
                       )}
@@ -363,11 +365,11 @@ export const ReaderDeskDrawer: React.FC<ReaderDeskDrawerProps> = ({
                             key={`${alert.signalId}-${alert.kind}`}
                             className="p-3.5 space-y-1.5"
                           >
-                            <div className="flex items-center justify-between gap-2 font-mono-tabular text-[11px]">
-                              <span className="font-semibold uppercase tracking-[0.06em] text-[var(--ws-world)]">
+                            <div className="flex items-center justify-between gap-2 ws-meta text-[11.5px]">
+                              <span className="ws-kicker text-[var(--ws-world)]">
                                 {t.catchUp.followedAlertKinds[alert.kind]}
                               </span>
-                              <span className="text-[var(--ws-ink-faint)]">
+                              <span className="font-mono-tabular text-[11px] text-[var(--ws-ink-faint)]">
                                 {alert.signalId}
                               </span>
                             </div>
@@ -468,7 +470,7 @@ export const ReaderDeskDrawer: React.FC<ReaderDeskDrawerProps> = ({
           {activeTab === 'followed' && (
             <div data-testid="desk-panel-followed" className="space-y-4">
               {isLoadingFollowedHistory && (
-                <div className="flex items-center gap-2 font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
+                <div className="flex items-center gap-2 ws-meta text-[12px] text-[var(--ws-ink-muted)]">
                   <RefreshCw className="h-3.5 w-3.5 animate-spin text-[var(--ws-world)]" />
                   <span>{t.readerDesk.followedLoading}</span>
                 </div>
@@ -498,10 +500,10 @@ export const ReaderDeskDrawer: React.FC<ReaderDeskDrawerProps> = ({
                         data-testid={`desk-followed-${item.entry.signalId}`}
                         className="p-4 space-y-2"
                       >
-                        <div className="flex flex-wrap items-center justify-between gap-2 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                        <div className="flex flex-wrap items-center justify-between gap-2 ws-meta text-[11.5px] text-[var(--ws-ink-muted)]">
                           <div className="flex flex-wrap items-center gap-x-2">
                             <span
-                              className={`font-semibold uppercase tracking-[0.06em] ${domainAccentTextClass(
+                              className={`ws-kicker ${domainAccentTextClass(
                                 item.domain
                               )}`}
                             >
@@ -524,7 +526,7 @@ export const ReaderDeskDrawer: React.FC<ReaderDeskDrawerProps> = ({
                               </>
                             )}
                           </div>
-                          <span className="text-[10.5px] text-[var(--ws-ink-faint)] break-all">
+                          <span className="font-mono-tabular text-[10.5px] text-[var(--ws-ink-faint)] break-all">
                             {item.entry.signalId}
                           </span>
                         </div>
@@ -543,17 +545,17 @@ export const ReaderDeskDrawer: React.FC<ReaderDeskDrawerProps> = ({
                           </button>
                         </h3>
 
-                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 ws-meta text-[11.5px] text-[var(--ws-ink-muted)]">
                           <span>
                             {t.readerDesk.followedLatestAppearance}:{' '}
-                            <strong className="text-[var(--ws-ink)]">
+                            <strong className="font-mono-tabular text-[11px] text-[var(--ws-ink)]">
                               {item.latestAvailableEdition ?? '—'}
                             </strong>
                           </span>
                           {item.lastMaterialUpdateEdition && (
                             <span>
                               {t.readerDesk.followedLastMaterialUpdate}:{' '}
-                              <strong className="text-[var(--ws-world)]">
+                              <strong className="font-mono-tabular text-[11px] text-[var(--ws-world)]">
                                 {item.lastMaterialUpdateEdition}
                               </strong>
                             </span>
@@ -565,7 +567,7 @@ export const ReaderDeskDrawer: React.FC<ReaderDeskDrawerProps> = ({
 
                         {item.latestRevisionKind !== 'missing' &&
                           item.latestChangeReasons.length > 0 && (
-                            <div className="font-mono-tabular text-[11px] text-[var(--ws-world)]">
+                            <div className="ws-meta text-[11.5px] text-[var(--ws-world)]">
                               {t.storyline.revisionKinds[item.latestRevisionKind]} ·{' '}
                               {item.latestChangeReasons
                                 .map((r) => t.dailyDelta.reasons[r])
@@ -606,7 +608,7 @@ export const ReaderDeskDrawer: React.FC<ReaderDeskDrawerProps> = ({
                                 onClose();
                                 onOpenStoryline(item.entry.signalId);
                               }}
-                              className="inline-flex items-center gap-1 font-mono-tabular text-[11.5px] font-medium text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
+                              className="inline-flex items-center gap-1 ws-meta text-[11.5px] font-medium text-[var(--ws-world)] hover:underline underline-offset-4 cursor-pointer"
                             >
                               <GitBranch className="h-3 w-3" />
                               <span>{t.globalSearch.openStoryline}</span>
@@ -655,15 +657,15 @@ export const ReaderDeskDrawer: React.FC<ReaderDeskDrawerProps> = ({
                         data-testid={`desk-saved-${entry.signalId}`}
                         className="p-4 space-y-2"
                       >
-                        <div className="flex flex-wrap items-center justify-between gap-2 font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                        <div className="flex flex-wrap items-center justify-between gap-2 ws-meta text-[11.5px] text-[var(--ws-ink-muted)]">
                           <span
-                            className={`font-semibold uppercase tracking-[0.06em] ${domainAccentTextClass(
+                            className={`ws-kicker ${domainAccentTextClass(
                               entry.domain
                             )}`}
                           >
                             {t.domains[entry.domain]}
                           </span>
-                          <span className="text-[10.5px] text-[var(--ws-ink-faint)] break-all">
+                          <span className="font-mono-tabular text-[10.5px] text-[var(--ws-ink-faint)] break-all">
                             {entry.signalId}
                           </span>
                         </div>
@@ -682,7 +684,7 @@ export const ReaderDeskDrawer: React.FC<ReaderDeskDrawerProps> = ({
                           </button>
                         </h3>
 
-                        <div className="font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                        <div className="ws-meta text-[11.5px] text-[var(--ws-ink-muted)]">
                           {t.readerDesk.savedOnLabel(
                             formatCompactTimestamp(entry.savedAt, lang)
                           )}
@@ -789,7 +791,7 @@ export const ReaderDeskDrawer: React.FC<ReaderDeskDrawerProps> = ({
                           >
                             {topic}
                           </button>
-                          <div className="font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                          <div className="ws-meta text-[11.5px] text-[var(--ws-ink-muted)]">
                             {t.readerDesk.topicsCurrentMatches(count)}
                           </div>
                         </div>
@@ -895,7 +897,7 @@ const CatchUpChangeGroup: React.FC<{
                 {sig.headline}
               </button>
               {change.diff.reasons.length > 0 && change.kind === 'updated' && (
-                <div className="font-mono-tabular text-[11px] text-[var(--ws-ink-muted)]">
+                <div className="ws-meta text-[11.5px] text-[var(--ws-ink-muted)]">
                   {change.diff.reasons
                     .map((r) => t.dailyDelta.reasons[r])
                     .join(' · ')}

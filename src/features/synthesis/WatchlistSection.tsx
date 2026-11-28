@@ -114,12 +114,12 @@ export const WatchlistSection: React.FC<WatchlistSectionProps> = ({
                       <td className="px-5 py-4 align-top text-[var(--ws-ink-secondary)] leading-[1.6] break-words">
                         {row.whyItMatters}
                       </td>
-                      <td className="px-5 py-4 align-top font-mono-tabular text-xs font-semibold text-[var(--ws-ink)]">
+                      <td className="px-5 py-4 align-top ws-meta text-[12.5px] font-semibold text-[var(--ws-ink)]">
                         {row.nextCheckpoint}
                       </td>
                       <td className="px-5 py-4 align-top font-mono-tabular text-xs">
                         {row.signalsLinked.length === 0 ? (
-                          <span className="text-[var(--ws-ink-muted)]">
+                          <span className="ws-meta text-[var(--ws-ink-muted)]">
                             {t.synthesis.watchlistUnlinked}
                           </span>
                         ) : (
@@ -167,7 +167,7 @@ export const WatchlistSection: React.FC<WatchlistSectionProps> = ({
                   <h3 className="font-display text-[15px] font-semibold text-[var(--ws-ink)] leading-snug break-words">
                     {row.indicator}
                   </h3>
-                  <span className="shrink-0 font-mono-tabular text-[11px] font-semibold text-[var(--ws-ink)]">
+                  <span className="shrink-0 ws-meta text-[11.5px] font-semibold text-[var(--ws-ink)]">
                     {row.nextCheckpoint}
                   </span>
                 </div>
@@ -176,7 +176,7 @@ export const WatchlistSection: React.FC<WatchlistSectionProps> = ({
                 </p>
                 <div className="pt-1.5 border-t border-[var(--ws-border-subtle)] font-mono-tabular text-[11px]">
                   {row.signalsLinked.length === 0 ? (
-                    <span className="text-[var(--ws-ink-muted)]">
+                    <span className="ws-meta text-[var(--ws-ink-muted)]">
                       {t.synthesis.watchlistUnlinked}
                     </span>
                   ) : (
