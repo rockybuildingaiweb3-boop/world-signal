@@ -53,7 +53,7 @@ Every composition primitive MUST:
 - **Pure Extraction Helper**: `extractLeadThesis(markdown: string)` in `src/lib/editorial/editorialPullQuote.ts` (unit-tested via `node:test`).
   - Strips Markdown formatting (`**`, `*`, inline `[S1]`/`[C2]` citation markers, links) and extracts the first complete declarative sentence (up to ~180 Latin chars or ~75 CJK chars) as the display thesis, returning `{ thesis, remainderMarkdown }` strictly from the signal's real prose — **never fabricating, paraphrasing, or altering factual claims**.
   - Returns `null` if the input text is too short or unstructured, allowing graceful fallback to standard `SafeMarkdown`.
-- **Role**: Elevates *Why It Matters* (`#sec-why-it-matters`) inside `ExpandedView` (and cross-domain synthesis lead statements in `SynthesisView`) from a plain boxed paragraph into a signature *New Yorker / Financial Times* display-serif analytical pull band.
+- **Role**: Elevates *Why It Matters* (`#sec-why-it-matters`) inside `ExpandedView` from a plain boxed paragraph into a signature *New Yorker / Financial Times* display-serif analytical pull band (reusable across long-form views).
 - **Visual Rules**:
   - No thick left accent border (`border-l-4` prohibited). Uses top and bottom fine hairline rules (`border-y border-[var(--ws-border-strong)]`) plus a short horizontal domain-accented kicker rule (`w-6 h-[2px]`) above the Fraunces / Noto Serif SC display thesis (`text-[1.18rem] sm:text-[1.32rem] leading-[1.45]`).
   - Renders the full remainder (or full cited `SafeMarkdown`) cleanly underneath so zero interactive `[S1]`/`[C1]` citations are ever lost.

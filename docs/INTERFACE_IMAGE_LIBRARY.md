@@ -40,8 +40,8 @@ This Interface Image Library serves a strictly separate architectural purpose: p
 | 08 | `world-urban-infrastructure` | `urban_infrastructure` | Verified on disk (Phase 09) | `desk_companion`, `documentary_break`, `dossier_opener` |
 | 09 | `world-human-environment` | `human_environment` | Verified on disk (Phase 09) | `desk_companion`, `folio_thumb`, `dossier_opener` |
 | 10 | `world-public-space` | `public_institution` | Verified on disk (Phase 09) | `desk_panorama`, `dossier_opener` |
-| 11 | `world-climate-environment` | `climate_environment` | **Phase 10 Stage 3 Acquisition** | `dossier_opener` (COP / climate / Arctic / extreme weather), `desk_companion` |
-| 12 | `world-border-checkpoint` | `border_geography` | **Phase 10 Stage 3 Acquisition** | `dossier_opener` (borders / migration / sovereign crossings / customs), `folio_thumb` |
+| 11 | `world-climate-environment` | `climate_environment` | Verified on disk (Phase 10) | `dossier_opener` (COP / climate / Arctic / extreme weather), `desk_companion` |
+| 12 | `world-border-checkpoint` | `border_geography` | Verified on disk (Phase 10) | `dossier_opener` (borders / migration / sovereign crossings / customs), `folio_thumb` |
 
 ### Domain 2 — AI Frontier (`public/assets/interface-library/ai/` · 12 Assets)
 *Visual World: Scientific Modernism — silicon lithography, compute racks, supercomputing halls, photonics, robotics, quantum cryogenics, and autonomous mobility.*
@@ -58,8 +58,8 @@ This Interface Image Library serves a strictly separate architectural purpose: p
 | 20 | `ai-scientific-instrument` | `scientific_instrument` | Verified on disk (Phase 09) | `desk_companion`, `dossier_opener` |
 | 21 | `ai-engineering-workspace` | `engineering_workspace` | Verified on disk (Phase 09) | `desk_companion`, `dossier_opener` |
 | 22 | `ai-advanced-materials` | `advanced_materials` | Verified on disk (Phase 09) | `desk_companion`, `dossier_opener` |
-| 23 | `ai-quantum-computing` | `quantum_computing` | **Phase 10 Stage 3 Acquisition** | `dossier_opener` (quantum / frontier physics / cryptography), `folio_thumb` |
-| 24 | `ai-autonomous-mobility` | `autonomous_mobility` | **Phase 10 Stage 3 Acquisition** | `dossier_opener` (autonomous vehicles / LiDAR / robotaxi / edge AI), `desk_companion` |
+| 23 | `ai-quantum-computing` | `quantum_computing` | Verified on disk (Phase 10) | `dossier_opener` (quantum / frontier physics / cryptography), `folio_thumb` |
+| 24 | `ai-autonomous-mobility` | `autonomous_mobility` | Verified on disk (Phase 10) | `dossier_opener` (autonomous vehicles / LiDAR / robotaxi / edge AI), `desk_companion` |
 
 ### Domain 3 — Economic Outlook (`public/assets/interface-library/economy/` · 12 Assets)
 *Visual World: Institutional & Economic Humanism — financial institutions, central banks, manufacturing, energy transition, commodities, urban housing, and agricultural supply.*
@@ -76,8 +76,8 @@ This Interface Image Library serves a strictly separate architectural purpose: p
 | 32 | `economy-retail-consumption` | `retail_consumption` | Verified on disk (Phase 09) | `desk_companion`, `dossier_opener` |
 | 33 | `economy-supply-chain` | `supply_chain` | Verified on disk (Phase 09) | `desk_companion`, `dossier_opener` |
 | 34 | `economy-infrastructure-investment` | `infrastructure_investment` | Verified on disk (Phase 09) | `desk_companion`, `dossier_opener` |
-| 35 | `economy-housing-urban` | `housing_real_estate` | **Phase 10 Stage 3 Acquisition** | `dossier_opener` (housing / mortgages / property / urban affordability), `folio_thumb` |
-| 36 | `economy-agriculture-food` | `agriculture_food` | **Phase 10 Stage 3 Acquisition** | `dossier_opener` (food inflation / grain exports / agricultural supply), `desk_companion` |
+| 35 | `economy-housing-urban` | `housing_real_estate` | Verified on disk (Phase 10) | `dossier_opener` (housing / mortgages / property / urban affordability), `folio_thumb` |
+| 36 | `economy-agriculture-food` | `agriculture_food` | Verified on disk (Phase 10) | `dossier_opener` (food inflation / grain exports / agricultural supply), `desk_companion` |
 
 ---
 

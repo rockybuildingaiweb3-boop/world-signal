@@ -2,7 +2,7 @@ import type { ParsedSignal, SignalDomain } from '../../types/edition';
 import { selectApprovedSignalMedia } from './editorialAssetRegistry';
 
 /**
- * Local Interface Image Library Registry (Phase 09 — Expanded 30-Asset Collection)
+ * Local Interface Image Library Registry (Phase 10 — Expanded 36-Asset Collection)
  *
  * STRICT SEPARATION POLICY:
  * - This module registers ONLY curated local interface photographs stored under
@@ -148,7 +148,7 @@ export const INTERFACE_IMAGE_LIBRARY: Readonly<
   Record<InterfacePhotoId, InterfacePhotoAsset>
 > = {
   // ===========================================================================
-  // WORLD EVENTS — 10 CURATED GLOBAL DOCUMENTARY ASSETS
+  // WORLD EVENTS — 12 CURATED GLOBAL DOCUMENTARY ASSETS
   // ===========================================================================
   'world-city-aerial': {
     id: 'world-city-aerial',
