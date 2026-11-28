@@ -228,7 +228,7 @@ describe('Phase 07 — Editorial Media Parsing, Rights Governance & Schema Compa
     );
   });
 
-  it('10. rejects missing license_url where required (CC BY) and warns only for public_domain without license_url', () => {
+  it('10. rejects missing license_url for both licensed and public-domain media', () => {
     const missingCcUrl = VALID_PHOTO_MEDIA_YAML.replace(
       'license_url: "https://creativecommons.org/licenses/by/4.0/"',
       'license_url: ""'
@@ -250,10 +250,10 @@ describe('Phase 07 — Editorial Media Parsing, Rights Governance & Schema Compa
       buildSyntheticMediaEdition({ mediaAssetsYaml: pdWithoutUrl }),
       '/editions/2026/10/2026-10-15.md'
     );
-    assert.equal(parsedPd.signals[0].mediaAssets.length, 1);
+    assert.equal(parsedPd.signals[0].mediaAssets.length, 0);
     assert.ok(
-      parsedPd.validation.warnings.some(
-        (w) => w.code === 'MISSING_PUBLIC_DOMAIN_POLICY_URL'
+      parsedPd.validation.errors.some(
+        (e) => e.code === 'MISSING_PUBLIC_DOMAIN_POLICY_URL'
       )
     );
   });
