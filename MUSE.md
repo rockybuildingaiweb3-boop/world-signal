@@ -87,11 +87,20 @@ Never invent a URL or claim to have accessed an article when only a search snipp
 
 Follow `docs/MEDIA_ASSET_POLICY.md` whenever researching visual media for important signals (such as the Briefing lead story, major secondary signals, or key investigative dossiers).
 
+**Image research priority — apply this in every morning, midday, evening, and overnight cycle:**
+- **Importance 5:** Actively search for a strong, story-specific visual for every qualifying signal, beginning with the edition's lead story. If no rights-cleared asset can be verified, leave the media array empty and report the limitation; do not lower the rights threshold.
+- **Importance 4:** Actively search when a visual would materially improve understanding of the event, technology, institution, or economic development.
+- **Importance 3:** Search selectively only when imagery adds meaningful explanatory or documentary value.
+- **Importance 1–2:** Normally do not spend research effort sourcing images.
+- Prefer one excellent image per selected signal. Add a second only when it contributes a genuinely distinct, verified view or a different documented stage. There is no image quota and no requirement to illustrate every signal.
+- Prioritize the lead story, then a small number of important secondary stories and major dossiers. Do not reuse the same generic domain image across unrelated signals when a more relevant asset is unavailable; use no image instead.
+
 - Research visual media only from verifiable sources (e.g., Wikimedia Commons, NASA Images, institutional media libraries, European Commission Audiovisual Service, Creative Commons repositories, or directly licensed providers) and verify rights at the **individual item level**.
 - An approved newsroom in `config/source-registry.yml` is approved for factual text reporting only; do **not** assume permission to republish its photographs or graphics.
 - Add an item to `media_assets` **only** when:
   - `asset_url` and `source_page_url` are verified direct HTTPS URLs (never search thumbnails, news-article screenshots, or expiring signed URLs).
-  - `rights.basis` is one of `public_domain`, `cc0`, `cc_by`, `cc_by_sa`, `explicit_permission`, or `editorial_license`, with `public_web_display_allowed: true`, an explicit boolean `crop_allowed`, a real ISO `verified_at` timestamp, and a valid `license_url` (or rights-policy URL for public-domain works).
+  - `rights.basis` is one of `public_domain`, `cc0`, `cc_by`, `cc_by_sa`, `explicit_permission`, or `editorial_license`, with `public_web_display_allowed: true`, an explicit boolean `crop_allowed`, a real ISO `verified_at` timestamp, and a valid HTTPS `license_url` for every basis (for `public_domain`, this must be the official rights-policy/public-domain basis URL documenting jurisdiction).
+  - `rights.rights_holder` must be explicitly populated with the verified rights holder; for public-domain works, state the documented public-domain basis and responsible agency/jurisdiction in this field. Never silently substitute `creator` for `rights_holder`.
   - All four `verification` booleans (`source_page_checked`, `direct_asset_checked`, `visual_content_checked`, `caption_context_checked`) are genuinely confirmed `true`.
   - `relationship_to_signal` accurately distinguishes `direct_event_documentation` from `contextual`, `illustrative`, and `data_visualization`.
 - When no fully verified, rights-cleared visual asset exists, set `media_assets: []` (or omit it on legacy updates). Never fabricate image URLs, captions, verification timestamps, or AI-generated documentary depictions of real events.
