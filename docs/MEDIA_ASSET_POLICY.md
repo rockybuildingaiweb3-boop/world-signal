@@ -111,8 +111,8 @@ Do **not** automatically approve:
 Every approved asset record must document:
 
 - Verified direct HTTPS `asset_url` and original provenance page `source_page_url`.
-- Verified `rights_holder` (or documented public-domain basis).
-- Explicit `license_name` and `license_url` (license deed URL, or official rights-policy / public-domain basis URL for `public_domain`).
+- A non-empty, explicit `rights_holder`. For `public_domain`, identify the documented public-domain basis, responsible agency/creator context, and jurisdiction in this field; do not silently copy `creator` into `rights_holder`.
+- Explicit `license_name` and a valid HTTPS `license_url` for **every** rights basis (license deed URL, or official rights-policy / public-domain basis URL for `public_domain`).
 - Real ISO 8601 `verified_at` timestamp (never fabricated).
 - `public_web_display_allowed: true`.
 - Explicit boolean `crop_allowed` — when `false`, the frontend must render the image uncropped (`object-fit: contain`) without destructive cropping.
