@@ -674,7 +674,23 @@ describe('Phase 07 — Publishing Validator (scripts/build-public-content.mjs)',
           'license_url: "https://creativecommons.org/licenses/by/4.0/"',
           'license_url: ""'
         ),
-        pattern: /rights\.license_url must be a valid HTTPS URL/,
+        pattern: /rights\.license_url must be a valid HTTPS license URL/,
+      },
+      {
+        label: 'missing public-domain rights-policy URL',
+        yaml: VALID_ILLUSTRATION_MEDIA_YAML.replace(
+          'license_url: "https://www.nasa.gov/nasa-brand-center/images-and-media/"',
+          'license_url: ""'
+        ),
+        pattern: /rights\.license_url must be a valid HTTPS public-domain\/rights-policy URL/,
+      },
+      {
+        label: 'missing explicit rights_holder',
+        yaml: VALID_PHOTO_MEDIA_YAML.replace(
+          'rights_holder: "Jane Doe"',
+          'rights_holder: ""'
+        ),
+        pattern: /rights\.rights_holder must explicitly identify/,
       },
       {
         label: 'unknown rights basis',
