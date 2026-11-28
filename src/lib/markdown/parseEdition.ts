@@ -1084,30 +1084,30 @@ function parseSignalBlock(
             });
           }
 
-          if (rawBasis === 'public_domain') {
-            if (licenseUrl && !isSafeHttpsUrl(licenseUrl)) {
-              hasError = true;
-              issues.push({
-                severity: 'error',
-                code: 'INVALID_MEDIA_LICENSE_URL',
-                signalId,
-                message: `Media asset "${label}" in "${signalId}" has a non-HTTPS rights.license_url.`,
-              });
-            } else if (!licenseUrl) {
-              issues.push({
-                severity: 'warning',
-                code: 'MISSING_PUBLIC_DOMAIN_POLICY_URL',
-                signalId,
-                message: `Public-domain media asset "${label}" in "${signalId}" should include a rights-policy HTTPS license_url documenting jurisdiction.`,
-              });
-            }
-          } else if (!isSafeHttpsUrl(licenseUrl)) {
+          if (!rightsHolder) {
             hasError = true;
             issues.push({
               severity: 'error',
-              code: 'MISSING_MEDIA_LICENSE_URL',
+              code: 'MISSING_MEDIA_RIGHTS_HOLDER',
               signalId,
-              message: `Media asset "${label}" in "${signalId}" requires a valid HTTPS rights.license_url for basis "${rawBasis || '(unknown)'}".`,
+              message: `Media asset "${label}" in "${signalId}" requires an explicit rights.rights_holder (or a documented public-domain basis); creator must not be used as an inferred substitute.`,
+            });
+          }
+
+          if (!licenseUrl || !isSafeHttpsUrl(licenseUrl)) {
+            hasError = true;
+            const publicDomainWithoutPolicy = rawBasis === 'public_domain' && !licenseUrl;
+            issues.push({
+              severity: 'error',
+              code: publicDomainWithoutPolicy
+                ? 'MISSING_PUBLIC_DOMAIN_POLICY_URL'
+                : !licenseUrl
+                  ? 'MISSING_MEDIA_LICENSE_URL'
+                  : 'INVALID_MEDIA_LICENSE_URL',
+              signalId,
+              message: publicDomainWithoutPolicy
+                ? `Public-domain media asset "${label}" in "${signalId}" requires an HTTPS rights-policy URL documenting the public-domain basis and jurisdiction.`
+                : `Media asset "${label}" in "${signalId}" requires a valid HTTPS rights.license_url.`,
             });
           }
 
@@ -1189,7 +1189,7 @@ function parseSignalBlock(
               basis: rawBasis,
               license_name: licenseName,
               license_url: licenseUrl,
-              rights_holder: rightsHolder || creator,
+              rights_holder: rightsHolder,
               verified_at: verifiedAt,
               public_web_display_allowed: true,
               crop_allowed: cropAllowed as boolean,
