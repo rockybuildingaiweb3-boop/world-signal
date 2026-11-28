@@ -1,149 +1,92 @@
-# WORLD SIGNAL — Frontend Art Direction & Signature Experience Architecture
+# WORLD SIGNAL — Frontend Art Direction & Visual Architecture
 
-> **Phase 03 Architectural Blueprint** — *Archival Broadsheet × Modern Intelligence Monograph*
-> Applies to the active React/TypeScript frontend under `src/`. Preserves the deterministic Markdown content pipeline, Source Independence engine, Daily Delta diff engine, and explicit Relationship Graph without fabricating facts, coordinates, imagery, or causal links.
-
----
-
-## 1. Signature Visual Concept & Publication Identity
-
-**WORLD SIGNAL** is an independent, evidence-driven global intelligence publication covering **World Events**, **AI Frontier**, and **Economic Outlook**. Its visual identity deliberately rejects generic SaaS dashboards, uniform card grids, and decorative AI telemetry in favor of a **tactile archival broadsheet combined with museum-grade monograph discipline**:
-
-- **Editorial Voice**: Calm authority, forensic transparency, intellectual density with generous breathing room. Every hairline rule, typographic weight shift, and graphic element serves meaning.
-- **Unmistakable Identity**:
-  - A crisp **publication nameplate** on the Briefing front page (*WORLD SIGNAL — Independent Global Intelligence*), framed by a classic double-rule masthead (`2.5px` primary ink rule + `1px` hairline) and an operational edition dateline.
-  - A restrained, single-row **3-zone TopBar** (Brand wordmark — 4 single-line views with clean typographic active marker — Archive/Edition utility trigger) that never competes with the front-page nameplate or reading canvas.
-  - **Ink-first hierarchy**: High-contrast charcoal ink (`#121417`) on warm archival alabaster (`#F8F6F1`) with pure crisp white (`#FFFFFF`) editorial sheets in Light mode; deep obsidian slate (`#0D1014`) with elevated graphite sheets (`#14181F`) and crisp silver-parchment ink (`#ECE9E2`) in Dark mode.
-  - **Signature Editorial Punctuation**: An archival **Signal Vermilion** (`#B43A24` light / `#E56B52` dark) reserved strictly for editorial lead markers, active front-page masthead folio accents, and critical caution punctuation — never splashed decoratively across cards.
+> **Phase 09 Complete Editorial Visual Redesign** — *Contemporary Global Affairs Journal: Editorial Energy × Evidence Clarity*
+> Applies to the active React 19 / TypeScript / Tailwind CSS 4 frontend under `src/`. Preserves Markdown as the canonical editorial source, stable signal identifiers, schema v1/v2 compatibility, Source Independence calculations, Daily Delta comparisons, explicit Relationship Graphs, and documentary media rights validation.
 
 ---
 
-## 2. Core Design Principles
+## 1. Strategic Visual Direction
 
-1. **Hierarchy Over Uniformity**: Never put stories of unequal importance into identical bordered boxes. Every view establishes at least three clear visual tiers (Lead → Secondary → Index).
-2. **Evidence-Grounded Graphics Only**: Every visual diagram (`EditorialSignalArtwork`, edition domain balance, Daily Delta turnover rail, Relationship Atlas, Audit composition bars, Importance × Confidence matrix) encodes *only* verified structured edition metadata. Illustrative signal plates carry an explicit non-documentary colophon.
-3. **Zero Decorative Clutter**:
-   - Zero static pill enclosures (`rounded-full` badges) around metadata.
-   - Zero thick left-border accent bars (`border-l-2`/`border-l-4`) on callouts or cards.
-   - Zero decorative/pulsing status dots or `//` mechanical code prefixes.
-   - Zero nested-scroll traps on long ledgers (use clean progressive pagination instead of `max-h-[620px] overflow-y-auto` boxes).
-4. **Epistemic Clarity**: Always visually separate **Importance (1–5)** from **Confidence (High / Medium / Low / Unverified)**, **Explicit Typed Relationships** from **Coarse Legacy Contextual Links**, and **Omitted Signals** from **Resolved Events**.
-5. **Bilingual Optical Parity (`zh-CN` & `en`)**: Chinese and English share the same editorial stature, with deliberate optical adjustments rather than naive shared CSS rules.
+**WORLD SIGNAL** is an independent, evidence-led international news and intelligence publication covering **World Events**, **AI Frontier**, and **Economic Outlook**.
 
----
+Phase 09 replaces earlier overly quiet broadsheet minimalism with **Purposeful Visual Energy** — elevating the publication into an unmistakably recognizable digital magazine and global affairs journal that balances expressive visual craft with forensic evidence integrity:
 
-## 3. Typography System & Bilingual CJK Optical Rules
-
-### Font Stack
-- **Editorial Display (`--font-display`)**: `"Fraunces", "Noto Serif SC", "Songti SC", Georgia, serif`
-  - Expressive high-contrast serif for publication nameplate, cover headlines, dossier titles, and section numerals.
-- **Primary Reading Prose (`--font-sans`)**: `"Plus Jakarta Sans", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", -apple-system, sans-serif`
-  - Clean humanist sans-serif for crisp body reading, executive briefs, and navigation.
-- **Forensic Metadata & Tabular Figures (`--font-mono`)**: `"IBM Plex Mono", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", ui-monospace, monospace`
-  - Always includes CJK fallbacks so Chinese numerals (e.g., `一`, `二`) render cleanly in Chromium alongside `tabular-nums` alignment.
-
-### Bilingual Optical Adjustments (`[data-lang="zh-CN"]`)
-Because Han ideographs occupy full square em-boxes with denser internal stroke geometry than Latin glyphs:
-- **Line Height**: Increased on Chinese body prose (`1.8` vs `1.72` in English) and headlines (`1.28` vs `1.14` in English) to prevent vertical crowding.
-- **Letter Spacing**: Wide uppercase tracking (`0.12em–0.16em`) is applied to Latin mono kickers, while `[data-lang="zh-CN"]` overrides tracking to `0.04em` maximum on kickers and `0` on headlines so Chinese characters never scatter awkwardly.
-- **Optical Scale**: Display headlines scale ~8% more compactly in `zh-CN` (`clamp` adjustments) so 18–26 character Chinese headlines stay poised within 2–3 lines without jarring line breaks.
-- **Reduced Micro-Label Noise**: Secondary metadata lines use subtle typographic weight and contrast rather than walls of `10px` uppercase mono tags.
+- **Storytelling Ambition** (*The Washington Post*): Fluid front-page hierarchy where the Lead Feature commands open editorial space alongside immediate front-page dispatches, rather than being trapped inside a solitary dark banner box.
+- **Typographic Refinement** (*The New Yorker*): An iconic front-page publication nameplate, dramatic scale contrast between display headlines and body prose, refined pull quotes, and comfortable long-form reading rhythm.
+- **Information Architecture & Financial Clarity** (*Financial Times* & *FT Visual Vocabulary / Chart Doctor*): Multi-column front-page composition, distinct warm parchment-salmon paper tone for Economic Outlook, and form-follows-data-relationship visuals for provenance and domain composition.
+- **Institutional Coherence** (*The Economist Design System*): Disciplined Signal Vermilion editorial anchors, crisp section numerals, and "one graphic, one message" visual restraint.
+- **Section Atmosphere** (*Monocle*): Three domain desks that belong to one publication while possessing unmistakable visual personalities and photography direction.
+- **Interactive Intelligence Storytelling** (*Reuters Graphics* & *The Pudding*): A drafting-grid Relationship Atlas with illuminated active transmission paths and an elevated Evidence Mechanism Inspector grounded strictly in declared edition relationships.
 
 ---
 
-## 4. Color System & 60-30-10 Budget
+## 2. Multi-Surface Color System & Art-Directed Dark Mode
 
-| Role | Light Theme (Archival Broadsheet) | Dark Theme (Obsidian Monograph) | Usage |
+Instead of repeating a single neutral card background across every section, WORLD SIGNAL uses intentional multi-surface contrast to distinguish publication layers and domain desks:
+
+| Surface / Semantic Role | Light Mode (Warm Editorial Paper) | Dark Mode (Nocturnal Press) | Purpose |
 | :--- | :--- | :--- | :--- |
-| **Canvas (60%)** | `#F8F6F1` (Archival Alabaster) | `#0D1014` (Obsidian Slate) | Page background & breathing space |
-| **Editorial Sheet (25%)** | `#FFFFFF` / `#F2EFE8` | `#14181F` / `#1A2029` | Dossier sheets, subtle alternating bands |
-| **Primary Ink (10%)** | `#121417` / `#343A42` / `#5A626D` | `#ECE9E2` / `#C4CAD2` / `#8C95A1` | Headlines, body prose, metadata (WCAG AA+) |
-| **Signal Vermilion (Punctuation)** | `#B43A24` | `#E56B52` | Masthead lead rule, active lead punctuation |
-| **World Events** | `#1E4B7A` (Diplomatic Cobalt) | `#6BA6E8` | Domain label, meridian geometry, links |
-| **AI Frontier** | `#54398E` (Archival Indigo) | `#B197FC` | Domain label, architectural lattice, links |
-| **Economic Outlook** | `#18634B` (Treasury Pine) | `#5AC79D` | Domain label, balance structure, horizons |
-| **Confidence High / Med / Low / Unv** | `#18634B` / `#9A5D12` / `#B43A24` / `#5F6670` | `#5AC79D` / `#E4AC54` / `#E56B52` / `#9AA2AD` | Verification strength only (never conflated with importance) |
+| **Canvas** | `#f6f2ea` (Warm Linen Paper) | `#0a0d13` (Midnight Press) | Open publication breathing room |
+| **Primary Sheet** | `#fffdf9` (Newsprint Ivory) | `#121722` (Elevated Slate) | Primary reading canvases, Expanded dossier |
+| **Tonal Spread Band** | `#f3ede1` / `#ede6d9` | `#151c29` / `#18202f` | Executive Summary spread, metadata folios |
+| **Nocturnal Ink Plate** | `#111622` / `#182030` | `#141b2a` / `#1c2639` | AI Frontier monograph, Audit provenance plate, reading pathways |
+| **Signal Vermilion** | `#bd271a` | `#ed6b5b` | Masthead top anchor, lead kicker, active nav bar, active atlas beam |
+| **World Events Desk** | `#16447a` on `#fffdf9` | `#7eb6f4` on `#111621` | Foreign affairs broadsheet |
+| **AI Frontier Desk** | `#58359c` / `#cbb4ff` on `#121520` | `#bca3fa` / `#d3c0ff` on `#101424` | Nocturnal technical review monograph (zero neon clichés) |
+| **Economic Outlook Desk** | `#0f5c47` on `#f3eae0` | `#5fcea8` on `#171714` | FT-inspired warm parchment-salmon financial folio |
 
-All foreground/background pairs meet or exceed WCAG AA (`>= 4.5:1` body text, `>= 3:1` display/UI controls) in both Light and Dark themes.
-
----
-
-## 5. Distinct Personalities of the Four Views
-
-### 5.1 Briefing — *Front-Page Broadsheet & Daily Cover*
-- **First-Viewport Dominance**: Compact broadsheet nameplate + edition dateline immediately followed by the **Cover Story Spread** (asymmetric 7:5 layout pairing monumental display headline, editorial deck, key provenance metrics, and a **bespoke full-width / split domain-specific `EditorialSignalArtwork` plate** alongside the Executive Summary Folio).
-- **Daily Delta Ledger**: Integrated cleanly directly beneath the Cover Story as an archival broadsheet change ledger with proportional turnover bar, 4-category editorial tabs, deterministic field transitions, expandable claim/source evidence diffs, and the non-negotiable *Omission Is Not Resolution* notice.
-- **Varied Secondary Hierarchy**: Preserves exact `topSignalRefs` editorial order while varying visual weight: Signal 02 commands an asymmetric wide dispatch row; Signal 03 holds an analytical companion column; Signals 04+ form a refined multi-column dispatch index.
-- **Redesigned Three-Domain Coverage Composition**: Replaces three identical top-accented boxes with a unified **Coverage Composition Band** — proportional bar + clean horizontal editorial desk strips showing exact signal volume, Imp 5 / Imp 4 / Imp 1–3 intensity profiles, claims, independent origins, and desk intros.
-- **Additional Signals Index & Editorial Colophon Path**: Compact, multi-column broadsheet index with understated vertical importance ticks and calm transitions into Expanded, Synthesis, and Audit.
-
-### 5.2 Expanded — *Long-Form Investigative Monograph & Forensic Dossier*
-- **Scannable Discovery Index Rail**: Sticky desktop research sidebar with clean search, domain tabs, compact filter drawer, and crisp two-line index rows (no cluttered 4-row boxes).
-- **Magazine Dossier Opening**: Monumental headline anchor, subtle domain hairline & provenance strip (`Event Date`, `Updated`, `Topic`, `Geography`), calibrated `Importance` scale separated cleanly from `Confidence Rationale`, Storyline Continuity strip (schema v2), and jump navigation.
-- **10 Distinct Editorial Content Layers**:
-  1. *What Happened*: Large editorial lead deck (`1.06rem–1.12rem` serif/sans lead treatment) opening the monograph.
-  2. *Verified Facts*: Crisp archival dossier box (`ws-folio-box`) with subtle paper tint and structured fact typography.
-  3. *Timeline*: Chronological gutter rail placing dates cleanly beside titles, summaries, and clickable Claim/Source verification links.
-  4. *Why It Matters*: Elevated editorial significance band with top/bottom hairlines (no left-border bar).
-  5. *Source Perspectives*: Multi-voice attribution folio distinguishing institutional viewpoints.
-  6. *Analysis*: Uncluttered `66ch` long-form investigative essay measure.
-  7. *Uncertainties*: Restrained warm-ochre archival caution folio.
-  8. *Scenarios*: Full-width 3-column architectural pathways (`Base →`, `Downside ↘`, `Upside ↗`) with directional geometry and zero fabricated probabilities.
-  9. *Personal Relevance* & 10. *What to Watch*: Intentional asymmetric 2-column practical brief closing the narrative before the forensic ledgers.
-- **Traceable Ledgers**: Clean Claim ↔ Source ↔ Independent Origin cross-highlighting, plus strict visual separation between Declared Typed Relationships and Coarse Legacy Contextual References.
-
-### 5.3 Synthesis — *Strategic Intelligence Desk & Interactive Relationship Atlas*
-- **Reimagined Keyboard-Accessible Relationship Atlas**:
-  - Replaces the rigid non-focusable `<g onClick>` SVG with a **100% keyboard-accessible Strategic Relationship Atlas**:
-    - Clean **3-Domain Cross-Transmission Architecture** with crisp cubic Bézier directional arcs, distinct stroke styles (solid for explicit typed links, dashed for `potential_link` / coarse legacy), interactive **signal focus filter** (lets readers isolate a single hub signal when legacy links are dense), and **native semantic `<button>` / keyboard-activatable node & edge controls** (`Tab`, `Enter`, `Space`) synchronized with the live Evidence Inspector panel.
-    - Powered strictly by `buildRelationshipGraph()` — zero inferred edges.
-    - Clean mobile experience prioritizing the interactive inspector + scannable relationship ledger without cramping SVG diagrams.
-- **Structured Cross-Domain Synthesis**: Asymmetric magazine monographs showing mechanism header + linked signal jumpers on the left, structured analytical prose on the right, and a dashed archival exclusion ledger for unestablished connections.
-- **Time Horizons Continuum**: Coherent temporal axis (`Immediate → Near-Term → Medium-Term → Structural`) with visual progression steps.
-- **Scenarios, Intentional Personal Implications & Filterable Watchlist**: Editorial advisory layout (distinct numbered columns, never generic dashboard cards) and a scannable institutional Watchlist table / mobile stacked ledger.
-
-### 5.4 Audit — *Evidence & Provenance Inspection Room*
-- **Editorial Verification Brief (No 6 Identical KPI Boxes)**: Asymmetric two-part overview pairing a monumental **Independent Reporting Origins** & **Qualifying Original Records** provenance hero with proportional Record Composition and Source Class breakdown charts, plus a quiet secondary metric ledger.
-- **Reporting Origin Explorer**: Clean two-column provenance directory clearly separating Qualifying Independent Origins, Excluded Groups (with explicit policy basis), and individually listed Unassigned Records.
-- **Paginated Claim Ledger (Zero Nested Scroll Traps)**: Eliminates the fatiguing `max-h-[620px]` inner scroll container in favor of clean progressive pagination (`20` rows per batch + `Load more` / `Show all`), instant search, inline status/confidence/signal/coverage filters, and clear typographic `Signal → Claim → Source → Origin` trace lines.
-- **Clarity-First 5×4 Importance × Confidence Matrix**: Explicit two-axis header framing (`Rows = Editorial Importance 1–5` vs. `Columns = Verification Confidence`) with restrained tonal intensity encoding so readers immediately verify that high importance never implies high confidence.
-- **Editorial Audit Trail**: Clean hairline-underlined tabs (`Source Audit`, `Open Questions`, `Corrections`, `Methodology Notes`, `Schema Diagnostics`) rendered at comfortable `70ch` reading measure.
+All foreground/background pairs maintain WCAG AA contrast (`>= 4.5:1` for prose, `>= 3:1` for display typography and UI controls) in both themes.
 
 ---
 
-## 6. Signature Visual Elements
+## 3. Typography System & Bilingual Parity (`en` & `zh-CN`)
 
-1. **Multi-Composition `EditorialSignalArtwork`**: Three genuinely distinct architectural illustration plates selected deterministically by signal domain — **Diplomatic Meridian Plate** (`World Events`), **Architectural Inference Lattice** (`AI Frontier`), and **Macro Balance & Corridor Plate** (`Economic Outlook`) — encoding only real verified metadata (`geography`, `event` dates, `importance` 1–5, `independentOriginCount` with explicit overflow disclosure, `claims.length`, `sources.length`, `timelineEvents` milestones, and explicit `relationships`), accompanied by a clear non-documentary colophon.
-2. **Publication Double-Rule Masthead**: `2.5px` ink bar over `1px` hairline with balanced dateline, edition title, and live archive telemetry.
-3. **Interactive Cross-Domain Relationship Atlas**: Keyboard-navigable SVG + synchronized Evidence Inspector + hub-signal focus mode.
-4. **Proportional Edition & Provenance Ribbons**: Crisp `2px–10px` hairline-separated proportional bars encoding domain mix, Daily Delta turnover, and source independence composition without chartjunk.
-
----
-
-## 7. Responsive Architecture & Breakpoints
-
-- **`1440×900` & `1280×800` (Desktop)**: `max-w-[1320px]` broadsheet container, 12-column asymmetric cover spread, sticky 340px Expanded index rail, full SVG Relationship Atlas + side Inspector.
-- **`768×1024` (Tablet)**: Balanced 2-column grids, full-width cover artwork, accessible single-row top navigation, cleanly reflowing Audit & Watchlist tables.
-- **`390×844` & `360×800` (Mobile)**: Compact top bar + slim bottom navigation bar (`<= 12%` viewport height with `env(safe-area-inset-bottom)`), zero horizontal overflow (`0px` tolerance), generous tap targets, stacked mobile ledgers for Watchlist, Daily Delta, and Relationship Atlas, and effortless list ↔ dossier switching in Expanded view.
-- **Accessibility & Motion**: Full keyboard focus rings (`:focus-visible`), `aria-current`/`aria-selected`/`aria-expanded` semantics, and `@media (prefers-reduced-motion: reduce)` compliance.
+- **Display Serif (`--font-display`)**: `"Fraunces", "Noto Serif SC", "Songti SC", Georgia, serif` — used for the front-page publication nameplate (`.ws-masthead-wordmark`), lead cover headlines (`.ws-headline-cover`), secondary features (`.ws-headline-feature`), dossier openings (`.ws-headline-dossier`), and oversized editorial section numerals (`.ws-editorial-numeral`).
+- **Editorial Reading & UI Sans (`--font-sans`)**: `"Plus Jakarta Sans", "Noto Sans SC", "PingFang SC", sans-serif` — used for comfortable prose (`.ws-prose`, 65–70ch measure), decks, navigation, and `.ws-meta` tabular metadata so Chinese text never falls back to monospace.
+- **Forensic Monospace (`--font-mono`)**: `"IBM Plex Mono", "Noto Sans SC", monospace` — reserved strictly for identifiers (`signal_id`, `claim_id`, `source_id`), ISO dates, URLs, and aligned numeric figures.
+- **Bilingual Optical Craft**:
+  - `[data-lang="zh-CN"]` adjusts display sizing, relaxes headline leading (`1.24–1.38`), applies `line-break: strict`, tightens kicker tracking (`0.08em`), and disables Latin-only drop-cap styling (`.ws-dropcap` applies only to `[data-lang="en"]`).
+  - Raw inline citation markers (e.g., `[S1]`, `[C2]`) are stripped from front-page excerpt decks so summaries read like polished journalism while full citations remain interactive inside the Expanded dossier.
 
 ---
 
-## 8. Phase 08 Editorial Craftsmanship Refinements
+## 4. Architectural Blueprint Across Views
 
-1. **Strict Typography Role Separation (`.ws-meta` vs `.font-mono-tabular`)**:
-   - `.ws-meta` (`--font-sans` with `tabular-nums`) is used for all descriptive English and Simplified Chinese metadata, status labels, captions, and navigation summaries so CJK characters never inherit awkward monospace fallbacks.
-   - `.font-mono-tabular` (now equipped with explicit CJK fallbacks in `--font-mono`) is reserved strictly for forensic identifiers (`signal_id`, `claim_id`, `source_id`, `registry_id`), ISO dates, timestamps, URLs, schema versions, and numeric indices/ratios.
-   - Editorial blockquotes inside `.ws-prose` use restrained top/bottom hairline rules rather than generic left-border stripes.
-2. **Dark-Mode Nocturnal Depth & High-Contrast Editorial Plates**:
-   - Refined surface hierarchy in Dark mode (`--ws-canvas: #0b0e14`, `--ws-surface: #121722`, `--ws-plate: #141b29`, `--ws-plate-elevated: #1b2436`, `--ws-plate-border: #2f3c55`) ensures crisp figure-ground contrast between archival canvas, reading sheets, and dark editorial plates.
-   - Tokenized `--ws-plate-accent` (`#f07665` light / `#f27b6a` dark) governs warm vermilion highlights inside dark plates without hardcoded color literals.
-3. **Calm Cover Plate & Documentary Media Presentation**:
-   - The Flagship Cover Plate uses a balanced 6:6 split, quiet archival Verification Dossier `<dl>` (eliminating oversized KPI scoreboards), and an adaptive 1/2/3-column real-world chronology grid so single-event timelines leave no empty dark void.
-   - `SignalMediaGallery` renders numbered documentary plates (`01`, `02`, ...) with featured wide lead framing, archival gallery mat padding for `crop_allowed: false` (`object-contain`), and clean `.ws-meta` caption/attribution bands preserving full `source_page_url` and `license_url` provenance.
-4. **Hairline-Divided Utility Strips & Zero-Dot Discipline**:
-   - Action clusters (`TopBar`, `SignalDossierHeader`, `GlobalSearchOverlay`, `StorylineDrawer`, `ArchiveDrawer`) are unified into calm hairline-divided editorial strips rather than scattered bordered boxes.
-   - All remaining circular status dots (`TopBar`, `SynthesisView`, `StorylineDrawer`) have been replaced with crisp typographic accent states and architectural hairline/vertical markers.
-   - `RelationshipExplorerMatrix` quiets unselected arcs to subtle neutral hairlines and replaces loud all-around red endpoint node borders with editorial ink rules + crisp top vermilion bars.
-   - `ExpandedView` adds a quiet section reading-progress indicator (`01/N` + 2px rule) to the sticky Editorial Margin Rail, and `AuditOverviewCards` / `AuditView` align multi-column analytical ledgers cleanly to top baselines with zero stretched vertical voids.
+### 4.1 Briefing — Front-Page Publication Cover
+1. **Front-Page Publication Masthead**: A dedicated editorial nameplate (`WORLD SIGNAL` in monumental Fraunces display type with globe-meridian monogram, vermilion top rule, and publication descriptor) paired with an aligned Edition Folio (date, sync cycle, coverage window, signal/origin/claim totals, diagnostics alert, and refresh trigger). Distinct from the compact sticky TopBar.
+2. **Asymmetric 8:4 Front-Page Cover Spread (Open Paper)**:
+   - **Left 8 columns (Lead Story)**: Oversized editorial headline, clean narrative deck, prominent 16:10 `StoryVisual` showcase plate, and a poised **Verification & Chronology Strip** below the visual (eliminating the empty dark void of the legacy 6:6 black box).
+   - **Right 4 columns ("In This Edition" Front-Page Rail)**: Hairline-separated front-page dispatch column showcasing Ranks `#02`, `#03`, and `#04` directly inside the initial desktop viewport, immediately inviting exploration.
+3. **Executive Summary Spread**: Full-width warm tonal paper spread pairing the editorial briefing (with refined drop-cap opening in English) against an FT-style Domain Composition Breakdown (stacked ribbon + per-domain shares + `5/5` priority counts) and collapsible Editorial Limitations.
+4. **Tiered Secondary Hierarchy**: Dedicated asymmetric visual feature spread for Rank `#02` (anti-repetition `StoryVisual`), followed by a crisp 3-column numbered dispatch index for Ranks `#05–#10`.
+5. **Daily Delta & Catch-Up Continuity**: Harmonized newsroom change ledger preserving exact deterministic diffs and the *Omission Is Not Resolution* safeguard.
+6. **Three Unmistakably Distinct Domain Desks**:
+   - **World Events** (`ws-desk-world`): Crisp warm-ivory foreign affairs broadsheet with oversized `01` numeral, panoramic dusk skyline photography (`world-city-aerial.jpg`), featured geopolitical dispatch, and maritime freight corridor strip (`world-maritime-port.jpg`).
+   - **AI Frontier** (`ws-desk-ai-plate`): Nocturnal deep-obsidian technical monograph with `02` numeral, vertical server-rack instrumentation portrait (`ai-data-center.jpg`), featured AI lead + macro silicon wafer detail (`ai-silicon-wafer.jpg`), and structured technical wire.
+   - **Economic Outlook** (`ws-desk-economy`): Warm parchment-salmon financial broadsheet with `03` numeral, spanning macro lead headline above a 2-column markets/policy ledger anchored by the classical NYSE architectural facade (`economy-stock-exchange.jpg`).
 
+### 4.2 StoryVisual, Illustrations & Documentary Galleries
+- **Strict Three-Category Visual Separation**:
+  1. **Verified Documentary News Media** (`media_assets` validated via `isApprovedMediaAsset`) — always takes exclusive precedence when present.
+  2. **Original Editorial Illustrations & Typographic Cover Plates** (`editorialAssetRegistry.ts` & `StoryVisual.tsx`) — redesigned `typographic_cover` now composes domain-specific engraved SVG art motifs, oversized Fraunces plate numerals, and asymmetric typographic framing; `grounded_visual` follows FT Visual Vocabulary standards.
+  3. **Curated Local Interface Photography** (`interfaceImageLibrary.ts` under `public/assets/interface-library/`, uncropped JPEGs + responsive `-800.webp`/`-1600.webp` derivatives) — strictly isolated (`isDocumentaryEvidence: false`), zero remote hotlinking, explicit bilingual non-documentary colophons, photographer credit, source page link, and Unsplash License link.
+- **Asymmetric `SignalMediaGallery`**: Adapts composition to gallery size (expansive hero plate for 1 asset; asymmetric 7:5 pair for 2 assets; full-width lead plate over staggered companion frames for 3+ assets) with unboxed museum-style captions and full rights/attribution fidelity (`crop_allowed: false` renders uncropped via `object-contain`).
+
+### 4.3 Expanded — Long-Form Investigative Monograph
+- **High-Value Dossier Opening**: Portrait contextual openers pair the `4:5` photograph directly alongside the signal's headline provenance, verification metrics (`Origins / Claims / Sources`), importance scale, and confidence rationale rather than blank disclaimer filler.
+- **Unboxed Editorial Reading Rhythm**: Distinct typography and spacing across *What Happened* (magazine lead), *Verified Facts* (open hairline ledger), *Timeline* (continuous architectural rail), *Why It Matters* (elevated vermilion-ruled significance band), *Analysis* (68ch essay measure), *Uncertainties*, *Scenarios* (3 directional pathways), and traceable Claim/Source/Relationship ledgers, accompanied by a sticky reading-progress Margin Rail.
+
+### 4.4 Synthesis — Intelligence Visualization Desk
+- **Drafting-Grid Relationship Atlas**: Subtle architectural dot-grid canvas (`.ws-atlas-grid`), tinted domain lanes with live node counts, 5-pip node importance bars, illuminated active transmission paths with muted context arcs, and an elevated nocturnal **Evidence Mechanism Inspector** displaying a structured `FROM → [RELATIONSHIP] → TO` diagram strictly from `buildRelationshipGraph()`.
+- **Cross-Domain Monographs & Time Horizons**: Oversized numbered monographs, connected temporal progression strips, conditional scenarios, and responsive watchlist.
+
+### 4.5 Audit — Editorial Verification Desk
+- **FT Chart Doctor Overview**: Pairs a high-contrast nocturnal **Provenance Summary Plate** (Independent Reporting Origins + Qualifying Original Share %) with a rich **Part-to-Whole Record Composition Ribbon** and a **Horizontal Source-Class Ranking Chart** with direct inline counts.
+- **Importance × Confidence Matrix**: Clear two-axis heatmap proving editorial importance and verification confidence remain strictly independent.
+
+---
+
+## 5. Responsive & Interaction Craftsmanship
+
+- Verified across `1920×1080`, `1440×900`, `1280×800`, `768×1024`, `390×844`, and `360×800` in both Light and Dark modes and both `en` and `zh-CN` with zero horizontal overflow.
+- Restrained, purposeful micro-interactions: hairline headline underline sweeps, `motion-safe:` gentle editorial image motion, crisp `:focus-visible` vermilion keyboard rings, and full `@media (prefers-reduced-motion: reduce)` compliance — zero bounce, pulsing, neon glow, or glassmorphism clutter.

@@ -527,14 +527,16 @@ export const App: React.FC = () => {
         )}
       </main>
 
-      {/* Minimal Editorial Publication Colophon Footer */}
-      <footer className="border-t border-[var(--ws-border)] bg-[var(--ws-surface)]/60 py-7 mt-14">
+      {/* Editorial Publication Colophon Footer */}
+      <footer className="border-t-[2px] border-t-[var(--ws-ink)] bg-[var(--ws-surface-tint)]/75 py-8 mt-14">
         <div className="mx-auto max-w-[1480px] px-4 sm:px-6 lg:px-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between text-[12.5px] text-[var(--ws-ink-muted)]">
           <div className="flex flex-wrap items-center gap-x-2.5 gap-y-0.5">
-            <span className="font-display text-[13.5px] font-bold tracking-[0.04em] text-[var(--ws-ink)]">
+            <span className="font-display text-[14px] font-bold tracking-[0.05em] text-[var(--ws-ink)]">
               WORLD SIGNAL
             </span>
-            <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">·</span>
+            <span aria-hidden="true" className="text-[var(--ws-editorial-accent)]">
+              ·
+            </span>
             <span>{t.brandTagline}</span>
           </div>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">

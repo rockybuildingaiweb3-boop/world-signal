@@ -106,21 +106,76 @@ export const AuditView: React.FC<AuditViewProps> = ({
   return (
     <div className="space-y-14 pb-16 sm:pb-20">
       {/* Evidence & Provenance Inspection Room Masthead */}
-      <header className="ws-masthead-rule py-5 space-y-2.5">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <span className="ws-kicker text-[var(--ws-editorial-accent)]">
-            {t.nav.audit}
-          </span>
-          <span className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
-            {edition.frontmatter.edition_date}
-          </span>
+      <header className="ws-masthead-rule py-6 space-y-5">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end">
+          <div className="lg:col-span-8 space-y-2.5">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <span
+                aria-hidden="true"
+                className="inline-block h-[2.5px] w-5 bg-[var(--ws-editorial-accent)]"
+              />
+              <span className="ws-kicker text-[var(--ws-editorial-accent)]">
+                {t.nav.audit}
+              </span>
+              <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
+                /
+              </span>
+              <span className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
+                {edition.frontmatter.edition_date}
+              </span>
+            </div>
+            <h1 className="font-display ws-headline-dossier text-[1.95rem] sm:text-[2.6rem] font-semibold text-[var(--ws-ink)] headline-balance">
+              {t.audit.title}
+            </h1>
+            <p className="max-w-3xl text-[14.5px] leading-[1.7] text-[var(--ws-ink-secondary)]">
+              {t.audit.subtitle}
+            </p>
+          </div>
+
+          <dl className="lg:col-span-4 lg:border-l lg:border-[var(--ws-border)] lg:pl-6 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-4 ws-meta">
+            <div>
+              <dt className="text-[11px] text-[var(--ws-ink-muted)]">
+                {lang === 'zh-CN' ? '本期信号' : 'Edition Signals'}
+              </dt>
+              <dd className="mt-0.5 ws-editorial-numeral text-[26px] text-[var(--ws-ink)]">
+                {edition.signals.length}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-[11px] text-[var(--ws-ink-muted)]">
+                {t.audit.overviewCards.independentOrigins}
+              </dt>
+              <dd className="mt-0.5 ws-editorial-numeral text-[26px] text-[var(--ws-conf-high)]">
+                {summary.independentOriginCount}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-[11px] text-[var(--ws-ink-muted)]">
+                {t.audit.overviewCards.claimsAudited}
+              </dt>
+              <dd className="mt-0.5 ws-editorial-numeral text-[26px] text-[var(--ws-ink)]">
+                {allClaims.length}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-[11px] text-[var(--ws-ink-muted)]">
+                {t.audit.trailTabs.diagnostics}
+              </dt>
+              <dd
+                className={`mt-0.5 ws-editorial-numeral text-[26px] ${
+                  edition.validation.errors.length > 0
+                    ? 'text-[var(--ws-error)]'
+                    : edition.validation.warnings.length > 0
+                      ? 'text-[var(--ws-warn)]'
+                      : 'text-[var(--ws-conf-high)]'
+                }`}
+              >
+                {edition.validation.errors.length +
+                  edition.validation.warnings.length}
+              </dd>
+            </div>
+          </dl>
         </div>
-        <h1 className="font-display ws-headline-dossier text-[1.75rem] sm:text-[2.3rem] font-semibold text-[var(--ws-ink)] headline-balance">
-          {t.audit.title}
-        </h1>
-        <p className="max-w-3xl text-[14px] leading-[1.68] text-[var(--ws-ink-muted)]">
-          {t.audit.subtitle}
-        </p>
       </header>
 
       {/* 1. Derived Source & Evidence Overview + Proportional Composition Bar */}
@@ -298,7 +353,7 @@ export const AuditView: React.FC<AuditViewProps> = ({
                           {count} ({pct}%)
                         </span>
                       </div>
-                      <div className="h-2 w-full rounded-[1px] bg-[var(--ws-surface-subtle)] overflow-hidden">
+                      <div className="h-2.5 w-full rounded-[1px] bg-[var(--ws-surface-subtle)] overflow-hidden">
                         <div
                           className={`h-full ${confidenceBarBg(level)}`}
                           style={{ width: `${pct}%` }}
@@ -328,7 +383,7 @@ export const AuditView: React.FC<AuditViewProps> = ({
                           {count} ({pct}%)
                         </span>
                       </div>
-                      <div className="h-2 w-full rounded-[1px] bg-[var(--ws-surface-subtle)] overflow-hidden">
+                      <div className="h-2.5 w-full rounded-[1px] bg-[var(--ws-surface-subtle)] overflow-hidden">
                         <div
                           className="h-full bg-[var(--ws-world)]"
                           style={{ width: `${pct}%` }}

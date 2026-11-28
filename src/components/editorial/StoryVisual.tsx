@@ -141,7 +141,7 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
           ? 'aspect-[21/9]'
           : 'aspect-[4/3]';
 
-  // MODE 4: Intentional Museum-Monograph Typographic Cover Plate
+  // MODE 4: Expressive Contemporary Print Typographic Cover Plate
   if (effectiveMode === 'typographic_cover') {
     const subjectLabel =
       lang === 'zh-CN' ? selection.subjectLabelZh : selection.subjectLabelEn;
@@ -158,19 +158,57 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
         className={`relative overflow-hidden border ${
           isDarkPlate
             ? 'border-[var(--ws-plate-border)] bg-[var(--ws-plate-elevated)] text-[var(--ws-plate-ink)]'
-            : 'border-[var(--ws-border-strong)] bg-[var(--ws-surface-subtle)] text-[var(--ws-ink)]'
+            : 'border-[var(--ws-border-strong)] bg-[var(--ws-surface-tint)] text-[var(--ws-ink)]'
         } p-6 sm:p-7 flex flex-col justify-between ${
-          variant === 'dossier' ? 'min-h-[196px]' : 'min-h-[250px]'
+          variant === 'dossier' ? 'min-h-[210px]' : 'min-h-[268px]'
         }`}
       >
+        {/* Top Domain Ink Rule */}
         <div
           aria-hidden="true"
           className="absolute inset-x-0 top-0 h-[3px]"
           style={{ backgroundColor: accent }}
         />
 
+        {/* Subtle Engraved Domain Geometric Backdrop (Swiss Print Printmaking Craft) */}
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 360 220"
+          fill="none"
+          className="pointer-events-none absolute -right-6 -bottom-6 h-[86%] w-auto opacity-[0.11]"
+        >
+          {signal.domain === 'world' && (
+            <g stroke={accent} strokeWidth="1.2">
+              <circle cx="240" cy="120" r="96" />
+              <circle cx="240" cy="120" r="64" strokeDasharray="3 4" />
+              <ellipse cx="240" cy="120" rx="42" ry="96" />
+              <ellipse cx="240" cy="120" rx="96" ry="38" />
+              <line x1="120" y1="120" x2="348" y2="120" />
+              <line x1="240" y1="12" x2="240" y2="216" />
+            </g>
+          )}
+          {signal.domain === 'ai' && (
+            <g stroke={accent} strokeWidth="1.2">
+              <polygon points="240,26 332,74 240,122 148,74" />
+              <polygon points="240,56 332,104 240,152 148,104" />
+              <polygon points="240,86 332,134 240,182 148,134" />
+              <line x1="240" y1="26" x2="240" y2="182" strokeDasharray="3 4" />
+            </g>
+          )}
+          {signal.domain === 'economy' && (
+            <g stroke={accent} strokeWidth="1.2">
+              <line x1="112" y1="186" x2="344" y2="186" />
+              <rect x="136" y="132" width="32" height="54" />
+              <rect x="186" y="102" width="32" height="84" />
+              <rect x="236" y="68" width="32" height="118" />
+              <rect x="286" y="38" width="32" height="148" />
+              <path d="M 136 124 C 192 108, 240 62, 318 32" strokeDasharray="4 3" />
+            </g>
+          )}
+        </svg>
+
         <div
-          className={`flex flex-wrap items-center justify-between gap-2 border-b pb-3 ${
+          className={`relative z-10 flex flex-wrap items-center justify-between gap-2 border-b pb-3 ${
             isDarkPlate
               ? 'border-[var(--ws-plate-border)]'
               : 'border-[var(--ws-border)]'
@@ -201,7 +239,7 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
             </span>
           </div>
           <span
-            className={`font-mono-tabular text-[11.5px] ${
+            className={`font-mono-tabular text-[11px] uppercase tracking-[0.08em] ${
               isDarkPlate
                 ? 'text-[var(--ws-plate-muted)]'
                 : 'text-[var(--ws-ink-muted)]'
@@ -211,24 +249,24 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
           </span>
         </div>
 
-        <div className="py-5 grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-4 sm:gap-6 items-baseline">
+        <div className="relative z-10 py-6 grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-4 sm:gap-7 items-end">
           <div
-            className={`font-display text-[44px] sm:text-[54px] font-semibold leading-none tracking-[-0.04em] ws-tabular ${
+            className={`ws-editorial-numeral text-[52px] sm:text-[68px] ${
               isDarkPlate
                 ? 'text-[var(--ws-plate-ink)]/85'
-                : 'text-[var(--ws-ink)]/20'
+                : 'text-[var(--ws-ink)]/18'
             }`}
             aria-hidden="true"
           >
             {plateNumber}
           </div>
           <div className="space-y-2 min-w-0">
-            <div className="font-display text-[19px] sm:text-[22px] font-semibold leading-snug tracking-[-0.014em] break-words">
+            <div className="font-display text-[21px] sm:text-[24px] font-semibold leading-[1.2] tracking-[-0.018em] break-words">
               {signal.topic || subjectLabel}
             </div>
             {geoLabel && (
               <div
-                className={`ws-meta text-[12px] ${
+                className={`ws-meta text-[12.5px] ${
                   isDarkPlate
                     ? 'text-[var(--ws-plate-secondary)]'
                     : 'text-[var(--ws-ink-muted)]'
@@ -237,19 +275,50 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
                 {geoLabel}
               </div>
             )}
+            {/* Calibrated 5-Segment Editorial Importance Register */}
+            <div className="flex items-center gap-1.5 pt-1" aria-hidden="true">
+              {[1, 2, 3, 4, 5].map((step) => (
+                <span
+                  key={step}
+                  className="h-[3px] w-6 rounded-[1px]"
+                  style={{
+                    backgroundColor:
+                      step <= signal.importance
+                        ? accent
+                        : isDarkPlate
+                          ? 'var(--ws-plate-border)'
+                          : 'var(--ws-border-strong)',
+                    opacity: step <= signal.importance ? 0.92 : 0.35,
+                  }}
+                />
+              ))}
+            </div>
           </div>
         </div>
 
         <figcaption
-          className={`flex flex-wrap items-center justify-between gap-2 border-t pt-3 text-[12px] ws-meta ${
+          className={`relative z-10 flex flex-wrap items-center justify-between gap-2 border-t pt-3 text-[12px] ws-meta ${
             isDarkPlate
               ? 'border-[var(--ws-plate-border)] text-[var(--ws-plate-muted)]'
               : 'border-[var(--ws-border)] text-[var(--ws-ink-muted)]'
           }`}
         >
           <span>
-            {stats.independentOriginsCount} {t.briefing.artworkOriginsLabel} ·{' '}
-            {stats.confirmedClaimsCount}/{stats.claimsCount}{' '}
+            <strong
+              className={
+                isDarkPlate ? 'text-[var(--ws-plate-ink)]' : 'text-[var(--ws-ink)]'
+              }
+            >
+              {stats.independentOriginsCount}
+            </strong>{' '}
+            {t.briefing.artworkOriginsLabel} ·{' '}
+            <strong
+              className={
+                isDarkPlate ? 'text-[var(--ws-plate-ink)]' : 'text-[var(--ws-ink)]'
+              }
+            >
+              {stats.confirmedClaimsCount}/{stats.claimsCount}
+            </strong>{' '}
             {t.briefing.artworkClaimsLabel}
           </span>
           <span className="font-mono-tabular text-[11.5px]">
@@ -267,12 +336,18 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
       <figure
         data-visual-mode="grounded_visual"
         data-subject-category={selection.subjectCategory}
-        className={`border ${
+        className={`relative border ${
           isDarkPlate
             ? 'border-[var(--ws-plate-border)] bg-[var(--ws-plate-elevated)] text-[var(--ws-plate-ink)]'
-            : 'border-[var(--ws-border)] bg-[var(--ws-surface)] text-[var(--ws-ink)]'
+            : 'border-[var(--ws-border-strong)] bg-[var(--ws-surface)] text-[var(--ws-ink)]'
         } p-5 sm:p-6 space-y-5`}
       >
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-0 top-0 h-[3px]"
+          style={{ backgroundColor: accent }}
+        />
+
         <div
           className={`flex flex-wrap items-center justify-between gap-2 border-b pb-3 ${
             isDarkPlate
@@ -305,9 +380,9 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
           </span>
         </div>
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 gap-4 border-b border-[var(--ws-border-subtle)] pb-4">
           <div className="space-y-1">
-            <div className="font-display text-[28px] sm:text-[32px] font-semibold leading-none ws-tabular">
+            <div className="ws-editorial-numeral text-[32px] sm:text-[38px]">
               {stats.independentOriginsCount}
             </div>
             <div
@@ -321,7 +396,7 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
             </div>
           </div>
           <div className="space-y-1">
-            <div className="font-display text-[28px] sm:text-[32px] font-semibold leading-none ws-tabular">
+            <div className="ws-editorial-numeral text-[32px] sm:text-[38px]">
               {stats.claimsCount}
             </div>
             <div
@@ -335,7 +410,7 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
             </div>
           </div>
           <div className="space-y-1">
-            <div className="font-display text-[28px] sm:text-[32px] font-semibold leading-none ws-tabular">
+            <div className="ws-editorial-numeral text-[32px] sm:text-[38px]">
               {stats.sourcesCount}
             </div>
             <div
@@ -351,10 +426,10 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
         </div>
 
         {claimTotal > 0 && (
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             <div className="flex items-center justify-between text-[12px]">
               <span
-                className={`font-medium ${
+                className={`font-semibold ${
                   isDarkPlate
                     ? 'text-[var(--ws-plate-secondary)]'
                     : 'text-[var(--ws-ink-secondary)]'
@@ -363,17 +438,17 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
                 {lang === 'zh-CN' ? '声明核验分布' : 'Claim Verification Split'}
               </span>
               <span
-                className={`font-mono-tabular ${
+                className={`font-mono-tabular font-semibold ${
                   isDarkPlate
-                    ? 'text-[var(--ws-plate-muted)]'
-                    : 'text-[var(--ws-ink-muted)]'
+                    ? 'text-[var(--ws-plate-ink)]'
+                    : 'text-[var(--ws-ink)]'
                 }`}
               >
                 {confirmedPct}% {lang === 'zh-CN' ? '已证实' : 'confirmed'}
               </span>
             </div>
             <div
-              className={`flex h-2.5 w-full overflow-hidden rounded-[2px] ${
+              className={`flex h-3.5 w-full overflow-hidden rounded-[2px] gap-[1.5px] ${
                 isDarkPlate
                   ? 'bg-[var(--ws-plate-border)]'
                   : 'bg-[var(--ws-surface-subtle)]'
@@ -434,14 +509,14 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
 
         {timelineItems.length > 0 && (
           <div
-            className={`border-t pt-3.5 space-y-2 ${
+            className={`border-t pt-3.5 space-y-2.5 ${
               isDarkPlate
                 ? 'border-[var(--ws-plate-border)]'
                 : 'border-[var(--ws-border-subtle)]'
             }`}
           >
             <div
-              className={`text-[11.5px] font-semibold uppercase tracking-[0.08em] ${
+              className={`ws-kicker text-[11px] ${
                 isDarkPlate
                   ? 'text-[var(--ws-plate-muted)]'
                   : 'text-[var(--ws-ink-muted)]'
@@ -453,13 +528,13 @@ export const StoryVisual: React.FC<StoryVisualProps> = ({
               {timelineItems.map((pt, idx) => (
                 <li
                   key={`${pt.dateLabel}-${idx}`}
-                  className="grid grid-cols-[84px_1fr] gap-2.5 text-[12.5px] leading-snug"
+                  className="grid grid-cols-[88px_1fr] gap-2.5 text-[12.5px] leading-snug"
                 >
                   <span
-                    className={`font-mono-tabular text-[11.5px] pt-0.5 ${
+                    className={`font-mono-tabular text-[11.5px] font-semibold pt-0.5 ${
                       isDarkPlate
-                        ? 'text-[var(--ws-plate-muted)]'
-                        : 'text-[var(--ws-ink-muted)]'
+                        ? 'text-[var(--ws-plate-accent)]'
+                        : 'text-[var(--ws-ink)]'
                     }`}
                   >
                     {pt.dateLabel}

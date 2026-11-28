@@ -8,10 +8,7 @@ import type {
   UiLanguage,
 } from '../../types/edition';
 import { getUiStrings } from '../../lib/i18n/uiStrings';
-import {
-  confidenceColorClass,
-  domainAccentTextClass,
-} from '../../lib/filtering/filterSignals';
+import { confidenceColorClass } from '../../lib/filtering/filterSignals';
 import { buildRelationshipExplorerModel } from '../../lib/intelligence/visual-metrics/editorialVisualHelpers';
 import type { SignalRelationshipEdge } from '../../lib/intelligence/relationships/buildRelationshipGraph';
 
@@ -409,9 +406,9 @@ export const RelationshipExplorerMatrix: React.FC<
         </div>
       </div>
 
-      {/* Main Workspace: Keyboard-Accessible Cross-Domain Atlas (Desktop/Tablet) + Sticky Live Inspector */}
+      {/* Main Workspace: Keyboard-Accessible Cross-Domain Atlas (Desktop/Tablet) + Sticky Nocturnal Inspector */}
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-12 items-start">
-        <div className="hidden md:block xl:col-span-8 ws-broadsheet-ledger p-4 sm:p-5 overflow-hidden">
+        <div className="hidden md:block xl:col-span-8 ws-atlas-grid border-t-2 border-t-[var(--ws-ink)] border-x border-b border-[var(--ws-border)] p-4 sm:p-5 overflow-hidden">
           {diagramEdges.length === 0 ? (
             <div className="py-12 text-center text-xs text-[var(--ws-ink-muted)]">
               {t.synthesis.relationshipNoExplicit}
@@ -649,17 +646,21 @@ export const RelationshipExplorerMatrix: React.FC<
                     >
                       {shortId}
                     </text>
-                    <text
-                      x={x + NODE_WIDTH - 9}
-                      y={y + 51}
-                      textAnchor="end"
-                      fill={colColor}
-                      fontSize="9.5"
-                      fontWeight="600"
-                      className="font-mono-tabular"
-                    >
-                      {signal.importance}/5
-                    </text>
+                    {/* Calibrated 5-Pip Importance Micro-Bar */}
+                    <g aria-hidden="true">
+                      {[1, 2, 3, 4, 5].map((step) => (
+                        <rect
+                          key={step}
+                          x={x + NODE_WIDTH - 43 + (step - 1) * 7}
+                          y={y + 44.5}
+                          width="5"
+                          height="5"
+                          rx="0.8"
+                          fill={step <= signal.importance ? colColor : 'var(--ws-border)'}
+                          opacity={step <= signal.importance ? 0.9 : 0.45}
+                        />
+                      ))}
+                    </g>
                   </g>
                 );
               })}
@@ -667,65 +668,77 @@ export const RelationshipExplorerMatrix: React.FC<
           )}
         </div>
 
-        {/* Synchronized Sticky Evidence & Mechanism Inspector */}
-        <aside className="xl:col-span-4 xl:sticky xl:top-[84px] ws-folio-panel p-5 sm:p-6 space-y-4">
+        {/* Synchronized Sticky Nocturnal Evidence & Mechanism Inspector */}
+        <aside className="xl:col-span-4 xl:sticky xl:top-[84px] ws-plate border border-[var(--ws-plate-border)] p-5 sm:p-6 space-y-4">
           {activeEdge ? (
             <>
-              <div className="flex flex-wrap items-center justify-between gap-2 text-[11.5px]">
-                <span
-                  className={`ws-kicker ${edgeBadgeTextClass(activeEdge)}`}
-                >
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--ws-plate-border)] pb-3 text-[11.5px]">
+                <span className="inline-flex items-center gap-2 ws-kicker text-[var(--ws-plate-accent)]">
+                  <span
+                    aria-hidden="true"
+                    className="h-[2px] w-4 bg-[var(--ws-plate-accent)]"
+                  />
                   {t.signalRelationshipType[activeEdge.relationshipType]}
                 </span>
-                <span className="text-[var(--ws-ink-muted)]">
+                <span className="font-mono-tabular text-[11px] text-[var(--ws-plate-muted)]">
                   {activeEdge.isExplicitlyTyped
                     ? t.synthesis.relationshipExplicitBadge
                     : t.synthesis.relationshipLegacyBadge}
                 </span>
               </div>
 
-              <div className="space-y-3.5 border-y border-[var(--ws-border-subtle)] py-3.5">
+              <div className="space-y-4 border-b border-[var(--ws-plate-border)] pb-4">
                 {[
                   {
                     label: t.synthesis.relationshipSourceNode,
                     id: activeEdge.sourceSignalId,
+                    step: '01',
                   },
                   {
                     label: t.synthesis.relationshipTargetNode,
                     id: activeEdge.targetSignalId,
+                    step: '02',
                   },
-                ].map(({ label, id }) => {
+                ].map(({ label, id, step }, nodeIdx) => {
                   const sig = signalById.get(id);
                   return (
-                    <div key={`${label}-${id}`} className="space-y-0.5">
-                      <div className="ws-kicker text-[var(--ws-ink-faint)]">
-                        {label}
+                    <div
+                      key={`${label}-${id}`}
+                      className={
+                        nodeIdx === 1
+                          ? 'space-y-1 border-t border-[var(--ws-plate-border)] pt-3.5'
+                          : 'space-y-1'
+                      }
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="ws-kicker text-[var(--ws-plate-muted)] text-[10.5px]">
+                          {label}
+                        </span>
+                        <span className="font-mono-tabular text-[10.5px] text-[var(--ws-plate-muted)]">
+                          {step}
+                        </span>
                       </div>
                       {sig ? (
                         <button
                           type="button"
                           onClick={() => onOpenSignal(sig.signal_id)}
-                          className="group text-left space-y-0.5 cursor-pointer"
+                          className="group text-left space-y-1 cursor-pointer w-full"
                         >
-                          <div className="text-[13.5px] font-semibold leading-snug text-[var(--ws-ink)] group-hover:text-[var(--ws-world)] transition-colors break-words">
+                          <div className="font-display text-[15px] font-semibold leading-snug text-[var(--ws-plate-ink)] group-hover:text-[var(--ws-plate-accent)] transition-colors break-words">
                             {sig.headline}
                           </div>
-                          <div className="flex flex-wrap items-center gap-x-1 gap-y-0.5 ws-meta text-[11.5px] text-[var(--ws-ink-muted)]">
-                            <span
-                              className={`font-semibold shrink-0 whitespace-nowrap ${domainAccentTextClass(
-                                sig.domain
-                              )}`}
-                            >
+                          <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 ws-meta text-[11.5px] text-[var(--ws-plate-muted)]">
+                            <span className="font-semibold text-[var(--ws-plate-secondary)] shrink-0 whitespace-nowrap">
                               {t.domains[sig.domain]}
                             </span>
                             <span className="font-mono-tabular text-[11px] break-all">
                               · {sig.signal_id}
                             </span>
-                            <ArrowUpRight className="h-3 w-3 shrink-0 opacity-65" />
+                            <ArrowUpRight className="h-3 w-3 shrink-0 text-[var(--ws-plate-accent)]" />
                           </div>
                         </button>
                       ) : (
-                        <div className="font-mono-tabular text-xs text-[var(--ws-ink-muted)] break-all">
+                        <div className="font-mono-tabular text-xs text-[var(--ws-plate-muted)] break-all">
                           {id}
                         </div>
                       )}
@@ -735,30 +748,26 @@ export const RelationshipExplorerMatrix: React.FC<
               </div>
 
               <div className="flex items-center justify-between text-[12px]">
-                <span className="text-[var(--ws-ink-muted)]">
+                <span className="text-[var(--ws-plate-muted)]">
                   {t.expanded.confidenceLabel}
                 </span>
-                <span
-                  className={`font-semibold ${confidenceColorClass(
-                    activeEdge.confidence
-                  )}`}
-                >
+                <span className="font-semibold text-[var(--ws-plate-ink)]">
                   {t.confidence[activeEdge.confidence]}
                 </span>
               </div>
 
               {activeEdge.rationale && (
-                <p className="ws-prose text-[13.5px] text-[var(--ws-ink-secondary)] break-words">
+                <p className="text-[13.5px] leading-[1.68] text-[var(--ws-plate-secondary)] break-words">
                   {activeEdge.rationale}
                 </p>
               )}
 
               {activeEdge.supportingClaimIds.length > 0 && (
-                <div className="space-y-1.5 border-t border-[var(--ws-border-subtle)] pt-3">
-                  <div className="ws-kicker text-[var(--ws-ink-faint)]">
+                <div className="space-y-1.5 border-t border-[var(--ws-plate-border)] pt-3">
+                  <div className="ws-kicker text-[var(--ws-plate-muted)] text-[10.5px]">
                     {t.synthesis.relationshipEvidenceClaims}
                   </div>
-                  <div className="flex flex-wrap gap-x-2.5 gap-y-1 font-mono-tabular text-[11px] text-[var(--ws-world)]">
+                  <div className="flex flex-wrap gap-x-2.5 gap-y-1 font-mono-tabular text-[11px] text-[#9ec5f8]">
                     {activeEdge.supportingClaimIds.map((cid) => (
                       <span key={cid}>{cid}</span>
                     ))}
@@ -767,7 +776,7 @@ export const RelationshipExplorerMatrix: React.FC<
               )}
             </>
           ) : (
-            <p className="text-xs leading-relaxed text-[var(--ws-ink-muted)]">
+            <p className="text-xs leading-relaxed text-[var(--ws-plate-muted)]">
               {t.synthesis.relationshipInspectPrompt}
             </p>
           )}

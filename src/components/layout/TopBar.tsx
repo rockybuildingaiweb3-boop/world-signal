@@ -109,7 +109,7 @@ export const TopBar: React.FC<TopBarProps> = ({
                   type="button"
                   onClick={() => onSelectView(id)}
                   aria-current={isActive ? 'page' : undefined}
-                  className={`relative inline-flex h-full items-center px-0.5 text-[13.5px] lg:text-[14px] tracking-[0.012em] transition-colors cursor-pointer whitespace-nowrap ${
+                  className={`group relative inline-flex h-full items-center px-0.5 text-[13.5px] lg:text-[14px] tracking-[0.012em] transition-colors cursor-pointer whitespace-nowrap ${
                     isActive
                       ? 'font-semibold text-[var(--ws-ink)]'
                       : 'font-medium text-[var(--ws-ink-muted)] hover:text-[var(--ws-ink)]'
@@ -118,10 +118,10 @@ export const TopBar: React.FC<TopBarProps> = ({
                   {t.nav[id]}
                   <span
                     aria-hidden="true"
-                    className={`absolute inset-x-0 bottom-0 h-[2px] transition-opacity duration-200 ${
+                    className={`absolute inset-x-0 bottom-0 h-[2.5px] transition-opacity duration-200 ${
                       isActive
                         ? 'bg-[var(--ws-editorial-accent)] opacity-100'
-                        : 'bg-[var(--ws-border-strong)] opacity-0 hover:opacity-40'
+                        : 'bg-[var(--ws-border-strong)] opacity-0 group-hover:opacity-55'
                     }`}
                   />
                 </button>

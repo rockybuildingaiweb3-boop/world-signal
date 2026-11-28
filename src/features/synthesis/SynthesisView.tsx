@@ -70,21 +70,67 @@ export const SynthesisView: React.FC<SynthesisViewProps> = ({
   return (
     <div className="space-y-14 pb-16 sm:pb-20">
       {/* Strategic Intelligence Desk Masthead */}
-      <header className="ws-masthead-rule py-5 space-y-2.5">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <span className="ws-kicker text-[var(--ws-editorial-accent)]">
-            {t.nav.synthesis}
-          </span>
-          <span className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
-            {edition.frontmatter.edition_date}
-          </span>
+      <header className="ws-masthead-rule py-6 space-y-5">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end">
+          <div className="lg:col-span-8 space-y-2.5">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <span
+                aria-hidden="true"
+                className="inline-block h-[2.5px] w-5 bg-[var(--ws-editorial-accent)]"
+              />
+              <span className="ws-kicker text-[var(--ws-editorial-accent)]">
+                {t.nav.synthesis}
+              </span>
+              <span aria-hidden="true" className="text-[var(--ws-ink-faint)]">
+                /
+              </span>
+              <span className="font-mono-tabular text-[11.5px] text-[var(--ws-ink-muted)]">
+                {edition.frontmatter.edition_date}
+              </span>
+            </div>
+            <h1 className="font-display ws-headline-dossier text-[1.95rem] sm:text-[2.6rem] font-semibold text-[var(--ws-ink)] headline-balance">
+              {t.synthesis.title}
+            </h1>
+            <p className="max-w-3xl text-[14.5px] leading-[1.7] text-[var(--ws-ink-secondary)]">
+              {t.synthesis.subtitle}
+            </p>
+          </div>
+
+          <dl className="lg:col-span-4 lg:border-l lg:border-[var(--ws-border)] lg:pl-6 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-4 ws-meta">
+            <div>
+              <dt className="text-[11px] text-[var(--ws-ink-muted)]">
+                {lang === 'zh-CN' ? '跨域主线' : 'Synthesis Threads'}
+              </dt>
+              <dd className="mt-0.5 ws-editorial-numeral text-[26px] text-[var(--ws-ink)]">
+                {establishedThreads.length}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-[11px] text-[var(--ws-ink-muted)]">
+                {lang === 'zh-CN' ? '显性关联' : 'Explicit Links'}
+              </dt>
+              <dd className="mt-0.5 ws-editorial-numeral text-[26px] text-[var(--ws-world)]">
+                {edition.signals.reduce((acc, s) => acc + s.relationships.length, 0)}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-[11px] text-[var(--ws-ink-muted)]">
+                {lang === 'zh-CN' ? '情景推演' : 'Scenario Briefs'}
+              </dt>
+              <dd className="mt-0.5 ws-editorial-numeral text-[26px] text-[var(--ws-economy)]">
+                {keyScenarioSignals.length}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-[11px] text-[var(--ws-ink-muted)]">
+                {lang === 'zh-CN' ? '跟踪清单' : 'Watchlist Items'}
+              </dt>
+              <dd className="mt-0.5 ws-editorial-numeral text-[26px] text-[var(--ws-ink)]">
+                {edition.watchlist.rows.length}
+              </dd>
+            </div>
+          </dl>
         </div>
-        <h1 className="font-display ws-headline-dossier text-[1.75rem] sm:text-[2.3rem] font-semibold text-[var(--ws-ink)] headline-balance">
-          {t.synthesis.title}
-        </h1>
-        <p className="max-w-3xl text-[14px] leading-[1.68] text-[var(--ws-ink-muted)]">
-          {t.synthesis.subtitle}
-        </p>
       </header>
 
       {/* 1. Keyboard-Accessible Strategic Relationship Atlas */}
@@ -128,17 +174,19 @@ export const SynthesisView: React.FC<SynthesisViewProps> = ({
                   className="py-7 sm:py-8 grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-10"
                 >
                   <div className="lg:col-span-4 space-y-4 min-w-0">
-                    <div className="flex items-center gap-2.5">
+                    <div className="flex items-baseline gap-3">
                       <span
                         aria-hidden="true"
-                        className="inline-block h-[2.5px] w-6 bg-[var(--ws-world)] shrink-0"
-                      />
+                        className="ws-editorial-numeral text-[36px] sm:text-[44px] text-[var(--ws-world)]/25 select-none"
+                      >
+                        {String(idx + 1).padStart(2, '0')}
+                      </span>
                       <span className="ws-kicker text-[var(--ws-world)]">
-                        {t.synthesis.establishedLabel} · {String(idx + 1).padStart(2, '0')}
+                        {t.synthesis.establishedLabel}
                       </span>
                     </div>
 
-                    <h3 className="font-display text-[1.35rem] sm:text-[1.55rem] font-semibold leading-[1.26] tracking-[-0.018em] text-[var(--ws-ink)] headline-balance break-words">
+                    <h3 className="font-display text-[1.35rem] sm:text-[1.6rem] font-semibold leading-[1.24] tracking-[-0.018em] text-[var(--ws-ink)] headline-balance break-words">
                       {thread.title}
                     </h3>
 
@@ -368,11 +416,11 @@ export const SynthesisView: React.FC<SynthesisViewProps> = ({
                   key={`${sec.title}-${idx}`}
                   className="p-5 sm:p-6 lg:px-7 grid grid-cols-1 gap-4 lg:grid-cols-12 lg:gap-8 items-start"
                 >
-                  <div className="lg:col-span-4 flex items-baseline gap-3.5 min-w-0">
-                    <span className="font-display text-[1.45rem] font-semibold leading-none text-[var(--ws-ink-faint)] tabular-nums shrink-0">
+                  <div className="lg:col-span-4 flex items-baseline gap-4 min-w-0">
+                    <span className="ws-editorial-numeral text-[30px] text-[var(--ws-ink-faint)] shrink-0">
                       {String(idx + 1).padStart(2, '0')}
                     </span>
-                    <h3 className="font-display text-[1.15rem] font-semibold leading-snug text-[var(--ws-ink)]">
+                    <h3 className="font-display text-[1.18rem] font-semibold leading-snug text-[var(--ws-ink)]">
                       {sec.title}
                     </h3>
                   </div>

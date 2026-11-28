@@ -299,7 +299,7 @@ export const DailyDeltaSection: React.FC<DailyDeltaSectionProps> = ({
           return (
             <div
               aria-hidden="true"
-              className="flex h-[3px] w-full bg-[var(--ws-surface-subtle)] gap-[1px]"
+              className="flex h-[5px] w-full bg-[var(--ws-surface-subtle)] gap-[1px]"
             >
               {barParts.map((part) =>
                 part.count > 0 ? (
@@ -600,7 +600,7 @@ const DeltaSignalRow: React.FC<DeltaSignalRowProps> = ({
           <button
             type="button"
             onClick={handleOpen}
-            className="text-left hover:text-[var(--ws-world)] hover:underline decoration-[var(--ws-border-strong)] underline-offset-4 transition-colors duration-150 cursor-pointer"
+            className="text-left ws-headline-link hover:text-[var(--ws-world)] cursor-pointer"
           >
             {signal.headline}
           </button>

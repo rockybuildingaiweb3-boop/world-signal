@@ -38,30 +38,42 @@ export const TimelineTrack: React.FC<TimelineTrackProps> = ({
         <div className="ws-kicker text-[var(--ws-ink-muted)]">
           {t.expanded.structuredTimelineBadge} · {structuredEvents.length}
         </div>
-        <ol className="divide-y divide-[var(--ws-border-subtle)] border-y border-[var(--ws-border)]">
+        <ol className="relative divide-y divide-[var(--ws-border-subtle)] border-y border-[var(--ws-border)]">
           {structuredEvents.map((ev, idx) => {
             const isLast = idx === structuredEvents.length - 1;
             return (
               <li
                 key={ev.event_id || `ev-${idx}`}
-                className="py-4 grid grid-cols-1 gap-2 sm:grid-cols-[128px_minmax(0,1fr)] sm:gap-6 items-start"
+                className="relative py-4.5 grid grid-cols-1 gap-2 sm:grid-cols-[136px_minmax(0,1fr)] sm:gap-6 items-start"
               >
-                {/* Chronology Date Gutter */}
-                <div className="flex sm:flex-col items-baseline sm:items-start gap-2 sm:gap-1 font-mono-tabular">
-                  <div className="inline-flex items-center gap-2">
+                {/* Chronology Date Gutter with Vertical Spine */}
+                <div className="relative flex sm:flex-col items-baseline sm:items-start gap-2 sm:gap-1 font-mono-tabular">
+                  {!isLast && (
                     <span
                       aria-hidden="true"
-                      className={`inline-block h-2 w-2 shrink-0 border ${
+                      className="hidden sm:block absolute left-[4.5px] top-4 -bottom-5 w-px bg-[var(--ws-border-strong)]"
+                    />
+                  )}
+                  <div className="relative z-10 inline-flex items-center gap-2.5">
+                    <span
+                      aria-hidden="true"
+                      className={`inline-block h-2.5 w-2.5 shrink-0 border ${
                         isLast
                           ? 'border-[var(--ws-editorial-accent)] bg-[var(--ws-editorial-accent)]'
                           : 'border-[var(--ws-rule-editorial)] bg-[var(--ws-surface)]'
                       }`}
                     />
-                    <span className="text-[12px] font-semibold text-[var(--ws-ink)]">
+                    <span
+                      className={`text-[12px] font-semibold ${
+                        isLast
+                          ? 'text-[var(--ws-editorial-accent)]'
+                          : 'text-[var(--ws-ink)]'
+                      }`}
+                    >
                       {ev.occurred_at}
                     </span>
                   </div>
-                  <span className="text-[10.5px] text-[var(--ws-ink-faint)] sm:pl-4">
+                  <span className="text-[10.5px] text-[var(--ws-ink-faint)] sm:pl-5">
                     {String(idx + 1).padStart(2, '0')}
                     {ev.event_id ? ` · ${ev.event_id}` : ''}
                   </span>

@@ -341,7 +341,19 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
                           <h3 className="ws-kicker text-[var(--ws-ink-muted)]">
                             {t.expanded.sections.whatHappened}
                           </h3>
-                          <div className="ws-prose text-[16px] sm:text-[17px] text-[var(--ws-ink)]">
+                          <div
+                            className={`ws-prose ${
+                              lang !== 'zh-CN' &&
+                              /^[A-Za-z]/.test(
+                                activeSignal.sections.whatHappened.replace(
+                                  /^[*_>#\s]+/,
+                                  ''
+                                )
+                              )
+                                ? 'ws-dropcap '
+                                : ''
+                            }text-[16px] sm:text-[17px] text-[var(--ws-ink)]`}
+                          >
                             <SafeMarkdown
                               content={activeSignal.sections.whatHappened}
                               className="text-[var(--ws-ink)]"

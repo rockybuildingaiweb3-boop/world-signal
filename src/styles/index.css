@@ -9,65 +9,74 @@
 }
 
 :root {
-  /* Editorial Broadsheet & Magazine Light Palette */
-  --ws-canvas: #f8f5ef;
+  /* ==========================================================================
+     PHASE 09 — CONTEMPORARY GLOBAL AFFAIRS JOURNAL (LIGHT EDITORIAL PALETTE)
+     Warm Linen Paper × Deep Press Ink × Purposeful Multi-Surface Contrast
+     ========================================================================== */
+  --ws-canvas: #f6f2ea;
   --ws-surface: #fffdf9;
-  --ws-surface-subtle: #f1ece2;
-  --ws-surface-hover: #e8e0d2;
+  --ws-surface-subtle: #ede6d9;
+  --ws-surface-tint: #f3ede1;
+  --ws-surface-hover: #e4dbcb;
   --ws-surface-elevated: #faf6ee;
-  --ws-ink: #12151c;
-  --ws-ink-secondary: #353b45;
-  --ws-ink-muted: #5c6370;
-  --ws-ink-faint: #848b97;
-  --ws-border: #ddd5c5;
-  --ws-border-strong: #bfb39c;
-  --ws-border-subtle: #eae3d5;
-  --ws-rule-editorial: #12151c;
 
-  /* Editorial Ink-Plate Contrast Surface (Magazine Cover / Feature Bands) */
-  --ws-plate: #121721;
-  --ws-plate-elevated: #1a2130;
-  --ws-plate-ink: #f7f4ec;
-  --ws-plate-secondary: #cbd2df;
-  --ws-plate-muted: #939db0;
-  --ws-plate-border: #2a3448;
-  --ws-plate-accent: #f07665;
+  --ws-ink: #111318;
+  --ws-ink-secondary: #2e3440;
+  --ws-ink-muted: #555d6b;
+  --ws-ink-faint: #7d8594;
 
-  /* Authoritative Editorial Accents (Economist / FT / Monocle Discipline) */
-  --ws-editorial-accent: #b42818;
+  --ws-border: #d9d0be;
+  --ws-border-strong: #b6a990;
+  --ws-border-subtle: #e9e2d3;
+  --ws-rule-editorial: #111318;
+
+  /* Nocturnal Editorial Ink-Plate Surface (AI Monograph, Audit Plate, Pathways) */
+  --ws-plate: #111622;
+  --ws-plate-elevated: #182030;
+  --ws-plate-ink: #f7f3eb;
+  --ws-plate-secondary: #cfd6e3;
+  --ws-plate-muted: #939eb3;
+  --ws-plate-border: #2a354b;
+  --ws-plate-accent: #f07462;
+
+  /* Signature Editorial Vermilion (Masthead, Lead Anchors, Active Markers) */
+  --ws-editorial-accent: #bd271a;
   --ws-editorial-accent-soft: #faeae7;
 
-  /* Semantic Domain Ink Colors (Distinct Personalities, High Contrast) */
-  --ws-world: #1a4475;
-  --ws-world-soft: #eaf1f9;
-  --ws-ai: #4f328c;
-  --ws-ai-soft: #f1ecfb;
-  --ws-economy: #145a47;
-  --ws-economy-soft: #e6f4ef;
+  /* Semantic Domain Ink Colors — Distinct Editorial Personalities */
+  --ws-world: #16447a;
+  --ws-world-soft: #e6eff9;
+  --ws-ai: #58359c;
+  --ws-ai-soft: #efe9fb;
+  --ws-ai-plate-accent: #cbb4ff;
+  --ws-economy: #0f5c47;
+  --ws-economy-soft: #e5f3ee;
+
+  /* Distinct Editorial Desk Paper Surfaces (Never Identical Cloned Boxes) */
+  --ws-desk-world-bg: #fffdf9;
+  --ws-desk-ai-bg: #121520;
+  --ws-desk-econ-bg: #f3eae0;
 
   /* Status & Evidence Semantics */
-  --ws-good: #166534;
-  --ws-good-soft: #e9f6ee;
-  --ws-warn: #9a5508;
-  --ws-warn-soft: #fdf4e4;
-  --ws-warn-border: #e5c690;
+  --ws-good: #146334;
+  --ws-good-soft: #e8f5ed;
+  --ws-warn: #985206;
+  --ws-warn-soft: #fdf3e2;
+  --ws-warn-border: #e3c287;
   --ws-error: #a51c1c;
   --ws-error-soft: #fceceb;
   --ws-error-border: #e7b5b3;
 
-  /* Confidence Level Semantics */
-  --ws-conf-high: #166534;
-  --ws-conf-medium: #1a4475;
-  --ws-conf-low: #9a5508;
-  --ws-conf-unverified: #6e7480;
+  /* Confidence Level Semantics (Always Separate from Editorial Importance) */
+  --ws-conf-high: #146334;
+  --ws-conf-medium: #16447a;
+  --ws-conf-low: #985206;
+  --ws-conf-unverified: #666d7a;
 
-  /* Editorial Desk Subtle Paper Tints (World / AI / Economy Personality) */
-  --ws-desk-ai-bg: #f4f0fa;
-  --ws-desk-econ-bg: #eef5f1;
-
-  /* Elevated Surface & Shadow Tokens */
-  --ws-shadow-sm: 0 2px 10px rgba(15, 18, 25, 0.05);
-  --ws-shadow-lg: 0 22px 54px rgba(15, 18, 25, 0.16);
+  /* Restrained Editorial Elevation */
+  --ws-shadow-sm: 0 2px 12px rgba(17, 19, 24, 0.055);
+  --ws-shadow-md: 0 10px 30px rgba(17, 19, 24, 0.085);
+  --ws-shadow-lg: 0 24px 56px rgba(17, 19, 24, 0.16);
 
   /* Editorial Surface Geometry */
   --ws-radius-sm: 2px;
@@ -76,39 +85,51 @@
 }
 
 .dark {
-  /* Nocturnal Editorial Ink Palette (Art-Directed Dark Mode, Distinct Layered Depth) */
-  --ws-canvas: #0b0e14;
+  /* ==========================================================================
+     PHASE 09 — ART-DIRECTED NOCTURNAL EDITION (DARK EDITORIAL PALETTE)
+     Deep Midnight Press × Layered Obsidian Surfaces × Warm Ivory Ink
+     ========================================================================== */
+  --ws-canvas: #0a0d13;
   --ws-surface: #121722;
-  --ws-surface-subtle: #181f2d;
-  --ws-surface-hover: #212a3c;
-  --ws-surface-elevated: #161d2b;
-  --ws-ink: #f3efe6;
-  --ws-ink-secondary: #ccd2dc;
-  --ws-ink-muted: #949eae;
-  --ws-ink-faint: #677285;
-  --ws-border: #252f42;
-  --ws-border-strong: #3c4a63;
-  --ws-border-subtle: #1b2333;
-  --ws-rule-editorial: #f3efe6;
+  --ws-surface-subtle: #18202f;
+  --ws-surface-tint: #151c29;
+  --ws-surface-hover: #212c40;
+  --ws-surface-elevated: #171f2e;
 
-  /* Layered Nocturnal Magazine Plate (Elevated Above Canvas for Clear Figure-Ground) */
-  --ws-plate: #141b29;
-  --ws-plate-elevated: #1b2436;
-  --ws-plate-ink: #f6f2e9;
-  --ws-plate-secondary: #ccd3e0;
-  --ws-plate-muted: #949fb2;
-  --ws-plate-border: #2f3c55;
-  --ws-plate-accent: #f27b6a;
+  --ws-ink: #f4f0e6;
+  --ws-ink-secondary: #d0d6e0;
+  --ws-ink-muted: #98a2b3;
+  --ws-ink-faint: #6c778b;
 
-  --ws-editorial-accent: #ea6a5a;
-  --ws-editorial-accent-soft: #2e1917;
+  --ws-border: #253044;
+  --ws-border-strong: #3d4d68;
+  --ws-border-subtle: #1b2435;
+  --ws-rule-editorial: #f4f0e6;
 
-  --ws-world: #7eb5f2;
-  --ws-world-soft: #152538;
-  --ws-ai: #b99ef7;
-  --ws-ai-soft: #211936;
-  --ws-economy: #60cca7;
-  --ws-economy-soft: #122922;
+  /* Nocturnal Feature Plate (Elevated Above Canvas for Clear Figure-Ground) */
+  --ws-plate: #141b2a;
+  --ws-plate-elevated: #1c2639;
+  --ws-plate-ink: #f7f3eb;
+  --ws-plate-secondary: #cfd6e3;
+  --ws-plate-muted: #95a0b5;
+  --ws-plate-border: #313f59;
+  --ws-plate-accent: #f37b69;
+
+  --ws-editorial-accent: #ed6b5b;
+  --ws-editorial-accent-soft: #2e1816;
+
+  --ws-world: #7eb6f4;
+  --ws-world-soft: #14263b;
+  --ws-ai: #bca3fa;
+  --ws-ai-soft: #211938;
+  --ws-ai-plate-accent: #d3c0ff;
+  --ws-economy: #5fcea8;
+  --ws-economy-soft: #112a22;
+
+  /* Distinct Nocturnal Desk Tones */
+  --ws-desk-world-bg: #111621;
+  --ws-desk-ai-bg: #101424;
+  --ws-desk-econ-bg: #171714;
 
   --ws-good: #62d18c;
   --ws-good-soft: #12281b;
@@ -120,15 +141,13 @@
   --ws-error-border: #6e2d2d;
 
   --ws-conf-high: #62d18c;
-  --ws-conf-medium: #7eb5f2;
+  --ws-conf-medium: #7eb6f4;
   --ws-conf-low: #ebb354;
-  --ws-conf-unverified: #949eae;
+  --ws-conf-unverified: #98a2b3;
 
-  --ws-desk-ai-bg: #171427;
-  --ws-desk-econ-bg: #101f1c;
-
-  --ws-shadow-sm: 0 2px 12px rgba(0, 0, 0, 0.28);
-  --ws-shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.54);
+  --ws-shadow-sm: 0 2px 14px rgba(0, 0, 0, 0.32);
+  --ws-shadow-md: 0 12px 34px rgba(0, 0, 0, 0.44);
+  --ws-shadow-lg: 0 26px 64px rgba(0, 0, 0, 0.58);
 }
 
 @layer base {
@@ -151,28 +170,26 @@
     overflow-x: clip;
   }
 
-  /* Suppress native WebKit search clear button when custom clear buttons are rendered */
   input[type="search"]::-webkit-search-cancel-button,
   input[type="search"]::-webkit-search-decoration {
     -webkit-appearance: none;
     appearance: none;
   }
 
-  /* Accessible keyboard focus ring across light and dark modes */
   :focus-visible {
-    outline: 2px solid var(--ws-world);
+    outline: 2px solid var(--ws-editorial-accent);
     outline-offset: 2px;
   }
 }
 
 /* ==========================================================================
-   EDITORIAL TYPOGRAPHY SYSTEM (EN + ZH PARITY)
+   EDITORIAL TYPOGRAPHY SYSTEM (EN + ZH OPTICAL PARITY)
    ========================================================================== */
 
 .font-display {
   font-family: var(--font-display);
   font-optical-sizing: auto;
-  font-variation-settings: "SOFT" 22, "WONK" 0;
+  font-variation-settings: "SOFT" 18, "WONK" 0;
   text-wrap: balance;
 }
 
@@ -186,13 +203,13 @@
   font-optical-sizing: auto;
 }
 
-/* Strictly for IDs, dates, timestamps, URLs, and aligned numeric indices */
+/* Forensic IDs, ISO dates, timestamps, URLs, and aligned numeric indices only */
 .font-mono-tabular {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
 }
 
-/* Readable editorial sans metadata with aligned tabular numerals (ideal for EN + ZH) */
+/* Readable editorial sans metadata with aligned tabular numerals (EN + ZH) */
 .ws-meta {
   font-family: var(--font-sans);
   font-variant-numeric: tabular-nums;
@@ -203,73 +220,104 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* Fluid Lead Cover Headline: authoritative display scale on desktop, poised on mobile */
+/* Iconic Front-Page Publication Nameplate Wordmark */
+.ws-masthead-wordmark {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-variation-settings: "SOFT" 10, "WONK" 0;
+  font-weight: 700;
+  font-size: clamp(2.1rem, 4.1vw, 3.85rem);
+  line-height: 0.96;
+  letter-spacing: 0.045em;
+  color: var(--ws-ink);
+}
+
+/* Commanding Lead Cover Headline */
 .ws-headline-cover {
   font-family: var(--font-display);
   font-optical-sizing: auto;
+  font-variation-settings: "SOFT" 14, "WONK" 0;
   font-weight: 600;
-  font-size: clamp(1.9rem, 2.9vw + 0.65rem, 3.35rem);
-  line-height: 1.09;
+  font-size: clamp(2rem, 3.1vw + 0.6rem, 3.45rem);
+  line-height: 1.07;
   letter-spacing: -0.028em;
   text-wrap: balance;
 }
 
 [data-lang="zh-CN"] .ws-headline-cover,
 .ws-headline-cover-cjk {
-  font-size: clamp(1.62rem, 2.05vw + 0.55rem, 2.48rem);
-  line-height: 1.26;
+  font-size: clamp(1.68rem, 2.25vw + 0.55rem, 2.68rem);
+  line-height: 1.24;
   letter-spacing: -0.012em;
   text-wrap: pretty;
   line-break: strict;
 }
 
-/* Secondary Feature Headline: 24–33px desktop */
+/* Secondary Feature Headline: 24–36px desktop */
 .ws-headline-feature {
   font-family: var(--font-display);
   font-optical-sizing: auto;
   font-weight: 600;
-  font-size: clamp(1.38rem, 1.35vw + 0.85rem, 2.02rem);
-  line-height: 1.18;
+  font-size: clamp(1.42rem, 1.45vw + 0.85rem, 2.18rem);
+  line-height: 1.16;
   letter-spacing: -0.022em;
   text-wrap: balance;
 }
 
 [data-lang="zh-CN"] .ws-headline-feature {
-  font-size: clamp(1.3rem, 1.1vw + 0.82rem, 1.78rem);
-  line-height: 1.34;
+  font-size: clamp(1.34rem, 1.15vw + 0.82rem, 1.88rem);
+  line-height: 1.32;
   letter-spacing: -0.008em;
   text-wrap: pretty;
   line-break: strict;
 }
 
-/* Supporting Story Headline: 18–22px */
+/* Supporting Story Headline: 18–23px */
 .ws-headline-story {
   font-family: var(--font-display);
   font-optical-sizing: auto;
   font-weight: 600;
-  font-size: clamp(1.125rem, 0.45vw + 0.98rem, 1.35rem);
-  line-height: 1.27;
-  letter-spacing: -0.015em;
+  font-size: clamp(1.125rem, 0.5vw + 0.98rem, 1.4rem);
+  line-height: 1.25;
+  letter-spacing: -0.016em;
 }
 
 [data-lang="zh-CN"] .ws-headline-story {
-  line-height: 1.4;
+  line-height: 1.38;
   letter-spacing: -0.006em;
   line-break: strict;
 }
 
-/* Editorial Deck / Subhead: 16–19px */
+/* Dossier Monumental Headline */
+.ws-headline-dossier {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-variation-settings: "SOFT" 14, "WONK" 0;
+  font-weight: 600;
+  line-height: 1.14;
+  letter-spacing: -0.024em;
+  text-wrap: balance;
+}
+
+[data-lang="zh-CN"] .ws-headline-dossier {
+  line-height: 1.28;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+  line-break: strict;
+}
+
+/* Editorial Deck / Subhead */
 .ws-deck {
-  font-size: clamp(0.98rem, 0.3vw + 0.9rem, 1.14rem);
+  font-size: clamp(0.98rem, 0.32vw + 0.9rem, 1.15rem);
   line-height: 1.66;
   color: var(--ws-ink-secondary);
 }
 
 [data-lang="zh-CN"] .ws-deck {
-  line-height: 1.8;
+  line-height: 1.82;
 }
 
-/* Editorial Section Kicker (refined, legible, never tiny micro-noise) */
+/* Authoritative Section Kicker */
 .ws-kicker {
   font-family: var(--font-sans);
   font-size: 0.72rem;
@@ -281,26 +329,55 @@
 
 [data-lang="zh-CN"] .ws-kicker {
   font-size: 0.76rem;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.08em;
   text-transform: none;
 }
 
-/* Broadsheet Hairline Rules */
+/* Oversized Magazine Editorial Section Numeral (Watermark Accent) */
+.ws-editorial-numeral {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  line-height: 0.88;
+  letter-spacing: -0.04em;
+}
+
+.headline-balance {
+  text-wrap: balance;
+}
+
+[data-lang="zh-CN"] .headline-balance {
+  text-wrap: pretty;
+  line-break: strict;
+}
+
+/* ==========================================================================
+   EDITORIAL RULES, SURFACES & MULTI-TONAL BANDS
+   ========================================================================== */
+
 .ws-rule-double {
-  border-top: 2px solid var(--ws-ink);
+  border-top: 2.5px solid var(--ws-ink);
   border-bottom: 1px solid var(--ws-border-strong);
   height: 5px;
 }
 
 .ws-rule-section {
-  border-top: 1.5px solid var(--ws-ink);
+  border-top: 2px solid var(--ws-ink);
 }
 
 .ws-rule-editorial {
   border-top: 1px solid var(--ws-border);
 }
 
-/* Quiet Editorial Surface & Framing */
+.ws-section-rule {
+  border-top: 2px solid var(--ws-ink);
+}
+
+.ws-masthead-rule {
+  border-top: 3px solid var(--ws-ink);
+  border-bottom: 1px solid var(--ws-border-strong);
+}
+
 .ws-card {
   background-color: var(--ws-surface);
   border: 1px solid var(--ws-border);
@@ -311,28 +388,25 @@
   background-color: var(--ws-plate);
   color: var(--ws-plate-ink);
   border-radius: var(--ws-radius-sm);
-  box-shadow: var(--ws-shadow-sm);
+  box-shadow: var(--ws-shadow-md);
 }
 
 .ws-folio-panel {
   background-color: var(--ws-surface-subtle);
-  border-top: 2px solid var(--ws-ink);
-  border-bottom: 1px solid var(--ws-border);
+  border-top: 2.5px solid var(--ws-ink);
+  border-bottom: 1px solid var(--ws-border-strong);
+}
+
+.ws-folio-spread {
+  background-color: var(--ws-surface-tint);
+  border-top: 2.5px solid var(--ws-ink);
+  border-bottom: 1px solid var(--ws-border-strong);
 }
 
 .ws-caution-panel {
   background-color: var(--ws-warn-soft);
-  border: 1px solid color-mix(in srgb, var(--ws-warn) 26%, var(--ws-border));
+  border: 1px solid color-mix(in srgb, var(--ws-warn) 28%, var(--ws-border));
   border-radius: var(--ws-radius-sm);
-}
-
-.ws-section-rule {
-  border-top: 1.5px solid var(--ws-ink);
-}
-
-.ws-masthead-rule {
-  border-top: 2px solid var(--ws-ink);
-  border-bottom: 1px solid var(--ws-border-strong);
 }
 
 .ws-editorial-panel {
@@ -343,8 +417,8 @@
 
 .ws-editorial-sheet {
   background-color: var(--ws-surface);
-  border-top: 2px solid var(--ws-ink);
-  border-bottom: 1px solid var(--ws-border);
+  border-top: 2.5px solid var(--ws-ink);
+  border-bottom: 1px solid var(--ws-border-strong);
   border-left: 1px solid var(--ws-border-subtle);
   border-right: 1px solid var(--ws-border-subtle);
 }
@@ -365,10 +439,10 @@
 
 .ws-significance-band {
   border-top: 2px solid var(--ws-editorial-accent);
-  border-bottom: 1px solid var(--ws-border);
+  border-bottom: 1px solid var(--ws-border-strong);
   background-color: color-mix(
     in srgb,
-    var(--ws-editorial-accent-soft) 36%,
+    var(--ws-editorial-accent-soft) 44%,
     var(--ws-surface)
   );
 }
@@ -380,49 +454,53 @@
   border-bottom: 1px solid var(--ws-border-strong);
 }
 
-/* Editorial Desk Tonal Plates */
-.ws-desk-ai {
-  background-color: var(--ws-desk-ai-bg);
-  border-top: 3px solid var(--ws-ai);
-  border-right: 1px solid var(--ws-border);
+/* ==========================================================================
+   THREE DISTINCT EDITORIAL DESK ARCHITECTURES
+   ========================================================================== */
+
+/* Desk I — World Events: Crisp Foreign Affairs Broadsheet on Pure Warm Ivory */
+.ws-desk-world {
+  background-color: var(--ws-desk-world-bg);
+  border-top: 3px solid var(--ws-world);
   border-bottom: 1px solid var(--ws-border-strong);
-  border-left: 1px solid var(--ws-border);
+  box-shadow: var(--ws-shadow-sm);
 }
 
+/* Desk II — AI Frontier: Nocturnal Technical Monograph Plate (No Neon Clichés) */
+.ws-desk-ai-plate {
+  background-color: var(--ws-desk-ai-bg);
+  color: var(--ws-plate-ink);
+  border-top: 3px solid var(--ws-ai);
+  border-right: 1px solid var(--ws-plate-border);
+  border-bottom: 1px solid var(--ws-plate-border);
+  border-left: 1px solid var(--ws-plate-border);
+  box-shadow: var(--ws-shadow-md);
+}
+
+/* Desk III — Economic Outlook: FT-Inspired Warm Parchment-Salmon Financial Folio */
 .ws-desk-economy {
   background-color: var(--ws-desk-econ-bg);
   border-top: 3px solid var(--ws-economy);
-  border-right: 1px solid var(--ws-border);
   border-bottom: 1px solid var(--ws-border-strong);
   border-left: 1px solid var(--ws-border);
+  border-right: 1px solid var(--ws-border);
 }
 
-.ws-headline-dossier {
-  font-family: var(--font-display);
-  font-optical-sizing: auto;
-  font-weight: 600;
-  line-height: 1.16;
-  letter-spacing: -0.022em;
-  text-wrap: balance;
+/* Subtle Architectural Drafting Surface for Relationship Atlas */
+.ws-atlas-grid {
+  background-color: var(--ws-surface);
+  background-image:
+    radial-gradient(
+      color-mix(in srgb, var(--ws-border-strong) 42%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 20px 20px;
 }
 
-[data-lang="zh-CN"] .ws-headline-dossier {
-  line-height: 1.3;
-  letter-spacing: -0.01em;
-  text-wrap: pretty;
-  line-break: strict;
-}
+/* ==========================================================================
+   EDITORIAL ARTWORK & PHOTOGRAPHY FRAMING
+   ========================================================================== */
 
-.headline-balance {
-  text-wrap: balance;
-}
-
-[data-lang="zh-CN"] .headline-balance {
-  text-wrap: pretty;
-  line-break: strict;
-}
-
-/* Editorial Print Illustration & Photography Plate Treatment */
 .ws-art-frame {
   position: relative;
   overflow: hidden;
@@ -431,10 +509,37 @@
 }
 
 .dark .ws-art-frame img {
-  filter: brightness(0.92) contrast(1.03);
+  filter: brightness(0.93) contrast(1.03);
 }
 
-/* Long-form Reading Prose (65–72ch comfortable magazine measure) */
+.ws-photo-frame {
+  position: relative;
+  overflow: hidden;
+  border-width: 1px;
+  border-style: solid;
+}
+
+.dark .ws-photo-frame img {
+  filter: brightness(0.93) contrast(1.03);
+}
+
+/* Expressive Headline Underline Sweep */
+.ws-headline-link {
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 4px;
+  transition: color 180ms ease, text-decoration-color 200ms ease;
+}
+
+.ws-headline-link:hover {
+  text-decoration-color: currentColor;
+}
+
+/* ==========================================================================
+   LONG-FORM EDITORIAL PROSE & DROP-CAP CRAFTSMANSHIP
+   ========================================================================== */
+
 .ws-prose {
   color: var(--ws-ink-secondary);
   font-size: 1.03125rem;
@@ -450,6 +555,19 @@
   font-size: 1.03125rem;
   line-height: 1.9;
   letter-spacing: 0.012em;
+}
+
+/* New Yorker / Print Magazine Initial Drop Cap (English prose only so CJK stays clean) */
+[data-lang="en"] .ws-dropcap > p:first-of-type::first-letter {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 3.35rem;
+  line-height: 0.82;
+  float: left;
+  padding-top: 0.14rem;
+  padding-right: 0.55rem;
+  padding-bottom: 0.05rem;
+  color: var(--ws-ink);
 }
 
 .ws-prose p {
@@ -498,16 +616,21 @@
   color: var(--ws-ink);
 }
 
-/* Classic editorial pull-quote framed by top and bottom hairline rules */
 .ws-prose blockquote {
-  margin: 1.35em 0;
-  padding: 0.85rem 0;
-  border-top: 1.5px solid var(--ws-ink);
-  border-bottom: 1px solid var(--ws-border);
+  margin: 1.5em 0;
+  padding: 1rem 0;
+  border-top: 2px solid var(--ws-ink);
+  border-bottom: 1px solid var(--ws-border-strong);
   color: var(--ws-ink);
   font-family: var(--font-serif-body);
-  font-size: 1.08em;
-  line-height: 1.72;
+  font-style: italic;
+  font-size: 1.12em;
+  line-height: 1.68;
+}
+
+[data-lang="zh-CN"] .ws-prose blockquote {
+  font-style: normal;
+  line-height: 1.82;
 }
 
 .ws-prose a {
@@ -542,7 +665,6 @@
   background-color: var(--ws-surface-subtle);
 }
 
-/* Compact prose variant for executive briefs & secondary decks */
 .ws-prose-compact {
   font-size: 0.96875rem;
   line-height: 1.74;
@@ -553,7 +675,6 @@
   line-height: 1.86;
 }
 
-/* Inverted plate prose */
 .ws-prose-plate {
   color: var(--ws-plate-secondary);
 }
@@ -562,11 +683,14 @@
   color: var(--ws-plate-ink);
 }
 
-/* Subtle Publication Motion (Respects prefers-reduced-motion) */
+/* ==========================================================================
+   PURPOSEFUL PUBLICATION MOTION (Respects prefers-reduced-motion)
+   ========================================================================== */
+
 @keyframes wsEditorialReveal {
   from {
     opacity: 0;
-    transform: translateY(4px);
+    transform: translateY(6px);
   }
   to {
     opacity: 1;
@@ -575,7 +699,7 @@
 }
 
 .ws-view-enter {
-  animation: wsEditorialReveal 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: wsEditorialReveal 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
