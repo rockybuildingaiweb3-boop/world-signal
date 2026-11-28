@@ -91,7 +91,7 @@ To create an image-rich, non-monotonous reading pace, the Briefing front page al
 
 ### 4.4 Synthesis — Intelligence Visualization Desk
 - **Drafting-Grid Relationship Atlas**: Subtle architectural dot-grid canvas (`.ws-atlas-grid`), tinted domain lanes with live node counts, 5-pip node importance bars, illuminated active transmission paths with muted context arcs, and an elevated nocturnal **Evidence Mechanism Inspector** displaying a structured `FROM → [RELATIONSHIP] → TO` diagram strictly from `buildRelationshipGraph()`.
-- **Editorial Visual Bridge (Phase 10)**: A restrained `DocumentaryImageBreak` (`ai-optics-photonics` / `world-urban-infrastructure`) bridges the interactive Relationship Atlas into the long-form Cross-Domain Monographs without competing visually with the graph canvas.
+- **Editorial Visual Bridge (Phase 10)**: A restrained `DocumentaryImageBreak` (`world-coastline-geography`) bridges the interactive Relationship Atlas into the long-form Cross-Domain Monographs without competing visually with the graph canvas.
 - **Cross-Domain Monographs & Time Horizons**: Oversized numbered monographs, connected temporal progression strips, conditional scenarios, and responsive watchlist.
 
 ### 4.5 Audit — Editorial Verification Desk

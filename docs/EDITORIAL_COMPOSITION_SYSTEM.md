@@ -95,5 +95,5 @@ Every composition primitive MUST:
 ### Synthesis (`SynthesisView.tsx`)
 1. Strategic Intelligence Masthead + Edition Totals
 2. Interactive Drafting-Grid Relationship Atlas + Nocturnal Evidence Mechanism Inspector
-3. **Editorial Visual Bridge** (restrained `DocumentaryImageBreak` using `world-urban-infrastructure` / `ai-optics-photonics` separating the interactive graph from the long-form Cross-Domain Monographs)
+3. **Editorial Visual Bridge** (restrained `DocumentaryImageBreak` using `world-coastline-geography` separating the interactive graph from the long-form Cross-Domain Monographs)
 4. Numbered Cross-Domain Monographs + Time Horizons + Conditional Scenarios + Watchlist

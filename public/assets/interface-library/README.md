@@ -1,8 +1,8 @@
-# WORLD SIGNAL — Curated Local Interface Image Library
+# WORLD SIGNAL — Curated Local Interface Image Library (Phase 10)
 
 > **Classification**: `interface_editorial_photography` (**Non-Documentary — `isDocumentaryEvidence: false`**)
-> **Total Curated Assets**: **30 photographs** (10 World Events · 10 AI Frontier · 10 Economic Outlook — 60 optimized uncropped WebP files: 1600w primary + 800w responsive)
-> **Total Footprint on Disk**: **11.02 MB** (World: 3.11 MB · AI: 3.40 MB · Economy: 4.51 MB)
+> **Total Curated Assets**: **36 photographs** (12 World Events · 12 AI Frontier · 12 Economic Outlook — 72 optimized uncropped WebP files: 1600w primary + 800w responsive)
+> **Total Footprint on Disk**: **13.11 MB** (World: 3.80 MB · AI: 3.80 MB · Economy: 5.51 MB)
 > **Machine-Readable Manifest**: `public/assets/interface-library/manifest.json`
 > **TypeScript Registry**: `src/lib/editorial/interfaceImageLibrary.ts`
 
@@ -10,16 +10,16 @@
 
 ## Editorial Separation & Integrity Policy
 
-1. **Strict Isolation from Documentary News Media**: Every photograph in this directory is generic editorial art-direction photography used for visual worlds, section openers, panoramic pacing breaks, and high-priority dossier atmosphere. It is **never** registered in `src/lib/editorial/editorialAssetRegistry.ts` and **never** overrides verified signal `media_assets`.
-2. **Non-Documentary Disclosure**: Every rendered plate carries an explicit bilingual non-documentary designation (`Editorial context photo · Non-documentary` / `编辑视觉配图 · 非新闻现场实拍`), photographer attribution, source page link, and license link.
-3. **Zero Hotlinking**: All 30 photographs are stored locally under `public/assets/interface-library/{world,ai,economy}/`. Production code never hotlinks remote image hosts.
-4. **Visual Inspection & Per-Asset Focal Points**: Every downloaded image was visually inspected prior to registration and assigned an asset-specific `objectPosition` focal point rather than a blind global crop.
+1. **Strict Isolation from Documentary News Media**: Every photograph in this directory is generic editorial art-direction photography used for visual worlds, section openers, visual desk folios, panoramic pacing breaks, and high-priority dossier atmosphere. It is **never** registered in `src/lib/editorial/editorialAssetRegistry.ts` and **never** overrides verified signal `media_assets`.
+2. **Non-Documentary Disclosure**: Every rendered plate carries an explicit bilingual non-documentary designation (`Editorial Context · Non-Documentary` / `编务语境摄影 · 非纪实证据`), photographer attribution, source page link, and license link.
+3. **Zero Hotlinking**: All 36 photographs are stored locally under `public/assets/interface-library/{world,ai,economy}/`. Production code never hotlinks remote image hosts.
+4. **Visual Inspection & Per-Asset Focal Points**: Every downloaded image was visually inspected on a contact sheet prior to registration and assigned an asset-specific `objectPosition` focal point rather than a blind global crop.
 
 ---
 
-## World Events (10 Assets) — `public/assets/interface-library/world/`
+## World Events (12 Assets) — `public/assets/interface-library/world/`
 
-Visual World: *Global Documentary* — open broadsheet framing, global geography, diplomatic institutions, maritime infrastructure, and human environments.
+Visual World: *Global Documentary* — open broadsheet framing, global geography, diplomatic institutions, maritime infrastructure, climate frontiers, sovereign border corridors, and human environments.
 
 | Asset ID | Category | Dimensions | 1600w / 800w | Focal Point | Creator | License | Source |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -33,12 +33,14 @@ Visual World: *Global Documentary* — open broadsheet framing, global geography
 | `world-urban-infrastructure` | urban_infrastructure | 1600×900 (landscape) | 254 KB / 56 KB | `50% 52%` | Frank Schulenburg | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) | [Source](https://commons.wikimedia.org/wiki/File:Golden_Gate_Bridge_as_seen_from_Marshall%E2%80%99s_Beach,_March_2018.jpg) |
 | `world-human-environment` | human_environment | 1600×1067 (landscape) | 389 KB / 99 KB | `50% 58%` | Mike Peel | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) | [Source](https://commons.wikimedia.org/wiki/File:At_New_York_City_2023_008.jpg) |
 | `world-public-space` | public_institution | 1600×903 (landscape) | 348 KB / 91 KB | `50% 55%` | Diliff | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) | [Source](https://commons.wikimedia.org/wiki/File:European_Parliament_Strasbourg_Hemicycle_-_Diliff.jpg) |
+| `world-climate-environment` | climate_environment | 1600×1200 (landscape) | 204 KB / 50 KB | `50% 48%` | Ilya Haykinson | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) | [Source](https://commons.wikimedia.org/wiki/File:Glacial_iceberg_in_Argentina.jpg) |
+| `world-border-checkpoint` | border_geography | 1600×816 (landscape) | 372 KB / 80 KB | `50% 52%` | NASA | [Public domain](https://creativecommons.org/publicdomain/mark/1.0/) | [Source](https://commons.wikimedia.org/wiki/File:Oresund_bridge_NASA_ASTER.jpg) |
 
 ---
 
-## AI Frontier (10 Assets) — `public/assets/interface-library/ai/`
+## AI Frontier (12 Assets) — `public/assets/interface-library/ai/`
 
-Visual World: *Scientific Modernism* — nocturnal architectural precision, silicon fabrication, supercomputing halls, photonics, robotics, and engineering cleanrooms.
+Visual World: *Scientific Modernism* — nocturnal architectural precision, silicon fabrication, supercomputing halls, photonics, robotics, cryogenic quantum systems, autonomous mobility, and engineering cleanrooms.
 
 | Asset ID | Category | Dimensions | 1600w / 800w | Focal Point | Creator | License | Source |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -52,12 +54,14 @@ Visual World: *Scientific Modernism* — nocturnal architectural precision, sili
 | `ai-scientific-instrument` | scientific_instrument | 1600×1151 (landscape) | 195 KB / 55 KB | `50% 52%` | Tadeáš Bednarz | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) | [Source](https://commons.wikimedia.org/wiki/File:Scanning_electron_microscope_-_UFCH_JH_(2020)_01.jpg) |
 | `ai-engineering-workspace` | engineering_workspace | 1600×1065 (landscape) | 300 KB / 74 KB | `55% 48%` | NASA / Desiree Stover | [Public Domain (NASA)](https://commons.wikimedia.org/wiki/Commons:Licensing) | [Source](https://commons.wikimedia.org/wiki/File:Engineers_at_Work_on_Webb_at_Johnson_Space_Center.jpg) |
 | `ai-advanced-materials` | advanced_materials | 1600×1060 (landscape) | 81 KB / 23 KB | `50% 50%` | Speedoflight1 | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) | [Source](https://commons.wikimedia.org/wiki/File:UV_Cured_Powder_Coating_on_Carbon_Fiber_.jpg) |
+| `ai-quantum-computing` | quantum_computing | 1067×1600 (portrait) | 110 KB / 38 KB | `50% 42%` | IBM España | [Public domain](https://creativecommons.org/publicdomain/mark/1.0/) | [Source](https://commons.wikimedia.org/wiki/File:IBM_Q_system_(27274387309).jpg) |
+| `ai-autonomous-mobility` | autonomous_mobility | 1600×1200 (landscape) | 201 KB / 59 KB | `50% 52%` | elisfkc | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0) | [Source](https://commons.wikimedia.org/wiki/File:Waymo_Jaguar_I-Pace_(26266044147).jpg) |
 
 ---
 
-## Economic Outlook (10 Assets) — `public/assets/interface-library/economy/`
+## Economic Outlook (12 Assets) — `public/assets/interface-library/economy/`
 
-Visual World: *Institutional & Economic Humanism* — warm parchment-salmon financial authority paired with central banks, real-world factories, energy grids, commodities, retail life, and civil infrastructure.
+Visual World: *Institutional & Economic Humanism* — warm parchment-salmon financial authority paired with central banks, real-world factories, energy grids, commodities, urban housing, agriculture, retail life, and civil infrastructure.
 
 | Asset ID | Category | Dimensions | 1600w / 800w | Focal Point | Creator | License | Source |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -71,3 +75,5 @@ Visual World: *Institutional & Economic Humanism* — warm parchment-salmon fina
 | `economy-retail-consumption` | retail_consumption | 1214×1600 (portrait) | 427 KB / 103 KB | `50% 52%` | Jakub Hałun | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) | [Source](https://commons.wikimedia.org/wiki/File:20110724_Galleria_Vittorio_Emanuele_II_Milan_5410.jpg) |
 | `economy-supply-chain` | supply_chain | 1600×1200 (landscape) | 395 KB / 92 KB | `50% 62%` | Shandong Mingtong Metal Manufacturing | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) | [Source](https://commons.wikimedia.org/wiki/File:Factory_steel_coil_inventory.jpg) |
 | `economy-infrastructure-investment` | infrastructure_investment | 1067×1600 (portrait) | 396 KB / 93 KB | `50% 44%` | Dietmar Rabich | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0) | [Source](https://commons.wikimedia.org/wiki/File:Hoover_Dam,_Nevada_(Arizona,_USA)_--_2012_--_6130.jpg) |
+| `economy-housing-urban` | housing_real_estate | 1600×899 (landscape) | 208 KB / 52 KB | `50% 56%` | Jeangagnon | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) | [Source](https://commons.wikimedia.org/wiki/File:Habitat_67_Montreal_01.JPG) |
+| `economy-agriculture-food` | agriculture_food | 1600×1088 (landscape) | 624 KB / 136 KB | `50% 52%` | USDA / Public Domain Archive | [Public domain](https://creativecommons.org/publicdomain/mark/1.0/) | [Source](https://commons.wikimedia.org/wiki/File:Wheat_harvest_on_the_Palouse.jpg) |

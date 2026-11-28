@@ -7,6 +7,8 @@ import { SafeMarkdown } from '../../components/editorial/SafeMarkdown';
 import { ScenariosGrid } from '../../components/editorial/ScenariosGrid';
 import { RelationshipExplorerMatrix } from './RelationshipExplorerMatrix';
 import { WatchlistSection } from './WatchlistSection';
+import { DocumentaryImageBreak } from '../../components/editorial/compositions/DocumentaryImageBreak';
+import { getInterfacePhoto } from '../../lib/editorial/interfaceImageLibrary';
 
 interface SynthesisViewProps {
   edition: ParsedEdition;
@@ -139,6 +141,19 @@ export const SynthesisView: React.FC<SynthesisViewProps> = ({
         signalById={signalById}
         lang={lang}
         onOpenSignal={onOpenSignal}
+      />
+
+      {/* Phase 10 Editorial Visual Bridge — Connecting Network Topology to Long-Form Monographs */}
+      <DocumentaryImageBreak
+        photo={getInterfacePhoto('world-coastline-geography')}
+        lang={lang}
+        kickerEn="Cross-Domain Transmission · Visual Chapter"
+        kickerZh="跨领域传导 · 视觉章节过渡"
+        titleEn="From Declared Signal Links to Multi-Horizon Structural Synthesis"
+        titleZh="从显性信号图谱进入多时间维度结构性研判"
+        bodyEn="Below, WORLD SIGNAL synthesizes declared cross-domain mechanisms, horizon impacts, conditional scenarios, and forward monitoring checkpoints grounded strictly in this edition."
+        bodyZh="以下章节严格基于本期已核查信号，逐项展开跨领域传导主线、分时间维度影响、条件情景与后续观察节点。"
+        folioCode={`SYNTHESIS ${edition.frontmatter.edition_date} · PLATE V`}
       />
 
       {/* 2. Cross-Domain Synthesis — Asymmetric Editorial Monographs */}

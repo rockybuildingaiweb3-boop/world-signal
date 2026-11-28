@@ -59,6 +59,7 @@ export const WorldDocumentaryDesk: React.FC<BaseDeskProps> = ({
 
   return (
     <section
+      id="desk-world-events"
       aria-label={t.domains.world}
       data-testid="desk-world-events"
       data-desk-personality="global-documentary"
@@ -321,6 +322,7 @@ export const AiModernistDesk: React.FC<BaseDeskProps> = ({
 
   return (
     <section
+      id="desk-ai-frontier"
       aria-label={t.domains.ai}
       data-testid="desk-ai-frontier"
       data-desk-personality="scientific-modernism"
@@ -582,6 +584,7 @@ export const EconomicHumanismDesk: React.FC<BaseDeskProps> = ({
 
   return (
     <section
+      id="desk-economic-outlook"
       aria-label={t.domains.economy}
       data-testid="desk-economic-outlook"
       data-desk-personality="institutional-economic-humanism"

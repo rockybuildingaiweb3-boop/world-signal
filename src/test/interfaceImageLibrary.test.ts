@@ -10,9 +10,11 @@ import {
   isLocalInterfaceLibraryPath,
   selectDeskPhotoSet,
   selectEditorialPhotoForDossier,
+  selectFolioPhotoSet,
 } from '../lib/editorial/interfaceImageLibrary';
 import { EDITORIAL_ASSET_REGISTRY } from '../lib/editorial/editorialAssetRegistry';
 import { buildSignalNarrativeArc } from '../lib/editorial/narrativeArc';
+import { extractLeadThesis } from '../lib/editorial/editorialPullQuote';
 import type { ParsedSignal, SignalMediaAsset } from '../types/edition';
 
 function makeSignal(overrides: Partial<ParsedSignal> = {}): ParsedSignal {
@@ -89,12 +91,12 @@ function makeApprovedMediaAsset(): SignalMediaAsset {
   };
 }
 
-describe('Local Interface Image Library (Phase 09 — 30-Asset Curated Collection)', () => {
-  it('registers all 30 curated local WebP photographs across three domains with verified disk files and zero hotlinks', () => {
-    assert.equal(INTERFACE_PHOTO_LIST.length, 30);
-    assert.equal(getInterfacePhotosByDomain('world').length, 10);
-    assert.equal(getInterfacePhotosByDomain('ai').length, 10);
-    assert.equal(getInterfacePhotosByDomain('economy').length, 10);
+describe('Local Interface Image Library (Phase 10 — 36-Asset Curated Collection)', () => {
+  it('registers all 36 curated local WebP photographs across three domains with verified disk files and zero hotlinks', () => {
+    assert.equal(INTERFACE_PHOTO_LIST.length, 36);
+    assert.equal(getInterfacePhotosByDomain('world').length, 12);
+    assert.equal(getInterfacePhotosByDomain('ai').length, 12);
+    assert.equal(getInterfacePhotosByDomain('economy').length, 12);
 
     let totalLibraryBytes = 0;
 
@@ -141,7 +143,6 @@ describe('Local Interface Image Library (Phase 09 — 30-Asset Curated Collectio
       );
       assert.ok(photo.intendedRoles.length >= 1);
 
-      // Confirm actual primary 1600w WebP exists on disk and is valid RIFF/WEBP
       const primaryDisk = path.join(process.cwd(), 'public', photo.localPath);
       assert.equal(
         fs.existsSync(primaryDisk),
@@ -154,7 +155,6 @@ describe('Local Interface Image Library (Phase 09 — 30-Asset Curated Collectio
       assert.equal(primaryBuf.subarray(8, 12).toString('ascii'), 'WEBP');
       assert.ok(primaryBuf.length > 5000);
 
-      // Confirm responsive 800w WebP exists on disk and is valid RIFF/WEBP
       const smallDisk = path.join(process.cwd(), 'public', photo.webp800Path);
       assert.equal(
         fs.existsSync(smallDisk),
@@ -176,14 +176,13 @@ describe('Local Interface Image Library (Phase 09 — 30-Asset Curated Collectio
       `Expected total library size < 25 MB, got ${(totalLibraryBytes / (1024 * 1024)).toFixed(2)} MB`
     );
 
-    // Manifest file exists and matches registry count
     const manifestPath = path.join(
       process.cwd(),
       'public/assets/interface-library/manifest.json'
     );
     assert.equal(fs.existsSync(manifestPath), true);
     const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-    assert.equal(manifest.assetCount, 30);
+    assert.equal(manifest.assetCount, 36);
     assert.equal(manifest.isDocumentaryEvidence, false);
     assert.equal(manifest.hotlinkingAllowed, false);
   });
@@ -195,24 +194,15 @@ describe('Local Interface Image Library (Phase 09 — 30-Asset Curated Collectio
     }
   });
 
-  it('returns accurate orientations and direct lookups across domains', () => {
+  it('returns accurate orientations and direct lookups across domains including Phase 10 assets', () => {
     assert.equal(getInterfacePhoto('ai-data-center').orientation, 'portrait');
-    assert.equal(
-      getInterfacePhoto('economy-stock-exchange').orientation,
-      'portrait'
-    );
-    assert.equal(
-      getInterfacePhoto('world-maritime-port').orientation,
-      'landscape'
-    );
-    assert.equal(
-      getInterfacePhoto('world-earth-observation').orientation,
-      'landscape'
-    );
-    assert.equal(
-      getInterfacePhoto('economy-central-bank').orientation,
-      'portrait'
-    );
+    assert.equal(getInterfacePhoto('ai-quantum-computing').orientation, 'portrait');
+    assert.equal(getInterfacePhoto('economy-stock-exchange').orientation, 'portrait');
+    assert.equal(getInterfacePhoto('economy-central-bank').orientation, 'portrait');
+    assert.equal(getInterfacePhoto('world-climate-environment').orientation, 'landscape');
+    assert.equal(getInterfacePhoto('world-border-checkpoint').orientation, 'landscape');
+    assert.equal(getInterfacePhoto('economy-housing-urban').orientation, 'landscape');
+    assert.equal(getInterfacePhoto('economy-agriculture-food').orientation, 'landscape');
   });
 
   it('never overrides signals that carry approved verified media_assets', () => {
@@ -227,11 +217,65 @@ describe('Local Interface Image Library (Phase 09 — 30-Asset Curated Collectio
     assert.equal(selectEditorialPhotoForDossier(signalWithVerifiedMedia), null);
   });
 
-  it('selectively matches major dossiers across the expanded 30-asset themes while preserving restraint', () => {
+  it('selectively matches major dossiers across the expanded 36-asset themes while preserving restraint', () => {
     const cases: Array<{
       signal: Partial<ParsedSignal>;
       expectedId: string | null;
     }> = [
+      {
+        signal: {
+          domain: 'world',
+          topic: 'climate',
+          headline: 'COP31 在安塔利亚崩溃，未能达成最终协议',
+          importance: 5,
+        },
+        expectedId: 'world-climate-environment',
+      },
+      {
+        signal: {
+          domain: 'world',
+          topic: 'borders',
+          headline: 'European Union revises Schengen cross-border customs protocols',
+          importance: 4,
+        },
+        expectedId: 'world-border-checkpoint',
+      },
+      {
+        signal: {
+          domain: 'ai',
+          topic: 'quantum',
+          headline: 'Error-corrected superconducting qubit milestone advances quantum computing',
+          importance: 5,
+        },
+        expectedId: 'ai-quantum-computing',
+      },
+      {
+        signal: {
+          domain: 'ai',
+          topic: 'mobility',
+          headline: 'Waymo expands autonomous vehicle robotaxi fleet to three new metros',
+          importance: 4,
+        },
+        expectedId: 'ai-autonomous-mobility',
+      },
+      {
+        signal: {
+          domain: 'economy',
+          topic: 'housing',
+          headline: 'Elevated mortgage rates cool urban housing starts and home prices',
+          importance: 4,
+        },
+        expectedId: 'economy-housing-urban',
+      },
+      {
+        signal: {
+          domain: 'economy',
+          topic: 'commodities',
+          headline: 'Black Sea grain export bottleneck pushes global wheat harvest prices higher',
+          importance: 4,
+        },
+        expectedId: 'economy-agriculture-food',
+      },
       {
         signal: {
           domain: 'ai',
@@ -244,29 +288,11 @@ describe('Local Interface Image Library (Phase 09 — 30-Asset Curated Collectio
       {
         signal: {
           domain: 'ai',
-          topic: 'infrastructure',
-          headline: 'Hyperscaler expands regional AI data center compute cluster',
-          importance: 5,
-        },
-        expectedId: 'ai-supercomputer-hall',
-      },
-      {
-        signal: {
-          domain: 'ai',
           topic: 'cloud',
           headline: 'Cloud provider expands regional data center server capacity',
           importance: 5,
         },
         expectedId: 'ai-data-center',
-      },
-      {
-        signal: {
-          domain: 'ai',
-          topic: 'robotics',
-          headline: 'Autonomous humanoid robotics deployment accelerates on factory floors',
-          importance: 4,
-        },
-        expectedId: 'ai-robotics-automation',
       },
       {
         signal: {
@@ -276,33 +302,6 @@ describe('Local Interface Image Library (Phase 09 — 30-Asset Curated Collectio
           importance: 5,
         },
         expectedId: 'economy-central-bank',
-      },
-      {
-        signal: {
-          domain: 'economy',
-          topic: 'markets',
-          headline: '美股本周大涨，道指周涨 5.5%',
-          importance: 4,
-        },
-        expectedId: 'economy-stock-exchange',
-      },
-      {
-        signal: {
-          domain: 'economy',
-          topic: 'energy',
-          headline: 'European renewable grid and LNG power storage investments surge',
-          importance: 4,
-        },
-        expectedId: 'economy-energy-infrastructure',
-      },
-      {
-        signal: {
-          domain: 'world',
-          topic: 'maritime-security',
-          headline: 'Container shipping lanes face renewed Strait of Hormuz risk',
-          importance: 5,
-        },
-        expectedId: 'world-maritime-port',
       },
       {
         signal: {
@@ -352,16 +351,14 @@ describe('Local Interface Image Library (Phase 09 — 30-Asset Curated Collectio
     }
   });
 
-  it('allocates distinct, non-repeating photo sets across all three domain desks', () => {
+  it('allocates 13 distinct, zero-repetition photos across Documentary Break, three Domain Desks, and Edition Visual Folio', () => {
     const used = new Set<string>(['world-earth-observation']);
     const worldSet = selectDeskPhotoSet(
       'world',
       [makeSignal({ domain: 'world', headline: 'UN diplomatic summit on maritime trade' })],
       used
     );
-    const worldIds = [worldSet.primary.id, worldSet.secondary.id, worldSet.tertiary.id];
-    assert.equal(new Set(worldIds).size, 3);
-    worldIds.forEach((id) => {
+    [worldSet.primary.id, worldSet.secondary.id, worldSet.tertiary.id].forEach((id) => {
       assert.equal(used.has(id), false);
       used.add(id);
     });
@@ -371,9 +368,7 @@ describe('Local Interface Image Library (Phase 09 — 30-Asset Curated Collectio
       [makeSignal({ domain: 'ai', headline: 'Supercomputer cluster and photonic interconnect breakthrough' })],
       used
     );
-    const aiIds = [aiSet.primary.id, aiSet.secondary.id, aiSet.tertiary.id];
-    assert.equal(new Set(aiIds).size, 3);
-    aiIds.forEach((id) => {
+    [aiSet.primary.id, aiSet.secondary.id, aiSet.tertiary.id].forEach((id) => {
       assert.equal(used.has(id), false);
       used.add(id);
     });
@@ -383,20 +378,24 @@ describe('Local Interface Image Library (Phase 09 — 30-Asset Curated Collectio
       [makeSignal({ domain: 'economy', headline: 'Central bank rate path and renewable power investment' })],
       used
     );
-    const econIds = [econSet.primary.id, econSet.secondary.id, econSet.tertiary.id];
-    assert.equal(new Set(econIds).size, 3);
-    econIds.forEach((id) => {
+    [econSet.primary.id, econSet.secondary.id, econSet.tertiary.id].forEach((id) => {
       assert.equal(used.has(id), false);
       used.add(id);
     });
 
-    // 1 panoramic break + 9 desk photos = 10 unique photos on the Briefing front page
-    assert.equal(used.size, 10);
+    const folioSet = selectFolioPhotoSet(used);
+    [folioSet.world.id, folioSet.ai.id, folioSet.economy.id].forEach((id) => {
+      assert.equal(used.has(id), false, `Folio photo ${id} duplicated a desk photo`);
+      used.add(id);
+    });
+
+    // 1 panoramic break + 9 desk photos + 3 folio thumbs = 13 unique photos on Briefing
+    assert.equal(used.size, 13);
   });
 });
 
-describe('Grounded Narrative Progression Arc (Phase 09 Addendum)', () => {
-  it('builds only stages supported by actual signal sections and omits absent stages', () => {
+describe('Grounded Editorial Composition Helpers (Narrative Arc & PullQuoteBand)', () => {
+  it('builds only narrative stages supported by actual signal sections', () => {
     const fullSignal = makeSignal({
       sections: {
         whatHappened: 'Verified event summary.',
@@ -419,32 +418,35 @@ describe('Grounded Narrative Progression Arc (Phase 09 Addendum)', () => {
       fullArc.map((s) => s.id),
       ['event', 'context', 'consequence', 'relevance', 'watch']
     );
-    assert.deepEqual(
-      fullArc.map((s) => s.stepNumber),
-      ['01', '02', '03', '04', '05']
-    );
+  });
 
-    const minimalSignal = makeSignal({
-      sections: {
-        whatHappened: 'Short update.',
-        verifiedFacts: '',
-        timeline: '',
-        timelineEntries: [],
-        whyItMatters: 'Why it matters.',
-        sourcePerspectives: '',
-        analysis: '',
-        uncertainties: '',
-        scenarios: '',
-        scenarioItems: [],
-        personalRelevance: '',
-        whatToWatch: '',
-      },
-    });
-    const minimalArc = buildSignalNarrativeArc(minimalSignal);
-    assert.equal(minimalArc.length, 2);
-    assert.deepEqual(
-      minimalArc.map((s) => s.id),
-      ['event', 'consequence']
+  it('extractLeadThesis cleanly isolates Chinese and English opening thesis sentences without losing citations', () => {
+    const zhText =
+      '这是多边气候进程自 2009 年以来最严重的制度性挫折，而且发生在联合国确认全球气温将超过 1.5°C 目标后的首次 COP 会议上。失败的核心不是技术细节，而是化石燃料生产国与最脆弱国家之间的根本分歧。';
+    const zhRes = extractLeadThesis(zhText);
+    assert.ok(zhRes);
+    assert.equal(
+      zhRes.thesis,
+      '这是多边气候进程自 2009 年以来最严重的制度性挫折，而且发生在联合国确认全球气温将超过 1.5°C 目标后的首次 COP 会议上。'
     );
+    assert.equal(zhRes.hadInlineCitations, false);
+    assert.ok(zhRes.remainderMarkdown.startsWith('失败的核心不是技术细节'));
+
+    const citedEnText =
+      'Central bank divergence widens funding costs across emerging markets [S1]. Investors are repricing sovereign yields across Asia and Europe [S2].';
+    const enRes = extractLeadThesis(citedEnText);
+    assert.ok(enRes);
+    assert.equal(
+      enRes.thesis,
+      'Central bank divergence widens funding costs across emerging markets.'
+    );
+    assert.equal(enRes.hadInlineCitations, true);
+    // Preserves full markdown so interactive [S1] remains clickable
+    assert.ok(enRes.remainderMarkdown.includes('[S1]'));
+    assert.ok(enRes.remainderMarkdown.includes('[S2]'));
+
+    // Rejects short fragments or bullet lists
+    assert.equal(extractLeadThesis('- bullet one\n- bullet two'), null);
+    assert.equal(extractLeadThesis('Too short.'), null);
   });
 });

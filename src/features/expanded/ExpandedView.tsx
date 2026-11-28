@@ -23,6 +23,7 @@ import { SignalDossierHeader } from './SignalDossierHeader';
 import { SignalEvidenceLedgers } from './SignalEvidenceLedgers';
 import { NarrativeArcRibbon } from '../../components/editorial/compositions/NarrativeArcRibbon';
 import { ReadingProgressBar } from '../../components/editorial/compositions/ReadingProgressBar';
+import { PullQuoteBand } from '../../components/editorial/compositions/PullQuoteBand';
 
 import type { SignalBookmarkInput } from '../../hooks/useReaderDesk';
 
@@ -473,25 +474,17 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
                         {t.expanded.layerInterpretive}
                       </div>
 
-                      {/* Layer 4: Why It Matters — Elevated Significance Band (Top & Bottom Hairlines) */}
+                      {/* Layer 4: Why It Matters — Editorial Analytical Thesis Pull-Quote Band (Phase 10) */}
                       {activeSignal.sections.whyItMatters && (
-                        <section
+                        <PullQuoteBand
                           id="sec-why-it-matters"
-                          className="scroll-mt-24 ws-significance-band px-5 py-5 sm:px-6 sm:py-6 space-y-2.5"
-                        >
-                          <h3 className="ws-kicker text-[var(--ws-editorial-accent)]">
-                            {t.expanded.sections.whyItMatters}
-                          </h3>
-                          <div className="ws-prose text-[15.75px] text-[var(--ws-ink)]">
-                            <SafeMarkdown
-                              content={activeSignal.sections.whyItMatters}
-                              className="text-[var(--ws-ink)]"
-                              onSelectSignal={handleJumpToSignal}
-                              onInspectSource={handleInspectSource}
-                              sources={activeSignal.sources}
-                            />
-                          </div>
-                        </section>
+                          kicker={t.expanded.sections.whyItMatters}
+                          content={activeSignal.sections.whyItMatters}
+                          domain={activeSignal.domain}
+                          onSelectSignal={handleJumpToSignal}
+                          onInspectSource={handleInspectSource}
+                          sources={activeSignal.sources}
+                        />
                       )}
 
                       {/* Layer 5: Source Perspectives — Open Hairline Attribution Band (De-boxified) */}

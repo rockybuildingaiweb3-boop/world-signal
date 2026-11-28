@@ -15,7 +15,7 @@ import { selectApprovedSignalMedia } from './editorialAssetRegistry';
  */
 
 export type InterfacePhotoId =
-  // World Events (10)
+  // World Events (12)
   | 'world-city-aerial'
   | 'world-maritime-port'
   | 'world-diplomatic-institution'
@@ -26,7 +26,9 @@ export type InterfacePhotoId =
   | 'world-urban-infrastructure'
   | 'world-human-environment'
   | 'world-public-space'
-  // AI Frontier (10)
+  | 'world-climate-environment'
+  | 'world-border-checkpoint'
+  // AI Frontier (12)
   | 'ai-silicon-wafer'
   | 'ai-data-center'
   | 'ai-chip-architecture'
@@ -37,7 +39,9 @@ export type InterfacePhotoId =
   | 'ai-scientific-instrument'
   | 'ai-engineering-workspace'
   | 'ai-advanced-materials'
-  // Economic Outlook (10)
+  | 'ai-quantum-computing'
+  | 'ai-autonomous-mobility'
+  // Economic Outlook (12)
   | 'economy-stock-exchange'
   | 'economy-central-bank'
   | 'economy-financial-district'
@@ -47,7 +51,9 @@ export type InterfacePhotoId =
   | 'economy-commodity-production'
   | 'economy-retail-consumption'
   | 'economy-supply-chain'
-  | 'economy-infrastructure-investment';
+  | 'economy-infrastructure-investment'
+  | 'economy-housing-urban'
+  | 'economy-agriculture-food';
 
 export type InterfacePhotoCategory =
   // World
@@ -61,6 +67,8 @@ export type InterfacePhotoCategory =
   | 'urban_infrastructure'
   | 'human_environment'
   | 'public_institution'
+  | 'climate_environment'
+  | 'border_geography'
   // AI
   | 'semiconductor_macro'
   | 'compute_infrastructure'
@@ -72,6 +80,8 @@ export type InterfacePhotoCategory =
   | 'scientific_instrument'
   | 'engineering_workspace'
   | 'advanced_materials'
+  | 'quantum_computing'
+  | 'autonomous_mobility'
   // Economy
   | 'financial_institutions'
   | 'central_bank'
@@ -82,7 +92,9 @@ export type InterfacePhotoCategory =
   | 'commodity_production'
   | 'retail_consumption'
   | 'supply_chain'
-  | 'infrastructure_investment';
+  | 'infrastructure_investment'
+  | 'housing_real_estate'
+  | 'agriculture_food';
 
 export type InterfacePhotoOrientation = 'landscape' | 'portrait';
 
@@ -91,6 +103,7 @@ export type InterfaceDesignRole =
   | 'desk_companion'
   | 'desk_spine'
   | 'documentary_break'
+  | 'folio_thumb'
   | 'dossier_opener'
   | 'dossier_portrait';
 
@@ -514,8 +527,84 @@ export const INTERFACE_IMAGE_LIBRARY: Readonly<
       '编务语境摄影 · 欧洲议会档案影像，非本期具体立法表决或会议现场。',
   },
 
+  'world-climate-environment': {
+    id: 'world-climate-environment',
+    localPath: '/assets/interface-library/world/world-climate-environment.webp',
+    webp800Path:
+      '/assets/interface-library/world/world-climate-environment-800.webp',
+    classification: 'interface_editorial_photography',
+    isDocumentaryEvidence: false,
+    domain: 'world',
+    subjectCategory: 'climate_environment',
+    orientation: 'landscape',
+    naturalWidth: 1600,
+    naturalHeight: 1200,
+    fileSizeBytes: 209404,
+    webp800Bytes: 51512,
+    objectPosition: '50% 48%',
+    intendedRoles: ['dossier_opener', 'desk_companion', 'folio_thumb'],
+    title: 'Glacial iceberg in Argentina',
+    creator: 'Ilya Haykinson',
+    creatorProfileUrl: null,
+    sourcePageUrl:
+      'https://commons.wikimedia.org/wiki/File:Glacial_iceberg_in_Argentina.jpg',
+    licenseName: 'CC BY 2.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by/2.0',
+    verifiedDate: '2026-11-28',
+    intendedUsage:
+      'Climate diplomacy (COP), glacial/polar monitoring, environmental treaties, and extreme-weather dossiers.',
+    altEn:
+      'Sculpted turquoise glacial iceberg drifting across still deep-blue Patagonian waters beneath snow-covered mountain peaks',
+    altZh: '静谧深蓝冰川湖面上的蓝白色巨型冰山，远方为白雪覆盖的巴塔哥尼亚山脉',
+    captionEn:
+      'Glacial iceberg drifting beneath snow-covered Patagonian peaks.',
+    captionZh: '巴塔哥尼亚雪峰下漂浮于深蓝水域的蓝白冰川冰山。',
+    editorialContextNoteEn:
+      'Editorial context photograph · Archival Patagonian glacier landscape, not documentation of a specific climate summit or extreme-weather incident.',
+    editorialContextNoteZh:
+      '编务语境摄影 · 巴塔哥尼亚冰川档案地貌影像，非特定气候峰会或极端天气事件现场实拍。',
+  },
+
+  'world-border-checkpoint': {
+    id: 'world-border-checkpoint',
+    localPath: '/assets/interface-library/world/world-border-checkpoint.webp',
+    webp800Path:
+      '/assets/interface-library/world/world-border-checkpoint-800.webp',
+    classification: 'interface_editorial_photography',
+    isDocumentaryEvidence: false,
+    domain: 'world',
+    subjectCategory: 'border_geography',
+    orientation: 'landscape',
+    naturalWidth: 1600,
+    naturalHeight: 816,
+    fileSizeBytes: 381372,
+    webp800Bytes: 81708,
+    objectPosition: '50% 52%',
+    intendedRoles: ['dossier_opener', 'folio_thumb', 'desk_companion'],
+    title: 'Oresund bridge NASA ASTER',
+    creator: 'NASA',
+    creatorProfileUrl: null,
+    sourcePageUrl:
+      'https://commons.wikimedia.org/wiki/File:Oresund_bridge_NASA_ASTER.jpg',
+    licenseName: 'Public domain',
+    licenseUrl: 'https://creativecommons.org/publicdomain/mark/1.0/',
+    verifiedDate: '2026-11-28',
+    intendedUsage:
+      'Cross-border transit corridors, sovereign border geography, customs agreements, and regional integration dossiers.',
+    altEn:
+      'High-resolution NASA ASTER satellite image showing the Øresund cross-border bridge and artificial island linking Copenhagen and Malmö across the strait',
+    altZh: 'NASA ASTER 卫星高分辨率航拍影像，呈现横跨厄勒海峡连接丹麦哥本哈根与瑞典马尔默的跨境大桥与人工岛',
+    captionEn:
+      'NASA ASTER orbital observation of the Øresund cross-border corridor linking Denmark and Sweden.',
+    captionZh: 'NASA ASTER 卫星视角下连接丹麦与瑞典的厄勒海峡跨境通道。',
+    editorialContextNoteEn:
+      'Editorial context photograph · Archival NASA ASTER satellite imagery, not real-time border surveillance or event verification.',
+    editorialContextNoteZh:
+      '编务语境摄影 · NASA ASTER 档案卫星影像，非特定边境事件的实时监测证据。',
+  },
+
   // ===========================================================================
-  // AI FRONTIER — 10 CURATED SCIENTIFIC MODERNISM ASSETS
+  // AI FRONTIER — 12 CURATED SCIENTIFIC MODERNISM ASSETS
   // ===========================================================================
   'ai-silicon-wafer': {
     id: 'ai-silicon-wafer',
@@ -889,8 +978,84 @@ export const INTERFACE_IMAGE_LIBRARY: Readonly<
       '编务语境摄影 · 通用先进材料微距语境，非特定厂商的专有硬件部件实拍。',
   },
 
+  'ai-quantum-computing': {
+    id: 'ai-quantum-computing',
+    localPath: '/assets/interface-library/ai/ai-quantum-computing.webp',
+    webp800Path:
+      '/assets/interface-library/ai/ai-quantum-computing-800.webp',
+    classification: 'interface_editorial_photography',
+    isDocumentaryEvidence: false,
+    domain: 'ai',
+    subjectCategory: 'quantum_computing',
+    orientation: 'portrait',
+    naturalWidth: 1067,
+    naturalHeight: 1600,
+    fileSizeBytes: 112732,
+    webp800Bytes: 39324,
+    objectPosition: '50% 42%',
+    intendedRoles: ['dossier_portrait', 'desk_spine', 'folio_thumb'],
+    title: 'IBM Q system (27274387309)',
+    creator: 'IBM España',
+    creatorProfileUrl: null,
+    sourcePageUrl:
+      'https://commons.wikimedia.org/wiki/File:IBM_Q_system_(27274387309).jpg',
+    licenseName: 'Public domain',
+    licenseUrl: 'https://creativecommons.org/publicdomain/mark/1.0/',
+    verifiedDate: '2026-11-28',
+    intendedUsage:
+      'Quantum computing breakthroughs, post-quantum cryptography, and cryogenic hardware frontiers.',
+    altEn:
+      'Cylindrical white cryogenic dilution-refrigerator chambers housing superconducting quantum computing systems inside a research laboratory',
+    altZh: '科研实验室内白色圆柱形极低温稀释制冷量子计算腔体硬件装置',
+    captionEn:
+      'Cryogenic dilution-refrigerator enclosures for superconducting quantum computing systems.',
+    captionZh: '超导量子计算系统的极低温稀释制冷腔体硬件装置。',
+    editorialContextNoteEn:
+      'Editorial context photograph · Archival quantum-hardware photography; not documentation of a specific cited experiment or vendor endorsement.',
+    editorialContextNoteZh:
+      '编务语境摄影 · 通用量子计算硬件档案照，非特定实验现场实拍，亦不构成商业背书。',
+  },
+
+  'ai-autonomous-mobility': {
+    id: 'ai-autonomous-mobility',
+    localPath: '/assets/interface-library/ai/ai-autonomous-mobility.webp',
+    webp800Path:
+      '/assets/interface-library/ai/ai-autonomous-mobility-800.webp',
+    classification: 'interface_editorial_photography',
+    isDocumentaryEvidence: false,
+    domain: 'ai',
+    subjectCategory: 'autonomous_mobility',
+    orientation: 'landscape',
+    naturalWidth: 1600,
+    naturalHeight: 1200,
+    fileSizeBytes: 205358,
+    webp800Bytes: 60292,
+    objectPosition: '50% 52%',
+    intendedRoles: ['dossier_opener', 'desk_companion', 'folio_thumb'],
+    title: 'Waymo Jaguar I-Pace (26266044147)',
+    creator: 'elisfkc',
+    creatorProfileUrl: null,
+    sourcePageUrl:
+      'https://commons.wikimedia.org/wiki/File:Waymo_Jaguar_I-Pace_(26266044147).jpg',
+    licenseName: 'CC BY-SA 2.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by-sa/2.0',
+    verifiedDate: '2026-11-28',
+    intendedUsage:
+      'Autonomous driving, robotaxi regulation, LiDAR sensor suites, and physical-world edge AI dossiers.',
+    altEn:
+      'Side profile of an electric autonomous vehicle outfitted with rooftop LiDAR dome and perimeter optical sensor pods',
+    altZh: '配备车顶激光雷达与环绕光学传感器的电动自动驾驶测试车辆侧面实拍',
+    captionEn:
+      'Electric autonomous vehicle equipped with rooftop LiDAR and optical sensor array.',
+    captionZh: '搭载车顶激光雷达与光学感知阵列的电动自动驾驶测试车。',
+    editorialContextNoteEn:
+      'Editorial context photograph · Archival autonomous-vehicle display photo; does not represent a specific reported fleet incident or endorsement.',
+    editorialContextNoteZh:
+      '编务语境摄影 · 通用自动驾驶硬件档案照，非特定车队运营事故或商业背书。',
+  },
+
   // ===========================================================================
-  // ECONOMIC OUTLOOK — 10 CURATED INSTITUTIONAL & ECONOMIC HUMANISM ASSETS
+  // ECONOMIC OUTLOOK — 12 CURATED INSTITUTIONAL & ECONOMIC HUMANISM ASSETS
   // ===========================================================================
   'economy-stock-exchange': {
     id: 'economy-stock-exchange',
@@ -1275,6 +1440,82 @@ export const INTERFACE_IMAGE_LIBRARY: Readonly<
     editorialContextNoteZh:
       '编务语境摄影 · 大型水利与电网基建档案照，非本期具体财政投资或基建项目实拍。',
   },
+
+  'economy-housing-urban': {
+    id: 'economy-housing-urban',
+    localPath: '/assets/interface-library/economy/economy-housing-urban.webp',
+    webp800Path:
+      '/assets/interface-library/economy/economy-housing-urban-800.webp',
+    classification: 'interface_editorial_photography',
+    isDocumentaryEvidence: false,
+    domain: 'economy',
+    subjectCategory: 'housing_real_estate',
+    orientation: 'landscape',
+    naturalWidth: 1600,
+    naturalHeight: 899,
+    fileSizeBytes: 213324,
+    webp800Bytes: 53366,
+    objectPosition: '50% 56%',
+    intendedRoles: ['dossier_opener', 'folio_thumb', 'desk_companion'],
+    title: 'Habitat 67 Montreal 01',
+    creator: 'Jeangagnon',
+    creatorProfileUrl: null,
+    sourcePageUrl:
+      'https://commons.wikimedia.org/wiki/File:Habitat_67_Montreal_01.JPG',
+    licenseName: 'CC BY-SA 3.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by-sa/3.0',
+    verifiedDate: '2026-11-28',
+    intendedUsage:
+      'Urban housing supply, mortgage rates, residential real estate cycles, and household affordability dossiers.',
+    altEn:
+      'Modular stacked concrete residential architecture of Habitat 67 rising along the St. Lawrence riverfront in Montreal under daylight skies',
+    altZh: '蒙特利尔圣劳伦斯河畔层叠错落的模块化现代住宅建筑群（Habitat 67）',
+    captionEn:
+      'Modular high-density urban residential architecture along the Montreal waterfront (Habitat 67).',
+    captionZh: '蒙特利尔滨水区的模块化城市住宅建筑群（Habitat 67）。',
+    editorialContextNoteEn:
+      'Editorial context photograph · Archival urban-housing architecture photo, not documentation of a specific property market or policy.',
+    editorialContextNoteZh:
+      '编务语境摄影 · 通用城市住宅建筑档案照，非特定楼市行情或房地产政策现场实拍。',
+  },
+
+  'economy-agriculture-food': {
+    id: 'economy-agriculture-food',
+    localPath: '/assets/interface-library/economy/economy-agriculture-food.webp',
+    webp800Path:
+      '/assets/interface-library/economy/economy-agriculture-food-800.webp',
+    classification: 'interface_editorial_photography',
+    isDocumentaryEvidence: false,
+    domain: 'economy',
+    subjectCategory: 'agriculture_food',
+    orientation: 'landscape',
+    naturalWidth: 1600,
+    naturalHeight: 1088,
+    fileSizeBytes: 638774,
+    webp800Bytes: 139336,
+    objectPosition: '50% 52%',
+    intendedRoles: ['dossier_opener', 'desk_companion'],
+    title: 'Wheat harvest on the Palouse',
+    creator: 'USDA / Public Domain Archive',
+    creatorProfileUrl: null,
+    sourcePageUrl:
+      'https://commons.wikimedia.org/wiki/File:Wheat_harvest_on_the_Palouse.jpg',
+    licenseName: 'Public domain',
+    licenseUrl: 'https://creativecommons.org/publicdomain/mark/1.0/',
+    verifiedDate: '2026-11-28',
+    intendedUsage:
+      'Global food security, grain export corridors, agricultural commodities, and grocery inflation dossiers.',
+    altEn:
+      'Sweeping golden wheat hills of the Palouse region with a single combine harvester carving a curved track across the landscape',
+    altZh: '广袤起伏的金色小麦农田丘陵，一台联合收割机沿弧形田垄进行大规模粮食收割',
+    captionEn:
+      'Large-scale wheat harvest across rolling Palouse agricultural terrain.',
+    captionZh: '广袤丘陵麦田中的大规模粮食机械化收割全景。',
+    editorialContextNoteEn:
+      'Editorial context photograph · Archival agricultural harvest landscape, not tied to a specific crop report or grain-export disruption.',
+    editorialContextNoteZh:
+      '编务语境摄影 · 通用农业粮食收割档案照，非特定粮价波动或出口受阻事件现场实拍。',
+  },
 };
 
 export const INTERFACE_PHOTO_LIST: readonly InterfacePhotoAsset[] =
@@ -1301,7 +1542,7 @@ export function isLocalInterfaceLibraryPath(path: string): boolean {
 }
 
 // =============================================================================
-// STORY-SPECIFIC ART DIRECTION MATCHING (ALL 30 CURATED PHOTOGRAPHS)
+// STORY-SPECIFIC ART DIRECTION MATCHING (ALL 36 CURATED PHOTOGRAPHS)
 // =============================================================================
 
 interface PhotoTopicRule {
@@ -1311,19 +1552,29 @@ interface PhotoTopicRule {
 
 const WORLD_PHOTO_RULES: readonly PhotoTopicRule[] = [
   {
+    photoId: 'world-climate-environment',
+    pattern:
+      /\b(cop\d+|climate|emissions|fossil[- ]?fuel|glacier|arctic|antarctic|wildfire|flood|drought|warming|paris[- ]?agreement|carbon)\b|(气候|碳排放|化石燃料|冰川|北极|变暖|山火|洪涝|COP\d+)/i,
+  },
+  {
     photoId: 'world-maritime-port',
     pattern:
       /\b(port|harbor|harbour|container|shipping|freight|cargo|maritime|vessel|tanker|red[- ]?sea)\b|(港口|集装箱|航运|海运|油轮|货轮|红海)/i,
   },
   {
+    photoId: 'world-border-checkpoint',
+    pattern:
+      /\b(border|cross[- ]?border|customs|schengen|asylum|checkpoint|crossing|corridor)\b|(边境|跨境|海关|口岸|申根|过境)/i,
+  },
+  {
     photoId: 'world-global-transport',
     pattern:
-      /\b(canal|panama|suez|locks|aviation|corridor|logistics|transit)\b|(运河|巴拿马|苏伊士|物流|航道|通道)/i,
+      /\b(canal|panama|suez|locks|aviation|logistics|transit)\b|(运河|巴拿马|苏伊士|物流|航道|通道)/i,
   },
   {
     photoId: 'world-coastline-geography',
     pattern:
-      /\b(strait|hormuz|bosphorus|taiwan[- ]?strait|border|coast|sea[- ]?lane|island|territor|arctic)\b|(海峡|霍尔木兹|博斯普鲁斯|边境|海岸|海域|领土|北极)/i,
+      /\b(strait|hormuz|bosphorus|taiwan[- ]?strait|coast|sea[- ]?lane|island|territor)\b|(海峡|霍尔木兹|博斯普鲁斯|海岸|海域|领土)/i,
   },
   {
     photoId: 'world-international-assembly',
@@ -1343,7 +1594,7 @@ const WORLD_PHOTO_RULES: readonly PhotoTopicRule[] = [
   {
     photoId: 'world-earth-observation',
     pattern:
-      /\b(satellite|orbit|space|climate|emissions|wildfire|hurricane|typhoon|earthquake|global[- ]?warming)\b|(卫星|轨道|太空|气候|碳排放|地震|台风|山火)/i,
+      /\b(satellite|orbit|space|hurricane|typhoon|earthquake)\b|(卫星|轨道|太空|地震|台风)/i,
   },
   {
     photoId: 'world-urban-infrastructure',
@@ -1363,6 +1614,16 @@ const WORLD_PHOTO_RULES: readonly PhotoTopicRule[] = [
 ];
 
 const AI_PHOTO_RULES: readonly PhotoTopicRule[] = [
+  {
+    photoId: 'ai-quantum-computing',
+    pattern:
+      /\b(quantum|qubit|cryogen|post[- ]?quantum|superconducting[- ]?qubit)\b|(量子|量子比特|量子计算|后量子)/i,
+  },
+  {
+    photoId: 'ai-autonomous-mobility',
+    pattern:
+      /\b(autonomous[- ]?vehicle|self[- ]?driving|robotaxi|waymo|lidar|fsd|autonomous[- ]?driving)\b|(自动驾驶|无人驾驶|网约无人车|激光雷达|Robotaxi)/i,
+  },
   {
     photoId: 'ai-silicon-wafer',
     pattern:
@@ -1386,12 +1647,12 @@ const AI_PHOTO_RULES: readonly PhotoTopicRule[] = [
   {
     photoId: 'ai-robotics-automation',
     pattern:
-      /\b(robot|robotics|humanoid|embodied|autonomous[- ]?vehicle|drone|automation|actuator)\b|(机器人|具身智能|自动驾驶|无人机|自动化|机械臂)/i,
+      /\b(robot|robotics|humanoid|embodied|drone|automation|actuator)\b|(机器人|具身智能|无人机|自动化|机械臂)/i,
   },
   {
     photoId: 'ai-optics-photonics',
     pattern:
-      /\b(photonic|optical|laser|quantum|interconnect|co-packaged)\b|(光子|光学|激光|量子|光互联)/i,
+      /\b(photonic|optical|laser|interconnect|co-packaged)\b|(光子|光学|激光|光互联)/i,
   },
   {
     photoId: 'ai-scientific-instrument',
@@ -1417,6 +1678,16 @@ const AI_PHOTO_RULES: readonly PhotoTopicRule[] = [
 
 const ECONOMY_PHOTO_RULES: readonly PhotoTopicRule[] = [
   {
+    photoId: 'economy-housing-urban',
+    pattern:
+      /\b(housing|mortgage|real[- ]?estate|property|home[- ]?prices|rent|residential|developer)\b|(房地产|楼市|按揭|房贷|住房|租金|地产)/i,
+  },
+  {
+    photoId: 'economy-agriculture-food',
+    pattern:
+      /\b(agriculture|grain|wheat|corn|soybean|harvest|food[- ]?prices|food[- ]?inflation|fertilizer|crop)\b|(农业|粮食|小麦|玉米|大豆|食品通胀|粮价|收割|农产)/i,
+  },
+  {
     photoId: 'economy-central-bank',
     pattern:
       /\b(central[- ]?bank|federal[- ]?reserve|fed\b|ecb|boj|pboc|boe|interest[- ]?rate|rate[- ]?cut|rate[- ]?hike|monetary|inflation|cpi|pce)\b|(央行|美联储|欧央行|日本央行|利率|降息|加息|通胀|货币政策)/i,
@@ -1439,7 +1710,7 @@ const ECONOMY_PHOTO_RULES: readonly PhotoTopicRule[] = [
   {
     photoId: 'economy-commodity-production',
     pattern:
-      /\b(copper|lithium|gold|silver|rare[- ]?earth|mining|mine|metal|commodity|ore|grain|wheat)\b|(铜|锂|黄金|稀土|矿产|矿业|大宗商品|金属|粮食)/i,
+      /\b(copper|lithium|gold|silver|rare[- ]?earth|mining|mine|metal|commodity|ore)\b|(铜|锂|黄金|稀土|矿产|矿业|大宗商品|金属)/i,
   },
   {
     photoId: 'economy-manufacturing-factory',
@@ -1459,7 +1730,7 @@ const ECONOMY_PHOTO_RULES: readonly PhotoTopicRule[] = [
   {
     photoId: 'economy-retail-consumption',
     pattern:
-      /\b(retail|consumer|spending|household|wage|labor|labour|employment|jobs|housing|mortgage|real[- ]?estate)\b|(零售|消费|居民|就业|薪资|通胀压力|房地产|楼市|按揭)/i,
+      /\b(retail|consumer|spending|household|wage|labor|labour|employment|jobs)\b|(零售|消费|居民|就业|薪资)/i,
   },
   {
     photoId: 'economy-infrastructure-investment',
@@ -1747,4 +2018,52 @@ export function selectDeskPhotoSet(
   );
 
   return { primary, secondary, tertiary };
+}
+
+/**
+ * Selects three non-repeating landscape thumbnail plates (one per domain) for
+ * the Phase 10 `EditionVisualFolio` desk contents strip, strictly excluding
+ * any photo IDs already allocated to `DocumentaryImageBreak` or the three
+ * full `DomainDesks`.
+ */
+export function selectFolioPhotoSet(
+  excludeIds: ReadonlySet<string> | readonly string[] = []
+): Record<SignalDomain, InterfacePhotoAsset> {
+  const excluded = new Set(excludeIds);
+
+  const pickLandscape = (
+    preferred: readonly InterfacePhotoId[]
+  ): InterfacePhotoAsset => {
+    for (const id of preferred) {
+      if (!excluded.has(id)) {
+        excluded.add(id);
+        return INTERFACE_IMAGE_LIBRARY[id];
+      }
+    }
+    return INTERFACE_IMAGE_LIBRARY[preferred[0]];
+  };
+
+  return {
+    world: pickLandscape([
+      'world-climate-environment',
+      'world-border-checkpoint',
+      'world-diplomatic-institution',
+      'world-city-aerial',
+      'world-public-space',
+    ]),
+    ai: pickLandscape([
+      'ai-autonomous-mobility',
+      'ai-silicon-wafer',
+      'ai-optics-photonics',
+      'ai-supercomputer-hall',
+      'ai-robotics-automation',
+    ]),
+    economy: pickLandscape([
+      'economy-housing-urban',
+      'economy-agriculture-food',
+      'economy-energy-infrastructure',
+      'economy-manufacturing-factory',
+      'economy-financial-district',
+    ]),
+  };
 }

@@ -37,11 +37,13 @@ import {
 import {
   getInterfacePhoto,
   selectDeskPhotoSet,
+  selectFolioPhotoSet,
 } from '../../lib/editorial/interfaceImageLibrary';
 import { SafeMarkdown } from '../../components/editorial/SafeMarkdown';
 import { SignalMetaLine } from '../../components/editorial/SignalMetaLine';
 import { StoryVisual } from '../../components/editorial/StoryVisual';
 import { DocumentaryImageBreak } from '../../components/editorial/compositions/DocumentaryImageBreak';
+import { EditionVisualFolio } from '../../components/editorial/compositions/EditionVisualFolio';
 import {
   AiModernistDesk,
   EconomicHumanismDesk,
@@ -392,7 +394,8 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
   const econDispatches = domainTopSignals.economy.slice(1, 5);
 
   // Content-responsive, zero-repetition photographic allocation across the
-  // Documentary Image Break and all three Domain Desks (10 distinct local WebP plates)
+  // Documentary Image Break, all three Domain Desks, and the Edition Visual Folio
+  // (13 distinct local WebP plates from the 36-asset library)
   const homepagePhotos = useMemo(() => {
     const breakPhoto = getInterfacePhoto('world-earth-observation');
     const used = new Set<string>([breakPhoto.id]);
@@ -408,8 +411,13 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
     used.add(ai.tertiary.id);
 
     const economy = selectDeskPhotoSet('economy', domainTopSignals.economy, used);
+    used.add(economy.primary.id);
+    used.add(economy.secondary.id);
+    used.add(economy.tertiary.id);
 
-    return { breakPhoto, world, ai, economy };
+    const folio = selectFolioPhotoSet(used);
+
+    return { breakPhoto, world, ai, economy, folio };
   }, [domainTopSignals]);
 
   return (
@@ -1133,6 +1141,60 @@ export const BriefingView: React.FC<BriefingViewProps> = ({
             </div>
           )}
         </section>
+      )}
+
+      {/* =====================================================================
+          EDITION VISUAL FOLIO — 3-World Contents Index & Direct Desk Jump Strip
+         ===================================================================== */}
+      {worldProfile && aiProfile && econProfile && (
+        <EditionVisualFolio
+          editionDate={frontmatter.edition_date}
+          lang={lang}
+          items={[
+            {
+              domain: 'world',
+              numeral: '01',
+              anchorId: 'desk-world-events',
+              titleEn: t.domains.world,
+              titleZh: t.domains.world,
+              worldStyleEn: 'Global Documentary',
+              worldStyleZh: '全球纪实版块',
+              total: worldProfile.total,
+              sharePct: worldProfile.sharePct,
+              imp5Count: worldProfile.imp5Count,
+              leadSignal: visualAllocation.worldDeskSignal,
+              photo: homepagePhotos.folio.world,
+            },
+            {
+              domain: 'ai',
+              numeral: '02',
+              anchorId: 'desk-ai-frontier',
+              titleEn: t.domains.ai,
+              titleZh: t.domains.ai,
+              worldStyleEn: 'Scientific Modernism',
+              worldStyleZh: '科学现代主义',
+              total: aiProfile.total,
+              sharePct: aiProfile.sharePct,
+              imp5Count: aiProfile.imp5Count,
+              leadSignal: visualAllocation.aiDeskSignal,
+              photo: homepagePhotos.folio.ai,
+            },
+            {
+              domain: 'economy',
+              numeral: '03',
+              anchorId: 'desk-economic-outlook',
+              titleEn: t.domains.economy,
+              titleZh: t.domains.economy,
+              worldStyleEn: 'Economic Humanism',
+              worldStyleZh: '制度与经济人文',
+              total: econProfile.total,
+              sharePct: econProfile.sharePct,
+              imp5Count: econProfile.imp5Count,
+              leadSignal: visualAllocation.econDeskSignal,
+              photo: homepagePhotos.folio.economy,
+            },
+          ]}
+        />
       )}
 
       {/* =====================================================================
